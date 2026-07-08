@@ -1,0 +1,11 @@
+images/extracted/
+*.pdf
+.DS_Store
+node_modules/
+dist/
+.env
+.env.local
+.agents/
+.gemini/
+.jules/
+scratch/
