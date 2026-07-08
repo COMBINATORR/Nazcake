@@ -880,8 +880,8 @@ function setupDeliveryCalculator() {
   const resTime = document.getElementById("result-time");
 
   // Bakery coordinates (г. Атырау, ул. Балхашская 23)
-  const bakeryLat = 47.102718;
-  const bakeryLon = 51.921320;
+  const bakeryLat = 47.124524;
+  const bakeryLon = 51.939947;
 
   // Atyrau bounding box coordinates (approximate city limits)
   const atyrauBounds = {
