@@ -87,16 +87,20 @@
       </a>
       
       <nav class="nav-menu">
-        <a href="#about" class="nav-link">О нас</a>
-        <a href="#bestsellers" class="nav-link">Бестселлеры</a>
-        <a href="#catalog" class="nav-link">Наша продукция</a>
-        <a href="#customizer" class="nav-link">Конструктор Бенто</a>
-        <a href="#delivery" class="nav-link">Доставка</a>
-        <a href="#contacts" class="nav-link">Контакты</a>
+        <a href="#about" class="nav-link" data-i18n="nav_about">О нас</a>
+        <a href="#bestsellers" class="nav-link" data-i18n="nav_bestsellers">Бестселлеры</a>
+        <a href="#catalog" class="nav-link" data-i18n="nav_catalog">Наша продукция</a>
+        <a href="#customizer" class="nav-link" data-i18n="nav_customizer">Конструктор Бенто</a>
+        <a href="#delivery" class="nav-link" data-i18n="nav_delivery">Доставка</a>
+        <a href="#contacts" class="nav-link" data-i18n="nav_contacts">Контакты</a>
       </nav>
       
       <div class="header-actions">
-        <button class="cart-btn" id="open-cart-btn" aria-label="Открыть корзину">
+        <div class="lang-switcher">
+          <button class="lang-btn active" data-lang="ru">RU</button>
+          <button class="lang-btn" data-lang="kk">KK</button>
+        </div>
+        <button class="cart-btn" id="open-cart-btn" data-i18n-title="cart_title" aria-label="Открыть корзину">
           <svg class="icon-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="9" cy="21" r="1"></circle>
             <circle cx="20" cy="21" r="1"></circle>
@@ -104,7 +108,7 @@
           </svg>
           <span class="cart-count">0</span>
         </button>
-        <button class="mobile-menu-toggle" id="mobile-menu-btn" aria-label="Открыть меню">
+        <button class="mobile-menu-toggle" id="mobile-menu-btn" data-i18n-title="nav_menu_title" aria-label="Открыть меню">
           <span></span>
           <span></span>
           <span></span>
@@ -116,7 +120,7 @@
   <!-- Mobile Navigation Drawer -->
   <div class="mobile-drawer" id="mobile-drawer">
     <div class="drawer-header">
-      <span class="drawer-title">Меню</span>
+      <span class="drawer-title" data-i18n="nav_menu_title">Меню</span>
       <button class="close-drawer-btn" id="close-drawer-btn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -125,13 +129,17 @@
       </button>
     </div>
     <nav class="drawer-nav">
-      <a href="#about" class="drawer-link">О нас</a>
-      <a href="#bestsellers" class="drawer-link">Бестселлеры</a>
-      <a href="#catalog" class="drawer-link">Наша продукция</a>
-      <a href="#customizer" class="drawer-link">Конструктор Bento</a>
-      <a href="#delivery" class="drawer-link">Доставка</a>
-      <a href="#contacts" class="drawer-link">Контакты</a>
+      <a href="#about" class="drawer-link" data-i18n="nav_about">О нас</a>
+      <a href="#bestsellers" class="drawer-link" data-i18n="nav_bestsellers">Бестселлеры</a>
+      <a href="#catalog" class="drawer-link" data-i18n="nav_catalog">Наша продукция</a>
+      <a href="#customizer" class="drawer-link" data-i18n="nav_customizer">Конструктор Bento</a>
+      <a href="#delivery" class="drawer-link" data-i18n="nav_delivery">Доставка</a>
+      <a href="#contacts" class="drawer-link" data-i18n="nav_contacts">Контакты</a>
     </nav>
+    <div class="drawer-lang-switcher">
+      <button class="lang-btn active" data-lang="ru">RU</button>
+      <button class="lang-btn" data-lang="kk">KK</button>
+    </div>
   </div>
   <div class="drawer-overlay" id="drawer-overlay"></div>
 
@@ -139,12 +147,12 @@
   <section class="hero-section">
     <div class="hero-container">
       <div class="hero-content">
-        <span class="hero-subtitle">Премиальные кондитерские шедевры в Атырау</span>
-        <h1 class="hero-title">Искусство <br><span class="accent-text">Премиальных</span> Десертов</h1>
-        <p class="hero-desc">Авторские торты на заказ, изысканная выпечка и премиальные домашние полуфабрикаты, созданные по традиционным рецептам исключительно из натуральных ингредиентов.</p>
+        <span class="hero-subtitle" data-i18n="hero_subtitle">Премиальные кондитерские шедевры в Атырау</span>
+        <h1 class="hero-title" data-i18n="hero_title">Искусство <br><span class="accent-text">Премиальных</span> Десертов</h1>
+        <p class="hero-desc" data-i18n="hero_desc">Авторские торты на заказ, изысканная выпечка и премиальные домашние полуфабрикаты, созданные по традиционным рецептам исключительно из натуральных ингредиентов.</p>
         <div class="hero-actions">
-          <a href="#catalog" class="btn btn-primary btn-gradient">Посмотреть каталог</a>
-          <a href="#customizer" class="btn btn-secondary">Создать свой бенто-торт</a>
+          <a href="#catalog" class="btn btn-primary btn-gradient" data-i18n="hero_btn_catalog">Посмотреть каталог</a>
+          <a href="#customizer" class="btn btn-secondary" data-i18n="hero_btn_customizer">Создать свой бенто-торт</a>
         </div>
       </div>
       <div class="hero-image-wrapper">
@@ -168,22 +176,22 @@
         <img src="images/hero_cake_alt.jpg" alt="Изысканные десерты Nazcake" class="about-img">
       </div>
       <div class="about-content-side">
-        <span class="section-subtitle">Наша философия</span>
-        <h2 class="section-title">О кондитерской Nazcake</h2>
-        <p class="about-text">Кондитерский дом **Nazcake** — это уголок изысканного вкуса и тепла в самом сердце Атырау. Каждый день мы открываем свои двери, чтобы радовать вас свежей выпечкой, воздушными пирожными и тортами, которые становятся украшением любого праздника.</p>
-        <p class="about-text">Мы гордимся тем, что не используем искусственные красители, консерванты или растительные сливки. Только натуральное сливочное масло, отборные бельгийские шоколадные дропсы, свежие ягоды и домашний творог. Для нас выпечка — это не просто ремесло, это искусство дарить радость.</p>
+        <span class="section-subtitle" data-i18n="about_subtitle">Наша философия</span>
+        <h2 class="section-title" data-i18n="about_title">О кондитерской Nazcake</h2>
+        <p class="about-text" data-i18n="about_text_1">Кондитерский дом **Nazcake** — это уголок изысканного вкуса и тепла в самом сердце Атырау. Каждый день мы открываем свои двери, чтобы радовать вас свежей выпечкой, воздушными пирожными и тортами, которые становятся украшением любого праздника.</p>
+        <p class="about-text" data-i18n="about_text_2">Мы гордимся тем, что не используем искусственные красители, консерванты или растительные сливки. Только натуральное сливочное масло, отборные бельгийские шоколадные дропсы, свежие ягоды и домашний творог. Для нас выпечка — это не просто ремесло, это искусство дарить радость.</p>
         <div class="about-features">
           <div class="feature-item">
             <span class="feature-num">100%</span>
-            <span class="feature-label">Натурально</span>
+            <span class="feature-label" data-i18n="about_feat_natural">Натурально</span>
           </div>
           <div class="feature-item">
             <span class="feature-num">200+</span>
-            <span class="feature-label">Рецептов</span>
+            <span class="feature-label" data-i18n="about_feat_recipes">Рецептов</span>
           </div>
           <div class="feature-item">
             <span class="feature-num">Atyrau</span>
-            <span class="feature-label">Локация</span>
+            <span class="feature-label" data-i18n="about_feat_location">Локация</span>
           </div>
         </div>
       </div>
@@ -201,9 +209,9 @@
   <section id="bestsellers" class="bestsellers-section">
     <div class="container">
       <div class="section-header text-center">
-        <span class="section-subtitle">Популярный выбор</span>
-        <h2 class="section-title">Хиты наших гостей</h2>
-        <p class="section-desc">Десерты и блюда, которые заслужили любовь жителей Атырау и чаще всего заказываются к столу.</p>
+        <span class="section-subtitle" data-i18n="bestsellers_subtitle">Популярный выбор</span>
+        <h2 class="section-title" data-i18n="bestsellers_title">Хиты наших гостей</h2>
+        <p class="section-desc" data-i18n="bestsellers_desc">Десерты и блюда, которые заслужили любовь жителей Атырау и чаще всего заказываются к столу.</p>
       </div>
       
       <div class="products-grid" id="bestsellers-grid">
@@ -223,20 +231,20 @@
   <section id="catalog" class="catalog-section">
     <div class="container">
       <div class="section-header text-center">
-        <span class="section-subtitle">Ассортимент Nazcake</span>
-        <h2 class="section-title">Наша Продукция</h2>
-        <p class="section-desc">От хрустящего утреннего хлеба до роскошных праздничных тортов и сытных полуфабрикатов ручной лепки.</p>
+        <span class="section-subtitle" data-i18n="catalog_subtitle">Ассортимент Nazcake</span>
+        <h2 class="section-title" data-i18n="catalog_title">Наша Продукция</h2>
+        <p class="section-desc" data-i18n="catalog_desc">От хрустящего утреннего хлеба до роскошных праздничных тортов и сытных полуфабрикатов ручной лепки.</p>
       </div>
 
       <!-- Catalog Tabs -->
       <div class="catalog-tabs">
-        <button class="tab-btn active" data-category="all">Все товары</button>
-        <button class="tab-btn" data-category="bakery">Хлебобулочные изделия</button>
-        <button class="tab-btn" data-category="pastries">Выпечка</button>
-        <button class="tab-btn" data-category="pies">Пироги</button>
-        <button class="tab-btn" data-category="desserts">Пирожные</button>
-        <button class="tab-btn" data-category="cakes">Торты</button>
-        <button class="tab-btn" data-category="semi-finished">Полуфабрикаты</button>
+        <button class="tab-btn active" data-category="all" data-i18n="catalog_cat_all">Все товары</button>
+        <button class="tab-btn" data-category="bakery" data-i18n="catalog_cat_bakery">Хлебобулочные изделия</button>
+        <button class="tab-btn" data-category="pastries" data-i18n="catalog_cat_pastries">Выпечка</button>
+        <button class="tab-btn" data-category="pies" data-i18n="catalog_cat_pies">Пироги</button>
+        <button class="tab-btn" data-category="desserts" data-i18n="catalog_cat_desserts">Пирожные</button>
+        <button class="tab-btn" data-category="cakes" data-i18n="catalog_cat_cakes">Торты</button>
+        <button class="tab-btn" data-category="semi-finished" data-i18n="catalog_cat_semi">Полуфабрикаты</button>
       </div>
 
       <!-- Catalog Grid -->
@@ -257,59 +265,59 @@
   <section id="customizer" class="customizer-section">
     <div class="customizer-container">
       <div class="customizer-info-side">
-        <span class="section-subtitle">Создайте свой шедевр</span>
-        <h2 class="section-title">Конструктор Bento-Тортов</h2>
-        <p class="customizer-desc">Соберите уникальный мини-торт (диаметр 10-12 см) для себя или в подарок. Настройте цвет покрытия, выберите крем для надписи и добавьте теплые слова!</p>
+        <span class="section-subtitle" data-i18n="bento_subtitle">Создайте свой шедевр</span>
+        <h2 class="section-title" data-i18n="bento_title">Конструктор Bento-Тортов</h2>
+        <p class="customizer-desc" data-i18n="bento_desc">Соберите уникальный мини-торт (диаметр 10-12 см) для себя или в подарок. Настройте цвет покрытия, выберите крем для надписи и добавьте теплые слова!</p>
         
         <div class="customizer-controls">
           <!-- Glaze Color -->
           <div class="control-group">
-            <label class="control-label">Цвет покрытия торта:</label>
+            <label class="control-label" data-i18n="bento_lbl_base_color">Цвет покрытия торта:</label>
             <div class="color-options" id="base-color-options">
-              <button class="color-dot active" style="background-color: #ffd1dc;" data-color="#ffd1dc" title="Нежно-розовый"></button>
-              <button class="color-dot" style="background-color: #d4f0fc;" data-color="#d4f0fc" title="Нежно-голубой"></button>
-              <button class="color-dot" style="background-color: #fdfae7;" data-color="#fdfae7" title="Ванильный крем"></button>
-              <button class="color-dot" style="background-color: #e2f4c5;" data-color="#e2f4c5" title="Фисташковый"></button>
-              <button class="color-dot" style="background-color: #ffffff; border: 1px solid #ddd;" data-color="#ffffff" title="Белоснежный"></button>
-              <button class="color-dot" style="background-color: #b08d57;" data-color="#b08d57" title="Карамельный"></button>
+              <button class="color-dot active" style="background-color: #ffd1dc;" data-color="#ffd1dc" data-i18n-title="bento_color_pink" title="Нежно-розовый"></button>
+              <button class="color-dot" style="background-color: #d4f0fc;" data-color="#d4f0fc" data-i18n-title="bento_color_blue" title="Нежно-голубой"></button>
+              <button class="color-dot" style="background-color: #fdfae7;" data-color="#fdfae7" data-i18n-title="bento_color_vanilla" title="Ванильный крем"></button>
+              <button class="color-dot" style="background-color: #e2f4c5;" data-color="#e2f4c5" data-i18n-title="bento_color_pistachio" title="Фисташковый"></button>
+              <button class="color-dot" style="background-color: #ffffff; border: 1px solid #ddd;" data-color="#ffffff" data-i18n-title="bento_color_white" title="Белоснежный"></button>
+              <button class="color-dot" style="background-color: #b08d57;" data-color="#b08d57" data-i18n-title="bento_color_caramel" title="Карамельный"></button>
             </div>
           </div>
           
           <!-- Text Color -->
           <div class="control-group">
-            <label class="control-label">Цвет крема для надписи:</label>
+            <label class="control-label" data-i18n="bento_lbl_text_color">Цвет крема для надписи:</label>
             <div class="color-options" id="text-color-options">
-              <button class="color-dot" style="background-color: #e73895;" data-color="#e73895" title="Малиновый"></button>
-              <button class="color-dot active" style="background-color: #4a2c11;" data-color="#4a2c11" title="Шоколадный"></button>
-              <button class="color-dot" style="background-color: #ffffff; border: 1px solid #ddd;" data-color="#ffffff" title="Белый"></button>
-              <button class="color-dot" style="background-color: #2b5c8f;" data-color="#2b5c8f" title="Синий"></button>
+              <button class="color-dot" style="background-color: #e73895;" data-color="#e73895" data-i18n-title="bento_color_raspberry" title="Малиновый"></button>
+              <button class="color-dot active" style="background-color: #4a2c11;" data-color="#4a2c11" data-i18n-title="bento_color_chocolate" title="Шоколадный"></button>
+              <button class="color-dot" style="background-color: #ffffff; border: 1px solid #ddd;" data-color="#ffffff" data-i18n-title="bento_color_white" title="Белый"></button>
+              <button class="color-dot" style="background-color: #2b5c8f;" data-color="#2b5c8f" data-i18n-title="bento_color_darkblue" title="Синий"></button>
             </div>
           </div>
           
           <!-- Sprinkles Type -->
           <div class="control-group">
-            <label class="control-label">Декоративная посыпка:</label>
+            <label class="control-label" data-i18n="bento_lbl_sprinkles">Декоративная посыпка:</label>
             <select class="custom-select" id="sprinkles-select">
-              <option value="none">Без посыпки</option>
-              <option value="pearls">Жемчужные шарики</option>
-              <option value="hearts">Маленькие сердечки</option>
-              <option value="gold">Золотая пыльца</option>
-              <option value="stars">Звездочки</option>
+              <option value="none" data-i18n="bento_opt_sprinkles_none">Без посыпки</option>
+              <option value="pearls" data-i18n="bento_opt_sprinkles_pearls">Жемчужные шарики</option>
+              <option value="hearts" data-i18n="bento_opt_sprinkles_hearts">Маленькие сердечки</option>
+              <option value="gold" data-i18n="bento_opt_sprinkles_gold">Золотая пыльца</option>
+              <option value="stars" data-i18n="bento_opt_sprinkles_stars">Звездочки</option>
             </select>
           </div>
 
           <!-- Custom Inscription -->
           <div class="control-group">
-            <label class="control-label" for="bento-text">Надпись на торте (до 20 символов):</label>
-            <input type="text" id="bento-text" class="custom-input" placeholder="Happy Birthday!" maxlength="20">
+            <label class="control-label" for="bento-text" data-i18n="bento_lbl_text">Надпись на торте (до 20 символов):</label>
+            <input type="text" id="bento-text" class="custom-input" data-i18n-placeholder="bento_placeholder_text" placeholder="Happy Birthday!" maxlength="20">
           </div>
 
           <div class="customizer-pricing">
-            <span class="price-label">Цена bento-торта:</span>
+            <span class="price-label" data-i18n="bento_lbl_price">Цена bento-торта:</span>
             <span class="price-val">3 500 ₸</span>
           </div>
 
-          <button class="btn btn-primary btn-gradient w-100" id="add-bento-btn">Добавить в корзину</button>
+          <button class="btn btn-primary btn-gradient w-100" id="add-bento-btn" data-i18n="bento_btn_add">Добавить в корзину</button>
         </div>
       </div>
       
@@ -336,7 +344,7 @@
               <text id="cake-text-element" x="150" y="153" text-anchor="middle" font-family="'Cormorant Garamond', serif" font-weight="700" font-size="16" fill="#4a2c11" transform="rotate(-3, 150, 150)">Happy Birthday!</text>
             </svg>
           </div>
-          <div class="customizer-badge">Предпросмотр 2D</div>
+          <div class="customizer-badge" data-i18n="bento_badge_preview">Предпросмотр 2D</div>
         </div>
       </div>
     </div>
@@ -354,19 +362,19 @@
     <div class="container">
       <div class="delivery-card">
         <div class="delivery-info">
-          <span class="section-subtitle">Быстро и аккуратно</span>
-          <h2 class="section-title">Яндекс.Доставка по Атырау</h2>
-          <p class="delivery-text">Мы бережно упаковываем каждый десерт в жесткую коробку с термоизоляцией, чтобы торты приезжали к вам охлажденными и в идеальном виде. Доставка осуществляется курьерами Яндекс.Такси (Экспресс).</p>
+          <span class="section-subtitle" data-i18n="delivery_subtitle">Быстро и аккуратно</span>
+          <h2 class="section-title" data-i18n="delivery_title">Яндекс.Доставка по Атырау</h2>
+          <p class="delivery-text" data-i18n="delivery_desc">Мы бережно упаковываем каждый десерт в жесткую коробку с термоизоляцией, чтобы торты приезжали к вам охлажденными и в идеальном виде. Доставка осуществляется курьерами Яндекс.Такси (Экспресс).</p>
           <ul class="delivery-features-list">
-            <li><strong>Зона работы:</strong> Доставка доступна только в пределах города Атырау.</li>
-            <li><strong>Условия:</strong> Базовый тариф — 500 ₸ + 150 ₸ за каждый километр пути.</li>
-            <li><strong>Время:</strong> Среднее время сборки и доставки — от 45 до 90 минут.</li>
+            <li data-i18n="delivery_feat_zone"><strong>Зона работы:</strong> Доставка доступна только в пределах города Атырау.</li>
+            <li data-i18n="delivery_feat_price"><strong>Условия:</strong> Базовый тариф — 500 ₸ + 150 ₸ за каждый километр пути.</li>
+            <li data-i18n="delivery_feat_time"><strong>Время:</strong> Среднее время сборки и доставки — от 45 до 90 минут.</li>
           </ul>
         </div>
         
         <div class="delivery-calc-box">
-          <h3 class="calc-title">Калькулятор доставки</h3>
-          <p class="calc-subtitle">Введите ваш адрес в Атырау, чтобы узнать точную стоимость доставки:</p>
+          <h3 class="calc-title" data-i18n="delivery_calc_title">Калькулятор доставки</h3>
+          <p class="calc-subtitle" data-i18n="delivery_calc_subtitle">Введите ваш адрес в Атырау, чтобы узнать точную стоимость доставки:</p>
           
           <div class="calc-form">
             <div class="input-icon-group">
@@ -374,23 +382,23 @@
                 <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"></path>
                 <circle cx="12" cy="10" r="3"></circle>
               </svg>
-              <input type="text" id="delivery-address" class="custom-input" placeholder="Улица и дом (например: Сатпаева 15)" value="">
+              <input type="text" id="delivery-address" class="custom-input" data-i18n-placeholder="delivery_input_placeholder" placeholder="Улица и дом (например: Сатпаева 15)" value="">
             </div>
             
-            <button class="btn btn-primary btn-gradient w-100" id="calc-delivery-btn">Рассчитать доставку</button>
+            <button class="btn btn-primary btn-gradient w-100" id="calc-delivery-btn" data-i18n="delivery_btn_calc">Рассчитать доставку</button>
           </div>
           
           <div class="calc-results hidden" id="calc-results-box">
             <div class="result-row">
-              <span class="result-label">Расстояние от кондитерской:</span>
+              <span class="result-label" data-i18n="delivery_res_dist">Расстояние от кондитерской:</span>
               <span class="result-val" id="result-distance">—</span>
             </div>
             <div class="result-row">
-              <span class="result-label">Стоимость доставки:</span>
+              <span class="result-label" data-i18n="delivery_res_cost">Стоимость доставки:</span>
               <span class="result-val highlight" id="result-cost">—</span>
             </div>
             <div class="result-row">
-              <span class="result-label">Примерное время в пути:</span>
+              <span class="result-label" data-i18n="delivery_res_time">Примерное время в пути:</span>
               <span class="result-val" id="result-time">—</span>
             </div>
           </div>
@@ -405,8 +413,8 @@
   <section id="contacts" class="contacts-section">
     <div class="container">
       <div class="section-header text-center">
-        <span class="section-subtitle">Свяжитесь с нами</span>
-        <h2 class="section-title">Контакты кондитерской</h2>
+        <span class="section-subtitle" data-i18n="contacts_subtitle">Свяжитесь с нами</span>
+        <h2 class="section-title" data-i18n="contacts_title">Контакты кондитерской</h2>
       </div>
       
       <div class="contacts-layout">
@@ -435,8 +443,8 @@
               </svg>
             </div>
             <div class="info-content">
-              <h4>Наш адрес</h4>
-              <p>г. Атырау, ул. Балхашская 23</p>
+              <h4 data-i18n="contacts_lbl_address">Наш адрес</h4>
+              <p data-i18n="contacts_val_address">г. Атырау, ул. Балхашская 23</p>
             </div>
           </div>
           
@@ -448,8 +456,8 @@
               </svg>
             </div>
             <div class="info-content">
-              <h4>Режим работы</h4>
-              <p>Ежедневно с 09:00 до 20:00</p>
+              <h4 data-i18n="contacts_lbl_hours">Режим работы</h4>
+              <p data-i18n="contacts_val_hours">Ежедневно с 09:00 до 20:00</p>
             </div>
           </div>
           
@@ -460,7 +468,7 @@
               </svg>
             </div>
             <div class="info-content">
-              <h4>Телефон</h4>
+              <h4 data-i18n="contacts_lbl_phone">Телефон</h4>
               <p><a href="tel:+77783567221" class="info-link">+7 (778) 356-7221</a></p>
             </div>
           </div>
@@ -473,7 +481,7 @@
               </svg>
             </div>
             <div class="info-content">
-              <h4>Email</h4>
+              <h4 data-i18n="contacts_lbl_email">Email</h4>
               <p><a href="mailto:info@nazcake.kz" class="info-link">info@nazcake.kz</a></p>
             </div>
           </div>
@@ -504,12 +512,12 @@
           <span class="modal-product-price" id="modal-product-price">—</span>
           
           <div class="modal-section-group">
-            <h4 class="modal-section-title">Описание:</h4>
+            <h4 class="modal-section-title" data-i18n="preview_lbl_desc">Описание:</h4>
             <p class="modal-product-desc" id="modal-product-desc">—</p>
           </div>
           
           <div class="modal-section-group">
-            <h4 class="modal-section-title">Состав:</h4>
+            <h4 class="modal-section-title" data-i18n="preview_lbl_ingredients">Состав:</h4>
             <p class="modal-product-ingredients" id="modal-product-ingredients">—</p>
           </div>
           
@@ -519,7 +527,7 @@
               <span class="quantity-val" id="modal-qty-val">1</span>
               <button class="stepper-btn plus" id="modal-plus-btn" aria-label="Увеличить количество">+</button>
             </div>
-            <button class="btn btn-primary btn-gradient flex-1" id="modal-add-btn">Добавить в корзину</button>
+            <button class="btn btn-primary btn-gradient flex-1" id="modal-add-btn" data-i18n="preview_btn_add">Добавить в корзину</button>
           </div>
         </div>
       </div>
@@ -529,7 +537,7 @@
   <!-- Cart Sidebar / Slide-Over -->
   <div class="cart-sidebar" id="cart-sidebar">
     <div class="cart-sidebar-header">
-      <span class="cart-sidebar-title">Ваша Корзина</span>
+      <span class="cart-sidebar-title" data-i18n="cart_title">Ваша Корзина</span>
       <button class="close-cart-btn" id="close-cart-btn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -540,47 +548,47 @@
     
     <div class="cart-items-list" id="cart-items-container">
       <!-- Cart items generated by JS -->
-      <div class="empty-cart-message">Ваша корзина пока пуста. Добавьте вкусняшек!</div>
+      <div class="empty-cart-message" data-i18n="cart_empty">Ваша корзина пока пуста. Добавьте вкусняшек!</div>
     </div>
     
     <div class="cart-sidebar-footer">
       <div class="cart-total-row">
-        <span>Подытог:</span>
+        <span data-i18n="cart_subtotal">Подытог:</span>
         <span class="cart-total-val" id="cart-total-sum">0 ₸</span>
       </div>
       
       <!-- Checkout Form inside Cart -->
       <form class="cart-checkout-form" id="checkout-form">
-        <h4 class="form-title">Оформление Заказа</h4>
+        <h4 class="form-title" data-i18n="cart_checkout_title">Оформление Заказа</h4>
         
         <div class="form-group">
-          <input type="text" id="checkout-name" class="custom-input" placeholder="Ваше Имя" required>
+          <input type="text" id="checkout-name" class="custom-input" data-i18n-placeholder="cart_input_name" placeholder="Ваше Имя" required>
         </div>
         
         <div class="form-group">
-          <input type="tel" id="checkout-phone" class="custom-input" placeholder="Номер Телефона (+7...)" required>
+          <input type="tel" id="checkout-phone" class="custom-input" data-i18n-placeholder="cart_input_phone" placeholder="Номер Телефона (+7...)" required>
         </div>
         
         <div class="form-group">
-          <label class="control-label">Способ получения:</label>
+          <label class="control-label" data-i18n="cart_lbl_method">Способ получения:</label>
           <div class="checkout-radio-group">
             <label class="radio-label">
               <input type="radio" name="delivery-method" value="pickup" checked>
-              <span>Самовывоз</span>
+              <span data-i18n="cart_opt_pickup">Самовывоз</span>
             </label>
             <label class="radio-label">
               <input type="radio" name="delivery-method" value="delivery">
-              <span>Доставка Яндекс</span>
+              <span data-i18n="cart_opt_delivery">Доставка Яндекс</span>
             </label>
           </div>
         </div>
         
         <div class="form-group hidden" id="checkout-address-group">
-          <input type="text" id="checkout-address" class="custom-input" placeholder="Адрес доставки в Атырау">
-          <span class="address-hint">Для точного расчета стоимости доставки воспользуйтесь калькулятором на сайте.</span>
+          <input type="text" id="checkout-address" class="custom-input" data-i18n-placeholder="cart_input_address" placeholder="Адрес доставки в Атырау">
+          <span class="address-hint" data-i18n="cart_address_hint">Для точного расчета стоимости доставки воспользуйтесь калькулятором на сайте.</span>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-gradient w-100" id="checkout-submit-btn">Оформить заказ в Telegram</button>
+        <button type="submit" class="btn btn-primary btn-gradient w-100" id="checkout-submit-btn" data-i18n="cart_btn_checkout">Оформить заказ в Telegram</button>
       </form>
     </div>
   </div>
@@ -594,9 +602,9 @@
           <polyline points="20 6 9 17 4 12"></polyline>
         </svg>
       </div>
-      <h3 class="success-title">Спасибо за заказ!</h3>
-      <p class="success-message">Мы отправили информацию вашему менеджеру. В ближайшее время с вами свяжутся для подтверждения заказа и деталей доставки.</p>
-      <button class="btn btn-primary btn-gradient" id="close-success-btn">Отлично</button>
+      <h3 class="success-title" data-i18n="success_title">Спасибо за заказ!</h3>
+      <p class="success-message" data-i18n="success_message">Мы отправили информацию вашему менеджеру. В ближайшее время с вами свяжутся для подтверждения заказа и деталей доставки.</p>
+      <button class="btn btn-primary btn-gradient" id="close-success-btn" data-i18n="success_btn_ok">Отлично</button>
     </div>
   </div>
 
@@ -606,30 +614,30 @@
       <div class="footer-col brand-col">
         <span class="footer-logo-main">Nazcake</span>
         <span class="footer-logo-sub">onimderi</span>
-        <p class="footer-brand-desc">Изысканные десерты и авторские торты на любой вкус. Готовим с любовью в городе Атырау.</p>
+        <p class="footer-brand-desc" data-i18n="footer_desc">Изысканные десерты и авторские торты на любой вкус. Готовим с любовью в городе Атырау.</p>
       </div>
       
       <div class="footer-col links-col">
-        <h4>Быстрые ссылки</h4>
+        <h4 data-i18n="footer_nav_title">Быстрые ссылки</h4>
         <ul class="footer-links">
-          <li><a href="#about">О кондитерской</a></li>
-          <li><a href="#bestsellers">Наши бестселлеры</a></li>
-          <li><a href="#catalog">Каталог товаров</a></li>
-          <li><a href="#customizer">Конструктор Бенто</a></li>
-          <li><a href="#delivery">Расчет доставки</a></li>
+          <li><a href="#about" data-i18n="nav_about">О кондитерской</a></li>
+          <li><a href="#bestsellers" data-i18n="nav_bestsellers">Наши бестселлеры</a></li>
+          <li><a href="#catalog" data-i18n="nav_catalog">Каталог товаров</a></li>
+          <li><a href="#customizer" data-i18n="nav_customizer">Конструктор Бенто</a></li>
+          <li><a href="#delivery" data-i18n="nav_delivery">Расчет доставки</a></li>
         </ul>
       </div>
 
       <div class="footer-col contact-col">
-        <h4>Контакты</h4>
-        <p>📍 г. Атырау, ул. Балхашская 23</p>
+        <h4 data-i18n="nav_contacts">Контакты</h4>
+        <p>📍 <span data-i18n="contacts_val_address">г. Атырау, ул. Балхашская 23</span></p>
         <p>📞 <a href="tel:+77783567221" class="footer-contact-link">+7 (778) 356-7221</a></p>
         <p>✉️ <a href="mailto:info@nazcake.kz" class="footer-contact-link">info@nazcake.kz</a></p>
       </div>
 
       <div class="footer-col social-col">
-        <h4>Мы в соцсетях</h4>
-        <p class="social-text">Следите за нашими акциями, новинками и процессом выпечки в реальном времени!</p>
+        <h4 data-i18n="footer_social_title">Мы в соцсетях</h4>
+        <p class="social-text" data-i18n="footer_social_desc">Следите за нашими акциями, новинками и процессом выпечки в реальном времени!</p>
         <div class="social-icons">
           <!-- Instagram -->
           <a href="https://www.instagram.com/nazcake_onimderi/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="social-link instagram">
@@ -656,11 +664,12 @@
     </div>
     
     <div class="footer-bottom">
-      <p>&copy; 2026 Кондитерский дом Nazcake. Все права защищены. Разработано с заботой о вкусе.</p>
+      <p data-i18n="footer_copyright">&copy; 2026 Кондитерский дом Nazcake. Все права защищены. Разработано с заботой о вкусе.</p>
     </div>
   </footer>
 
   <!-- JavaScript Application -->
+  <script src="i18n.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
