@@ -1090,19 +1090,19 @@ async function handleCheckoutSubmit(e) {
   // Calculate total
   const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.qty), 0);
   
-  // Format HTML message for Telegram
-  let message = `<b>🍰 ${window.i18n ? t("tg_order_title") : "Новый заказ от Nazcake!"}</b>\n\n`;
-  message += `👤 <b>${window.i18n ? t("tg_client") : "Клиент"}:</b> ${name}\n`;
-  message += `📞 <b>${window.i18n ? t("tg_phone") : "Телефон"}:</b> ${phone}\n`;
+  // Format message for WhatsApp
+  let message = `*🍰 ${window.i18n ? t("tg_order_title") : "Новый заказ от Nazcake!"}*\n\n`;
+  message += `👤 *${window.i18n ? t("tg_client") : "Клиент"}:* ${name}\n`;
+  message += `📞 *${window.i18n ? t("tg_phone") : "Телефон"}:* ${phone}\n`;
   
   const tMethod = method === "delivery" 
     ? (window.i18n ? t("cart_opt_delivery") : "Доставка Яндекс") 
     : (window.i18n ? t("cart_opt_pickup") : "Самовывоз");
-  message += `📦 <b>${window.i18n ? t("tg_method") : "Способ получения"}:</b> ${tMethod}\n`;
+  message += `📦 *${window.i18n ? t("tg_method") : "Способ получения"}:* ${tMethod}\n`;
   if (method === "delivery") {
-    message += `📍 <b>${window.i18n ? t("tg_address") : "Адрес"}:</b> ${address}\n`;
+    message += `📍 *${window.i18n ? t("tg_address") : "Адрес"}:* ${address}\n`;
   }
-  message += `\n🛒 <b>${window.i18n ? t("tg_items") : "Товары"}:</b>\n`;
+  message += `\n🛒 *${window.i18n ? t("tg_items") : "Товары"}:*\n`;
 
   cart.forEach((item, idx) => {
     const p = item.product;
@@ -1110,52 +1110,21 @@ async function handleCheckoutSubmit(e) {
       ? (window.i18n ? t("bento_custom_name") : p.name) 
       : (window.i18n ? t(`p_${p.id}_name`) : p.name);
     const tUnit = window.i18n ? t(getUnitTranslationKey(p.unit)) : p.unit;
-    message += `${idx + 1}. <b>${tName}</b> — ${item.qty} ${tUnit} (${(p.price * item.qty).toLocaleString()} ₸)\n`;
+    message += `${idx + 1}. *${tName}* — ${item.qty} ${tUnit} (${(p.price * item.qty).toLocaleString()} ₸)\n`;
     if (p.id.startsWith("bento_custom_")) {
       const tDesc = getProductDesc(p);
-      message += `   <i>${window.i18n ? t("tg_details") : "Детали"}: ${tDesc}</i>\n`;
+      message += `   _${window.i18n ? t("tg_details") : "Детали"}: ${tDesc}_\n`;
     }
   });
 
-  message += `\n💵 <b>${window.i18n ? t("tg_total") : "Итоговая сумма"}:</b> ${subtotal.toLocaleString()} ₸`;
+  message += `\n💵 *${window.i18n ? t("tg_total") : "Итоговая сумма"}:* ${subtotal.toLocaleString()} ₸`;
 
-  // Telegram configuration placeholders (users should insert their real Bot Token and Chat ID)
-  // Check if they are placeholder values
-  if (CONFIG.TELEGRAM_BOT_TOKEN === "YOUR_TELEGRAM_BOT_TOKEN" || CONFIG.TELEGRAM_CHAT_ID === "YOUR_TELEGRAM_CHAT_ID") {
-    console.log("Telegram configuration is not completed yet. Order Details:");
-    console.log(message);
-    
-    // Simulate API delay and succeed
-    setTimeout(() => {
-      orderSucceeded();
-    }, 1000);
-  } else {
-    // Send to Telegram Bot API
-    try {
-      const tgUrl = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendMessage`;
-      const response = await fetch(tgUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          chat_id: CONFIG.TELEGRAM_CHAT_ID,
-          text: message,
-          parse_mode: "HTML"
-        })
-      });
+  // Send to WhatsApp
+  const phoneWA = "77783567221"; // Target WhatsApp number
+  const waUrl = `https://wa.me/${phoneWA}?text=${encodeURIComponent(message)}`;
 
-      if (!response.ok) {
-        throw new Error("Не удалось отправить сообщение в Telegram.");
-      }
-
-      orderSucceeded();
-    } catch (err) {
-      console.error(err);
-      alert("Заказ оформлен локально, но произошла ошибка отправки в Telegram: " + err.message);
-      orderSucceeded();
-    }
-  }
+  window.open(waUrl, '_blank');
+  orderSucceeded();
 }
 
 // Actions to perform on successful checkout
@@ -1179,7 +1148,7 @@ function orderSucceeded() {
   // Re-enable submit button
   const submitBtn = document.getElementById("checkout-submit-btn");
   submitBtn.disabled = false;
-  submitBtn.textContent = window.i18n ? window.i18n.t("cart_btn_checkout") : "Оформить заказ в Telegram";
+  submitBtn.textContent = window.i18n ? window.i18n.t("cart_btn_checkout") : "Оформить заказ в WhatsApp";
 }
 
 
