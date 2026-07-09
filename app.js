@@ -488,47 +488,16 @@ function setupEventListeners() {
   });
 
   // Mobile Menu Drawer toggles
-  mobileMenuBtn.addEventListener("click", () => {
-    mobileDrawer.classList.add("open");
-    drawerOverlay.classList.add("open");
-  });
-
-  const closeDrawer = () => {
-    mobileDrawer.classList.remove("open");
-    drawerOverlay.classList.remove("open");
-  };
-
-  closeDrawerBtn.addEventListener("click", closeDrawer);
-  drawerOverlay.addEventListener("click", closeDrawer);
-  drawerLinks.forEach(link => link.addEventListener("click", closeDrawer));
+  setupModal(mobileDrawer, mobileMenuBtn, closeDrawerBtn, drawerOverlay, drawerLinks);
 
   // Cart Sidebar toggles
-  openCartBtn.addEventListener("click", () => {
-    cartSidebar.classList.add("open");
-    cartOverlay.classList.add("open");
-  });
+  setupModal(cartSidebar, openCartBtn, closeCartBtn, cartOverlay);
 
-  const closeCart = () => {
-    cartSidebar.classList.remove("open");
-    cartOverlay.classList.remove("open");
-  };
+  // Preview Modal
+  setupModal(previewModal, null, closePreviewBtn, previewModal);
 
-  closeCartBtn.addEventListener("click", closeCart);
-  cartOverlay.addEventListener("click", closeCart);
-
-  // Close Preview Modal
-  const closePreview = () => {
-    previewModal.classList.remove("open");
-  };
-  closePreviewBtn.addEventListener("click", closePreview);
-  previewModal.addEventListener("click", (e) => {
-    if (e.target === previewModal) closePreview();
-  });
-
-  // Success modal close
-  closeSuccessBtn.addEventListener("click", () => {
-    successModal.classList.remove("open");
-  });
+  // Success modal
+  setupModal(successModal, null, closeSuccessBtn, null);
 
   // Shipping Method Switcher inside Cart
   deliveryMethodRadios.forEach(radio => {
@@ -1099,4 +1068,33 @@ function orderSucceeded() {
   const submitBtn = document.getElementById("checkout-submit-btn");
   submitBtn.disabled = false;
   submitBtn.textContent = "Оформить заказ в Telegram";
+}
+
+
+function setupModal(modal, openBtn, closeBtn, overlay, extraCloseElements = []) {
+  const open = () => {
+    if (modal) modal.classList.add("open");
+    if (overlay) overlay.classList.add("open");
+  };
+
+  const close = () => {
+    if (modal) modal.classList.remove("open");
+    if (overlay) overlay.classList.remove("open");
+  };
+
+  if (openBtn) openBtn.addEventListener("click", open);
+  if (closeBtn) closeBtn.addEventListener("click", close);
+
+  if (overlay) {
+    overlay.addEventListener("click", (e) => {
+      // Only close if clicking the overlay itself, not its children
+      if (e.target === overlay) {
+        close();
+      }
+    });
+  }
+
+  if (extraCloseElements && extraCloseElements.length > 0) {
+    extraCloseElements.forEach(el => el.addEventListener("click", close));
+  }
 }
