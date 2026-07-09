@@ -1,3 +1,8 @@
+const CONFIG = {
+  TELEGRAM_BOT_TOKEN: "YOUR_TELEGRAM_BOT_TOKEN",
+  TELEGRAM_CHAT_ID: "YOUR_TELEGRAM_CHAT_ID"
+};
+
 // Confectionery Nazcake App Logic
 
 // Product Catalog Data
@@ -368,6 +373,71 @@ const deliveryMethodRadios = document.getElementsByName("delivery-method");
 const successModal = document.getElementById("success-modal");
 const closeSuccessBtn = document.getElementById("close-success-btn");
 
+// Localization helpers
+const colorNameKeys = {
+  "#ffd1dc": "bento_color_pink",
+  "#d4f0fc": "bento_color_blue",
+  "#fdfae7": "bento_color_vanilla",
+  "#e2f4c5": "bento_color_pistachio",
+  "#ffffff": "bento_color_white",
+  "#b08d57": "bento_color_caramel",
+  "#e73895": "bento_color_raspberry",
+  "#4a2c11": "bento_color_chocolate",
+  "#2b5c8f": "bento_color_darkblue"
+};
+
+const sprinkleKeys = {
+  "none": "bento_opt_sprinkles_none",
+  "pearls": "bento_opt_sprinkles_pearls",
+  "hearts": "bento_opt_sprinkles_hearts",
+  "gold": "bento_opt_sprinkles_gold",
+  "stars": "bento_opt_sprinkles_stars"
+};
+
+function getBadgeTranslationKey(badge) {
+  if (!badge) return "";
+  switch(badge) {
+    case "свежее": return "badge_fresh";
+    case "бестселлер": return "badge_bestseller";
+    case "горячее": return "badge_hot";
+    case "новое": return "badge_new";
+    case "хит": return "badge_hit";
+    case "премиум": return "badge_premium";
+    case "заказной": return "badge_custom";
+    case "vip": return "badge_vip";
+    case "ручная лепка": return "badge_hand";
+    default: return "";
+  }
+}
+
+function getUnitTranslationKey(unit) {
+  if (!unit) return "";
+  switch(unit) {
+    case "шт.": return "tg_unit_pcs";
+    case "кг": return "tg_unit_kg";
+    case "12 шт.": return "tg_unit_12pcs";
+    case "уп": return "tg_unit_pack";
+    default: return "";
+  }
+}
+
+function getProductDesc(p) {
+  if (p.id.startsWith("bento_custom_") && p.bentoConfig) {
+    if (!window.i18n) return p.desc;
+    const baseColorName = window.i18n.t(colorNameKeys[p.bentoConfig.baseColor] || "bento_color_pink");
+    const textColorName = window.i18n.t(colorNameKeys[p.bentoConfig.textColor] || "bento_color_chocolate");
+    const sprinklesName = window.i18n.t(sprinkleKeys[p.bentoConfig.sprinkles] || "bento_opt_sprinkles_none");
+    const textVal = p.bentoConfig.text || (window.i18n.getCurrentLanguage() === "ru" ? "нет" : "жоқ");
+    
+    return window.i18n.t("bento_custom_desc")
+      .replace("{base}", baseColorName)
+      .replace("{text_color}", textColorName)
+      .replace("{sprinkles}", sprinklesName)
+      .replace("{text}", textVal);
+  }
+  return window.i18n ? window.i18n.t(`p_${p.id}_desc`) : p.desc;
+}
+
 // Init App
 document.addEventListener("DOMContentLoaded", () => {
   renderBestsellers();
@@ -375,6 +445,16 @@ document.addEventListener("DOMContentLoaded", () => {
   setupEventListeners();
   setupBentoCustomizer();
   setupDeliveryCalculator();
+  
+  if (window.i18n) {
+    window.i18n.onLanguageChange(() => {
+      renderBestsellers();
+      const activeTab = document.querySelector(".tab-btn.active");
+      const category = activeTab ? activeTab.getAttribute("data-category") : "all";
+      renderCatalog(category);
+      updateCartUi();
+    });
+  }
 });
 
 // Render Bestsellers (4 items with 'бестселлеры', 'хит', or 'vip' badges)
@@ -400,17 +480,22 @@ function renderCatalog(category) {
 
 // Generate HTML for Product Card
 function createProductCardHtml(p) {
+  const tName = window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name;
+  const tCategoryLabel = window.i18n ? window.i18n.t(`catalog_cat_${p.category}`) : p.categoryLabel;
+  const tBadge = p.badge ? (window.i18n ? window.i18n.t(getBadgeTranslationKey(p.badge)) : p.badge) : "";
+  const tUnit = window.i18n ? window.i18n.t(getUnitTranslationKey(p.unit)) : p.unit;
+  
   return `
     <div class="product-card" data-id="${p.id}">
       <div class="product-img-wrapper btn-preview">
-        ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ""}
-        <img src="${p.image}" alt="${p.name}" loading="lazy">
+        ${p.badge ? `<span class="product-badge">${tBadge}</span>` : ""}
+        <img src="${p.image}" alt="${tName}" loading="lazy">
       </div>
       <div class="product-info">
-        <span class="product-category">${p.categoryLabel}</span>
-        <h3 class="product-name btn-preview">${p.name}</h3>
+        <span class="product-category">${tCategoryLabel}</span>
+        <h3 class="product-name btn-preview">${tName}</h3>
         <div class="product-footer">
-          <span class="product-price">${p.price.toLocaleString()} ₸ / ${p.unit}</span>
+          <span class="product-price">${p.price.toLocaleString()} ₸ / ${tUnit}</span>
         </div>
         <div class="stepper-and-btn">
           <div class="quantity-stepper">
@@ -418,7 +503,7 @@ function createProductCardHtml(p) {
             <span class="quantity-val qty-number">1</span>
             <button class="stepper-btn plus-qty" aria-label="Увеличить">+</button>
           </div>
-          <button class="btn btn-primary btn-gradient w-100 btn-add-to-cart">Купить</button>
+          <button class="btn btn-primary btn-gradient w-100 btn-add-to-cart">${window.i18n ? window.i18n.t("cart_btn_buy") : "Купить"}</button>
         </div>
       </div>
     </div>
@@ -488,47 +573,16 @@ function setupEventListeners() {
   });
 
   // Mobile Menu Drawer toggles
-  mobileMenuBtn.addEventListener("click", () => {
-    mobileDrawer.classList.add("open");
-    drawerOverlay.classList.add("open");
-  });
-
-  const closeDrawer = () => {
-    mobileDrawer.classList.remove("open");
-    drawerOverlay.classList.remove("open");
-  };
-
-  closeDrawerBtn.addEventListener("click", closeDrawer);
-  drawerOverlay.addEventListener("click", closeDrawer);
-  drawerLinks.forEach(link => link.addEventListener("click", closeDrawer));
+  setupModal(mobileDrawer, mobileMenuBtn, closeDrawerBtn, drawerOverlay, drawerLinks);
 
   // Cart Sidebar toggles
-  openCartBtn.addEventListener("click", () => {
-    cartSidebar.classList.add("open");
-    cartOverlay.classList.add("open");
-  });
+  setupModal(cartSidebar, openCartBtn, closeCartBtn, cartOverlay);
 
-  const closeCart = () => {
-    cartSidebar.classList.remove("open");
-    cartOverlay.classList.remove("open");
-  };
+  // Preview Modal
+  setupModal(previewModal, null, closePreviewBtn, previewModal);
 
-  closeCartBtn.addEventListener("click", closeCart);
-  cartOverlay.addEventListener("click", closeCart);
-
-  // Close Preview Modal
-  const closePreview = () => {
-    previewModal.classList.remove("open");
-  };
-  closePreviewBtn.addEventListener("click", closePreview);
-  previewModal.addEventListener("click", (e) => {
-    if (e.target === previewModal) closePreview();
-  });
-
-  // Success modal close
-  closeSuccessBtn.addEventListener("click", () => {
-    successModal.classList.remove("open");
-  });
+  // Success modal
+  setupModal(successModal, null, closeSuccessBtn, null);
 
   // Shipping Method Switcher inside Cart
   deliveryMethodRadios.forEach(radio => {
@@ -553,13 +607,18 @@ function openProductPreview(id) {
   const p = products.find(prod => prod.id === id);
   if (!p) return;
 
+  const tName = window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name;
+  const tDesc = getProductDesc(p);
+  const tIngredients = window.i18n ? window.i18n.t(`p_${p.id}_ingredients`) : p.ingredients;
+  const tUnit = window.i18n ? window.i18n.t(getUnitTranslationKey(p.unit)) : p.unit;
+
   activePreviewProductId = id;
   modalProductImg.src = p.image;
-  modalProductImg.alt = p.name;
-  modalProductTitle.textContent = p.name;
-  modalProductPrice.textContent = `${p.price.toLocaleString()} ₸ / ${p.unit}`;
-  modalProductDesc.textContent = p.desc;
-  modalProductIngredients.textContent = p.ingredients;
+  modalProductImg.alt = tName;
+  modalProductTitle.textContent = tName;
+  modalProductPrice.textContent = `${p.price.toLocaleString()} ₸ / ${tUnit}`;
+  modalProductDesc.textContent = tDesc;
+  modalProductIngredients.textContent = tIngredients;
   
   modalQtyVal.textContent = 1; // Reset qty in modal
   
@@ -592,11 +651,16 @@ function openProductPreview(id) {
 }
 
 // Add Item to Cart
-function addToCart(id, qty) {
-  const p = products.find(prod => prod.id === id);
+function addToCart(productOrId, qty) {
+  let p;
+  if (typeof productOrId === "object") {
+    p = productOrId;
+  } else {
+    p = products.find(prod => prod.id === productOrId);
+  }
   if (!p) return;
 
-  const existing = cart.find(item => item.product.id === id);
+  const existing = cart.find(item => item.product.id === p.id);
   if (existing) {
     existing.qty += qty;
   } else {
@@ -641,17 +705,23 @@ function updateCartUi() {
   cartTotalSum.textContent = `${subtotal.toLocaleString()} ₸`;
 
   if (cart.length === 0) {
-    cartItemsContainer.innerHTML = `<div class="empty-cart-message">Ваша корзина пока пуста. Добавьте вкусняшек!</div>`;
+    const tEmpty = window.i18n ? window.i18n.t("cart_empty") : "Ваша корзина пока пуста. Добавьте вкусняшек!";
+    cartItemsContainer.innerHTML = `<div class="empty-cart-message">${tEmpty}</div>`;
     return;
   }
 
   cartItemsContainer.innerHTML = cart.map(item => {
     const p = item.product;
+    const tName = p.id.startsWith("bento_custom_") 
+      ? (window.i18n ? window.i18n.t("bento_custom_name") : p.name)
+      : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name);
+    const tRemove = window.i18n ? window.i18n.t("cart_lbl_remove") : "Удалить";
+    
     return `
       <div class="cart-item" data-id="${p.id}">
-        <img src="${p.image}" alt="${p.name}" class="cart-item-img">
+        <img src="${p.image}" alt="${tName}" class="cart-item-img">
         <div class="cart-item-details">
-          <h5 class="cart-item-name">${p.name}</h5>
+          <h5 class="cart-item-name">${tName}</h5>
           <span class="cart-item-price">${(p.price * item.qty).toLocaleString()} ₸</span>
           <div class="cart-item-actions">
             <div class="quantity-stepper">
@@ -659,7 +729,7 @@ function updateCartUi() {
               <span class="quantity-val">${item.qty}</span>
               <button class="stepper-btn plus-cart-qty" data-id="${p.id}">+</button>
             </div>
-            <button class="cart-item-remove" data-id="${p.id}">Удалить</button>
+            <button class="cart-item-remove" data-id="${p.id}">${tRemove}</button>
           </div>
         </div>
       </div>
@@ -763,8 +833,6 @@ function setupBentoCustomizer() {
     if (type === "none") return;
 
     let points = [];
-    // Generate static spread of sprinkles inside ellipse boundaries
-    // x = 150 + cos(t) * rx * scale, y = 150 + sin(t) * ry * scale
     const count = type === "pearls" ? 30 : 20;
     for (let i = 0; i < count; i++) {
       const angle = Math.random() * Math.PI * 2;
@@ -776,7 +844,6 @@ function setupBentoCustomizer() {
 
     points.forEach((pt, idx) => {
       if (type === "pearls") {
-        // Simple white shiny pearls
         const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
         circle.setAttribute("cx", pt.x);
         circle.setAttribute("cy", pt.y);
@@ -786,14 +853,11 @@ function setupBentoCustomizer() {
         circle.setAttribute("stroke-width", "0.5");
         sprinklesGroup.appendChild(circle);
       } else if (type === "hearts") {
-        // Red heart path
         const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        const scale = 0.5;
         path.setAttribute("d", `M ${pt.x} ${pt.y} c -2 -3, -5 -1, -5 2 c 0 2, 2 4, 5 6 c 3 -2, 5 -4, 5 -6 c 0 -3, -3 -5, -5 -2 Z`);
         path.setAttribute("fill", "#ff4f5e");
         sprinklesGroup.appendChild(path);
       } else if (type === "gold") {
-        // Gold dust
         const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
         circle.setAttribute("cx", pt.x);
         circle.setAttribute("cy", pt.y);
@@ -801,7 +865,6 @@ function setupBentoCustomizer() {
         circle.setAttribute("fill", "#ffd700");
         sprinklesGroup.appendChild(circle);
       } else if (type === "stars") {
-        // Little yellow stars
         const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
         polygon.setAttribute("points", `${pt.x},${pt.y-3} ${pt.x+1},${pt.y-1} ${pt.x+3},${pt.y-1} ${pt.x+1.5},${pt.y} ${pt.x+2},${pt.y+2} ${pt.x},${pt.y+1} ${pt.x-2},${pt.y+2} ${pt.x-1.5},${pt.y} ${pt.x-3},${pt.y-1} ${pt.x-1},${pt.y-1}`);
         polygon.setAttribute("fill", "#ffe272");
@@ -812,7 +875,6 @@ function setupBentoCustomizer() {
 
   // Add Bento Cake to Cart
   addBentoBtn.addEventListener("click", () => {
-    // Generate a unique id
     const bentoId = `bento_custom_${Date.now()}`;
     const descText = `Покрытие: ${bentoConfig.baseColor}, Крем: ${bentoConfig.textColor}, Посыпка: ${bentoConfig.sprinkles}, Надпись: "${bentoConfig.text || 'нет'}"`;
     
@@ -825,14 +887,15 @@ function setupBentoCustomizer() {
       unit: "шт.",
       image: "images/bento_cake.jpg", // default bento image
       desc: `Ваш собственный собранный дизайн! ${descText}`,
-      ingredients: "Классический ванильный бисквит, клубничный конфитюр, нежный сырно-сливочный крем."
+      ingredients: "Классический ванильный бисквит, клубничный конфитюр, нежный сырно-сливочный крем.",
+      bentoConfig: { ...bentoConfig } // store configuration for dynamic translation
     };
 
     addToCart(customizedBentoProduct, 1);
     
     // Show feedback
     const originalText = addBentoBtn.textContent;
-    addBentoBtn.textContent = "Шедевр в корзине! ✓";
+    addBentoBtn.textContent = window.i18n ? window.i18n.t("bento_btn_added") : "Шедевр в корзине! ✓";
     addBentoBtn.style.transform = "scale(0.95)";
     setTimeout(() => {
       addBentoBtn.textContent = originalText;
@@ -857,15 +920,11 @@ function adjustColorBrightness(hex, percent) {
   G = parseInt((G * (100 + percent)) / 100);
   B = parseInt((B * (100 + percent)) / 100);
 
-  R = R < 255 ? R : 255;
-  G = G < 255 ? G : 255;
-  B = B < 255 ? B : 255;
+  R = Math.max(0, Math.min(255, R));
+  G = Math.max(0, Math.min(255, G));
+  B = Math.max(0, Math.min(255, B));
 
-  const rHex = R.toString(16).padStart(2, '0');
-  const gHex = G.toString(16).padStart(2, '0');
-  const bHex = B.toString(16).padStart(2, '0');
-
-  return `#${rHex}${gHex}${bHex}`;
+  return `#${[R, G, B].map(x => x.toString(16).padStart(2, '0')).join('')}`;
 }
 
 // Setup Yandex.Delivery Address Price Calculator
@@ -880,12 +939,12 @@ async function fetchCoordinates(address) {
   });
 
   if (!response.ok) {
-    throw new Error("Не удалось подключиться к серверу геокодирования.");
+    throw new Error("delivery_err_geocoder");
   }
 
   const data = await response.json();
   if (data.length === 0) {
-    throw new Error("Адрес не найден. Пожалуйста, проверьте правильность написания (например: Сатпаева 15).");
+    throw new Error("delivery_err_notfound");
   }
 
   const location = data[0];
@@ -897,7 +956,7 @@ async function fetchCoordinates(address) {
 
 function checkAtyrauBounds(lat, lon, bounds) {
   if (lat < bounds.minLat || lat > bounds.maxLat || lon < bounds.minLon || lon > bounds.maxLon) {
-    throw new Error("Яндекс.Доставка (Экспресс) доступна только в пределах города Атырау.");
+    throw new Error("delivery_err_outofbounds");
   }
 }
 
@@ -965,12 +1024,12 @@ function setupDeliveryCalculator() {
   calcBtn.addEventListener("click", async () => {
     const address = addressInput.value.trim();
     if (!address) {
-      showDeliveryError("Пожалуйста, введите адрес доставки в Атырау.", errorBox, resultsBox);
+showDeliveryError(window.i18n ? window.i18n.t("delivery_err_empty") : "Пожалуйста, введите адрес доставки в Атырау.", errorBox, resultsBox);
       return;
     }
 
     calcBtn.disabled = true;
-    calcBtn.textContent = "Выполняется расчет...";
+calcBtn.textContent = window.i18n ? window.i18n.t("delivery_btn_calculating") : "Выполняется расчет...";
     hideDeliveryError(errorBox);
     resultsBox.classList.add("hidden");
 
@@ -978,6 +1037,7 @@ function setupDeliveryCalculator() {
       const { lat, lon } = await fetchCoordinates(address);
       
       checkAtyrauBounds(lat, lon, atyrauBounds);
+
 
       const distance = getHaversineDistance(bakeryLat, bakeryLon, lat, lon);
       const cost = calculateDeliveryCost(distance);
@@ -995,10 +1055,23 @@ function setupDeliveryCalculator() {
       }
 
     } catch (err) {
-      showDeliveryError(err.message || "Ошибка при расчете стоимости доставки.", errorBox, resultsBox);
+let msg = err.message;
+      if (window.i18n) {
+        if (msg === "delivery_err_geocoder" || msg === "delivery_err_notfound" || msg === "delivery_err_outofbounds") {
+          msg = window.i18n.t(msg);
+        } else {
+          msg = window.i18n.t("delivery_err_unknown");
+        }
+      } else {
+        if (msg === "delivery_err_geocoder") msg = "Не удалось подключиться к серверу геокодирования.";
+        else if (msg === "delivery_err_notfound") msg = "Адрес не найден. Пожалуйста, проверьте правильность написания.";
+        else if (msg === "delivery_err_outofbounds") msg = "Яндекс.Доставка (Экспресс) доступна только в пределах города Атырау.";
+        else msg = "Ошибка при расчете стоимости доставки.";
+      }
+      showDeliveryError(msg, errorBox, resultsBox);
     } finally {
       calcBtn.disabled = false;
-      calcBtn.textContent = "Рассчитать доставку";
+      calcBtn.textContent = window.i18n ? window.i18n.t("delivery_btn_calc") : "Рассчитать доставку";
     }
   });
 }
@@ -1012,77 +1085,55 @@ async function handleCheckoutSubmit(e) {
   const method = document.querySelector('input[name="delivery-method"]:checked').value;
   const address = document.getElementById("checkout-address").value.trim();
 
+  const t = window.i18n ? window.i18n.t.bind(window.i18n) : (k) => k;
+
   if (cart.length === 0) {
-    alert("Ваша корзина пуста. Невозможно отправить заказ!");
+    alert(window.i18n ? t("cart_err_empty_cart") : "Ваша корзина пуста. Невозможно отправить заказ!");
     return;
   }
 
   const submitBtn = document.getElementById("checkout-submit-btn");
   submitBtn.disabled = true;
-  submitBtn.textContent = "Отправка заказа...";
+  submitBtn.textContent = window.i18n ? t("cart_btn_submitting") : "Отправка заказа...";
 
   // Calculate total
   const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.qty), 0);
   
-  // Format HTML message for Telegram
-  let message = `<b>🍰 Новый заказ от Nazcake!</b>\n\n`;
-  message += `👤 <b>Клиент:</b> ${name}\n`;
-  message += `📞 <b>Телефон:</b> ${phone}\n`;
-  message += `📦 <b>Способ получения:</b> ${method === "delivery" ? "Доставка Яндекс" : "Самовывоз"}\n`;
+  // Format message for WhatsApp
+  let message = `*🍰 ${window.i18n ? t("tg_order_title") : "Новый заказ от Nazcake!"}*\n\n`;
+  message += `👤 *${window.i18n ? t("tg_client") : "Клиент"}:* ${name}\n`;
+  message += `📞 *${window.i18n ? t("tg_phone") : "Телефон"}:* ${phone}\n`;
+  
+  const tMethod = method === "delivery" 
+    ? (window.i18n ? t("cart_opt_delivery") : "Доставка Яндекс") 
+    : (window.i18n ? t("cart_opt_pickup") : "Самовывоз");
+  message += `📦 *${window.i18n ? t("tg_method") : "Способ получения"}:* ${tMethod}\n`;
   if (method === "delivery") {
-    message += `📍 <b>Адрес:</b> ${address}\n`;
+    message += `📍 *${window.i18n ? t("tg_address") : "Адрес"}:* ${address}\n`;
   }
-  message += `\n🛒 <b>Товары:</b>\n`;
+  message += `\n🛒 *${window.i18n ? t("tg_items") : "Товары"}:*\n`;
 
   cart.forEach((item, idx) => {
-    message += `${idx + 1}. <b>${item.product.name}</b> — ${item.qty} шт. (${(item.product.price * item.qty).toLocaleString()} ₸)\n`;
-    if (item.product.id.startsWith("bento_custom_")) {
-      message += `   <i>Детали: ${item.product.desc}</i>\n`;
+    const p = item.product;
+    const tName = p.id.startsWith("bento_custom_") 
+      ? (window.i18n ? t("bento_custom_name") : p.name) 
+      : (window.i18n ? t(`p_${p.id}_name`) : p.name);
+    const tUnit = window.i18n ? t(getUnitTranslationKey(p.unit)) : p.unit;
+    message += `${idx + 1}. *${tName}* — ${item.qty} ${tUnit} (${(p.price * item.qty).toLocaleString()} ₸)\n`;
+    if (p.id.startsWith("bento_custom_")) {
+      const tDesc = getProductDesc(p);
+      message += `   _${window.i18n ? t("tg_details") : "Детали"}: ${tDesc}_\n`;
     }
   });
 
-  message += `\n💵 <b>Итоговая сумма:</b> ${subtotal.toLocaleString()} ₸`;
+  message += `\n💵 *${window.i18n ? t("tg_total") : "Итоговая сумма"}:* ${subtotal.toLocaleString()} ₸`;
 
-  // Telegram configuration placeholders (users should insert their real Bot Token and Chat ID)
-  const botToken = "YOUR_TELEGRAM_BOT_TOKEN";
-  const chatId = "YOUR_TELEGRAM_CHAT_ID";
+  // Send to WhatsApp
+  const phoneWA = "77783567221"; // Target WhatsApp number
+  const waUrl = `https://wa.me/${phoneWA}?text=${encodeURIComponent(message)}`;
 
-  // Check if they are placeholder values
-  if (botToken === "YOUR_TELEGRAM_BOT_TOKEN" || chatId === "YOUR_TELEGRAM_CHAT_ID") {
-    console.log("Telegram configuration is not completed yet. Order Details:");
-    console.log(message);
-    
-    // Simulate API delay and succeed
-    setTimeout(() => {
-      orderSucceeded();
-    }, 1000);
-  } else {
-    // Send to Telegram Bot API
-    try {
-      const tgUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
-      const response = await fetch(tgUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: message,
-          parse_mode: "HTML"
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error("Не удалось отправить сообщение в Telegram.");
-      }
-
-      orderSucceeded();
-    } catch (err) {
-      console.error(err);
-      alert("Заказ оформлен локально, но произошла ошибка отправки в Telegram: " + err.message);
-      orderSucceeded();
-    }
-  }
+  window.open(waUrl, '_blank');
+  orderSucceeded();
 }
 
 // Actions to perform on successful checkout
@@ -1106,5 +1157,34 @@ function orderSucceeded() {
   // Re-enable submit button
   const submitBtn = document.getElementById("checkout-submit-btn");
   submitBtn.disabled = false;
-  submitBtn.textContent = "Оформить заказ в Telegram";
+  submitBtn.textContent = window.i18n ? window.i18n.t("cart_btn_checkout") : "Оформить заказ в WhatsApp";
+}
+
+
+function setupModal(modal, openBtn, closeBtn, overlay, extraCloseElements = []) {
+  const open = () => {
+    if (modal) modal.classList.add("open");
+    if (overlay) overlay.classList.add("open");
+  };
+
+  const close = () => {
+    if (modal) modal.classList.remove("open");
+    if (overlay) overlay.classList.remove("open");
+  };
+
+  if (openBtn) openBtn.addEventListener("click", open);
+  if (closeBtn) closeBtn.addEventListener("click", close);
+
+  if (overlay) {
+    overlay.addEventListener("click", (e) => {
+      // Only close if clicking the overlay itself, not its children
+      if (e.target === overlay) {
+        close();
+      }
+    });
+  }
+
+  if (extraCloseElements && extraCloseElements.length > 0) {
+    extraCloseElements.forEach(el => el.addEventListener("click", close));
+  }
 }
