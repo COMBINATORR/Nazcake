@@ -640,14 +640,13 @@ function openProductPreview(id) {
   modalAddBtn.onclick = () => {
     const qty = parseInt(modalQtyVal.textContent);
     addToCart(activePreviewProductId, qty);
-    previewModal.classList.remove("open");
-    
+    closeModal(previewModal);
+
     // Open cart automatically to show it
-    cartSidebar.classList.add("open");
-    cartOverlay.classList.add("open");
+    openModal(cartSidebar, cartOverlay);
   };
 
-  previewModal.classList.add("open");
+  openModal(previewModal);
 }
 
 // Add Item to Cart
@@ -924,8 +923,7 @@ function setupAddBentoBtn(bentoConfig, addBentoBtn) {
 
     // Open cart sidebar
     setTimeout(() => {
-      cartSidebar.classList.add("open");
-      cartOverlay.classList.add("open");
+      openModal(cartSidebar, cartOverlay);
     }, 800);
   });
 }
@@ -1181,8 +1179,7 @@ function orderSucceeded() {
   updateCartUi();
 
   // Close Cart Sidebar
-  cartSidebar.classList.remove("open");
-  cartOverlay.classList.remove("open");
+  closeModal(cartSidebar, cartOverlay);
   
   // Clear checkout form fields
   checkoutForm.reset();
@@ -1190,7 +1187,7 @@ function orderSucceeded() {
   document.getElementById("checkout-address").removeAttribute("required");
 
   // Show Success Modal
-  successModal.classList.add("open");
+  openModal(successModal);
 
   // Re-enable submit button
   const submitBtn = document.getElementById("checkout-submit-btn");
@@ -1199,16 +1196,21 @@ function orderSucceeded() {
 }
 
 
-function setupModal(modal, openBtn, closeBtn, overlay, extraCloseElements = []) {
-  const open = () => {
-    if (modal) modal.classList.add("open");
-    if (overlay) overlay.classList.add("open");
-  };
 
-  const close = () => {
-    if (modal) modal.classList.remove("open");
-    if (overlay) overlay.classList.remove("open");
-  };
+function openModal(modal, overlay) {
+  if (modal) modal.classList.add("open");
+  if (overlay) overlay.classList.add("open");
+}
+
+function closeModal(modal, overlay) {
+  if (modal) modal.classList.remove("open");
+  if (overlay) overlay.classList.remove("open");
+}
+
+function setupModal(modal, openBtn, closeBtn, overlay, extraCloseElements = []) {
+  const open = () => openModal(modal, overlay);
+
+  const close = () => closeModal(modal, overlay);
 
   if (openBtn) openBtn.addEventListener("click", open);
   if (closeBtn) closeBtn.addEventListener("click", close);
