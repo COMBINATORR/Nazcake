@@ -1,0 +1,42 @@
+npm warn exec The following package was not found and will be installed: serve@14.2.6
+ INFO  Accepting connections at http://localhost:3000
+ HTTP  7/9/2026 9:54:56 AM ::1 GET /
+ HTTP  7/9/2026 9:54:56 AM ::1 Returned 200 in 44 ms
+ HTTP  7/9/2026 9:54:56 AM ::1 GET /style.css
+ HTTP  7/9/2026 9:54:56 AM ::1 Returned 200 in 6 ms
+ HTTP  7/9/2026 9:54:57 AM ::1 GET /images/hero_cake.jpg
+ HTTP  7/9/2026 9:54:57 AM ::1 GET /images/hero_cake_alt.jpg
+ HTTP  7/9/2026 9:54:57 AM ::1 GET /app.js
+ HTTP  7/9/2026 9:54:57 AM ::1 Returned 200 in 15 ms
+ HTTP  7/9/2026 9:54:57 AM ::1 Returned 200 in 49 ms
+ HTTP  7/9/2026 9:54:57 AM ::1 Returned 200 in 56 ms
+ HTTP  7/9/2026 9:54:58 AM ::1 GET /images/bread_baursaki.jpg
+ HTTP  7/9/2026 9:54:58 AM ::1 GET /images/pastry_rogaliki.jpg
+ HTTP  7/9/2026 9:54:58 AM ::1 GET /images/pie_smetannik.jpg
+ HTTP  7/9/2026 9:54:58 AM ::1 GET /images/pie_snickers.jpg
+ HTTP  7/9/2026 9:54:58 AM ::1 GET /images/bread_burger.jpg
+ HTTP  7/9/2026 9:54:58 AM ::1 GET /images/bread_kosichki.jpg
+ HTTP  7/9/2026 9:54:58 AM ::1 Returned 200 in 26 ms
+ HTTP  7/9/2026 9:54:58 AM ::1 Returned 200 in 29 ms
+ HTTP  7/9/2026 9:54:58 AM ::1 Returned 200 in 29 ms
+ HTTP  7/9/2026 9:54:58 AM ::1 Returned 200 in 37 ms
+ HTTP  7/9/2026 9:54:58 AM ::1 Returned 200 in 26 ms
+ HTTP  7/9/2026 9:54:58 AM ::1 Returned 200 in 25 ms
+ HTTP  7/9/2026 9:55:00 AM ::1 GET /images/cake_snickers.jpg
+ HTTP  7/9/2026 9:55:00 AM ::1 GET /images/cake_napoleon.jpg
+ HTTP  7/9/2026 9:55:00 AM ::1 GET /images/cake_esterhazy.jpg
+ HTTP  7/9/2026 9:55:00 AM ::1 GET /images/cake_meringue_roll.jpg
+ HTTP  7/9/2026 9:55:00 AM ::1 GET /images/semi_manty.jpg
+ HTTP  7/9/2026 9:55:00 AM ::1 GET /images/semi_pelmeni.jpg
+ HTTP  7/9/2026 9:55:00 AM ::1 Returned 200 in 12 ms
+ HTTP  7/9/2026 9:55:00 AM ::1 Returned 200 in 13 ms
+ HTTP  7/9/2026 9:55:00 AM ::1 Returned 200 in 24 ms
+ HTTP  7/9/2026 9:55:00 AM ::1 Returned 200 in 21 ms
+ HTTP  7/9/2026 9:55:00 AM ::1 Returned 200 in 23 ms
+ HTTP  7/9/2026 9:55:00 AM ::1 Returned 200 in 21 ms
+ HTTP  7/9/2026 9:55:00 AM ::1 GET /images/semi_chebureki.jpg
+ HTTP  7/9/2026 9:55:00 AM ::1 GET /images/semi_vareniki.jpg
+ HTTP  7/9/2026 9:55:00 AM ::1 Returned 200 in 6 ms
+ HTTP  7/9/2026 9:55:00 AM ::1 Returned 200 in 14 ms
+
+ INFO  Gracefully shutting down. Please wait...
