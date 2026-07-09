@@ -781,7 +781,14 @@ function setupBentoCustomizer() {
     text: "Happy Birthday!"
   };
 
-  // Base Color selection
+  setupBaseColorOptions(bentoConfig, baseColorOptions, cakeTop, cakeSide);
+  setupTextColorOptions(bentoConfig, textColorOptions, cakeTextElement);
+  setupTextInput(bentoConfig, bentoTextInput, cakeTextElement);
+  setupSprinklesOptions(bentoConfig, sprinklesSelect, sprinklesGroup);
+  setupAddBentoBtn(bentoConfig, addBentoBtn);
+}
+
+function setupBaseColorOptions(bentoConfig, baseColorOptions, cakeTop, cakeSide) {
   baseColorOptions.querySelectorAll(".color-dot").forEach(dot => {
     dot.addEventListener("click", () => {
       baseColorOptions.querySelectorAll(".color-dot").forEach(d => d.classList.remove("active"));
@@ -796,8 +803,9 @@ function setupBentoCustomizer() {
       cakeSide.setAttribute("fill", darkerColor);
     });
   });
+}
 
-  // Text Color selection
+function setupTextColorOptions(bentoConfig, textColorOptions, cakeTextElement) {
   textColorOptions.querySelectorAll(".color-dot").forEach(dot => {
     dot.addEventListener("click", () => {
       textColorOptions.querySelectorAll(".color-dot").forEach(d => d.classList.remove("active"));
@@ -807,8 +815,9 @@ function setupBentoCustomizer() {
       cakeTextElement.setAttribute("fill", color);
     });
   });
+}
 
-  // Inscription text edit
+function setupTextInput(bentoConfig, bentoTextInput, cakeTextElement) {
   bentoTextInput.addEventListener("input", (e) => {
     let txt = e.target.value;
     if (txt.length === 0) {
@@ -819,60 +828,71 @@ function setupBentoCustomizer() {
       bentoConfig.text = txt;
     }
   });
+}
 
-  // Sprinkles Change
+function setupSprinklesOptions(bentoConfig, sprinklesSelect, sprinklesGroup) {
   sprinklesSelect.addEventListener("change", (e) => {
     const type = e.target.value;
     bentoConfig.sprinkles = type;
-    drawSprinkles(type);
+    drawSprinkles(type, sprinklesGroup);
   });
+}
 
-  // Helper: Draw sprinkles inside cake top ellipse (cx=150, cy=150, rx=90, ry=20)
-  function drawSprinkles(type) {
-    sprinklesGroup.innerHTML = "";
-    if (type === "none") return;
+// Helper: Draw sprinkles inside cake top ellipse (cx=150, cy=150, rx=90, ry=20)
+function drawSprinkles(type, sprinklesGroup) {
+  sprinklesGroup.innerHTML = "";
+  if (type === "none") return;
 
-    let points = [];
-    const count = type === "pearls" ? 30 : 20;
-    for (let i = 0; i < count; i++) {
-      const angle = Math.random() * Math.PI * 2;
-      const rScale = Math.random() * 0.75 + 0.1; // keep away from edges
-      const x = 150 + Math.cos(angle) * 90 * rScale;
-      const y = 150 + Math.sin(angle) * 20 * rScale;
-      points.push({ x, y });
-    }
+let points = [];
+  // Generate static spread of sprinkles inside ellipse boundaries
+  // x = 150 + cos(t) * rx * scale, y = 150 + sin(t) * ry * scale
+  const count = type === "pearls" ? 30 : 20;
+  for (let i = 0; i < count; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const rScale = Math.random() * 0.75 + 0.1; // keep away from edges
+    const x = 150 + Math.cos(angle) * 90 * rScale;
+    const y = 150 + Math.sin(angle) * 20 * rScale;
+    points.push({ x, y });
 
-    points.forEach((pt, idx) => {
-      if (type === "pearls") {
-        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        circle.setAttribute("cx", pt.x);
-        circle.setAttribute("cy", pt.y);
-        circle.setAttribute("r", 2.5);
-        circle.setAttribute("fill", "#ffffff");
-        circle.setAttribute("stroke", "#e5d0ba");
-        circle.setAttribute("stroke-width", "0.5");
-        sprinklesGroup.appendChild(circle);
-      } else if (type === "hearts") {
-        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        path.setAttribute("d", `M ${pt.x} ${pt.y} c -2 -3, -5 -1, -5 2 c 0 2, 2 4, 5 6 c 3 -2, 5 -4, 5 -6 c 0 -3, -3 -5, -5 -2 Z`);
-        path.setAttribute("fill", "#ff4f5e");
-        sprinklesGroup.appendChild(path);
-      } else if (type === "gold") {
-        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        circle.setAttribute("cx", pt.x);
-        circle.setAttribute("cy", pt.y);
-        circle.setAttribute("r", 1.5);
-        circle.setAttribute("fill", "#ffd700");
-        sprinklesGroup.appendChild(circle);
-      } else if (type === "stars") {
-        const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-        polygon.setAttribute("points", `${pt.x},${pt.y-3} ${pt.x+1},${pt.y-1} ${pt.x+3},${pt.y-1} ${pt.x+1.5},${pt.y} ${pt.x+2},${pt.y+2} ${pt.x},${pt.y+1} ${pt.x-2},${pt.y+2} ${pt.x-1.5},${pt.y} ${pt.x-3},${pt.y-1} ${pt.x-1},${pt.y-1}`);
-        polygon.setAttribute("fill", "#ffe272");
-        sprinklesGroup.appendChild(polygon);
-      }
-    });
   }
 
+  points.forEach((pt, idx) => {
+    if (type === "pearls") {
+      // Simple white shiny pearls
+      const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      circle.setAttribute("cx", pt.x);
+      circle.setAttribute("cy", pt.y);
+      circle.setAttribute("r", 2.5);
+      circle.setAttribute("fill", "#ffffff");
+      circle.setAttribute("stroke", "#e5d0ba");
+      circle.setAttribute("stroke-width", "0.5");
+      sprinklesGroup.appendChild(circle);
+    } else if (type === "hearts") {
+      // Red heart path
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      const scale = 0.5;
+      path.setAttribute("d", `M ${pt.x} ${pt.y} c -2 -3, -5 -1, -5 2 c 0 2, 2 4, 5 6 c 3 -2, 5 -4, 5 -6 c 0 -3, -3 -5, -5 -2 Z`);
+      path.setAttribute("fill", "#ff4f5e");
+      sprinklesGroup.appendChild(path);
+    } else if (type === "gold") {
+      // Gold dust
+      const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      circle.setAttribute("cx", pt.x);
+      circle.setAttribute("cy", pt.y);
+      circle.setAttribute("r", 1.5);
+      circle.setAttribute("fill", "#ffd700");
+      sprinklesGroup.appendChild(circle);
+    } else if (type === "stars") {
+      // Little yellow stars
+      const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+      polygon.setAttribute("points", `${pt.x},${pt.y-3} ${pt.x+1},${pt.y-1} ${pt.x+3},${pt.y-1} ${pt.x+1.5},${pt.y} ${pt.x+2},${pt.y+2} ${pt.x},${pt.y+1} ${pt.x-2},${pt.y+2} ${pt.x-1.5},${pt.y} ${pt.x-3},${pt.y-1} ${pt.x-1},${pt.y-1}`);
+      polygon.setAttribute("fill", "#ffe272");
+      sprinklesGroup.appendChild(polygon);
+    }
+  });
+}
+
+function setupAddBentoBtn(bentoConfig, addBentoBtn) {
   // Add Bento Cake to Cart
   addBentoBtn.addEventListener("click", () => {
     const bentoId = `bento_custom_${Date.now()}`;
@@ -909,7 +929,6 @@ function setupBentoCustomizer() {
     }, 800);
   });
 }
-
 // Adjust Hex Color brightness
 function adjustColorBrightness(hex, percent) {
   let R = parseInt(hex.substring(1, 3), 16);
@@ -928,6 +947,77 @@ function adjustColorBrightness(hex, percent) {
 }
 
 // Setup Yandex.Delivery Address Price Calculator
+// --- Delivery Calculator Helpers ---
+
+async function fetchCoordinates(address) {
+  const url = `https://nominatim.openstreetmap.org/search?q=Атырау, ${encodeURIComponent(address)}&format=json&limit=1`;
+  const response = await fetch(url, {
+    headers: {
+      "User-Agent": "NazcakeConfectioneryDeliveryCalculator/1.0 (contact: info@nazcake.kz)"
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error("delivery_err_geocoder");
+  }
+
+  const data = await response.json();
+  if (data.length === 0) {
+    throw new Error("delivery_err_notfound");
+  }
+
+  const location = data[0];
+  return {
+    lat: parseFloat(location.lat),
+    lon: parseFloat(location.lon)
+  };
+}
+
+function checkAtyrauBounds(lat, lon, bounds) {
+  if (lat < bounds.minLat || lat > bounds.maxLat || lon < bounds.minLon || lon > bounds.maxLon) {
+    throw new Error("delivery_err_outofbounds");
+  }
+}
+
+function calculateDeliveryCost(distance) {
+  let cost = 500 + Math.round(distance * 150);
+  cost = Math.ceil(cost / 50) * 50;
+  if (cost < 500) cost = 500;
+  if (cost > 3500) cost = 3500;
+  return cost;
+}
+
+function calculateDeliveryTime(distance) {
+  return Math.round(distance * 4) + 20;
+}
+
+function showDeliveryError(msg, errorBox, resultsBox) {
+  errorBox.textContent = msg;
+  errorBox.classList.remove("hidden");
+  resultsBox.classList.add("hidden");
+}
+
+function hideDeliveryError(errorBox) {
+  errorBox.textContent = "";
+  errorBox.classList.add("hidden");
+}
+
+function getHaversineDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Radius of the earth in km
+  const dLat = deg2rad(lat2 - lat1);
+  const dLon = deg2rad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c; // Distance in km
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI / 180);
+}
+
 function setupDeliveryCalculator() {
   const calcBtn = document.getElementById("calc-delivery-btn");
   const addressInput = document.getElementById("delivery-address");
@@ -953,72 +1043,38 @@ function setupDeliveryCalculator() {
   calcBtn.addEventListener("click", async () => {
     const address = addressInput.value.trim();
     if (!address) {
-      showError(window.i18n ? window.i18n.t("delivery_err_empty") : "Пожалуйста, введите адрес доставки в Атырау.");
+showDeliveryError(window.i18n ? window.i18n.t("delivery_err_empty") : "Пожалуйста, введите адрес доставки в Атырау.", errorBox, resultsBox);
       return;
     }
 
     calcBtn.disabled = true;
-    calcBtn.textContent = window.i18n ? window.i18n.t("delivery_btn_calculating") : "Выполняется расчет...";
-    hideError();
+calcBtn.textContent = window.i18n ? window.i18n.t("delivery_btn_calculating") : "Выполняется расчет...";
+    hideDeliveryError(errorBox);
     resultsBox.classList.add("hidden");
 
     try {
-      // Nominatim search query restricted to Atyrau
-      const url = `https://nominatim.openstreetmap.org/search?q=Атырау, ${encodeURIComponent(address)}&format=json&limit=1`;
+      const { lat, lon } = await fetchCoordinates(address);
       
-      const response = await fetch(url, {
-        headers: {
-          "User-Agent": "NazcakeConfectioneryDeliveryCalculator/1.0 (contact: info@nazcake.kz)"
-        }
-      });
+      checkAtyrauBounds(lat, lon, atyrauBounds);
 
-      if (!response.ok) {
-        throw new Error("delivery_err_geocoder");
-      }
 
-      const data = await response.json();
-
-      if (data.length === 0) {
-        throw new Error("delivery_err_notfound");
-      }
-
-      const location = data[0];
-      const lat = parseFloat(location.lat);
-      const lon = parseFloat(location.lon);
-
-      // Verify that coordinates belong to Atyrau city
-      if (lat < atyrauBounds.minLat || lat > atyrauBounds.maxLat || lon < atyrauBounds.minLon || lon > atyrauBounds.maxLon) {
-        throw new Error("delivery_err_outofbounds");
-      }
-
-      // Calculate distance using Haversine formula
       const distance = getHaversineDistance(bakeryLat, bakeryLon, lat, lon);
-      
-      // Calculate price
-      // Base: 500 ₸ + 150 ₸ / km. Rounded to nearest 50 ₸. Min 500 ₸.
-      let cost = 500 + Math.round(distance * 150);
-      cost = Math.ceil(cost / 50) * 50; // round to nearest 50
-      if (cost < 500) cost = 500;
-      if (cost > 3500) cost = 3500; // max cost cap within city
+      const cost = calculateDeliveryCost(distance);
+      const estTime = calculateDeliveryTime(distance);
 
-      // Format results
       resDistance.textContent = `${distance.toFixed(1)} км`;
       resCost.textContent = `${cost.toLocaleString()} ₸`;
-      
-      // Estimated time: distance * 4 min/km + 15 min prep/pickup time
-      const estTime = Math.round(distance * 4) + 20;
       resTime.textContent = `~${estTime} минут`;
 
       resultsBox.classList.remove("hidden");
       
-      // Fill the checkout address field if it's open
       const checkoutAddressField = document.getElementById("checkout-address");
       if (checkoutAddressField) {
         checkoutAddressField.value = address;
       }
 
     } catch (err) {
-      let msg = err.message;
+let msg = err.message;
       if (window.i18n) {
         if (msg === "delivery_err_geocoder" || msg === "delivery_err_notfound" || msg === "delivery_err_outofbounds") {
           msg = window.i18n.t(msg);
@@ -1031,40 +1087,12 @@ function setupDeliveryCalculator() {
         else if (msg === "delivery_err_outofbounds") msg = "Яндекс.Доставка (Экспресс) доступна только в пределах города Атырау.";
         else msg = "Ошибка при расчете стоимости доставки.";
       }
-      showError(msg);
+      showDeliveryError(msg, errorBox, resultsBox);
     } finally {
       calcBtn.disabled = false;
       calcBtn.textContent = window.i18n ? window.i18n.t("delivery_btn_calc") : "Рассчитать доставку";
     }
   });
-
-  function showError(msg) {
-    errorBox.textContent = msg;
-    errorBox.classList.remove("hidden");
-    resultsBox.classList.add("hidden");
-  }
-
-  function hideError() {
-    errorBox.textContent = "";
-    errorBox.classList.add("hidden");
-  }
-
-  // Haversine Distance Calculation Formula
-  function getHaversineDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371; // Radius of the earth in km
-    const dLat = deg2rad(lat2 - lat1);
-    const dLon = deg2rad(lon2 - lon1);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c; // Distance in km
-  }
-
-  function deg2rad(deg) {
-    return deg * (Math.PI / 180);
-  }
 }
 
 
