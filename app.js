@@ -1100,3 +1100,4 @@ function orderSucceeded() {
   submitBtn.disabled = false;
   submitBtn.textContent = "Оформить заказ в Telegram";
 }
+if (typeof module !== 'undefined' && module.exports) { module.exports = { adjustColorBrightness }; }
