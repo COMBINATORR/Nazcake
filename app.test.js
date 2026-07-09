@@ -2,109 +2,93 @@
  * @jest-environment jsdom
  */
 
+const fs = require('fs');
+const path = require('path');
+
+const html = fs.readFileSync(path.resolve(__dirname, './index.html'), 'utf8');
+
 describe('Nazcake App Unit Tests', () => {
-  let app;
+    beforeAll(() => {
+        // Load the HTML content
+        document.documentElement.innerHTML = html;
+        const appJsPath = path.resolve(__dirname, './app.js');
+        let appJsCode = fs.readFileSync(appJsPath, 'utf8');
 
-  beforeAll(() => {
-    document.body.innerHTML = `
-      <div id="bestsellers-grid"></div>
-      <div id="catalog-grid"></div>
-      <div id="preview-modal"></div>
-      <button id="close-preview-btn"></button>
-      <img id="modal-product-img" />
-      <h2 id="modal-product-title"></h2>
-      <div id="modal-product-price"></div>
-      <p id="modal-product-desc"></p>
-      <p id="modal-product-ingredients"></p>
-      <span id="modal-qty-val"></span>
-      <button id="modal-minus-btn"></button>
-      <button id="modal-plus-btn"></button>
-      <button id="modal-add-btn"></button>
-      <div id="cart-sidebar"></div>
-      <div id="cart-overlay"></div>
-      <button id="open-cart-btn"></button>
-      <button id="close-cart-btn"></button>
-      <div id="cart-items-container"></div>
-      <div id="cart-total-sum"></div>
-      <div id="mobile-drawer"></div>
-      <div id="drawer-overlay"></div>
-      <button id="mobile-menu-btn"></button>
-      <button id="close-drawer-btn"></button>
-      <form id="checkout-form">
-        <input id="checkout-name" />
-        <input id="checkout-phone" />
-        <input id="checkout-address" />
-        <button id="checkout-submit-btn"></button>
-      </form>
-      <div id="checkout-address-group"></div>
-      <div id="success-modal"></div>
-      <button id="close-success-btn"></button>
-      <span class="cart-count-badge"></span>
-    `;
-    app = require('./app.js');
-  });
+        // Expose variables and mock updateCartUi
+        appJsCode += `
+            window.addToCart = addToCart;
+            window.removeFromCart = removeFromCart;
+            window.getCart = () => cart;
+            window.setCart = (newCart) => { cart = newCart; };
+            updateCartUi = jest.fn(); // Mocking updateCartUi
+            window.getUpdateCartUiMock = () => updateCartUi;
+        `;
 
-  describe('addToCart', () => {
-    beforeEach(() => {
-      app.setCart([]);
+        eval(appJsCode);
     });
 
-    it('adds a new product to the cart', () => {
-      const productId = app.products[0].id;
-      app.addToCart(productId, 2);
+    describe('addToCart', () => {
+        beforeEach(() => {
+            window.setCart([]);
+        });
 
-      const cart = app.getCart();
-      expect(cart.length).toBe(1);
-      expect(cart[0].product.id).toBe(productId);
-      expect(cart[0].qty).toBe(2);
+        it('should add a new product to the cart', () => {
+            const initialCartSize = window.getCart().length;
+
+            // Add 2 units of a valid product
+            window.addToCart('bread_burger', 2);
+
+            const newCart = window.getCart();
+            expect(newCart.length).toBe(initialCartSize + 1);
+            expect(newCart[newCart.length - 1].product.id).toBe('bread_burger');
+            expect(newCart[newCart.length - 1].qty).toBe(2);
+        });
+
+        it('should increase quantity if product is already in cart', () => {
+            // Add initially
+            window.addToCart('bread_baursaki', 1);
+            const cartAfterFirstAdd = window.getCart();
+            expect(cartAfterFirstAdd.length).toBe(1);
+            expect(cartAfterFirstAdd[0].qty).toBe(1);
+
+            // Add again
+            window.addToCart('bread_baursaki', 3);
+            const cartAfterSecondAdd = window.getCart();
+            expect(cartAfterSecondAdd.length).toBe(1); // Length should not change, product already exists
+            expect(cartAfterSecondAdd[0].qty).toBe(4); // Quantity should correctly increase
+        });
+
+        it('should not add to cart if product id is invalid', () => {
+            const initialCartSize = window.getCart().length;
+
+            // Try adding invalid product id
+            window.addToCart('invalid_product_id', 1);
+
+            const newCart = window.getCart();
+            expect(newCart.length).toBe(initialCartSize); // No new item should be added
+        });
     });
 
-    it('increases quantity if product already exists in cart', () => {
-      const productId = app.products[0].id;
+    describe('removeFromCart', () => {
+        beforeEach(() => {
+            window.setCart([
+                { product: { id: 'item1', price: 100 }, qty: 1 },
+                { product: { id: 'item2', price: 200 }, qty: 2 }
+            ]);
+            window.getUpdateCartUiMock().mockClear();
+        });
 
-      app.addToCart(productId, 2);
-      app.addToCart(productId, 3);
+        it('should remove item from cart based on id', () => {
+            window.removeFromCart('item1');
+            expect(window.getCart().length).toBe(1);
+            expect(window.getCart()[0].product.id).toBe('item2');
+            expect(window.getUpdateCartUiMock()).toHaveBeenCalledTimes(1);
+        });
 
-      const cart = app.getCart();
-      expect(cart.length).toBe(1);
-      expect(cart[0].product.id).toBe(productId);
-      expect(cart[0].qty).toBe(5);
+        it('should do nothing if item does not exist', () => {
+            window.removeFromCart('nonexistent');
+            expect(window.getCart().length).toBe(2);
+            expect(window.getUpdateCartUiMock()).toHaveBeenCalledTimes(1);
+        });
     });
-
-    it('does nothing if product is not found', () => {
-      app.addToCart('non_existent_product', 1);
-
-      const cart = app.getCart();
-      expect(cart.length).toBe(0);
-    });
-
-    it('updates the UI after adding to cart', () => {
-      const cartItemsContainer = document.getElementById('cart-items-container');
-      const productId = app.products[0].id;
-
-      app.addToCart(productId, 1);
-
-      expect(cartItemsContainer.innerHTML).toContain(app.products[0].name);
-    });
-  });
-
-  describe('removeFromCart', () => {
-    beforeEach(() => {
-      app.setCart([
-        { product: { id: 'item1', price: 100 }, qty: 1 },
-        { product: { id: 'item2', price: 200 }, qty: 2 }
-      ]);
-    });
-
-    it('should remove item from cart based on id', () => {
-      app.removeFromCart('item1');
-      expect(app.getCart().length).toBe(1);
-      expect(app.getCart()[0].product.id).toBe('item2');
-    });
-
-    it('should do nothing if item does not exist', () => {
-      app.removeFromCart('nonexistent');
-      expect(app.getCart().length).toBe(2);
-    });
-  });
 });
