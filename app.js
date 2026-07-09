@@ -1095,6 +1095,17 @@ let msg = err.message;
   });
 }
 
+
+// Helper to sanitize HTML to prevent injection in Telegram messages
+function escapeHTML(str) {
+  if (typeof str !== 'string') return '';
+  return str.replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+}
+
 // Handle Order Checkout Submission & Send to Telegram
 async function handleCheckoutSubmit(e) {
   e.preventDefault();
@@ -1119,16 +1130,22 @@ async function handleCheckoutSubmit(e) {
   const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.qty), 0);
   
   // Format message for WhatsApp
-  let message = `*🍰 ${window.i18n ? t("tg_order_title") : "Новый заказ от Nazcake!"}*\n\n`;
-  message += `👤 *${window.i18n ? t("tg_client") : "Клиент"}:* ${name}\n`;
-  message += `📞 *${window.i18n ? t("tg_phone") : "Телефон"}:* ${phone}\n`;
+  let message = `*🍰 ${window.i18n ? t("tg_order_title") : "Новый заказ от Nazcake!"}*
+
+`;
+  message += `👤 *${window.i18n ? t("tg_client") : "Клиент"}:* ${name}
+`;
+  message += `📞 *${window.i18n ? t("tg_phone") : "Телефон"}:* ${phone}
+`;
   
   const tMethod = method === "delivery" 
     ? (window.i18n ? t("cart_opt_delivery") : "Доставка Яндекс") 
     : (window.i18n ? t("cart_opt_pickup") : "Самовывоз");
-  message += `📦 *${window.i18n ? t("tg_method") : "Способ получения"}:* ${tMethod}\n`;
+  message += `📦 *${window.i18n ? t("tg_method") : "Способ получения"}:* ${tMethod}
+`;
   if (method === "delivery") {
-    message += `📍 *${window.i18n ? t("tg_address") : "Адрес"}:* ${address}\n`;
+    message += `📍 *${window.i18n ? t("tg_address") : "Адрес"}:* ${address}
+`;
   }
   message += `\n🛒 *${window.i18n ? t("tg_items") : "Товары"}:*\n`;
 
@@ -1138,10 +1155,12 @@ async function handleCheckoutSubmit(e) {
       ? (window.i18n ? t("bento_custom_name") : p.name) 
       : (window.i18n ? t(`p_${p.id}_name`) : p.name);
     const tUnit = window.i18n ? t(getUnitTranslationKey(p.unit)) : p.unit;
-    message += `${idx + 1}. *${tName}* — ${item.qty} ${tUnit} (${(p.price * item.qty).toLocaleString()} ₸)\n`;
+    message += `${idx + 1}. *${tName}* — ${item.qty} ${tUnit} (${(p.price * item.qty).toLocaleString()} ₸)
+`;
     if (p.id.startsWith("bento_custom_")) {
       const tDesc = getProductDesc(p);
-      message += `   _${window.i18n ? t("tg_details") : "Детали"}: ${tDesc}_\n`;
+      message += `   _${window.i18n ? t("tg_details") : "Детали"}: ${tDesc}_
+`;
     }
   });
 
