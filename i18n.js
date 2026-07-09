@@ -164,6 +164,7 @@
       contacts_lbl_phone: "Телефон",
       contacts_lbl_email: "Email",
       contacts_val_address: "г. Атырау, ул. Балхашская 23",
+      contacts_open_2gis: "Открыть в 2ГИС",
       contacts_val_hours: "Ежедневно с 09:00 до 20:00",
 
       footer_desc: "Изысканные десерты и авторские торты на любой вкус. Готовим с любовью в городе Атырау.",
@@ -470,6 +471,7 @@
       contacts_lbl_phone: "Телефон",
       contacts_lbl_email: "Email",
       contacts_val_address: "Атырау қ., Балқаш көшесі 23",
+      contacts_open_2gis: "2ГИС картасынан ашу",
       contacts_val_hours: "Күн сайын 09:00-ден 20:00-ге дейін",
 
       footer_desc: "Кез келген талғамға сай нәзік десерттер мен авторлық торттар. Атырау қаласында сүйіспеншілікпен дайындаймыз.",

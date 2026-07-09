@@ -2229,3 +2229,40 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/* 2GIS Button in Contacts */
+.dgis-p {
+  margin-top: 15px;
+}
+
+.btn-dgis {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #5bb300; /* 2GIS Brand Green */
+  color: #ffffff !important;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(91, 179, 0, 0.2);
+}
+
+.btn-dgis:hover {
+  background: #4d9900;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(91, 179, 0, 0.3);
+}
+
+.btn-dgis:active {
+  transform: translateY(0);
+}
+
+.btn-dgis .dgis-logo-svg {
+  width: 16px;
+  height: 16px;
+  stroke: #ffffff;
+  flex-shrink: 0;
+}
+
