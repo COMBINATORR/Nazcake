@@ -1,3 +1,8 @@
+const CONFIG = {
+  TELEGRAM_BOT_TOKEN: "YOUR_TELEGRAM_BOT_TOKEN",
+  TELEGRAM_CHAT_ID: "YOUR_TELEGRAM_CHAT_ID"
+};
+
 // Confectionery Nazcake App Logic
 
 // Product Catalog Data
@@ -1032,11 +1037,8 @@ async function handleCheckoutSubmit(e) {
   message += `\n💵 <b>Итоговая сумма:</b> ${subtotal.toLocaleString()} ₸`;
 
   // Telegram configuration placeholders (users should insert their real Bot Token and Chat ID)
-  const botToken = "YOUR_TELEGRAM_BOT_TOKEN";
-  const chatId = "YOUR_TELEGRAM_CHAT_ID";
-
   // Check if they are placeholder values
-  if (botToken === "YOUR_TELEGRAM_BOT_TOKEN" || chatId === "YOUR_TELEGRAM_CHAT_ID") {
+  if (CONFIG.TELEGRAM_BOT_TOKEN === "YOUR_TELEGRAM_BOT_TOKEN" || CONFIG.TELEGRAM_CHAT_ID === "YOUR_TELEGRAM_CHAT_ID") {
     console.log("Telegram configuration is not completed yet. Order Details:");
     console.log(message);
     
@@ -1047,14 +1049,14 @@ async function handleCheckoutSubmit(e) {
   } else {
     // Send to Telegram Bot API
     try {
-      const tgUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+      const tgUrl = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendMessage`;
       const response = await fetch(tgUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          chat_id: chatId,
+          chat_id: CONFIG.TELEGRAM_CHAT_ID,
           text: message,
           parse_mode: "HTML"
         })
