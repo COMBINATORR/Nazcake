@@ -1822,10 +1822,27 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: 0;
   }
 
-  /* Beautiful 2-column e-commerce grid on mobile */
+  /* Horizontal swipe scroll on mobile */
   .products-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px; /* compact spacing */
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    gap: 16px;
+    padding: 10px 20px 20px 20px;
+    margin: 0 -20px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .products-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .products-grid .product-card {
+    flex: 0 0 78vw;
+    scroll-snap-align: start;
+    max-width: 300px;
   }
 
   .product-card {
@@ -1944,10 +1961,6 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Ultra small screens (width < 360px like iPhone SE 1st Gen) */
 @media (max-width: 350px) {
-  .products-grid {
-    grid-template-columns: 1fr; /* Fallback to 1 column for very small screens */
-  }
-
   .header-actions {
     gap: 8px;
   }
