@@ -2012,3 +2012,98 @@ h1, h2, h3, h4, h5, h6 {
   border-color: var(--accent-chocolate);
 }
 
+/* Location Widget Styles */
+.location-widget {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-tertiary);
+  border: 1px solid rgba(74, 44, 17, 0.12);
+  border-radius: 20px;
+  padding: 6px 14px;
+  box-shadow: inset 0 2px 4px rgba(74, 44, 17, 0.04);
+  font-family: var(--font-title);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent-chocolate);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.location-widget .icon-location {
+  color: var(--accent-gold);
+  transition: transform 0.3s ease;
+}
+
+.location-widget:hover {
+  border-color: var(--accent-gold);
+}
+
+.location-widget:hover .icon-location {
+  transform: translateY(-2px);
+}
+
+.drawer-location-widget {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--bg-tertiary);
+  border: 1px solid rgba(74, 44, 17, 0.1);
+  border-radius: 20px;
+  padding: 10px 20px;
+  margin: 15px auto;
+  width: 90%;
+  font-family: var(--font-title);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--accent-chocolate);
+}
+
+.drawer-location-widget .icon-location {
+  color: var(--accent-gold);
+}
+
+/* Location Warning Banner */
+.location-alert-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(220, 53, 69, 0.08);
+  border: 1px solid rgba(220, 53, 69, 0.25);
+  border-radius: 12px;
+  padding: 12px 18px;
+  margin-bottom: 24px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  animation: fadeInDown 0.5s ease-out;
+}
+
+.location-alert-banner .warning-icon {
+  color: #dc3545;
+  flex-shrink: 0;
+}
+
+.location-alert-banner .warning-text {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #c02434;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 480px) {
+  .location-widget {
+    display: none !important;
+  }
+}
+

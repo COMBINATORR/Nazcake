@@ -23,6 +23,10 @@ describe('Nazcake App Unit Tests', () => {
             updateCartUi = jest.fn(); // Mocking updateCartUi
             window.getUpdateCartUiMock = () => updateCartUi;
             window.adjustColorBrightness = adjustColorBrightness;
+            window.setupGeolocation = setupGeolocation;
+            window.updateLocationUi = updateLocationUi;
+            window.getDetectedCity = () => detectedCity;
+            window.setDetectedCity = (c) => { detectedCity = c; };
         `;
 
         eval(appJsCode);
@@ -119,4 +123,70 @@ describe('Nazcake App Unit Tests', () => {
             expect(window.getUpdateCartUiMock()).toHaveBeenCalledTimes(1);
         });
     });
+
+
+    describe('Geolocation UI and Logic', () => {
+        let originalFetch;
+
+        beforeAll(() => {
+            originalFetch = global.fetch;
+        });
+
+        afterAll(() => {
+            global.fetch = originalFetch;
+        });
+
+        beforeEach(() => {
+            // Reset DOM elements
+            document.getElementById("location-widget").classList.add("hidden");
+            document.getElementById("drawer-location-widget").classList.add("hidden");
+            document.getElementById("location-alert-banner").classList.add("hidden");
+        });
+
+        it('should update UI correctly for Atyrau (no alert, location visible)', () => {
+            window.setDetectedCity("atyrau");
+            window.updateLocationUi();
+
+            expect(document.getElementById("location-text").textContent).toBe("Атырау");
+            expect(document.getElementById("location-widget").classList.contains("hidden")).toBe(false);
+            expect(document.getElementById("drawer-location-widget").classList.contains("hidden")).toBe(false);
+            expect(document.getElementById("location-alert-banner").classList.contains("hidden")).toBe(true);
+        });
+
+        it('should update UI correctly for other cities (alert visible, city prefixed)', () => {
+            window.setDetectedCity("almaty");
+            window.updateLocationUi();
+
+            expect(document.getElementById("location-text").textContent).toBe("Ваш город: Алматы");
+            expect(document.getElementById("location-widget").classList.contains("hidden")).toBe(false);
+            expect(document.getElementById("location-alert-banner").classList.contains("hidden")).toBe(false);
+        });
+
+        it('should call fetch and set city on successful API response', async () => {
+            global.fetch = jest.fn().mockImplementation(() =>
+                Promise.resolve({
+                    ok: true,
+                    json: () => Promise.resolve({ city: "Astana" }),
+                })
+            );
+
+            await window.setupGeolocation();
+
+            expect(global.fetch).toHaveBeenCalledWith("https://ipapi.co/json/");
+            expect(window.getDetectedCity()).toBe("astana");
+            expect(document.getElementById("location-text").textContent).toBe("Ваш город: Астана");
+        });
+
+        it('should fallback to Atyrau on failed API response', async () => {
+            global.fetch = jest.fn().mockImplementation(() =>
+                Promise.reject("Network error")
+            );
+
+            await window.setupGeolocation();
+
+            expect(window.getDetectedCity()).toBe("atyrau");
+            expect(document.getElementById("location-text").textContent).toBe("Атырау");
+        });
+    });
+
 });

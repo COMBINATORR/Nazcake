@@ -109,6 +109,8 @@
       delivery_err_notfound: "Адрес не найден. Пожалуйста, проверьте правильность написания (например: Сатпаева 15).",
       delivery_err_outofbounds: "Яндекс.Доставка (Экспресс) доступна только в пределах города Атырау.",
       delivery_err_unknown: "Ошибка при расчете стоимости доставки.",
+      location_your_city: "Ваш город: {city}",
+      location_only_atyrau: "Обратите внимание: мы осуществляем доставку только по г. Атырау!",
 
       // Product Preview Modal
       preview_lbl_desc: "Описание:",
@@ -412,6 +414,8 @@
       delivery_err_notfound: "Мекенжай табылмады. Жазылуын тексеріңіз (мысалы: Сәтбаев 15).",
       delivery_err_outofbounds: "Яндекс.Жеткізу (Экспресс) тек Атырау қаласының шегінде қолжетімді.",
       delivery_err_unknown: "Жеткізу құнын есептеуде қате кетті.",
+      location_your_city: "Қалаңыз: {city}",
+      location_only_atyrau: "Назар аударыңыз: біз тек Атырау қаласы бойынша жеткіземіз!",
 
       // Product Preview Modal
       preview_lbl_desc: "Сипаттамасы:",

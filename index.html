@@ -96,6 +96,13 @@
       </nav>
       
       <div class="header-actions">
+        <div class="location-widget hidden" id="location-widget">
+          <svg class="icon-location" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+            <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          <span id="location-text">Атырау</span>
+        </div>
         <div class="lang-switcher">
           <button class="lang-btn active" data-lang="ru">RU</button>
           <button class="lang-btn" data-lang="kk">KK</button>
@@ -136,6 +143,13 @@
       <a href="#delivery" class="drawer-link" data-i18n="nav_delivery">Доставка</a>
       <a href="#contacts" class="drawer-link" data-i18n="nav_contacts">Контакты</a>
     </nav>
+    <div class="drawer-location-widget hidden" id="drawer-location-widget">
+      <svg class="icon-location" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+        <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"></path>
+        <circle cx="12" cy="10" r="3"></circle>
+      </svg>
+      <span id="drawer-location-text">Атырау</span>
+    </div>
     <div class="drawer-lang-switcher">
       <button class="lang-btn active" data-lang="ru">RU</button>
       <button class="lang-btn" data-lang="kk">KK</button>
@@ -146,6 +160,14 @@
   <!-- Hero Section -->
   <section class="hero-section">
     <div class="hero-container">
+      <div id="location-alert-banner" class="location-alert-banner hidden">
+        <svg class="warning-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+        <span class="warning-text" id="location-alert-text" data-i18n="location_only_atyrau">Обратите внимание: мы осуществляем доставку только по г. Атырау!</span>
+      </div>
       <div class="hero-content">
         <span class="hero-subtitle" data-i18n="hero_subtitle">Премиальные кондитерские шедевры в Атырау</span>
         <h1 class="hero-title" data-i18n="hero_title">Искусство <br><span class="accent-text">Премиальных</span> Десертов</h1>

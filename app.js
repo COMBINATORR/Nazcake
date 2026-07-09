@@ -445,6 +445,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupEventListeners();
   setupBentoCustomizer();
   setupDeliveryCalculator();
+  setupGeolocation();
   
   if (window.i18n) {
     window.i18n.onLanguageChange(() => {
@@ -453,6 +454,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const category = activeTab ? activeTab.getAttribute("data-category") : "all";
       renderCatalog(category);
       updateCartUi();
+      updateLocationUi();
     });
   }
 });
@@ -688,6 +690,7 @@ function changeCartItemQty(id, newQty) {
       removeFromCart(id);
     } else {
       updateCartUi();
+      updateLocationUi();
     }
   }
 }
@@ -1226,6 +1229,91 @@ function setupModal(modal, openBtn, closeBtn, overlay, extraCloseElements = []) 
     extraCloseElements.forEach(el => el.addEventListener("click", close));
   }
 }
+let detectedCity = "atyrau";
+
+async function setupGeolocation() {
+  const widget = document.getElementById("location-widget");
+  const drawerWidget = document.getElementById("drawer-location-widget");
+
+  if (!widget || !drawerWidget) return;
+
+  try {
+    const response = await fetch("https://ipapi.co/json/");
+    if (!response.ok) throw new Error("Geolocation failed");
+    const data = await response.json();
+    
+    if (data && data.city) {
+      detectedCity = data.city.toLowerCase().trim();
+    }
+  } catch (err) {
+    console.warn("Could not determine user location via IP:", err);
+    detectedCity = "atyrau"; // Default fallback
+  }
+
+  updateLocationUi();
+}
+
+function updateLocationUi() {
+  const widget = document.getElementById("location-widget");
+  const drawerWidget = document.getElementById("drawer-location-widget");
+  const alertBanner = document.getElementById("location-alert-banner");
+  const textEl = document.getElementById("location-text");
+  const drawerTextEl = document.getElementById("drawer-location-text");
+
+  if (!widget || !drawerWidget) return;
+
+  const currentLang = window.i18n ? window.i18n.getCurrentLanguage() : "ru";
+
+  // Translate city if we know it
+  const cityMap = {
+    atyrau: { ru: "Атырау", kk: "Атырау" },
+    almaty: { ru: "Алматы", kk: "Алматы" },
+    astana: { ru: "Астана", kk: "Астана" },
+    shymkent: { ru: "Шымкент", kk: "Шымкент" },
+    karaganda: { ru: "Караганда", kk: "Қарағанды" },
+    aktobe: { ru: "Актобе", kk: "Ақтөбе" },
+    taraz: { ru: "Тараз", kk: "Тараз" },
+    pavlodar: { ru: "Павлодар", kk: "Павлодар" },
+    semey: { ru: "Семей", kk: "Семей" },
+    vocals: { ru: "Уральск", kk: "Орал" },
+    uralsk: { ru: "Уральск", kk: "Орал" },
+    kostanay: { ru: "Костанай", kk: "Қостанай" },
+    kyzylorda: { ru: "Кызылорда", kk: "Қызылорда" },
+    petropavlovsk: { ru: "Петропавловск", kk: "Петропавл" }
+  };
+
+  let displayCity = detectedCity.charAt(0).toUpperCase() + detectedCity.slice(1);
+  if (cityMap[detectedCity]) {
+    displayCity = cityMap[detectedCity][currentLang];
+  }
+
+  if (detectedCity !== "atyrau") {
+    if (window.i18n) {
+      displayCity = window.i18n.t("location_your_city").replace("{city}", displayCity);
+    } else {
+      displayCity = "Ваш город: " + displayCity;
+    }
+  }
+
+  // Update text
+  if (textEl) textEl.textContent = displayCity;
+  if (drawerTextEl) drawerTextEl.textContent = displayCity;
+
+  // Show widgets
+  widget.classList.remove("hidden");
+  drawerWidget.classList.remove("hidden");
+
+  // Show/hide banner if not in Atyrau
+  if (alertBanner) {
+    if (detectedCity !== "atyrau") {
+      alertBanner.classList.remove("hidden");
+    } else {
+      alertBanner.classList.add("hidden");
+    }
+  }
+}
+
+
 if (typeof module !== 'undefined') {
   module.exports = {
     addToCart: typeof addToCart !== 'undefined' ? addToCart : null,
