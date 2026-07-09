@@ -869,6 +869,77 @@ function adjustColorBrightness(hex, percent) {
 }
 
 // Setup Yandex.Delivery Address Price Calculator
+// --- Delivery Calculator Helpers ---
+
+async function fetchCoordinates(address) {
+  const url = `https://nominatim.openstreetmap.org/search?q=Атырау, ${encodeURIComponent(address)}&format=json&limit=1`;
+  const response = await fetch(url, {
+    headers: {
+      "User-Agent": "NazcakeConfectioneryDeliveryCalculator/1.0 (contact: info@nazcake.kz)"
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error("Не удалось подключиться к серверу геокодирования.");
+  }
+
+  const data = await response.json();
+  if (data.length === 0) {
+    throw new Error("Адрес не найден. Пожалуйста, проверьте правильность написания (например: Сатпаева 15).");
+  }
+
+  const location = data[0];
+  return {
+    lat: parseFloat(location.lat),
+    lon: parseFloat(location.lon)
+  };
+}
+
+function checkAtyrauBounds(lat, lon, bounds) {
+  if (lat < bounds.minLat || lat > bounds.maxLat || lon < bounds.minLon || lon > bounds.maxLon) {
+    throw new Error("Яндекс.Доставка (Экспресс) доступна только в пределах города Атырау.");
+  }
+}
+
+function calculateDeliveryCost(distance) {
+  let cost = 500 + Math.round(distance * 150);
+  cost = Math.ceil(cost / 50) * 50;
+  if (cost < 500) cost = 500;
+  if (cost > 3500) cost = 3500;
+  return cost;
+}
+
+function calculateDeliveryTime(distance) {
+  return Math.round(distance * 4) + 20;
+}
+
+function showDeliveryError(msg, errorBox, resultsBox) {
+  errorBox.textContent = msg;
+  errorBox.classList.remove("hidden");
+  resultsBox.classList.add("hidden");
+}
+
+function hideDeliveryError(errorBox) {
+  errorBox.textContent = "";
+  errorBox.classList.add("hidden");
+}
+
+function getHaversineDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Radius of the earth in km
+  const dLat = deg2rad(lat2 - lat1);
+  const dLon = deg2rad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c; // Distance in km
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI / 180);
+}
+
 function setupDeliveryCalculator() {
   const calcBtn = document.getElementById("calc-delivery-btn");
   const addressInput = document.getElementById("delivery-address");
@@ -894,105 +965,42 @@ function setupDeliveryCalculator() {
   calcBtn.addEventListener("click", async () => {
     const address = addressInput.value.trim();
     if (!address) {
-      showError("Пожалуйста, введите адрес доставки в Атырау.");
+      showDeliveryError("Пожалуйста, введите адрес доставки в Атырау.", errorBox, resultsBox);
       return;
     }
 
     calcBtn.disabled = true;
     calcBtn.textContent = "Выполняется расчет...";
-    hideError();
+    hideDeliveryError(errorBox);
     resultsBox.classList.add("hidden");
 
     try {
-      // Nominatim search query restricted to Atyrau
-      const url = `https://nominatim.openstreetmap.org/search?q=Атырау, ${encodeURIComponent(address)}&format=json&limit=1`;
+      const { lat, lon } = await fetchCoordinates(address);
       
-      const response = await fetch(url, {
-        headers: {
-          "User-Agent": "NazcakeConfectioneryDeliveryCalculator/1.0 (contact: info@nazcake.kz)"
-        }
-      });
+      checkAtyrauBounds(lat, lon, atyrauBounds);
 
-      if (!response.ok) {
-        throw new Error("Не удалось подключиться к серверу геокодирования.");
-      }
-
-      const data = await response.json();
-
-      if (data.length === 0) {
-        throw new Error("Адрес не найден. Пожалуйста, проверьте правильность написания (например: Сатпаева 15).");
-      }
-
-      const location = data[0];
-      const lat = parseFloat(location.lat);
-      const lon = parseFloat(location.lon);
-
-      // Verify that coordinates belong to Atyrau city
-      if (lat < atyrauBounds.minLat || lat > atyrauBounds.maxLat || lon < atyrauBounds.minLon || lon > atyrauBounds.maxLon) {
-        throw new Error("Яндекс.Доставка (Экспресс) доступна только в пределах города Атырау.");
-      }
-
-      // Calculate distance using Haversine formula
       const distance = getHaversineDistance(bakeryLat, bakeryLon, lat, lon);
-      
-      // Calculate price
-      // Base: 500 ₸ + 150 ₸ / km. Rounded to nearest 50 ₸. Min 500 ₸.
-      let cost = 500 + Math.round(distance * 150);
-      cost = Math.ceil(cost / 50) * 50; // round to nearest 50
-      if (cost < 500) cost = 500;
-      if (cost > 3500) cost = 3500; // max cost cap within city
+      const cost = calculateDeliveryCost(distance);
+      const estTime = calculateDeliveryTime(distance);
 
-      // Format results
       resDistance.textContent = `${distance.toFixed(1)} км`;
       resCost.textContent = `${cost.toLocaleString()} ₸`;
-      
-      // Estimated time: distance * 4 min/km + 15 min prep/pickup time
-      const estTime = Math.round(distance * 4) + 20;
       resTime.textContent = `~${estTime} минут`;
 
       resultsBox.classList.remove("hidden");
       
-      // Fill the checkout address field if it's open
       const checkoutAddressField = document.getElementById("checkout-address");
       if (checkoutAddressField) {
         checkoutAddressField.value = address;
       }
 
     } catch (err) {
-      showError(err.message || "Ошибка при расчете стоимости доставки.");
+      showDeliveryError(err.message || "Ошибка при расчете стоимости доставки.", errorBox, resultsBox);
     } finally {
       calcBtn.disabled = false;
       calcBtn.textContent = "Рассчитать доставку";
     }
   });
-
-  function showError(msg) {
-    errorBox.textContent = msg;
-    errorBox.classList.remove("hidden");
-    resultsBox.classList.add("hidden");
-  }
-
-  function hideError() {
-    errorBox.textContent = "";
-    errorBox.classList.add("hidden");
-  }
-
-  // Haversine Distance Calculation Formula
-  function getHaversineDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371; // Radius of the earth in km
-    const dLat = deg2rad(lat2 - lat1);
-    const dLon = deg2rad(lon2 - lon1);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c; // Distance in km
-  }
-
-  function deg2rad(deg) {
-    return deg * (Math.PI / 180);
-  }
 }
 
 // Handle Order Checkout Submission & Send to Telegram
