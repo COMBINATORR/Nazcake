@@ -1,3 +1,14 @@
+// Global Configuration
+const CONFIG = {
+  telegram: {
+    botToken: "YOUR_TELEGRAM_BOT_TOKEN",
+    chatId: "YOUR_TELEGRAM_CHAT_ID",
+    get isConfigured() {
+      return this.botToken !== "YOUR_TELEGRAM_BOT_TOKEN" && this.chatId !== "YOUR_TELEGRAM_CHAT_ID";
+    }
+  }
+};
+
 // Confectionery Nazcake App Logic
 
 // Product Catalog Data
@@ -1035,12 +1046,11 @@ async function handleCheckoutSubmit(e) {
 
   message += `\n💵 <b>Итоговая сумма:</b> ${subtotal.toLocaleString()} ₸`;
 
-  // Telegram configuration placeholders (users should insert their real Bot Token and Chat ID)
-  const botToken = "YOUR_TELEGRAM_BOT_TOKEN";
-  const chatId = "YOUR_TELEGRAM_CHAT_ID";
+  const botToken = CONFIG.telegram.botToken;
+  const chatId = CONFIG.telegram.chatId;
 
   // Check if they are placeholder values
-  if (botToken === "YOUR_TELEGRAM_BOT_TOKEN" || chatId === "YOUR_TELEGRAM_CHAT_ID") {
+  if (!CONFIG.telegram.isConfigured) {
     console.log("Telegram configuration is not completed yet. Order Details:");
     console.log(message);
     

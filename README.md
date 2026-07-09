@@ -35,10 +35,14 @@ Nazcake/
 1. Создайте Telegram-бота через [@BotFather](https://t.me/BotFather) и скопируйте его токен.
 2. Узнайте свой `Chat ID` (например, через [@userinfobot](https://t.me/userinfobot) или добавьте бота в группу и получите ID группы).
 3. Откройте файл [`app.js`](file:///C:/Users/ASUS/Desktop/Nazcake/app.js).
-4. Найдите строки (около 640-й строки):
+4. Найдите блок `CONFIG` в самом начале файла:
    ```javascript
-   const botToken = "YOUR_TELEGRAM_BOT_TOKEN";
-   const chatId = "YOUR_TELEGRAM_CHAT_ID";
+   const CONFIG = {
+     telegram: {
+       botToken: "YOUR_TELEGRAM_BOT_TOKEN",
+       chatId: "YOUR_TELEGRAM_CHAT_ID"
+     }
+   };
    ```
 5. Замените `"YOUR_TELEGRAM_BOT_TOKEN"` на токен вашего бота, а `"YOUR_TELEGRAM_CHAT_ID"` на ваш ID чата.
 6. Сохраните изменения. Теперь новые заказы будут мгновенно приходить в ваш Telegram!
