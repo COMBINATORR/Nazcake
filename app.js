@@ -781,7 +781,14 @@ function setupBentoCustomizer() {
     text: "Happy Birthday!"
   };
 
-  // Base Color selection
+  setupBaseColorOptions(bentoConfig, baseColorOptions, cakeTop, cakeSide);
+  setupTextColorOptions(bentoConfig, textColorOptions, cakeTextElement);
+  setupTextInput(bentoConfig, bentoTextInput, cakeTextElement);
+  setupSprinklesOptions(bentoConfig, sprinklesSelect, sprinklesGroup);
+  setupAddBentoBtn(bentoConfig, addBentoBtn);
+}
+
+function setupBaseColorOptions(bentoConfig, baseColorOptions, cakeTop, cakeSide) {
   baseColorOptions.querySelectorAll(".color-dot").forEach(dot => {
     dot.addEventListener("click", () => {
       baseColorOptions.querySelectorAll(".color-dot").forEach(d => d.classList.remove("active"));
@@ -796,8 +803,9 @@ function setupBentoCustomizer() {
       cakeSide.setAttribute("fill", darkerColor);
     });
   });
+}
 
-  // Text Color selection
+function setupTextColorOptions(bentoConfig, textColorOptions, cakeTextElement) {
   textColorOptions.querySelectorAll(".color-dot").forEach(dot => {
     dot.addEventListener("click", () => {
       textColorOptions.querySelectorAll(".color-dot").forEach(d => d.classList.remove("active"));
@@ -807,8 +815,9 @@ function setupBentoCustomizer() {
       cakeTextElement.setAttribute("fill", color);
     });
   });
+}
 
-  // Inscription text edit
+function setupTextInput(bentoConfig, bentoTextInput, cakeTextElement) {
   bentoTextInput.addEventListener("input", (e) => {
     let txt = e.target.value;
     if (txt.length === 0) {
@@ -819,60 +828,71 @@ function setupBentoCustomizer() {
       bentoConfig.text = txt;
     }
   });
+}
 
-  // Sprinkles Change
+function setupSprinklesOptions(bentoConfig, sprinklesSelect, sprinklesGroup) {
   sprinklesSelect.addEventListener("change", (e) => {
     const type = e.target.value;
     bentoConfig.sprinkles = type;
-    drawSprinkles(type);
+    drawSprinkles(type, sprinklesGroup);
   });
+}
 
-  // Helper: Draw sprinkles inside cake top ellipse (cx=150, cy=150, rx=90, ry=20)
-  function drawSprinkles(type) {
-    sprinklesGroup.innerHTML = "";
-    if (type === "none") return;
+// Helper: Draw sprinkles inside cake top ellipse (cx=150, cy=150, rx=90, ry=20)
+function drawSprinkles(type, sprinklesGroup) {
+  sprinklesGroup.innerHTML = "";
+  if (type === "none") return;
 
-    let points = [];
-    const count = type === "pearls" ? 30 : 20;
-    for (let i = 0; i < count; i++) {
-      const angle = Math.random() * Math.PI * 2;
-      const rScale = Math.random() * 0.75 + 0.1; // keep away from edges
-      const x = 150 + Math.cos(angle) * 90 * rScale;
-      const y = 150 + Math.sin(angle) * 20 * rScale;
-      points.push({ x, y });
-    }
+let points = [];
+  // Generate static spread of sprinkles inside ellipse boundaries
+  // x = 150 + cos(t) * rx * scale, y = 150 + sin(t) * ry * scale
+  const count = type === "pearls" ? 30 : 20;
+  for (let i = 0; i < count; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const rScale = Math.random() * 0.75 + 0.1; // keep away from edges
+    const x = 150 + Math.cos(angle) * 90 * rScale;
+    const y = 150 + Math.sin(angle) * 20 * rScale;
+    points.push({ x, y });
 
-    points.forEach((pt, idx) => {
-      if (type === "pearls") {
-        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        circle.setAttribute("cx", pt.x);
-        circle.setAttribute("cy", pt.y);
-        circle.setAttribute("r", 2.5);
-        circle.setAttribute("fill", "#ffffff");
-        circle.setAttribute("stroke", "#e5d0ba");
-        circle.setAttribute("stroke-width", "0.5");
-        sprinklesGroup.appendChild(circle);
-      } else if (type === "hearts") {
-        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        path.setAttribute("d", `M ${pt.x} ${pt.y} c -2 -3, -5 -1, -5 2 c 0 2, 2 4, 5 6 c 3 -2, 5 -4, 5 -6 c 0 -3, -3 -5, -5 -2 Z`);
-        path.setAttribute("fill", "#ff4f5e");
-        sprinklesGroup.appendChild(path);
-      } else if (type === "gold") {
-        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        circle.setAttribute("cx", pt.x);
-        circle.setAttribute("cy", pt.y);
-        circle.setAttribute("r", 1.5);
-        circle.setAttribute("fill", "#ffd700");
-        sprinklesGroup.appendChild(circle);
-      } else if (type === "stars") {
-        const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-        polygon.setAttribute("points", `${pt.x},${pt.y-3} ${pt.x+1},${pt.y-1} ${pt.x+3},${pt.y-1} ${pt.x+1.5},${pt.y} ${pt.x+2},${pt.y+2} ${pt.x},${pt.y+1} ${pt.x-2},${pt.y+2} ${pt.x-1.5},${pt.y} ${pt.x-3},${pt.y-1} ${pt.x-1},${pt.y-1}`);
-        polygon.setAttribute("fill", "#ffe272");
-        sprinklesGroup.appendChild(polygon);
-      }
-    });
   }
 
+  points.forEach((pt, idx) => {
+    if (type === "pearls") {
+      // Simple white shiny pearls
+      const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      circle.setAttribute("cx", pt.x);
+      circle.setAttribute("cy", pt.y);
+      circle.setAttribute("r", 2.5);
+      circle.setAttribute("fill", "#ffffff");
+      circle.setAttribute("stroke", "#e5d0ba");
+      circle.setAttribute("stroke-width", "0.5");
+      sprinklesGroup.appendChild(circle);
+    } else if (type === "hearts") {
+      // Red heart path
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      const scale = 0.5;
+      path.setAttribute("d", `M ${pt.x} ${pt.y} c -2 -3, -5 -1, -5 2 c 0 2, 2 4, 5 6 c 3 -2, 5 -4, 5 -6 c 0 -3, -3 -5, -5 -2 Z`);
+      path.setAttribute("fill", "#ff4f5e");
+      sprinklesGroup.appendChild(path);
+    } else if (type === "gold") {
+      // Gold dust
+      const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      circle.setAttribute("cx", pt.x);
+      circle.setAttribute("cy", pt.y);
+      circle.setAttribute("r", 1.5);
+      circle.setAttribute("fill", "#ffd700");
+      sprinklesGroup.appendChild(circle);
+    } else if (type === "stars") {
+      // Little yellow stars
+      const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+      polygon.setAttribute("points", `${pt.x},${pt.y-3} ${pt.x+1},${pt.y-1} ${pt.x+3},${pt.y-1} ${pt.x+1.5},${pt.y} ${pt.x+2},${pt.y+2} ${pt.x},${pt.y+1} ${pt.x-2},${pt.y+2} ${pt.x-1.5},${pt.y} ${pt.x-3},${pt.y-1} ${pt.x-1},${pt.y-1}`);
+      polygon.setAttribute("fill", "#ffe272");
+      sprinklesGroup.appendChild(polygon);
+    }
+  });
+}
+
+function setupAddBentoBtn(bentoConfig, addBentoBtn) {
   // Add Bento Cake to Cart
   addBentoBtn.addEventListener("click", () => {
     const bentoId = `bento_custom_${Date.now()}`;
@@ -909,7 +929,6 @@ function setupBentoCustomizer() {
     }, 800);
   });
 }
-
 // Adjust Hex Color brightness
 function adjustColorBrightness(hex, percent) {
   let R = parseInt(hex.substring(1, 3), 16);
