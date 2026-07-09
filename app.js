@@ -857,15 +857,11 @@ function adjustColorBrightness(hex, percent) {
   G = parseInt((G * (100 + percent)) / 100);
   B = parseInt((B * (100 + percent)) / 100);
 
-  R = R < 255 ? R : 255;
-  G = G < 255 ? G : 255;
-  B = B < 255 ? B : 255;
+  R = Math.max(0, Math.min(255, R));
+  G = Math.max(0, Math.min(255, G));
+  B = Math.max(0, Math.min(255, B));
 
-  const rHex = R.toString(16).padStart(2, '0');
-  const gHex = G.toString(16).padStart(2, '0');
-  const bHex = B.toString(16).padStart(2, '0');
-
-  return `#${rHex}${gHex}${bHex}`;
+  return `#${[R, G, B].map(x => x.toString(16).padStart(2, '0')).join('')}`;
 }
 
 // Setup Yandex.Delivery Address Price Calculator
