@@ -5,101 +5,118 @@
 const fs = require('fs');
 const path = require('path');
 
-// Load app.js using eval to get access to its variables since it's not exported
-const appJsPath = path.join(__dirname, 'app.js');
-let appJsCode = fs.readFileSync(appJsPath, 'utf8');
+const html = fs.readFileSync(path.resolve(__dirname, './index.html'), 'utf8');
 
-// We need to mock DOM elements because app.js accesses them on load
-document.body.innerHTML = `
-  <div id="bestsellers-grid"></div>
-  <div id="catalog-grid"></div>
-  <div id="preview-modal"></div>
-  <button id="close-preview-btn"></button>
-  <img id="modal-product-img" />
-  <h2 id="modal-product-title"></h2>
-  <div id="modal-product-price"></div>
-  <p id="modal-product-desc"></p>
-  <p id="modal-product-ingredients"></p>
-  <span id="modal-qty-val"></span>
-  <button id="modal-minus-btn"></button>
-  <button id="modal-plus-btn"></button>
-  <button id="modal-add-btn"></button>
-  <div id="cart-sidebar"></div>
-  <div id="cart-overlay"></div>
-  <button id="open-cart-btn"></button>
-  <button id="close-cart-btn"></button>
-  <div id="cart-items-container"></div>
-  <div id="cart-total-sum"></div>
-  <div id="mobile-drawer"></div>
-  <div id="drawer-overlay"></div>
-  <button id="mobile-menu-btn"></button>
-  <button id="close-drawer-btn"></button>
-  <form id="checkout-form"></form>
-  <div id="checkout-address-group"></div>
-  <div id="success-modal"></div>
-  <button id="close-success-btn"></button>
-  <div class="cart-count"></div>
-`;
+describe('Nazcake App Unit Tests', () => {
+    beforeAll(() => {
+        // Load the HTML content
+        document.documentElement.innerHTML = html;
+        const appJsPath = path.resolve(__dirname, './app.js');
+        let appJsCode = fs.readFileSync(appJsPath, 'utf8');
 
-// Expose variables for testing and mock updateCartUi
-appJsCode += `
-  window.removeFromCart = removeFromCart;
-  window.getCart = () => cart;
-  window.setCart = (newCart) => { cart = newCart; };
-  updateCartUi = jest.fn(); // Mocking updateCartUi
-  window.getUpdateCartUiMock = () => updateCartUi;
-  window.adjustColorBrightness = adjustColorBrightness;
-`;
+        // Expose variables and mock updateCartUi
+        appJsCode += `
+            window.addToCart = addToCart;
+            window.removeFromCart = removeFromCart;
+            window.getCart = () => cart;
+            window.setCart = (newCart) => { cart = newCart; };
+            updateCartUi = jest.fn(); // Mocking updateCartUi
+            window.getUpdateCartUiMock = () => updateCartUi;
+            window.adjustColorBrightness = adjustColorBrightness;
+        `;
 
-eval(appJsCode);
+        eval(appJsCode);
+    });
 
-describe('adjustColorBrightness', () => {
-  it('should be defined', () => {
-    expect(window.adjustColorBrightness).toBeDefined();
-  });
+    describe('adjustColorBrightness', () => {
+      it('should be defined', () => {
+        expect(window.adjustColorBrightness).toBeDefined();
+      });
 
-  it('should increase brightness with positive percentage', () => {
-    expect(window.adjustColorBrightness('#646464', 20)).toBe('#787878');
-  });
+      it('should increase brightness with positive percentage', () => {
+        expect(window.adjustColorBrightness('#646464', 20)).toBe('#787878');
+      });
 
-  it('should decrease brightness with negative percentage', () => {
-    expect(window.adjustColorBrightness('#646464', -20)).toBe('#505050');
-  });
+      it('should decrease brightness with negative percentage', () => {
+        expect(window.adjustColorBrightness('#646464', -20)).toBe('#505050');
+      });
 
-  it('should cap brightness at 255', () => {
-    expect(window.adjustColorBrightness('#f0f0f0', 20)).toBe('#ffffff');
-    expect(window.adjustColorBrightness('#ffffff', 10)).toBe('#ffffff');
-  });
+      it('should cap brightness at 255', () => {
+        expect(window.adjustColorBrightness('#f0f0f0', 20)).toBe('#ffffff');
+        expect(window.adjustColorBrightness('#ffffff', 10)).toBe('#ffffff');
+      });
 
-  it('should return the exact same color with 0 percent change', () => {
-    expect(window.adjustColorBrightness('#123456', 0)).toBe('#123456');
-  });
+      it('should return the exact same color with 0 percent change', () => {
+        expect(window.adjustColorBrightness('#123456', 0)).toBe('#123456');
+      });
 
-  it('should work correctly with smaller single digit hex results', () => {
-    expect(window.adjustColorBrightness('#050505', 0)).toBe('#050505');
-  });
-});
+      it('should work correctly with smaller single digit hex results', () => {
+        expect(window.adjustColorBrightness('#050505', 0)).toBe('#050505');
+      });
+    });
 
-describe('removeFromCart', () => {
-  beforeEach(() => {
-    // Reset cart state before each test
-    window.setCart([
-      { product: { id: 'item1', price: 100 }, qty: 1 },
-      { product: { id: 'item2', price: 200 }, qty: 2 }
-    ]);
-    window.getUpdateCartUiMock().mockClear();
-  });
+    describe('addToCart', () => {
+        beforeEach(() => {
+            window.setCart([]);
+        });
 
-  test('should remove item from cart based on id', () => {
-    window.removeFromCart('item1');
-    expect(window.getCart().length).toBe(1);
-    expect(window.getCart()[0].product.id).toBe('item2');
-    expect(window.getUpdateCartUiMock()).toHaveBeenCalledTimes(1);
-  });
+        it('should add a new product to the cart', () => {
+            const initialCartSize = window.getCart().length;
 
-  test('should do nothing if item does not exist', () => {
-    window.removeFromCart('nonexistent');
-    expect(window.getCart().length).toBe(2);
-    expect(window.getUpdateCartUiMock()).toHaveBeenCalledTimes(1);
-  });
+            // Add 2 units of a valid product
+            window.addToCart('bread_burger', 2);
+
+            const newCart = window.getCart();
+            expect(newCart.length).toBe(initialCartSize + 1);
+            expect(newCart[newCart.length - 1].product.id).toBe('bread_burger');
+            expect(newCart[newCart.length - 1].qty).toBe(2);
+        });
+
+        it('should increase quantity if product is already in cart', () => {
+            // Add initially
+            window.addToCart('bread_baursaki', 1);
+            const cartAfterFirstAdd = window.getCart();
+            expect(cartAfterFirstAdd.length).toBe(1);
+            expect(cartAfterFirstAdd[0].qty).toBe(1);
+
+            // Add again
+            window.addToCart('bread_baursaki', 3);
+            const cartAfterSecondAdd = window.getCart();
+            expect(cartAfterSecondAdd.length).toBe(1); // Length should not change, product already exists
+            expect(cartAfterSecondAdd[0].qty).toBe(4); // Quantity should correctly increase
+        });
+
+        it('should not add to cart if product id is invalid', () => {
+            const initialCartSize = window.getCart().length;
+
+            // Try adding invalid product id
+            window.addToCart('invalid_product_id', 1);
+
+            const newCart = window.getCart();
+            expect(newCart.length).toBe(initialCartSize); // No new item should be added
+        });
+    });
+
+    describe('removeFromCart', () => {
+        beforeEach(() => {
+            window.setCart([
+                { product: { id: 'item1', price: 100 }, qty: 1 },
+                { product: { id: 'item2', price: 200 }, qty: 2 }
+            ]);
+            window.getUpdateCartUiMock().mockClear();
+        });
+
+        it('should remove item from cart based on id', () => {
+            window.removeFromCart('item1');
+            expect(window.getCart().length).toBe(1);
+            expect(window.getCart()[0].product.id).toBe('item2');
+            expect(window.getUpdateCartUiMock()).toHaveBeenCalledTimes(1);
+        });
+
+        it('should do nothing if item does not exist', () => {
+            window.removeFromCart('nonexistent');
+            expect(window.getCart().length).toBe(2);
+            expect(window.getUpdateCartUiMock()).toHaveBeenCalledTimes(1);
+        });
+    });
 });
