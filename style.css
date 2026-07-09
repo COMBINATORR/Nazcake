@@ -1640,6 +1640,30 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Responsive adjustments */
 @media (max-width: 1024px) {
+  .nav-menu {
+    display: none !important;
+  }
+  
+  .mobile-menu-toggle {
+    display: flex !important;
+  }
+  
+  .main-header {
+    height: 70px;
+  }
+
+  .header-container {
+    padding: 0 15px;
+  }
+
+  .logo-main {
+    font-size: 1.4rem;
+  }
+
+  .logo-sub {
+    font-size: 0.95rem;
+  }
+
   .hero-container {
     gap: 40px;
   }
@@ -1650,6 +1674,26 @@ h1, h2, h3, h4, h5, h6 {
   
   .about-container {
     gap: 40px;
+  }
+}
+
+/* Medium Desktop Spacing adjustments to prevent menu wrapping */
+@media (min-width: 1025px) and (max-width: 1300px) {
+  .nav-menu {
+    gap: 16px !important;
+  }
+  
+  .nav-link {
+    font-size: 0.78rem !important;
+  }
+
+  .header-actions {
+    gap: 10px !important;
+  }
+  
+  .location-widget {
+    padding: 6px 12px !important;
+    font-size: 0.8rem !important;
   }
 }
 
