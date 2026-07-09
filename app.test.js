@@ -22,9 +22,37 @@ describe('Nazcake App Unit Tests', () => {
             window.setCart = (newCart) => { cart = newCart; };
             updateCartUi = jest.fn(); // Mocking updateCartUi
             window.getUpdateCartUiMock = () => updateCartUi;
+            window.adjustColorBrightness = adjustColorBrightness;
         `;
 
         eval(appJsCode);
+    });
+
+    describe('adjustColorBrightness', () => {
+      it('should be defined', () => {
+        expect(window.adjustColorBrightness).toBeDefined();
+      });
+
+      it('should increase brightness with positive percentage', () => {
+        expect(window.adjustColorBrightness('#646464', 20)).toBe('#787878');
+      });
+
+      it('should decrease brightness with negative percentage', () => {
+        expect(window.adjustColorBrightness('#646464', -20)).toBe('#505050');
+      });
+
+      it('should cap brightness at 255', () => {
+        expect(window.adjustColorBrightness('#f0f0f0', 20)).toBe('#ffffff');
+        expect(window.adjustColorBrightness('#ffffff', 10)).toBe('#ffffff');
+      });
+
+      it('should return the exact same color with 0 percent change', () => {
+        expect(window.adjustColorBrightness('#123456', 0)).toBe('#123456');
+      });
+
+      it('should work correctly with smaller single digit hex results', () => {
+        expect(window.adjustColorBrightness('#050505', 0)).toBe('#050505');
+      });
     });
 
     describe('addToCart', () => {

@@ -1226,8 +1226,6 @@ function setupModal(modal, openBtn, closeBtn, overlay, extraCloseElements = []) 
     extraCloseElements.forEach(el => el.addEventListener("click", close));
   }
 }
-
-
 if (typeof module !== 'undefined') {
   module.exports = {
     addToCart: typeof addToCart !== 'undefined' ? addToCart : null,
@@ -1236,6 +1234,7 @@ if (typeof module !== 'undefined') {
     getCart: () => typeof cart !== 'undefined' ? cart : [],
     setCart: (c) => { if (typeof cart !== 'undefined') cart = c; },
     removeFromCart: typeof removeFromCart !== 'undefined' ? removeFromCart : null,
-    updateCartUi: typeof updateCartUi !== 'undefined' ? updateCartUi : null
+    updateCartUi: typeof updateCartUi !== 'undefined' ? updateCartUi : null,
+    adjustColorBrightness: typeof adjustColorBrightness !== 'undefined' ? adjustColorBrightness : null
   };
-}
+}
