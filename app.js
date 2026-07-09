@@ -995,6 +995,17 @@ function setupDeliveryCalculator() {
   }
 }
 
+
+// Helper to sanitize HTML to prevent injection in Telegram messages
+function escapeHTML(str) {
+  if (typeof str !== 'string') return '';
+  return str.replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+}
+
 // Handle Order Checkout Submission & Send to Telegram
 async function handleCheckoutSubmit(e) {
   e.preventDefault();
@@ -1018,18 +1029,18 @@ async function handleCheckoutSubmit(e) {
   
   // Format HTML message for Telegram
   let message = `<b>🍰 Новый заказ от Nazcake!</b>\n\n`;
-  message += `👤 <b>Клиент:</b> ${name}\n`;
-  message += `📞 <b>Телефон:</b> ${phone}\n`;
-  message += `📦 <b>Способ получения:</b> ${method === "delivery" ? "Доставка Яндекс" : "Самовывоз"}\n`;
+  message += `👤 <b>Клиент:</b> ${escapeHTML(name)}\n`;
+  message += `📞 <b>Телефон:</b> ${escapeHTML(phone)}\n`;
+  message += `📦 <b>Способ получения:</b> ${escapeHTML(method === "delivery" ? "Доставка Яндекс" : "Самовывоз")}\n`;
   if (method === "delivery") {
-    message += `📍 <b>Адрес:</b> ${address}\n`;
+    message += `📍 <b>Адрес:</b> ${escapeHTML(address)}\n`;
   }
   message += `\n🛒 <b>Товары:</b>\n`;
 
   cart.forEach((item, idx) => {
-    message += `${idx + 1}. <b>${item.product.name}</b> — ${item.qty} шт. (${(item.product.price * item.qty).toLocaleString()} ₸)\n`;
+    message += `${idx + 1}. <b>${escapeHTML(item.product.name)}</b> — ${item.qty} шт. (${(item.product.price * item.qty).toLocaleString()} ₸)\n`;
     if (item.product.id.startsWith("bento_custom_")) {
-      message += `   <i>Детали: ${item.product.desc}</i>\n`;
+      message += `   <i>Детали: ${escapeHTML(item.product.desc)}</i>\n`;
     }
   });
 
