@@ -1016,65 +1016,31 @@ async function handleCheckoutSubmit(e) {
   // Calculate total
   const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.qty), 0);
   
-  // Format HTML message for Telegram
-  let message = `<b>🍰 Новый заказ от Nazcake!</b>\n\n`;
-  message += `👤 <b>Клиент:</b> ${name}\n`;
-  message += `📞 <b>Телефон:</b> ${phone}\n`;
-  message += `📦 <b>Способ получения:</b> ${method === "delivery" ? "Доставка Яндекс" : "Самовывоз"}\n`;
+  // Format message for WhatsApp
+  let message = `*🍰 Новый заказ от Nazcake!*\n\n`;
+  message += `👤 *Клиент:* ${name}\n`;
+  message += `📞 *Телефон:* ${phone}\n`;
+  message += `📦 *Способ получения:* ${method === "delivery" ? "Доставка Яндекс" : "Самовывоз"}\n`;
   if (method === "delivery") {
-    message += `📍 <b>Адрес:</b> ${address}\n`;
+    message += `📍 *Адрес:* ${address}\n`;
   }
-  message += `\n🛒 <b>Товары:</b>\n`;
+  message += `\n🛒 *Товары:*\n`;
 
   cart.forEach((item, idx) => {
-    message += `${idx + 1}. <b>${item.product.name}</b> — ${item.qty} шт. (${(item.product.price * item.qty).toLocaleString()} ₸)\n`;
+    message += `${idx + 1}. *${item.product.name}* — ${item.qty} шт. (${(item.product.price * item.qty).toLocaleString()} ₸)\n`;
     if (item.product.id.startsWith("bento_custom_")) {
-      message += `   <i>Детали: ${item.product.desc}</i>\n`;
+      message += `   _Детали: ${item.product.desc}_\n`;
     }
   });
 
-  message += `\n💵 <b>Итоговая сумма:</b> ${subtotal.toLocaleString()} ₸`;
+  message += `\n💵 *Итоговая сумма:* ${subtotal.toLocaleString()} ₸`;
 
-  // Telegram configuration placeholders (users should insert their real Bot Token and Chat ID)
-  const botToken = "YOUR_TELEGRAM_BOT_TOKEN";
-  const chatId = "YOUR_TELEGRAM_CHAT_ID";
+  // Send to WhatsApp
+  const phoneWA = "77783567221"; // Target WhatsApp number
+  const waUrl = `https://wa.me/${phoneWA}?text=${encodeURIComponent(message)}`;
 
-  // Check if they are placeholder values
-  if (botToken === "YOUR_TELEGRAM_BOT_TOKEN" || chatId === "YOUR_TELEGRAM_CHAT_ID") {
-    console.log("Telegram configuration is not completed yet. Order Details:");
-    console.log(message);
-    
-    // Simulate API delay and succeed
-    setTimeout(() => {
-      orderSucceeded();
-    }, 1000);
-  } else {
-    // Send to Telegram Bot API
-    try {
-      const tgUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
-      const response = await fetch(tgUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: message,
-          parse_mode: "HTML"
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error("Не удалось отправить сообщение в Telegram.");
-      }
-
-      orderSucceeded();
-    } catch (err) {
-      console.error(err);
-      alert("Заказ оформлен локально, но произошла ошибка отправки в Telegram: " + err.message);
-      orderSucceeded();
-    }
-  }
+  window.open(waUrl, '_blank');
+  orderSucceeded();
 }
 
 // Actions to perform on successful checkout
@@ -1098,5 +1064,5 @@ function orderSucceeded() {
   // Re-enable submit button
   const submitBtn = document.getElementById("checkout-submit-btn");
   submitBtn.disabled = false;
-  submitBtn.textContent = "Оформить заказ в Telegram";
+  submitBtn.textContent = "Оформить заказ в WhatsApp";
 }
