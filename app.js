@@ -1,3 +1,8 @@
+const CONFIG = {
+  TELEGRAM_BOT_TOKEN: "YOUR_TELEGRAM_BOT_TOKEN",
+  TELEGRAM_CHAT_ID: "YOUR_TELEGRAM_CHAT_ID"
+};
+
 // Confectionery Nazcake App Logic
 
 // Product Catalog Data
@@ -568,47 +573,16 @@ function setupEventListeners() {
   });
 
   // Mobile Menu Drawer toggles
-  mobileMenuBtn.addEventListener("click", () => {
-    mobileDrawer.classList.add("open");
-    drawerOverlay.classList.add("open");
-  });
-
-  const closeDrawer = () => {
-    mobileDrawer.classList.remove("open");
-    drawerOverlay.classList.remove("open");
-  };
-
-  closeDrawerBtn.addEventListener("click", closeDrawer);
-  drawerOverlay.addEventListener("click", closeDrawer);
-  drawerLinks.forEach(link => link.addEventListener("click", closeDrawer));
+  setupModal(mobileDrawer, mobileMenuBtn, closeDrawerBtn, drawerOverlay, drawerLinks);
 
   // Cart Sidebar toggles
-  openCartBtn.addEventListener("click", () => {
-    cartSidebar.classList.add("open");
-    cartOverlay.classList.add("open");
-  });
+  setupModal(cartSidebar, openCartBtn, closeCartBtn, cartOverlay);
 
-  const closeCart = () => {
-    cartSidebar.classList.remove("open");
-    cartOverlay.classList.remove("open");
-  };
+  // Preview Modal
+  setupModal(previewModal, null, closePreviewBtn, previewModal);
 
-  closeCartBtn.addEventListener("click", closeCart);
-  cartOverlay.addEventListener("click", closeCart);
-
-  // Close Preview Modal
-  const closePreview = () => {
-    previewModal.classList.remove("open");
-  };
-  closePreviewBtn.addEventListener("click", closePreview);
-  previewModal.addEventListener("click", (e) => {
-    if (e.target === previewModal) closePreview();
-  });
-
-  // Success modal close
-  closeSuccessBtn.addEventListener("click", () => {
-    successModal.classList.remove("open");
-  });
+  // Success modal
+  setupModal(successModal, null, closeSuccessBtn, null);
 
   // Shipping Method Switcher inside Cart
   deliveryMethodRadios.forEach(radio => {
@@ -946,15 +920,11 @@ function adjustColorBrightness(hex, percent) {
   G = parseInt((G * (100 + percent)) / 100);
   B = parseInt((B * (100 + percent)) / 100);
 
-  R = R < 255 ? R : 255;
-  G = G < 255 ? G : 255;
-  B = B < 255 ? B : 255;
+  R = Math.max(0, Math.min(255, R));
+  G = Math.max(0, Math.min(255, G));
+  B = Math.max(0, Math.min(255, B));
 
-  const rHex = R.toString(16).padStart(2, '0');
-  const gHex = G.toString(16).padStart(2, '0');
-  const bHex = B.toString(16).padStart(2, '0');
-
-  return `#${rHex}${gHex}${bHex}`;
+  return `#${[R, G, B].map(x => x.toString(16).padStart(2, '0')).join('')}`;
 }
 
 // Setup Yandex.Delivery Address Price Calculator
@@ -1150,11 +1120,8 @@ async function handleCheckoutSubmit(e) {
   message += `\n💵 <b>${window.i18n ? t("tg_total") : "Итоговая сумма"}:</b> ${subtotal.toLocaleString()} ₸`;
 
   // Telegram configuration placeholders (users should insert their real Bot Token and Chat ID)
-  const botToken = "YOUR_TELEGRAM_BOT_TOKEN";
-  const chatId = "YOUR_TELEGRAM_CHAT_ID";
-
   // Check if they are placeholder values
-  if (botToken === "YOUR_TELEGRAM_BOT_TOKEN" || chatId === "YOUR_TELEGRAM_CHAT_ID") {
+  if (CONFIG.TELEGRAM_BOT_TOKEN === "YOUR_TELEGRAM_BOT_TOKEN" || CONFIG.TELEGRAM_CHAT_ID === "YOUR_TELEGRAM_CHAT_ID") {
     console.log("Telegram configuration is not completed yet. Order Details:");
     console.log(message);
     
@@ -1165,14 +1132,14 @@ async function handleCheckoutSubmit(e) {
   } else {
     // Send to Telegram Bot API
     try {
-      const tgUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+      const tgUrl = `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendMessage`;
       const response = await fetch(tgUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          chat_id: chatId,
+          chat_id: CONFIG.TELEGRAM_CHAT_ID,
           text: message,
           parse_mode: "HTML"
         })
@@ -1213,4 +1180,33 @@ function orderSucceeded() {
   const submitBtn = document.getElementById("checkout-submit-btn");
   submitBtn.disabled = false;
   submitBtn.textContent = window.i18n ? window.i18n.t("cart_btn_checkout") : "Оформить заказ в Telegram";
+}
+
+
+function setupModal(modal, openBtn, closeBtn, overlay, extraCloseElements = []) {
+  const open = () => {
+    if (modal) modal.classList.add("open");
+    if (overlay) overlay.classList.add("open");
+  };
+
+  const close = () => {
+    if (modal) modal.classList.remove("open");
+    if (overlay) overlay.classList.remove("open");
+  };
+
+  if (openBtn) openBtn.addEventListener("click", open);
+  if (closeBtn) closeBtn.addEventListener("click", close);
+
+  if (overlay) {
+    overlay.addEventListener("click", (e) => {
+      // Only close if clicking the overlay itself, not its children
+      if (e.target === overlay) {
+        close();
+      }
+    });
+  }
+
+  if (extraCloseElements && extraCloseElements.length > 0) {
+    extraCloseElements.forEach(el => el.addEventListener("click", close));
+  }
 }
