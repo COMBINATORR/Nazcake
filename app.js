@@ -1207,3 +1207,16 @@ function setupModal(modal, openBtn, closeBtn, overlay, extraCloseElements = []) 
     extraCloseElements.forEach(el => el.addEventListener("click", close));
   }
 }
+
+
+if (typeof module !== 'undefined') {
+  module.exports = {
+    addToCart: typeof addToCart !== 'undefined' ? addToCart : null,
+    products: typeof products !== 'undefined' ? products : null,
+    cart: typeof cart !== 'undefined' ? cart : null,
+    getCart: () => typeof cart !== 'undefined' ? cart : [],
+    setCart: (c) => { if (typeof cart !== 'undefined') cart = c; },
+    removeFromCart: typeof removeFromCart !== 'undefined' ? removeFromCart : null,
+    updateCartUi: typeof updateCartUi !== 'undefined' ? updateCartUi : null
+  };
+}
