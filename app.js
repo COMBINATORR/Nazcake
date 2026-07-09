@@ -498,14 +498,12 @@ function createProductCardHtml(p) {
         <h3 class="product-name btn-preview">${tName}</h3>
         <div class="product-footer">
           <span class="product-price">${p.price.toLocaleString()} ₸ / ${tUnit}</span>
-        </div>
-        <div class="stepper-and-btn">
-          <div class="quantity-stepper">
-            <button class="stepper-btn minus-qty" aria-label="Уменьшить">−</button>
-            <span class="quantity-val qty-number">1</span>
-            <button class="stepper-btn plus-qty" aria-label="Увеличить">+</button>
-          </div>
-          <button class="btn btn-primary btn-gradient w-100 btn-add-to-cart">${window.i18n ? window.i18n.t("cart_btn_buy") : "Купить"}</button>
+          <button class="btn-card-add btn-add-to-cart" aria-label="Добавить в корзину">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
         </div>
       </div>
     </div>
@@ -523,42 +521,30 @@ function attachCardEvents(gridElement) {
     });
   });
 
-  // Quantity Stepper logic
+  // Simple Add to Cart logic
   gridElement.querySelectorAll(".product-card").forEach(card => {
-    const minusBtn = card.querySelector(".minus-qty");
-    const plusBtn = card.querySelector(".plus-qty");
-    const qtySpan = card.querySelector(".qty-number");
     const addBtn = card.querySelector(".btn-add-to-cart");
     const id = card.getAttribute("data-id");
 
-    minusBtn.addEventListener("click", () => {
-      let qty = parseInt(qtySpan.textContent);
-      if (qty > 1) {
-        qty--;
-        qtySpan.textContent = qty;
-      }
-    });
-
-    plusBtn.addEventListener("click", () => {
-      let qty = parseInt(qtySpan.textContent);
-      qty++;
-      qtySpan.textContent = qty;
-    });
-
-    addBtn.addEventListener("click", () => {
-      const qty = parseInt(qtySpan.textContent);
-      addToCart(id, qty);
-      qtySpan.textContent = 1; // Reset to 1 after adding
-      
-      // Visual feedback on button click
-      const originalText = addBtn.textContent;
-      addBtn.textContent = "Добавлено ✓";
-      addBtn.style.transform = "scale(0.95)";
-      setTimeout(() => {
-        addBtn.textContent = originalText;
-        addBtn.style.transform = "";
-      }, 1000);
-    });
+    if (addBtn) {
+      addBtn.addEventListener("click", (e) => {
+        e.stopPropagation(); // Avoid triggering preview modal if clicked
+        addToCart(id, 1);
+        
+        // Visual feedback on button click: change plus icon to checkmark icon
+        const originalHtml = addBtn.innerHTML;
+        addBtn.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" style="color: #4cd137;">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        `;
+        addBtn.classList.add("added");
+        setTimeout(() => {
+          addBtn.innerHTML = originalHtml;
+          addBtn.classList.remove("added");
+        }, 1000);
+      });
+    }
   });
 }
 
@@ -600,6 +586,17 @@ function setupEventListeners() {
   });
 
   // Submit Order Form
+    // Sticky Bottom Bar click to open cart
+  const stickyBar = document.getElementById("sticky-bottom-bar");
+  if (stickyBar) {
+    stickyBar.addEventListener("click", () => {
+      if (cartSidebar && cartOverlay) {
+        cartSidebar.classList.add("open");
+        cartOverlay.classList.add("open");
+      }
+    });
+  }
+
   checkoutForm.addEventListener("submit", handleCheckoutSubmit);
 }
 
@@ -706,6 +703,25 @@ function updateCartUi() {
   // Calculate sum
   const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.qty), 0);
   cartTotalSum.textContent = `${subtotal.toLocaleString()} ₸`;
+
+  // Update sticky bottom bar
+  const stickyBar = document.getElementById("sticky-bottom-bar");
+  const stickyText = document.getElementById("sticky-bar-text");
+  if (stickyBar && stickyText) {
+    if (totalItems > 0) {
+      stickyBar.classList.remove("hidden");
+      document.body.classList.add("has-sticky-bar");
+      const currentLang = window.i18n ? window.i18n.getCurrentLanguage() : "ru";
+      const formattedSum = subtotal.toLocaleString();
+      const text = currentLang === "ru"
+        ? `🛍️ В корзине: ${totalItems} шт. — ${formattedSum} ₸`
+        : `🛍️ Себетте: ${totalItems} дана — ${formattedSum} ₸`;
+      stickyText.textContent = text;
+    } else {
+      stickyBar.classList.add("hidden");
+      document.body.classList.remove("has-sticky-bar");
+    }
+  }
 
   if (cart.length === 0) {
     const tEmpty = window.i18n ? window.i18n.t("cart_empty") : "Ваша корзина пока пуста. Добавьте вкусняшек!";

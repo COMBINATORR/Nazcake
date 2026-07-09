@@ -2107,3 +2107,109 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/* Add to Cart Plus Button in Catalog */
+.btn-card-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: var(--btn-gradient);
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(220, 166, 116, 0.2);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.btn-card-add:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 14px rgba(220, 166, 116, 0.3);
+}
+
+.btn-card-add:active {
+  transform: scale(0.9);
+}
+
+.btn-card-add.added {
+  background: #ffffff !important;
+  border: 2px solid #4cd137;
+  color: #4cd137;
+  box-shadow: 0 4px 10px rgba(76, 209, 55, 0.15);
+}
+
+/* Sticky Bottom Bar */
+.sticky-bottom-bar {
+  display: none !important; /* Hidden on desktop always */
+}
+
+@media (max-width: 768px) {
+  .sticky-bottom-bar {
+    display: block !important;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(74, 44, 17, 0.08);
+    padding: 10px 16px;
+    z-index: 999;
+    box-shadow: 0 -8px 24px rgba(74, 44, 17, 0.08);
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .sticky-bottom-bar.hidden {
+    display: none !important;
+  }
+  
+  body.has-sticky-bar {
+    padding-bottom: 80px;
+  }
+}
+
+.sticky-bar-content {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.sticky-bar-text {
+  font-family: var(--font-title);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--accent-chocolate);
+}
+
+.sticky-bar-btn {
+  padding: 8px 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border-radius: 20px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(220, 166, 116, 0.2);
+  transition: all 0.3s ease;
+  min-height: auto;
+  width: auto;
+}
+
+.sticky-bar-btn:hover {
+  transform: translateY(-2px);
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
