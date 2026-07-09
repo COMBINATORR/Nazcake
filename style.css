@@ -2116,7 +2116,7 @@ h1, h2, h3, h4, h5, h6 {
   height: 38px;
   border-radius: 50%;
   border: none;
-  background: var(--btn-gradient);
+  background: var(--pink-gradient);
   color: #ffffff;
   cursor: pointer;
   box-shadow: 0 4px 10px rgba(220, 166, 116, 0.2);
@@ -2126,6 +2126,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-card-add:hover {
+  background: var(--pink-gradient-hover);
   transform: scale(1.1);
   box-shadow: 0 6px 14px rgba(220, 166, 116, 0.3);
 }

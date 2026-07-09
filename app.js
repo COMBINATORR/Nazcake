@@ -334,6 +334,14 @@ const products = [
 
 // Shopping Cart State
 let cart = [];
+try {
+  const savedCart = localStorage.getItem("nazcake_cart");
+  if (savedCart) {
+    cart = JSON.parse(savedCart);
+  }
+} catch (e) {
+  console.warn("Failed to load cart from localStorage:", e);
+}
 
 // DOM Elements
 const bestsellersGrid = document.getElementById("bestsellers-grid");
@@ -446,6 +454,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupBentoCustomizer();
   setupDeliveryCalculator();
   setupGeolocation();
+  updateCartUi();
   
   if (window.i18n) {
     window.i18n.onLanguageChange(() => {
@@ -530,6 +539,10 @@ function attachCardEvents(gridElement) {
       addBtn.addEventListener("click", (e) => {
         e.stopPropagation(); // Avoid triggering preview modal if clicked
         addToCart(id, 1);
+        
+        if (addBtn.classList.contains("added")) {
+          return;
+        }
         
         // Visual feedback on button click: change plus icon to checkmark icon
         const originalHtml = addBtn.innerHTML;
@@ -702,6 +715,11 @@ function updateCartUi() {
   // Calculate sum
   const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.qty), 0);
   cartTotalSum.textContent = `${subtotal.toLocaleString()} ₸`;
+  try {
+    localStorage.setItem("nazcake_cart", JSON.stringify(cart));
+  } catch (e) {
+    console.warn("Failed to save cart to localStorage:", e);
+  }
 
   // Update sticky bottom bar
   const stickyBar = document.getElementById("sticky-bottom-bar");
