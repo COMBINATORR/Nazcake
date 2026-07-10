@@ -14,7 +14,7 @@ let products = [
     categoryLabel: "Хлебобулочные изделия",
     price: 120,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "images/bread_burger.webp",
     desc: "Свежая, невероятно мягкая и воздушная пшеничная булочка, посыпанная кунжутом. Отлично подходит для домашних бургеров.",
     ingredients: "Мука пшеничная высшего сорта, кунжут, молоко, яйца, сливочное масло, сахар, дрожжи, соль.",
     badge: "свежее"
@@ -26,7 +26,7 @@ let products = [
     categoryLabel: "Хлебобулочные изделия",
     price: 70,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "images/bread_baursaki.webp",
     desc: "Традиционные золотистые бауырсаки. Нежные внутри и хрустящие снаружи. Готовятся непосредственно перед доставкой.",
     ingredients: "Пшеничная мука, молоко, дрожжи, сахар, соль, растительное масло.",
     badge: "бестселлер"
@@ -50,7 +50,7 @@ let products = [
     categoryLabel: "Хлебобулочные изделия",
     price: 130,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "images/bread_kosichki.webp",
     desc: "Ароматный мини-батон с начинкой из чесночного масла и зелени. Отлично подходит к супам и основным блюдам.",
     ingredients: "Мука пшеничная, чеснок свежий, зелень укропа, сливочное масло, соль.",
     badge: "свежее"
@@ -62,7 +62,7 @@ let products = [
     categoryLabel: "Хлебобулочные изделия",
     price: 120,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "images/bread_kosichki.webp",
     desc: "Традиционная пшеничная сайка с нежным молочным вкусом и мягкой корочкой. Отличный выбор для завтрака.",
     ingredients: "Мука пшеничная высшего сорта, молоко пастеризованное, масло сливочное, сахар, дрожжи.",
     badge: ""
@@ -74,7 +74,7 @@ let products = [
     categoryLabel: "Хлебобулочные изделия",
     price: 130,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "images/bread_kosichki.webp",
     desc: "Ароматная плетеная сдобная косичка с легким сахарным сиропом и румяной корочкой. Идеально к горячему чаю.",
     ingredients: "Дрожжевое сдобное тесто, молоко, сливочное масло, сахарный сироп, кунжутная обсыпка.",
     badge: ""
@@ -122,7 +122,7 @@ let products = [
     categoryLabel: "Хлебобулочные изделия",
     price: 160,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "images/bread_burger.webp",
     desc: "Классическая пышная тандырная лепешка с хрустящей корочкой и мягким центром. Выпекается по старинным рецептам.",
     ingredients: "Мука пшеничная высшего сорта, вода питьевая, сухие дрожжи, кунжут черный, соль.",
     badge: "свежее"
@@ -134,7 +134,7 @@ let products = [
     categoryLabel: "Выпечка",
     price: 250,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "images/pastry_samsa_meat.webp",
     desc: "Хрустящая слоеная самса с начинкой из сочного фарша с луком и специями.",
     ingredients: "Слоеное тесто, говядина, репчатый лук, черный перец, соль.",
     badge: "свежее"
@@ -158,7 +158,7 @@ let products = [
     categoryLabel: "Выпечка",
     price: 250,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "images/pastry_samsa_chicken.webp",
     desc: "Нежная самса с начинкой из сочного куриного филе и тянущегося сыра.",
     ingredients: "Слоеное тесто, филе куриное, сыр, лук, специи, соль.",
     badge: "новое"
@@ -182,7 +182,7 @@ let products = [
     categoryLabel: "Выпечка",
     price: 240,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "images/pastry_rogaliki.webp",
     desc: "Румяные домашние пирожки со специями и нежным ливерным паштетом.",
     ingredients: "Дрожжевое тесто, говяжий ливер (легкое, сердце, печень), лук, специи.",
     badge: ""
@@ -194,7 +194,7 @@ let products = [
     categoryLabel: "Выпечка",
     price: 180,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "images/pastry_rogaliki.webp",
     desc: "Маленькие порционные пирожки на один укус с сытной начинкой из ливера.",
     ingredients: "Дрожжевое тесто, отборный говяжий ливер, лук репчатый, соль, перец.",
     badge: ""
@@ -266,7 +266,7 @@ let products = [
     categoryLabel: "Выпечка",
     price: 3400,
     unit: "кг",
-    image: "images/default_placeholder.webp",
+    image: "images/bread_baursaki.webp",
     desc: "Необычные сладкие манты с начинкой из ароматной вареной сгущенки. Настоящее лакомство!",
     ingredients: "Пресное тесто на яйцах, сгущенное молоко вареное, сливочное масло.",
     badge: "новое"
@@ -278,7 +278,7 @@ let products = [
     categoryLabel: "Выпечка",
     price: 3000,
     unit: "кг",
-    image: "images/default_placeholder.webp",
+    image: "images/pastry_rogaliki.webp",
     desc: "Рассыпчатые мини-рогалики с начинкой из нежного сладкого творога.",
     ingredients: "Сметанно-песочное тесто, творог, сахарная пудра, ваниль.",
     badge: ""
@@ -302,7 +302,7 @@ let products = [
     categoryLabel: "Пироги",
     price: 2500,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "images/pie_smetannik.webp",
     desc: "Сытный пирог с начинкой из нежного творога и сладкой вареной сгущенки.",
     ingredients: "Песочное тесто, творог 9%, вареное сгущенное молоко, сахар, ванилин.",
     badge: ""
@@ -314,7 +314,7 @@ let products = [
     categoryLabel: "Пироги",
     price: 2200,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "images/pie_smetannik.webp",
     desc: "Классический нежный сметанник на тонкой песочной основе.",
     ingredients: "Песочное тесто, фермерская сметана 25%, яйца, ванильный сахар.",
     badge: "бестселлер"
@@ -326,7 +326,7 @@ let products = [
     categoryLabel: "Пироги",
     price: 4200,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "images/pie_snickers.webp",
     desc: "Насыщенный десертный пирог с домашней карамелью, арахисом и шоколадным ганашем.",
     ingredients: "Шоколадный бисквит, арахис обжаренный, соленая карамель, бельгийский шоколад.",
     badge: "премиум"
@@ -350,7 +350,7 @@ let products = [
     categoryLabel: "Пироги",
     price: 2600,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "images/pie_poppy.webp",
     desc: "Ароматный пирог с сочной и плотной начинкой из уваренного мака.",
     ingredients: "Сдобное тесто, маковая начинка с сахаром, сливочное масло.",
     badge: ""
@@ -422,7 +422,7 @@ let products = [
     categoryLabel: "На заказ",
     price: 7500,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "images/pie_smetannik.webp",
     desc: "Большой прямоугольный пирог с нежной и сладкой творожной начинкой.",
     ingredients: "Сдобное тесто, натуральный творог, сахарная пудра, ваниль.",
     badge: "custom"
@@ -434,7 +434,7 @@ let products = [
     categoryLabel: "На заказ",
     price: 7500,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "images/pie_poppy.webp",
     desc: "Большой прямоугольный пирог, обильно наполненный отборным изюмом и курагой.",
     ingredients: "Сдобное тесто, курага, изюм, сахар, ванилин.",
     badge: "custom"
