@@ -6,7 +6,7 @@ const CONFIG = {
 // Confectionery Nazcake App Logic
 
 // Product Catalog Data
-const products = [
+let products = [
   // Хлебобулочные изделия (bakery)
   {
     id: "bread_burger",
@@ -332,6 +332,31 @@ const products = [
   }
 ];
 
+// Load custom products from local storage on load
+try {
+  const customProducts = localStorage.getItem("nazcake_custom_products");
+  if (customProducts) {
+    const parsed = JSON.parse(customProducts);
+    products = products.map(p => {
+      const custom = parsed.find(cp => cp.id === p.id);
+      if (custom) {
+        return {
+          ...p,
+          name: custom.name !== undefined ? custom.name : p.name,
+          price: custom.price !== undefined ? custom.price : p.price,
+          inStock: custom.inStock !== false
+        };
+      }
+      return { ...p, inStock: p.inStock !== false };
+    });
+  } else {
+    products = products.map(p => ({ ...p, inStock: true }));
+  }
+} catch (e) {
+  console.warn("Failed to load custom products:", e);
+  products = products.map(p => ({ ...p, inStock: true }));
+}
+
 // Shopping Cart State
 let cart = [];
 try {
@@ -455,6 +480,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupDeliveryCalculator();
   setupGeolocation();
   updateCartUi();
+  setupAdminPanel();
   
   if (window.i18n) {
     window.i18n.onLanguageChange(() => {
@@ -496,10 +522,16 @@ function createProductCardHtml(p) {
   const tBadge = p.badge ? (window.i18n ? window.i18n.t(getBadgeTranslationKey(p.badge)) : p.badge) : "";
   const tUnit = window.i18n ? window.i18n.t(getUnitTranslationKey(p.unit)) : p.unit;
   
+  const isOutOfStock = p.inStock === false;
+  const cardClass = isOutOfStock ? "product-card out-of-stock" : "product-card";
+  const tOutOfStock = window.i18n ? window.i18n.t("catalog_out_of_stock") : "Нет в наличии";
+  const outOfStockBadge = isOutOfStock ? `<span class="product-badge product-badge-outofstock">${tOutOfStock}</span>` : "";
+  const activeBadge = outOfStockBadge || (p.badge ? `<span class="product-badge">${tBadge}</span>` : "");
+  
   return `
-    <div class="product-card" data-id="${p.id}">
+    <div class="${cardClass}" data-id="${p.id}">
       <div class="product-img-wrapper btn-preview">
-        ${p.badge ? `<span class="product-badge">${tBadge}</span>` : ""}
+        ${activeBadge}
         <img src="${p.image}" alt="${tName}" loading="lazy">
       </div>
       <div class="product-info">
@@ -507,7 +539,7 @@ function createProductCardHtml(p) {
         <h3 class="product-name btn-preview">${tName}</h3>
         <div class="product-footer">
           <span class="product-price">${p.price.toLocaleString()} ₸ / ${tUnit}</span>
-          <button class="btn-card-add btn-add-to-cart" aria-label="Добавить в корзину">
+          <button class="btn-card-add btn-add-to-cart" aria-label="Добавить в корзину" ${isOutOfStock ? 'disabled' : ''}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
               <line x1="12" y1="5" x2="12" y2="19"></line>
               <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -1205,6 +1237,41 @@ async function handleCheckoutSubmit(e) {
   const phoneWA = "77783567221"; // Target WhatsApp number
   const waUrl = `https://wa.me/${phoneWA}?text=${encodeURIComponent(message)}`;
 
+  // Save order to history
+  const newOrder = {
+    id: "NZ-" + Math.floor(100000 + Math.random() * 900000),
+    date: new Date().toLocaleString("ru-RU"),
+    customerName: name,
+    customerPhone: phone,
+    deliveryMethod: method,
+    address: method === "delivery" ? address : "",
+    items: cart.map(item => {
+      const p = item.product;
+      const tName = p.id.startsWith("bento_custom_") 
+        ? (window.i18n ? t("bento_custom_name") : p.name) 
+        : (window.i18n ? t(`p_${p.id}_name`) : p.name);
+      return {
+        id: p.id,
+        name: tName,
+        qty: item.qty,
+        price: p.price
+      };
+    }),
+    subtotal: subtotal,
+    status: "new"
+  };
+  try {
+    let history = [];
+    const savedHistory = localStorage.getItem("nazcake_orders_history");
+    if (savedHistory) {
+      history = JSON.parse(savedHistory);
+    }
+    history.unshift(newOrder);
+    localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
+  } catch (e) {
+    console.warn("Failed to save order to history:", e);
+  }
+
   window.open(waUrl, '_blank');
   orderSucceeded();
 }
@@ -1349,6 +1416,324 @@ function updateLocationUi() {
   }
 }
 
+
+// --- Admin Panel Logic ---
+let logoClickCount = 0;
+let logoClickTimeout = null;
+
+function setupAdminPanel() {
+  const logoLink = document.querySelector(".logo");
+  const loginModal = document.getElementById("admin-login-modal");
+  const closeLoginBtn = document.getElementById("close-admin-login-btn");
+  const loginForm = document.getElementById("admin-login-form");
+  const loginErrorMsg = document.getElementById("admin-login-error-msg");
+  const loginPasswordInput = document.getElementById("admin-password");
+  
+  const dashModal = document.getElementById("admin-dashboard-modal");
+  const closeDashBtn = document.getElementById("close-admin-dash-btn");
+  const logoutBtn = document.getElementById("admin-logout-btn");
+  
+  const tabCatalogBtn = document.getElementById("tab-btn-catalog");
+  const tabOrdersBtn = document.getElementById("tab-btn-orders");
+  const clearHistoryBtn = document.getElementById("admin-clear-history-btn");
+
+  if (!logoLink || !loginModal || !dashModal) return;
+
+  // 1. Mobile Secret Trigger (3 clicks on logo in 2 seconds)
+  logoLink.addEventListener("click", (e) => {
+    // If target is links/action, prevent default to avoid scrolling to top if triple clicked
+    logoClickCount++;
+    if (logoClickCount === 1) {
+      logoClickTimeout = setTimeout(() => {
+        logoClickCount = 0;
+      }, 2000);
+    }
+    
+    if (logoClickCount === 3) {
+      e.preventDefault();
+      logoClickCount = 0;
+      clearTimeout(logoClickTimeout);
+      openModal(loginModal);
+    }
+  });
+
+  // 2. Desktop Secret Trigger (Ctrl + Shift + A)
+  document.addEventListener("keydown", (e) => {
+    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "a") {
+      e.preventDefault();
+      openModal(loginModal);
+    }
+  });
+
+  // Close Login Modal
+  if (closeLoginBtn) {
+    closeLoginBtn.addEventListener("click", () => {
+      closeModal(loginModal);
+      loginPasswordInput.value = "";
+      loginErrorMsg.classList.add("hidden");
+    });
+  }
+
+  // Handle Login Submit
+  loginForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const password = loginPasswordInput.value;
+    if (password === "NazAdmin777") {
+      closeModal(loginModal);
+      loginPasswordInput.value = "";
+      loginErrorMsg.classList.add("hidden");
+      openModal(dashModal);
+      renderAdminDashboard();
+    } else {
+      loginErrorMsg.classList.remove("hidden");
+    }
+  });
+
+  // Close Dashboard
+  if (closeDashBtn) {
+    closeDashBtn.addEventListener("click", () => {
+      closeModal(dashModal);
+    });
+  }
+
+  // Logout
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      closeModal(dashModal);
+    });
+  }
+
+  // Tabs Navigation
+  const tabButtons = [tabCatalogBtn, tabOrdersBtn];
+  tabButtons.forEach(btn => {
+    if (btn) {
+      btn.addEventListener("click", () => {
+        tabButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        
+        const tab = btn.getAttribute("data-tab");
+        document.querySelectorAll(".dash-tab-content").forEach(content => {
+          content.classList.remove("active");
+        });
+        document.getElementById("tab-content-" + tab).classList.add("active");
+      });
+    }
+  });
+
+  // Clear orders history
+  if (clearHistoryBtn) {
+    clearHistoryBtn.addEventListener("click", () => {
+      const confirmText = window.i18n && window.i18n.getCurrentLanguage() === "kk"
+        ? "Барлық тапсырыстар тарихын өшіруді растайсыз ба?"
+        : "Вы уверены, что хотите очистить всю историю заказов?";
+      if (confirm(confirmText)) {
+        localStorage.removeItem("nazcake_orders_history");
+        renderAdminOrders();
+      }
+    });
+  }
+}
+
+// Render Dashboard Data
+function renderAdminDashboard() {
+  renderAdminCatalog();
+  renderAdminOrders();
+}
+
+// Render products in catalog management tab
+function renderAdminCatalog() {
+  const listContainer = document.getElementById("admin-catalog-list");
+  if (!listContainer) return;
+
+  const tName = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Атауы" : "Название";
+  const tPrice = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Бағасы (₸)" : "Цена (₸)";
+  const tInStock = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Қолжетімді" : "В наличии";
+  const tSave = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Сақтау" : "Сохранить";
+
+  listContainer.innerHTML = products.map(p => {
+    const isChecked = p.inStock !== false ? "checked" : "";
+    const pName = window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name;
+    
+    return `
+      <div class="admin-product-row" data-id="${p.id}">
+        <img src="${p.image}" alt="${pName}" class="admin-prod-img">
+        <div class="admin-prod-form-group">
+          <label>${tName}</label>
+          <input type="text" class="admin-edit-name" value="${pName}">
+        </div>
+        <div class="admin-prod-form-group">
+          <label>${tPrice}</label>
+          <input type="text" class="admin-edit-price" value="${p.price}">
+        </div>
+        <div class="admin-prod-form-group">
+          <label class="admin-checkbox-label">
+            <input type="checkbox" class="admin-edit-instock" ${isChecked}>
+            ${tInStock}
+          </label>
+        </div>
+        <button class="btn btn-primary btn-admin-save" onclick="saveAdminProduct('${p.id}')">${tSave}</button>
+      </div>
+    `;
+  }).join("");
+}
+
+// Global helper function to save product edit
+window.saveAdminProduct = function(id) {
+  const row = document.querySelector(`.admin-product-row[data-id="${id}"]`);
+  if (!row) return;
+
+  const nameInput = row.querySelector(".admin-edit-name").value.trim();
+  const priceInput = parseInt(row.querySelector(".admin-edit-price").value.trim());
+  const inStockInput = row.querySelector(".admin-edit-instock").checked;
+
+  if (isNaN(priceInput) || priceInput < 0) {
+    alert("Пожалуйста, введите корректную цену!");
+    return;
+  }
+
+  // Update in local memory array
+  products = products.map(p => {
+    if (p.id === id) {
+      return { ...p, name: nameInput, price: priceInput, inStock: inStockInput };
+    }
+    return p;
+  });
+
+  // Save to local storage
+  try {
+    const customList = products.map(p => ({
+      id: p.id,
+      name: p.name,
+      price: p.price,
+      inStock: p.inStock
+    }));
+    localStorage.setItem("nazcake_custom_products", JSON.stringify(customList));
+  } catch(e) {
+    console.warn("Failed to save custom products to localStorage:", e);
+  }
+
+  // Visual feedback on save
+  const saveBtn = row.querySelector(".btn-admin-save");
+  const origText = saveBtn.textContent;
+  saveBtn.textContent = "✓";
+  saveBtn.style.background = "#27ae60";
+  setTimeout(() => {
+    saveBtn.textContent = origText;
+    saveBtn.style.background = "";
+  }, 1000);
+
+  // Re-render main site catalog and bestsellers
+  renderBestsellers();
+  const activeTab = document.querySelector(".tab-btn.active");
+  const category = activeTab ? activeTab.getAttribute("data-category") : "all";
+  renderCatalog(category);
+};
+
+// Render orders in history tab
+function renderAdminOrders() {
+  const listContainer = document.getElementById("admin-orders-list");
+  if (!listContainer) return;
+
+  let history = [];
+  try {
+    const savedHistory = localStorage.getItem("nazcake_orders_history");
+    if (savedHistory) {
+      history = JSON.parse(savedHistory);
+    }
+  } catch (e) {
+    console.warn(e);
+  }
+
+  if (history.length === 0) {
+    const tEmpty = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Тапсырыстар әлі жоқ" : "Заказов пока нет";
+    listContainer.innerHTML = `<div class="empty-cart-message">${tEmpty}</div>`;
+    return;
+  }
+
+  const tMethod = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Алу тәсілі" : "Способ получения";
+  const tPhone = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Телефон" : "Телефон";
+  const tAddress = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Мекенжай" : "Адрес";
+  const tTotal = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Қорытынды" : "Итого";
+  const tStatus = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Мәртебе" : "Статус";
+  const tItems = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Тауарлар" : "Товары";
+  
+  const statusNew = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Жаңа" : "Новый";
+  const statusWork = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Жұмыста" : "В работе";
+  const statusDone = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Орындалды" : "Выполнен";
+  const statusCancel = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Бас тартылды" : "Отменен";
+
+  listContainer.innerHTML = history.map(order => {
+    const methodText = order.deliveryMethod === "delivery" 
+      ? (window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Яндекс жеткізу" : "Доставка Яндекс")
+      : (window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Өзіңіз алып кету" : "Самовывоз");
+      
+    const statusClass = "status-badge-" + order.status;
+    
+    return `
+      <div class="admin-order-card" data-order-id="${order.id}">
+        <div class="admin-order-title-row">
+          <div class="admin-order-id-date">
+            <span class="admin-order-id">${order.id}</span>
+            <span class="admin-order-date">${order.date}</span>
+          </div>
+          <div class="admin-order-status-control">
+            <label style="font-size: 0.75rem; font-weight:700; color:var(--text-muted); margin-right:8px; text-transform:uppercase;">${tStatus}</label>
+            <select class="admin-status-dropdown ${statusClass}" onchange="changeOrderStatus('${order.id}', this.value)">
+              <option value="new" ${order.status === 'new' ? 'selected' : ''}>${statusNew}</option>
+              <option value="work" ${order.status === 'work' ? 'selected' : ''}>${statusWork}</option>
+              <option value="done" ${order.status === 'done' ? 'selected' : ''}>${statusDone}</option>
+              <option value="cancel" ${order.status === 'cancel' ? 'selected' : ''}>${statusCancel}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="admin-order-grid">
+          <div class="admin-order-details-col">
+            <p>👤 <strong>${order.customerName}</strong></p>
+            <p>📞 <strong>${tPhone}:</strong> <a href="tel:${order.customerPhone}">${order.customerPhone}</a></p>
+            <p>📦 <strong>${tMethod}:</strong> ${methodText}</p>
+            ${order.deliveryMethod === 'delivery' ? `<p>📍 <strong>${tAddress}:</strong> ${order.address}</p>` : ''}
+          </div>
+          <div class="admin-order-items-col">
+            <div class="admin-order-items-title">${tItems}</div>
+            ${order.items.map(item => `
+              <div class="admin-order-item-row">
+                <span>${item.name} x ${item.qty}</span>
+                <span>${(item.price * item.qty).toLocaleString()} ₸</span>
+              </div>
+            `).join("")}
+            <div class="admin-order-total">
+              <span>${tTotal}:</span>
+              <span>${order.subtotal.toLocaleString()} ₸</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+// Global status changer
+window.changeOrderStatus = function(orderId, newStatus) {
+  try {
+    let history = [];
+    const savedHistory = localStorage.getItem("nazcake_orders_history");
+    if (savedHistory) {
+      history = JSON.parse(savedHistory);
+    }
+    history = history.map(order => {
+      if (order.id === orderId) {
+        return { ...order, status: newStatus };
+      }
+      return order;
+    });
+    localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
+    renderAdminOrders();
+  } catch (e) {
+    console.warn(e);
+  }
+};
+// ----------------------------
 
 if (typeof module !== 'undefined') {
   module.exports = {
