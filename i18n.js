@@ -52,6 +52,7 @@
       catalog_cat_pastries: "Выпечка",
       catalog_cat_pies: "Пироги",
       catalog_cat_desserts: "Пирожные",
+      catalog_cat_berry_desserts: "Пирожные с ягодами",
       catalog_cat_cakes: "Торты",
       catalog_cat_semi: "Полуфабрикаты",
 
@@ -278,6 +279,9 @@
       p_dessert_cupcake_red_name: "Капкейк Красный бархат",
       p_dessert_cupcake_red_desc: "Яркий капкейк с влажным пористым бисквитом, скрытым ягодным центром и пышной шапочкой нежного сырного крема.",
       p_dessert_cupcake_red_ingredients: "Кефирный бисквит «Красный бархат», малиновое конфи, сливочный крем-чиз (творожный сыр, сливки, пудра).",
+      p_dessert_cupcake_berry_name: "Капкейк Ягодный микс",
+      p_dessert_cupcake_berry_desc: "Нежный ванильный капкейк с начинкой из свежих ягод и легкой шапочкой из сливочного крема.",
+      p_dessert_cupcake_berry_ingredients: "Мука пшеничная, яйца, сахар, клубника, черника, сливочный крем.",
 
       // 16. cake_pistachio
       p_cake_pistachio_name: "Торт Фисташка-Малина",
@@ -378,6 +382,7 @@
       catalog_cat_pastries: "Пісірмелер",
       catalog_cat_pies: "Пирогтар",
       catalog_cat_desserts: "Пирожныйлар",
+      catalog_cat_berry_desserts: "Жидек қосылған пирожныйлар",
       catalog_cat_cakes: "Торттар",
       catalog_cat_semi: "Жартылай фабрикаттар",
 
@@ -605,6 +610,9 @@
       p_dessert_cupcake_red_name: "Красный бархат капкейгі",
       p_dessert_cupcake_red_desc: "Ылғалды кеуекті бисквиті, ішкі жидек орталығы және нәзік ірімшік кремінің үлпілдек қалпағы бар ашық капкейк.",
       p_dessert_cupcake_red_ingredients: "«Красный бархат» айран бисквиті, таңқурай конфиі, кілегейлі крем-чиз (сүзбе ірімшік, кілегей, ұнтақ).",
+      p_dessert_cupcake_berry_name: "Жидек қосылған капкейк",
+      p_dessert_cupcake_berry_desc: "Балғын жидектер салмасы бар және кілегейлі кремнен жасалған жеңіл қалпақшасы бар нәзік ванильді капкейк.",
+      p_dessert_cupcake_berry_ingredients: "Бидай ұны, жұмыртқа, қант, құлпынай, көкжидек, кілегейлі крем.",
 
       // 16. cake_pistachio
       p_cake_pistachio_name: "Фисташка-таңқурай торты",

@@ -185,14 +185,26 @@ let products = [
   {
     id: "dessert_cupcake_red",
     name: "Капкейк Красный бархат",
-    category: "desserts",
-    categoryLabel: "Пирожные",
+    category: "berry_desserts",
+    categoryLabel: "Пирожные с ягодами",
     price: 360,
     unit: "шт.",
     image: "images/dessert_cupcake_red.jpg",
     desc: "Яркий капкейк с влажным пористым бисквитом, скрытым ягодным центром и пышной шапочкой нежного сырного крема.",
     ingredients: "Кефирный бисквит «Красный бархат», малиновое конфи, сливочный крем-чиз (творожный сыр, сливки, пудра).",
     badge: "новое"
+  },
+  {
+    id: "dessert_cupcake_berry",
+    name: "Капкейк Ягодный микс",
+    category: "berry_desserts",
+    categoryLabel: "Пирожные с ягодами",
+    price: 380,
+    unit: "шт.",
+    image: "images/dessert_cupcake_red.jpg",
+    desc: "Нежный ванильный капкейк с начинкой из свежих ягод и легкой шапочкой из сливочного крема.",
+    ingredients: "Мука пшеничная, яйца, сахар, клубника, черника, сливочный крем.",
+    badge: "бестселлер"
   },
 
   // Торты (cakes)
