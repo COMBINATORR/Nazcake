@@ -14,7 +14,7 @@ let products = [
     categoryLabel: "Хлебобулочные изделия",
     price: 120,
     unit: "шт.",
-    image: "images/bread_burger.webp",
+    image: "",
     desc: "Свежая, невероятно мягкая и воздушная пшеничная булочка, посыпанная кунжутом. Отлично подходит для домашних бургеров.",
     ingredients: "Мука пшеничная высшего сорта, кунжут, молоко, яйца, сливочное масло, сахар, дрожжи, соль.",
     badge: "свежее"
@@ -26,7 +26,7 @@ let products = [
     categoryLabel: "Хлебобулочные изделия",
     price: 70,
     unit: "шт.",
-    image: "images/bread_baursaki.webp",
+    image: "",
     desc: "Традиционные золотистые бауырсаки. Нежные внутри и хрустящие снаружи. Готовятся непосредственно перед доставкой.",
     ingredients: "Пшеничная мука, молоко, дрожжи, сахар, соль, растительное масло.",
     badge: "бестселлер"
@@ -74,7 +74,7 @@ let products = [
     categoryLabel: "Хлебобулочные изделия",
     price: 130,
     unit: "шт.",
-    image: "images/bread_kosichki.webp",
+    image: "",
     desc: "Ароматная плетеная сдобная косичка с легким сахарным сиропом и румяной корочкой. Идеально к горячему чаю.",
     ingredients: "Дрожжевое сдобное тесто, молоко, сливочное масло, сахарный сироп, кунжутная обсыпка.",
     badge: ""
@@ -134,7 +134,7 @@ let products = [
     categoryLabel: "Выпечка",
     price: 250,
     unit: "шт.",
-    image: "images/pastry_samsa_meat.webp",
+    image: "",
     desc: "Хрустящая слоеная самса с начинкой из сочного фарша с луком и специями.",
     ingredients: "Слоеное тесто, говядина, репчатый лук, черный перец, соль.",
     badge: "свежее"
@@ -158,7 +158,7 @@ let products = [
     categoryLabel: "Выпечка",
     price: 250,
     unit: "шт.",
-    image: "images/pastry_samsa_chicken.webp",
+    image: "",
     desc: "Нежная самса с начинкой из сочного куриного филе и тянущегося сыра.",
     ingredients: "Слоеное тесто, филе куриное, сыр, лук, специи, соль.",
     badge: "новое"
@@ -182,7 +182,7 @@ let products = [
     categoryLabel: "Выпечка",
     price: 240,
     unit: "шт.",
-    image: "images/pastry_rogaliki.webp",
+    image: "",
     desc: "Румяные домашние пирожки со специями и нежным ливерным паштетом.",
     ingredients: "Дрожжевое тесто, говяжий ливер (легкое, сердце, печень), лук, специи.",
     badge: ""
@@ -194,7 +194,7 @@ let products = [
     categoryLabel: "Выпечка",
     price: 180,
     unit: "шт.",
-    image: "images/pastry_rogaliki.webp",
+    image: "",
     desc: "Маленькие порционные пирожки на один укус с сытной начинкой из ливера.",
     ingredients: "Дрожжевое тесто, отборный говяжий ливер, лук репчатый, соль, перец.",
     badge: ""
@@ -254,7 +254,7 @@ let products = [
     categoryLabel: "Выпечка",
     price: 190,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Классический сочник с золотистой корочкой и нежным творожным центром.",
     ingredients: "Песочное тесто, домашний творог, сахар, ванильный экстракт, желток.",
     badge: ""
@@ -278,7 +278,7 @@ let products = [
     categoryLabel: "Выпечка",
     price: 3000,
     unit: "кг",
-    image: "images/pastry_rogaliki.webp",
+    image: "",
     desc: "Рассыпчатые мини-рогалики с начинкой из нежного сладкого творога.",
     ingredients: "Сметанно-песочное тесто, творог, сахарная пудра, ваниль.",
     badge: ""
@@ -290,7 +290,7 @@ let products = [
     categoryLabel: "Выпечка",
     price: 4200,
     unit: "кг",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Ассорти из мелкой сладкой домашней выпечки, идеально подходящее для чаепития большой компании.",
     ingredients: "Печенье домашнее, мини-рогалики, кексы, орешки со сгущенкой.",
     badge: "бестселлер"
@@ -302,7 +302,7 @@ let products = [
     categoryLabel: "Пироги",
     price: 2500,
     unit: "шт.",
-    image: "images/pie_smetannik.webp",
+    image: "",
     desc: "Сытный пирог с начинкой из нежного творога и сладкой вареной сгущенки.",
     ingredients: "Песочное тесто, творог 9%, вареное сгущенное молоко, сахар, ванилин.",
     badge: ""
@@ -314,7 +314,7 @@ let products = [
     categoryLabel: "Пироги",
     price: 2200,
     unit: "шт.",
-    image: "images/pie_smetannik.webp",
+    image: "",
     desc: "Классический нежный сметанник на тонкой песочной основе.",
     ingredients: "Песочное тесто, фермерская сметана 25%, яйца, ванильный сахар.",
     badge: "бестселлер"
@@ -326,7 +326,7 @@ let products = [
     categoryLabel: "Пироги",
     price: 4200,
     unit: "шт.",
-    image: "images/pie_snickers.webp",
+    image: "",
     desc: "Насыщенный десертный пирог с домашней карамелью, арахисом и шоколадным ганашем.",
     ingredients: "Шоколадный бисквит, арахис обжаренный, соленая карамель, бельгийский шоколад.",
     badge: "премиум"
@@ -350,7 +350,7 @@ let products = [
     categoryLabel: "Пироги",
     price: 2600,
     unit: "шт.",
-    image: "images/pie_poppy.webp",
+    image: "",
     desc: "Ароматный пирог с сочной и плотной начинкой из уваренного мака.",
     ingredients: "Сдобное тесто, маковая начинка с сахаром, сливочное масло.",
     badge: ""
@@ -422,7 +422,7 @@ let products = [
     categoryLabel: "На заказ",
     price: 7500,
     unit: "шт.",
-    image: "images/pie_smetannik.webp",
+    image: "",
     desc: "Большой прямоугольный пирог с нежной и сладкой творожной начинкой.",
     ingredients: "Сдобное тесто, натуральный творог, сахарная пудра, ваниль.",
     badge: "custom"
@@ -434,7 +434,7 @@ let products = [
     categoryLabel: "На заказ",
     price: 7500,
     unit: "шт.",
-    image: "images/pie_poppy.webp",
+    image: "",
     desc: "Большой прямоугольный пирог, обильно наполненный отборным изюмом и курагой.",
     ingredients: "Сдобное тесто, курага, изюм, сахар, ванилин.",
     badge: "custom"
@@ -446,7 +446,7 @@ let products = [
     categoryLabel: "На заказ",
     price: 8500,
     unit: "кг",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Эксклюзивный праздничный торт для вашего торжества. Дизайн и начинка обсуждаются индивидуально при заказе.",
     ingredients: "Начинка на выбор (Красный бархат, Сникерс, Эстерхази, Молочная девочка), кондитерский велюр, мастичный или ягодный декор.",
     badge: "custom"
@@ -458,7 +458,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 280,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Порционный кусочек классического торта Наполеон с нежным заварным кремом.",
     ingredients: "Слоеное тесто, заварной крем Дипломат, ваниль.",
     badge: ""
@@ -470,7 +470,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 260,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Французское заварное пирожное, наполненное нежным сливочно-заварным кремом.",
     ingredients: "Заварное тесто, крем Муслин, шоколадная глазурь.",
     badge: "хит"
@@ -482,7 +482,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 450,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Традиционное пирожное из песочного теста со сгущенным молоком и грецкими орехами.",
     ingredients: "Песочное тесто, вареная сгущенка, сливочное масло, мед, мак.",
     badge: ""
@@ -494,7 +494,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 270,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Восточная сладость из обжаренных кусочков теста, залитых натуральным медовым сиропом.",
     ingredients: "Мука пшеничная, яйца, мед натуральный, сахар, масло растительное.",
     badge: ""
@@ -506,7 +506,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 270,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Насыщенное шоколадное пирожное с шоколадным бисквитом и нежным кремом.",
     ingredients: "Шоколадный бисквит, крем с какао, темный шоколад.",
     badge: ""
@@ -518,7 +518,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 270,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Нежное пирожное с мягким бисквитом и домашней карамелью.",
     ingredients: "Сдобный бисквит, мягкая карамель, сливочный крем.",
     badge: ""
@@ -530,7 +530,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 270,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Пирожное с безе, жареным арахисом и нежным кремом со сгущенкой.",
     ingredients: "Воздушное безе, жареный арахис, вареная сгущенка, сливочное масло.",
     badge: "бестселлер"
@@ -542,7 +542,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 280,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Ароматное медовое пирожное со сметанным кремом, тающее во рту.",
     ingredients: "Медовые коржи с добавлением натурального меда, сметанный крем.",
     badge: ""
@@ -554,7 +554,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 290,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Карамельное пирожное со стильным праздничным оформлением.",
     ingredients: "Бисквит, домашняя карамель, крем-чиз, элементы декора.",
     badge: ""
@@ -566,7 +566,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 290,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Шоколадное пирожное с нарядным праздничным декором.",
     ingredients: "Шоколадный бисквит, шоколадный крем, праздничный декор.",
     badge: ""
@@ -578,7 +578,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 440,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Пирожное с бананами, ароматной карамелью и воздушными взбитыми сливками на песочной основе.",
     ingredients: "Песочная основа, свежие бананы, карамель, взбитые сливки.",
     badge: "новое"
@@ -590,7 +590,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 300,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Классическое медовое пирожное с добавлением заварного крема.",
     ingredients: "Медовые коржи, заварной крем Дипломат, крошка.",
     badge: ""
@@ -602,7 +602,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 295,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Нежный сырный десерт на песочной основе с добавлением ванили.",
     ingredients: "Песочная крошка, сливочный сыр Cremette, сахар, сливки.",
     badge: ""
@@ -614,7 +614,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 380,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Воздушное безе с хрустящей корочкой и мягким центром, украшенное нежным кремом.",
     ingredients: "Французская меренга, маскарпоне, сливки, сахарная пудра.",
     badge: ""
@@ -626,7 +626,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 450,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Порционное пирожное с нежными коржами на сгущенном молоке и легким кремом.",
     ingredients: "Коржи на сгущенном молоке Рогачев, крем на основе взбитых сливок.",
     badge: ""
@@ -638,7 +638,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 420,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Морковный бисквит с добавлением пряностей, грецкого ореха и сливочного сыра.",
     ingredients: "Морковно-ореховый бисквит, корица, сливочный сыр, карамель.",
     badge: ""
@@ -650,7 +650,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 420,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Яркое пирожное со знаменитым сочным красным бисквитом и кремом.",
     ingredients: "Бисквит Красный бархат, нежный крем-чиз, пропитка.",
     badge: ""
@@ -662,7 +662,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 480,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Шоколадный бисквит с большим количеством арахиса и карамели.",
     ingredients: "Шоколадный бисквит, домашняя карамель, арахис, нуга.",
     badge: ""
@@ -674,7 +674,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 420,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Шоколадное пирожное с кусочками оригинального печенья Oreo.",
     ingredients: "Шоколадный бисквит, крем со сливками и крошкой Oreo.",
     badge: ""
@@ -686,7 +686,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 420,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Ароматный банановый бисквит с банановым муссом и карамелью.",
     ingredients: "Банановый бисквит, свежие бананы, нежный мусс.",
     badge: ""
@@ -698,7 +698,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 450,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Изысканное шоколадное пирожное с орехами и прослойкой пралине.",
     ingredients: "Шоколадный бисквит, ореховый крем, фундук, пралине.",
     badge: ""
@@ -710,7 +710,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 470,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Пирожное с фисташковым бисквитом и натуральным фисташковым кремом.",
     ingredients: "Фисташковый бисквит, фисташковая паста, крем на сливках.",
     badge: ""
@@ -722,7 +722,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 360,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Шоколадный кекс с начинкой и пышной шапочкой из шоколадного крема.",
     ingredients: "Шоколадный бисквит, шоколадный ганаш, крем шантильи.",
     badge: ""
@@ -734,7 +734,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 360,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Нежный капкейк Красный бархат со сливочной начинкой.",
     ingredients: "Красный бисквит, молочная пропитка, сливочный сыр.",
     badge: ""
@@ -746,7 +746,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 1000,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Премиум десерт с ярким сочетанием фисташкового мусса и малинового кули.",
     ingredients: "Фисташковый бисквит, малиновое кули, фисташковый крем.",
     badge: "премиум"
@@ -758,7 +758,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 800,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Увеличенный эклер, обильно покрытый бельгийским шоколадом.",
     ingredients: "Заварное тесто, крем Патисьер, бельгийский шоколад.",
     badge: "премиум"
@@ -770,7 +770,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 1000,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Изысканное миндальное пирожное с курагой, черносливом и орехами.",
     ingredients: "Миндальная мука, взбитые белки, сухофрукты, лепестки миндаля.",
     badge: "премиум"
@@ -782,7 +782,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 1200,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Изысканное пирожное в форме мороженого эскимо с фисташковым вкусом.",
     ingredients: "Фисташковый бисквит, фисташковый крем, глазурь из белого шоколада.",
     badge: "премиум"
@@ -794,7 +794,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 1400,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Шоколадно-ореховый премиум десерт с хрустящими карамелизованными орехами.",
     ingredients: "Грильяж ореховый, шоколадный крем, карамель, темный шоколад.",
     badge: "премиум"
@@ -806,7 +806,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 1200,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Нежное кофейное пирожное со вкусом и ароматом классического латте.",
     ingredients: "Кофейный бисквит, кофейный мусс, молочная пенка, корица.",
     badge: "премиум"
@@ -818,7 +818,7 @@ let products = [
     categoryLabel: "Пирожные с ягодами",
     price: 850,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Популярное пирожное Oreo, украшенное свежими лесными ягодами.",
     ingredients: "Шоколадный бисквит, крошка Oreo, крем, свежая клубника, голубика.",
     badge: ""
@@ -830,7 +830,7 @@ let products = [
     categoryLabel: "Пирожные с ягодами",
     price: 850,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Нежная порционная Молочная девочка со свежими ягодами сверху.",
     ingredients: "Коржи на сгущенном молоке, крем на сливках, свежие ягоды.",
     badge: "бестселлер"
@@ -842,7 +842,7 @@ let products = [
     categoryLabel: "Пирожные с ягодами",
     price: 800,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Шоколадное пирожное Сникерс со свежими ягодами клубники и малины.",
     ingredients: "Шоколадный бисквит, карамель, арахис, свежие ягоды, шоколад.",
     badge: ""
@@ -854,7 +854,7 @@ let products = [
     categoryLabel: "Пирожные с ягодами",
     price: 780,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Пирожное Королевский, изысканно украшенное ягодами и золотым декором.",
     ingredients: "Ореховый бисквит, шоколад, ассорти из свежих сезонных ягод.",
     badge: ""
@@ -866,7 +866,7 @@ let products = [
     categoryLabel: "Пирожные с ягодами",
     price: 700,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Шоколадное пирожное со щедрым слоем пасты Nutella и свежей малиной.",
     ingredients: "Шоколадный бисквит, оригинальная паста Nutella, свежая малина.",
     badge: ""
@@ -878,7 +878,7 @@ let products = [
     categoryLabel: "Пирожные с ягодами",
     price: 500,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Традиционное заварное кольцо с творожным кремом и свежими ягодами клубники.",
     ingredients: "Заварное тесто, легкий творожный крем, сахарная пудра, клубника.",
     badge: ""
@@ -890,7 +890,7 @@ let products = [
     categoryLabel: "Пирожные с ягодами",
     price: 750,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Шоколадный капкейк с ягодным конфи внутри и горкой свежих ягод сверху.",
     ingredients: "Шоколадный кекс, сливочный крем, ассорти из свежих ягод.",
     badge: "новое"
@@ -902,7 +902,7 @@ let products = [
     categoryLabel: "Пирожные с ягодами",
     price: 750,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Классический десерт Анна Павлова с обильным количеством свежей малины и клубники.",
     ingredients: "Безе, крем маскарпоне, свежая малина, свежая клубника.",
     badge: "бестселлер"
@@ -914,7 +914,7 @@ let products = [
     categoryLabel: "Пирожные с ягодами",
     price: 700,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Нежнейший чизкейк Нью-Йорк, покрытый ягодным соусом и украшенный свежими ягодами.",
     ingredients: "Сырный крем, песочная основа, свежая клубника, черника.",
     badge: ""
@@ -926,7 +926,7 @@ let products = [
     categoryLabel: "Пирожные с ягодами",
     price: 700,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Капкейк Красный бархат со сливочным кремом и свежей клубникой.",
     ingredients: "Бисквит Красный бархат, клубничное кули, свежая клубника, крем.",
     badge: "новое"
@@ -938,7 +938,7 @@ let products = [
     categoryLabel: "Торты",
     price: 6500,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Нежнейший банановый торт с воздушным бисквитом, банановым муссом и карамелью.",
     ingredients: "Банановый бисквит, свежие бананы, домашняя карамель, сливочный мусс.",
     badge: "",
@@ -951,7 +951,7 @@ let products = [
     categoryLabel: "Торты",
     price: 7500,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Роскошный торт с фисташковыми бисквитами, яркой малиновой прослойкой и фисташковым крем-чизом.",
     ingredients: "Фисташковый натуральный бисквит, конфитюр из лесной малины, крем-чиз на сливках с добавлением 100% фисташковой пасты.",
     badge: "vip",
@@ -964,7 +964,7 @@ let products = [
     categoryLabel: "Торты",
     price: 6500,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Пряный морковный торт с грецкими орехами и нежным сырно-сливочным кремом.",
     ingredients: "Морковно-ореховый бисквит, корица, сливочный сыр Cremette, домашняя карамель.",
     badge: "",
@@ -977,7 +977,7 @@ let products = [
     categoryLabel: "Торты",
     price: 6500,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Насыщенный шоколадный торт с кусочками популярного печенья Oreo и нежным кремом.",
     ingredients: "Шоколадный бисквит, сливочный крем с крошкой печенья Oreo, ганаш на темном шоколаде.",
     badge: "",
@@ -990,7 +990,7 @@ let products = [
     categoryLabel: "Торты",
     price: 7000,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Роскошный шоколадный торт с обилием фундука, нежным шоколадным кремом и пралине.",
     ingredients: "Насыщенный шоколадный бисквит, ореховое пралине, цельный обжаренный фундук, бельгийский шоколад.",
     badge: "",
@@ -1003,7 +1003,7 @@ let products = [
     categoryLabel: "Торты",
     price: 6500,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Американская классика: шоколадные коржи, пропитанные нежным кремом на основе взбитых сливок и маскарпоне.",
     ingredients: "Воздушные шоколадные коржи с какао Barry Callebaut, крем на сливках и творожном сыре, пропитка.",
     badge: "бестселлер",
@@ -1016,7 +1016,7 @@ let products = [
     categoryLabel: "Торты",
     price: 6500,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Знаменитый торт с бархатистыми рубиновыми коржами и белоснежным сырным кремом.",
     ingredients: "Кефирные сочные бисквиты с ноткой какао, сырно-сливочный крем-чиз на масле и творожном сыре Hohland.",
     badge: "",
@@ -1029,7 +1029,7 @@ let products = [
     categoryLabel: "Торты",
     price: 6500,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Супершоколадный торт с домашней нугой, соленой карамелью и хрустящим арахисом. Настоящее наслаждение.",
     ingredients: "Шоколадный бисквит, соленая сливочная карамель, арахис, арахисовый мусс, шоколадный крем-чиз, молочный шоколад.",
     badge: "хит",
@@ -1042,7 +1042,7 @@ let products = [
     categoryLabel: "Торты",
     price: 6500,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Очень нежный торт из тонких коржей на сгущенном молоке с воздушным сливочным кремом.",
     ingredients: "Коржи на натуральном сгущенном молоке Рогачев, крем на основе взбитых фермерских сливок.",
     badge: "",
@@ -1055,7 +1055,7 @@ let products = [
     categoryLabel: "Торты",
     price: 7500,
     unit: "шт. (26 см)",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Насыщенный шоколадный торт увеличенного размера (26 см) для любителей шоколада.",
     ingredients: "Шоколадные влажные бисквиты, крем с какао премиум класса, шоколадные капли.",
     badge: ""
@@ -1067,7 +1067,7 @@ let products = [
     categoryLabel: "Торты",
     price: 8500,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Праздничный шоколадный торт, оформленный хрустящими батончиками KitKat по кругу.",
     ingredients: "Шоколадный бисквит, шоколадный крем, оригинальные шоколадки KitKat.",
     badge: "",
@@ -1080,7 +1080,7 @@ let products = [
     categoryLabel: "Торты",
     price: 9800,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Изысканный венгерский миндальный торт. Белково-ореховые коржи прослоены нежным заварным кремом с пралине.",
     ingredients: "Белки яичные, миндальная мука, сахар, заварной крем Патисьер со сгущенным молоком, ореховое пралине, белый шоколад.",
     badge: "премиум",
@@ -1093,7 +1093,7 @@ let products = [
     categoryLabel: "Торты",
     price: 3200,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Классический медовик с тонкими ароматными коржами на натуральном меду и сметанным кремом.",
     ingredients: "Пшеничная мука, натуральный цветочный мед, фермерская сметана, сахар.",
     badge: ""
@@ -1105,7 +1105,7 @@ let products = [
     categoryLabel: "Торты",
     price: 3200,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Домашний Наполеон по семейному рецепту. Тонкие коржи отлично пропитаны нежным сливочно-заварным кремом.",
     ingredients: "Рубленое домашнее слоеное тесто, заварной крем со сгущенным молоком и натуральным сливочным маслом.",
     badge: ""
@@ -1117,7 +1117,7 @@ let products = [
     categoryLabel: "Торты",
     price: 5500,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Эффектный торт из воздушного безе со сгущенным кремом, шоколадной глазурью и орехами.",
     ingredients: "Воздушное безе, крем со сгущенным молоком и маслом, грецкие орехи, шоколадный ганаш.",
     badge: ""
@@ -1129,7 +1129,7 @@ let products = [
     categoryLabel: "Торты",
     price: 4200,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Английский десертный торт на песочной основе со свежими бананами, карамелью и взбитыми сливками.",
     ingredients: "Песочное тесто, вареная сгущенка, спелые бананы, фермерские сливки 33%.",
     badge: ""
@@ -1141,7 +1141,7 @@ let products = [
     categoryLabel: "Торты",
     price: 7000,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Знаменитый обожженный чизкейк с нежнейшей кремовой текстурой внутри и карамельной корочкой сверху.",
     ingredients: "Премиальный творожный сыр, натуральные сливки, яйца, сахар.",
     badge: "бестселлер",
@@ -1154,7 +1154,7 @@ let products = [
     categoryLabel: "Торты",
     price: 6500,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Фирменный чизкейк с добавлением традиционного обжаренного проса (тары). Уникальный вкус!",
     ingredients: "Сливочный сыр, сливки, карамель, обжаренное тары (казахское национальное просо).",
     badge: "хит",
@@ -1167,7 +1167,7 @@ let products = [
     categoryLabel: "Торты",
     price: 3500,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Нежнейший рулет из воздушной меренги с легким кремом и свежими ягодами малины.",
     ingredients: "Яичный белок, сырно-сливочный легкий крем, свежая малина, лепестки миндаля для украшения.",
     badge: "бестселлер"
@@ -1179,7 +1179,7 @@ let products = [
     categoryLabel: "Торты",
     price: 2400,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Мягкий домашний бисквитный рулет с нежным сливочно-ягодным кремом.",
     ingredients: "Сдобное тесто на яйцах, сливочный крем, ягодный джем.",
     badge: ""
@@ -1191,7 +1191,7 @@ let products = [
     categoryLabel: "Полуфабрикаты",
     price: 3300,
     unit: "кг",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Домашние фрикадельки для супа. Быстрое и сытное решение для семейного обеда.",
     ingredients: "Фарш на выбор (куриный или говяжий), лук, соль, специи.",
     badge: "заморозка",
@@ -1204,7 +1204,7 @@ let products = [
     categoryLabel: "Полуфабрикаты",
     price: 3300,
     unit: "кг",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Аппетитные домашние тефтели, приготовленные по классическому рецепту.",
     ingredients: "Фарш на выбор (куриный или говяжий), рис, лук, соль, специи.",
     badge: "заморозка",
@@ -1217,7 +1217,7 @@ let products = [
     categoryLabel: "Полуфабрикаты",
     price: 1700,
     unit: "уп.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Домашние сочные котлеты в панировке, готовые к жарке.",
     ingredients: "Фарш на выбор (куриный или говяжий), хлеб пшеничный, лук, панировочные сухари, соль, специи.",
     badge: "ручная работа",
@@ -1230,7 +1230,7 @@ let products = [
     categoryLabel: "Полуфабрикаты",
     price: 3900,
     unit: "кг",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Традиционные голубцы из сочного говяжьего фарша с рисом, завернутые в нежные капустные листья.",
     ingredients: "Листья капусты свежие, говяжий фарш, рис, лук репчатый, соль, черный перец.",
     badge: "заморозка"
@@ -1242,7 +1242,7 @@ let products = [
     categoryLabel: "Полуфабрикаты",
     price: 4100,
     unit: "кг",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Аккуратные пельмени ручной лепки из нежного теста с начинкой из говядины.",
     ingredients: "Пшеничная мука, домашнее яйцо, фарш говяжий, репчатый лук, специи.",
     badge: "хит"
@@ -1254,7 +1254,7 @@ let products = [
     categoryLabel: "Полуфабрикаты",
     price: 4100,
     unit: "кг",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Настоящие домашние манты ручной лепки с начинкой из сочной рубленой говядины и лука.",
     ingredients: "Мука пшеничная, вода питьевая, охлажденная говядина (крупный рубленый фарш), лук репчатый, соль, черный перец.",
     badge: "ручная лепка"
@@ -1266,7 +1266,7 @@ let products = [
     categoryLabel: "Полуфабрикаты",
     price: 1800,
     unit: "уп.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Хрустящие турецкие трубочки из тонкого теста филло с начинкой на выбор.",
     ingredients: "Тесто филло, начинка на выбор (куриный с сыром или с мясом и сыром).",
     badge: "закуска",
@@ -1279,7 +1279,7 @@ let products = [
     categoryLabel: "Полуфабрикаты",
     price: 1500,
     unit: "уп.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Упаковка чебуреков ручной лепки. При жарке получается пузырчатое хрустящее тесто.",
     ingredients: "Тонкое пресное тесто на воде, сочный фарш из говядины, лук, специи.",
     badge: ""
@@ -1291,7 +1291,7 @@ let products = [
     categoryLabel: "Полуфабрикаты",
     price: 2000,
     unit: "уп.",
-    image: "images/default_placeholder.webp",
+    image: "",
     desc: "Нежные домашние вареники с начинкой из воздушного картофельного пюре.",
     ingredients: "Тесто пресное, картофельное пюре, сливочное масло, пассерованный репчатый лук.",
     badge: ""
@@ -1558,7 +1558,7 @@ function createProductCardHtml(p) {
     <div class="${cardClass}" data-id="${p.id}">
       <div class="product-img-wrapper btn-preview">
         ${activeBadge}
-        <img src="${p.image}" alt="${tName}" loading="lazy">
+        ${p.image ? `<img src="${p.image}" alt="${tName}" loading="lazy">` : ''}
       </div>
       <div class="product-info">
         <span class="product-category">${tCategoryLabel}</span>
@@ -1683,8 +1683,15 @@ function openProductPreview(id) {
   const tUnit = window.i18n ? window.i18n.t(getUnitTranslationKey(p.unit)) : p.unit;
 
   activePreviewProductId = id;
-  modalProductImg.src = p.image;
-  modalProductImg.alt = tName;
+  if (p.image) {
+    modalProductImg.src = p.image;
+    modalProductImg.alt = tName;
+    modalProductImg.style.display = 'block';
+  } else {
+    modalProductImg.src = '';
+    modalProductImg.alt = '';
+    modalProductImg.style.display = 'none';
+  }
   modalProductTitle.textContent = tName;
   modalProductPrice.textContent = `${p.price.toLocaleString()} ₸ / ${tUnit}`;
   modalProductDesc.textContent = tDesc;
@@ -1813,7 +1820,7 @@ function updateCartUi() {
     
     return `
       <div class="cart-item" data-id="${p.id}">
-        <img src="${p.image}" alt="${tName}" class="cart-item-img">
+        ${p.image ? `<img src="${p.image}" alt="${tName}" class="cart-item-img">` : `<div class="cart-item-img empty-cart-img" style="background-color: var(--bg-tertiary);"></div>`}
         <div class="cart-item-details">
           <h5 class="cart-item-name">${tName}</h5>
           <span class="cart-item-price">${(p.price * item.qty).toLocaleString()} ₸</span>
@@ -2582,7 +2589,7 @@ function renderAdminCatalog() {
     
     return `
       <div class="admin-product-row" data-id="${p.id}">
-        <img src="${p.image}" alt="${pName}" class="admin-prod-img">
+        ${p.image ? `<img src="${p.image}" alt="${pName}" class="admin-prod-img">` : `<div class="admin-prod-img empty-admin-img" style="background-color: var(--bg-tertiary);"></div>`}
         <div class="admin-prod-form-group">
           <label>${tName}</label>
           <input type="text" class="admin-edit-name" value="${pName}">
