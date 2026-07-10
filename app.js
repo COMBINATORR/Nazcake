@@ -14,7 +14,7 @@ let products = [
     categoryLabel: "Хлебобулочные изделия",
     price: 120,
     unit: "шт.",
-    image: "",
+    image: "images/bread_burger.webp",
     desc: "Свежая, невероятно мягкая и воздушная пшеничная булочка, посыпанная кунжутом. Отлично подходит для домашних бургеров.",
     ingredients: "Мука пшеничная высшего сорта, кунжут, молоко, яйца, сливочное масло, сахар, дрожжи, соль.",
     badge: "свежее"
@@ -26,7 +26,7 @@ let products = [
     categoryLabel: "Хлебобулочные изделия",
     price: 70,
     unit: "шт.",
-    image: "",
+    image: "images/bread_baursaki.webp",
     desc: "Традиционные золотистые бауырсаки. Нежные внутри и хрустящие снаружи. Готовятся непосредственно перед доставкой.",
     ingredients: "Пшеничная мука, молоко, дрожжи, сахар, соль, растительное масло.",
     badge: "бестселлер"
@@ -74,7 +74,7 @@ let products = [
     categoryLabel: "Хлебобулочные изделия",
     price: 130,
     unit: "шт.",
-    image: "",
+    image: "images/bread_kosichki.webp",
     desc: "Ароматная плетеная сдобная косичка с легким сахарным сиропом и румяной корочкой. Идеально к горячему чаю.",
     ingredients: "Дрожжевое сдобное тесто, молоко, сливочное масло, сахарный сироп, кунжутная обсыпка.",
     badge: ""
@@ -134,7 +134,7 @@ let products = [
     categoryLabel: "Выпечка",
     price: 250,
     unit: "шт.",
-    image: "",
+    image: "images/pastry_samsa_meat.webp",
     desc: "Хрустящая слоеная самса с начинкой из сочного фарша с луком и специями.",
     ingredients: "Слоеное тесто, говядина, репчатый лук, черный перец, соль.",
     badge: "свежее"
@@ -158,7 +158,7 @@ let products = [
     categoryLabel: "Выпечка",
     price: 250,
     unit: "шт.",
-    image: "",
+    image: "images/pastry_samsa_chicken.webp",
     desc: "Нежная самса с начинкой из сочного куриного филе и тянущегося сыра.",
     ingredients: "Слоеное тесто, филе куриное, сыр, лук, специи, соль.",
     badge: "новое"
@@ -182,7 +182,7 @@ let products = [
     categoryLabel: "Выпечка",
     price: 240,
     unit: "шт.",
-    image: "",
+    image: "images/pastry_rogaliki.webp",
     desc: "Румяные домашние пирожки со специями и нежным ливерным паштетом.",
     ingredients: "Дрожжевое тесто, говяжий ливер (легкое, сердце, печень), лук, специи.",
     badge: ""
@@ -194,7 +194,7 @@ let products = [
     categoryLabel: "Выпечка",
     price: 180,
     unit: "шт.",
-    image: "",
+    image: "images/pastry_rogaliki.webp",
     desc: "Маленькие порционные пирожки на один укус с сытной начинкой из ливера.",
     ingredients: "Дрожжевое тесто, отборный говяжий ливер, лук репчатый, соль, перец.",
     badge: ""
@@ -278,7 +278,7 @@ let products = [
     categoryLabel: "Выпечка",
     price: 3000,
     unit: "кг",
-    image: "",
+    image: "images/pastry_rogaliki.webp",
     desc: "Рассыпчатые мини-рогалики с начинкой из нежного сладкого творога.",
     ingredients: "Сметанно-песочное тесто, творог, сахарная пудра, ваниль.",
     badge: ""
@@ -302,7 +302,7 @@ let products = [
     categoryLabel: "Пироги",
     price: 2500,
     unit: "шт.",
-    image: "",
+    image: "images/pie_smetannik.webp",
     desc: "Сытный пирог с начинкой из нежного творога и сладкой вареной сгущенки.",
     ingredients: "Песочное тесто, творог 9%, вареное сгущенное молоко, сахар, ванилин.",
     badge: ""
@@ -314,7 +314,7 @@ let products = [
     categoryLabel: "Пироги",
     price: 2200,
     unit: "шт.",
-    image: "",
+    image: "images/pie_smetannik.webp",
     desc: "Классический нежный сметанник на тонкой песочной основе.",
     ingredients: "Песочное тесто, фермерская сметана 25%, яйца, ванильный сахар.",
     badge: "бестселлер"
@@ -326,7 +326,7 @@ let products = [
     categoryLabel: "Пироги",
     price: 4200,
     unit: "шт.",
-    image: "",
+    image: "images/pie_snickers.webp",
     desc: "Насыщенный десертный пирог с домашней карамелью, арахисом и шоколадным ганашем.",
     ingredients: "Шоколадный бисквит, арахис обжаренный, соленая карамель, бельгийский шоколад.",
     badge: "премиум"
@@ -350,7 +350,7 @@ let products = [
     categoryLabel: "Пироги",
     price: 2600,
     unit: "шт.",
-    image: "",
+    image: "images/pie_poppy.webp",
     desc: "Ароматный пирог с сочной и плотной начинкой из уваренного мака.",
     ingredients: "Сдобное тесто, маковая начинка с сахаром, сливочное масло.",
     badge: ""
@@ -422,7 +422,7 @@ let products = [
     categoryLabel: "На заказ",
     price: 7500,
     unit: "шт.",
-    image: "",
+    image: "images/pie_smetannik.webp",
     desc: "Большой прямоугольный пирог с нежной и сладкой творожной начинкой.",
     ingredients: "Сдобное тесто, натуральный творог, сахарная пудра, ваниль.",
     badge: "custom"
@@ -434,7 +434,7 @@ let products = [
     categoryLabel: "На заказ",
     price: 7500,
     unit: "шт.",
-    image: "",
+    image: "images/pie_poppy.webp",
     desc: "Большой прямоугольный пирог, обильно наполненный отборным изюмом и курагой.",
     ingredients: "Сдобное тесто, курага, изюм, сахар, ванилин.",
     badge: "custom"
@@ -1558,7 +1558,7 @@ function createProductCardHtml(p) {
     <div class="${cardClass}" data-id="${p.id}">
       <div class="product-img-wrapper btn-preview">
         ${activeBadge}
-        ${p.image ? `<img src="${p.image}" alt="${tName}" loading="lazy">` : ''}
+        <img src="${p.image}" alt="${tName}" loading="lazy">
       </div>
       <div class="product-info">
         <span class="product-category">${tCategoryLabel}</span>
@@ -1683,15 +1683,8 @@ function openProductPreview(id) {
   const tUnit = window.i18n ? window.i18n.t(getUnitTranslationKey(p.unit)) : p.unit;
 
   activePreviewProductId = id;
-  if (p.image) {
-    modalProductImg.src = p.image;
-    modalProductImg.alt = tName;
-    modalProductImg.style.display = 'block';
-  } else {
-    modalProductImg.src = '';
-    modalProductImg.alt = '';
-    modalProductImg.style.display = 'none';
-  }
+  modalProductImg.src = p.image;
+  modalProductImg.alt = tName;
   modalProductTitle.textContent = tName;
   modalProductPrice.textContent = `${p.price.toLocaleString()} ₸ / ${tUnit}`;
   modalProductDesc.textContent = tDesc;
@@ -1820,7 +1813,7 @@ function updateCartUi() {
     
     return `
       <div class="cart-item" data-id="${p.id}">
-        ${p.image ? `<img src="${p.image}" alt="${tName}" class="cart-item-img">` : `<div class="cart-item-img empty-cart-img" style="background-color: var(--bg-tertiary);"></div>`}
+        <img src="${p.image}" alt="${tName}" class="cart-item-img">
         <div class="cart-item-details">
           <h5 class="cart-item-name">${tName}</h5>
           <span class="cart-item-price">${(p.price * item.qty).toLocaleString()} ₸</span>
@@ -2589,7 +2582,7 @@ function renderAdminCatalog() {
     
     return `
       <div class="admin-product-row" data-id="${p.id}">
-        ${p.image ? `<img src="${p.image}" alt="${pName}" class="admin-prod-img">` : `<div class="admin-prod-img empty-admin-img" style="background-color: var(--bg-tertiary);"></div>`}
+        <img src="${p.image}" alt="${pName}" class="admin-prod-img">
         <div class="admin-prod-form-group">
           <label>${tName}</label>
           <input type="text" class="admin-edit-name" value="${pName}">
