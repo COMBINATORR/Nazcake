@@ -376,31 +376,165 @@
       p_pie_fruits_large_desc: "Большой прямоугольный пирог, обильно наполненный отборным изюмом и курагой.",
       p_pie_fruits_large_ingredients: "Сдобное тесто, курага, изюм, сахар, ванилин.",
 
-      // 12. dessert_ekler
-      p_dessert_ekler_name: "Пирожное Эклер",
-      p_dessert_ekler_desc: "Французское заварное пирожное, наполненное шелковистым сливочно-заварным кремом и покрытое шоколадной глазурью.",
-      p_dessert_ekler_ingredients: "Заварное тесто (вода, мука, сливочное масло, яйца), заварной крем Муслин (молоко, масло, сахар, ваниль), шоколадный ганаш.",
+      p_dessert_napoleon_name: "Наполеон",
+      p_dessert_napoleon_desc: "Порционный кусочек классического торта Наполеон с нежным заварным кремом.",
+      p_dessert_napoleon_ingredients: "Слоеное тесто, заварной крем Дипломат, ваниль.",
 
-      // 13. dessert_napoleon
-      p_dessert_napoleon_name: "Пирожное Наполеон",
-      p_dessert_napoleon_desc: "Порционный кусочек торта Наполеон. Хрустящие слоеные коржи с большим количеством крема.",
-      p_dessert_napoleon_ingredients: "Слоеное бездрожжевое тесто, классический крем Дипломат на основе сливок и заварного крема.",
+      p_dessert_ekler_name: "Эклер",
+      p_dessert_ekler_desc: "Французское заварное пирожное, наполненное нежным сливочно-заварным кремом.",
+      p_dessert_ekler_ingredients: "Заварное тесто, крем Муслин, шоколадная глазурь.",
 
-      // 14. dessert_medovik
-      p_dessert_medovik_name: "Пирожное Медовик",
+      p_dessert_muraveynik_name: "Муравейник",
+      p_dessert_muraveynik_desc: "Традиционное пирожное из песочного теста со сгущенным молоком и грецкими орехами.",
+      p_dessert_muraveynik_ingredients: "Песочное тесто, вареная сгущенка, сливочное масло, мед, мак.",
+
+      p_dessert_chak_chak_name: "Чак-чак",
+      p_dessert_chak_chak_desc: "Восточная сладость из обжаренных кусочков теста, залитых натуральным медовым сиропом.",
+      p_dessert_chak_chak_ingredients: "Мука пшеничная, яйца, мед натуральный, сахар, масло растительное.",
+
+      p_dessert_chocolate_name: "Шоколадный",
+      p_dessert_chocolate_desc: "Насыщенное шоколадное пирожное с шоколадным бисквитом и нежным кремом.",
+      p_dessert_chocolate_ingredients: "Шоколадный бисквит, крем с какао, темный шоколад.",
+
+      p_dessert_caramel_name: "Карамельный",
+      p_dessert_caramel_desc: "Нежное пирожное с мягким бисквитом и домашней карамелью.",
+      p_dessert_caramel_ingredients: "Сдобный бисквит, мягкая карамель, сливочный крем.",
+
+      p_dessert_snickers_airy_name: "Воздушный сникерс",
+      p_dessert_snickers_airy_desc: "Пирожное с безе, жареным арахисом и нежным кремом со сгущенкой.",
+      p_dessert_snickers_airy_ingredients: "Воздушное безе, жареный арахис, вареная сгущенка, сливочное масло.",
+
+      p_dessert_medovik_name: "Медовик",
       p_dessert_medovik_desc: "Ароматное медовое пирожное со сметанным кремом, тающее во рту.",
-      p_dessert_medovik_ingredients: "Медовые коржи с добавлением натурального цветочного меда, сметанный крем с добавлением взбитых сливок.",
+      p_dessert_medovik_ingredients: "Медовые коржи с добавлением натурального меда, сметанный крем.",
 
-      // 15. dessert_cupcake_red
-      p_dessert_cupcake_red_name: "Капкейк Красный бархат",
-      p_dessert_cupcake_red_desc: "Яркий капкейк с влажным пористым бисквитом, скрытым ягодным центром и пышной шапочкой нежного сырного крема.",
-      p_dessert_cupcake_red_ingredients: "Кефирный бисквит «Красный бархат», малиновое конфи, сливочный крем-чиз (творожный сыр, сливки, пудра).",
-      p_dessert_cupcake_berry_name: "Капкейк Ягодный микс",
-      p_dessert_cupcake_berry_desc: "Нежный ванильный капкейк с начинкой из свежих ягод и легкой шапочкой из сливочного крема.",
-      p_dessert_cupcake_berry_ingredients: "Мука пшеничная, яйца, сахар, клубника, черника, сливочный крем.",
-      p_cake_custom_celebration_name: "Праздничный торт (на заказ)",
-      p_cake_custom_celebration_desc: "Эксклюзивный праздничный торт для вашего торжества. Дизайн и начинка обсуждаются индивидуально.",
-      p_cake_custom_celebration_ingredients: "Начинка на выбор, премиальный декор.",
+      p_dessert_caramel_design_name: "Карамель с оформлением",
+      p_dessert_caramel_design_desc: "Карамельное пирожное со стильным праздничным оформлением.",
+      p_dessert_caramel_design_ingredients: "Бисквит, домашняя карамель, крем-чиз, элементы декора.",
+
+      p_dessert_chocolate_design_name: "Шоколадный с оформлением",
+      p_dessert_chocolate_design_desc: "Шоколадное пирожное с нарядным праздничным декором.",
+      p_dessert_chocolate_design_ingredients: "Шоколадный бисквит, шоколадный крем, праздничный декор.",
+
+      p_dessert_banoffee_name: "Банофи пай",
+      p_dessert_banoffee_desc: "Пирожное с бананами, ароматной карамелью и воздушными взбитыми сливками на песочной основе.",
+      p_dessert_banoffee_ingredients: "Песочная основа, свежие бананы, карамель, взбитые сливки.",
+
+      p_dessert_ryzhik_name: "Рыжик",
+      p_dessert_ryzhik_desc: "Классическое медовое пирожное с добавлением заварного крема.",
+      p_dessert_ryzhik_ingredients: "Медовые коржи, заварной крем Дипломат, крошка.",
+
+      p_dessert_cheesecake_name: "Чизкейк",
+      p_dessert_cheesecake_desc: "Нежный сырный десерт на песочной основе с добавлением ванили.",
+      p_dessert_cheesecake_ingredients: "Песочная крошка, сливочный сыр Cremette, сахар, сливки.",
+
+      p_dessert_pavlova_name: "Павлова",
+      p_dessert_pavlova_desc: "Воздушное безе с хрустящей корочкой и мягким центром, украшенное нежным кремом.",
+      p_dessert_pavlova_ingredients: "Французская меренга, маскарпоне, сливки, сахарная пудра.",
+
+      p_dessert_milk_girl_name: "Молочная девочка",
+      p_dessert_milk_girl_desc: "Порционное пирожное с нежными коржами на сгущенном молоке и легким кремом.",
+      p_dessert_milk_girl_ingredients: "Коржи на сгущенном молоке Рогачев, крем на основе взбитых сливок.",
+
+      p_dessert_carrot_name: "Морковный",
+      p_dessert_carrot_desc: "Морковный бисквит с добавлением пряностей, грецкого ореха и сливочного сыра.",
+      p_dessert_carrot_ingredients: "Морковно-ореховый бисквит, корица, сливочный сыр, карамель.",
+
+      p_dessert_red_velvet_name: "Красный бархат",
+      p_dessert_red_velvet_desc: "Яркое пирожное со знаменитым сочным красным бисквитом и кремом.",
+      p_dessert_red_velvet_ingredients: "Бисквит Красный бархат, нежный крем-чиз, пропитка.",
+
+      p_dessert_snickers_name: "Сникерс",
+      p_dessert_snickers_desc: "Шоколадный бисквит с большим количеством арахиса и карамели.",
+      p_dessert_snickers_ingredients: "Шоколадный бисквит, домашняя карамель, арахис, нуга.",
+
+      p_dessert_oreo_name: "Орео",
+      p_dessert_oreo_desc: "Шоколадное пирожное с кусочками оригинального печенья Oreo.",
+      p_dessert_oreo_ingredients: "Шоколадный бисквит, крем со сливками и крошкой Oreo.",
+
+      p_dessert_banana_name: "Банановый",
+      p_dessert_banana_desc: "Ароматный банановый бисквит с банановым муссом и карамелью.",
+      p_dessert_banana_ingredients: "Банановый бисквит, свежие бананы, нежный мусс.",
+
+      p_dessert_royal_name: "Королевский",
+      p_dessert_royal_desc: "Изысканное шоколадное пирожное с орехами и прослойкой пралине.",
+      p_dessert_royal_ingredients: "Шоколадный бисквит, ореховый крем, фундук, пралине.",
+
+      p_dessert_pistachio_name: "Фисташковый",
+      p_dessert_pistachio_desc: "Пирожное с фисташковым бисквитом и натуральным фисташковым кремом.",
+      p_dessert_pistachio_ingredients: "Фисташковый бисквит, фисташковая паста, крем на сливках.",
+
+      p_dessert_cupcake_choco_name: "Шоколадный капкейк",
+      p_dessert_cupcake_choco_desc: "Шоколадный кекс с начинкой и пышной шапочкой из шоколадного крема.",
+      p_dessert_cupcake_choco_ingredients: "Шоколадный бисквит, шоколадный ганаш, крем шантильи.",
+
+      p_dessert_cupcake_red_plain_name: "Красный капкейк",
+      p_dessert_cupcake_red_plain_desc: "Нежный капкейк Красный бархат со сливочной начинкой.",
+      p_dessert_cupcake_red_plain_ingredients: "Красный бисквит, молочная пропитка, сливочный сыр.",
+
+      p_dessert_pistachio_raspberry_name: "Фисташка - малина",
+      p_dessert_pistachio_raspberry_desc: "Премиум десерт с ярким сочетанием фисташкового мусса и малинового кули.",
+      p_dessert_pistachio_raspberry_ingredients: "Фисташковый бисквит, малиновое кули, фисташковый крем.",
+
+      p_dessert_ekler_choco_name: "Эклер в шоколаде",
+      p_dessert_ekler_choco_desc: "Увеличенный эклер, обильно покрытый бельгийским шоколадом.",
+      p_dessert_ekler_choco_ingredients: "Заварное тесто, крем Патисьер, бельгийский шоколад.",
+
+      p_dessert_almond_fruits_name: "Миндальный с сухофруктами",
+      p_dessert_almond_fruits_desc: "Изысканное миндальное пирожное с курагой, черносливом и орехами.",
+      p_dessert_almond_fruits_ingredients: "Миндальная мука, взбитые белки, сухофрукты, лепестки миндаля.",
+
+      p_dessert_pistachio_magnum_name: "Фисташка магнум",
+      p_dessert_pistachio_magnum_desc: "Изысканное пирожное в форме мороженого эскимо с фисташковым вкусом.",
+      p_dessert_pistachio_magnum_ingredients: "Фисташковый бисквит, фисташковый крем, глазурь из белого шоколада.",
+
+      p_dessert_grillage_name: "Грилляж",
+      p_dessert_grillage_desc: "Шоколадно-ореховый премиум десерт с хрустящими карамелизованными орехами.",
+      p_dessert_grillage_ingredients: "Грильяж ореховый, шоколадный крем, карамель, темный шоколад.",
+
+      p_dessert_latte_name: "Латте",
+      p_dessert_latte_desc: "Нежное кофейное пирожное со вкусом и ароматом классического латте.",
+      p_dessert_latte_ingredients: "Кофейный бисквит, кофейный мусс, молочная пенка, корица.",
+
+      p_berry_oreo_name: "Орео с ягодами",
+      p_berry_oreo_desc: "Популярное пирожное Oreo, украшенное свежими лесными ягодами.",
+      p_berry_oreo_ingredients: "Шоколадный бисквит, крошка Oreo, крем, свежая клубника, голубика.",
+
+      p_berry_milk_girl_name: "Молочная девочка с ягодами",
+      p_berry_milk_girl_desc: "Нежная порционная Молочная девочка со свежими ягодами сверху.",
+      p_berry_milk_girl_ingredients: "Коржи на сгущенном молоке, крем на сливках, свежие ягоды.",
+
+      p_berry_snickers_name: "Сникерс с ягодами",
+      p_berry_snickers_desc: "Шоколадное пирожное Сникерс со свежими ягодами клубники и малины.",
+      p_berry_snickers_ingredients: "Шоколадный бисквит, карамель, арахис, свежие ягоды, шоколад.",
+
+      p_berry_royal_name: "Королевский с ягодами",
+      p_berry_royal_desc: "Пирожное Королевский, изысканно украшенное ягодами и золотым декором.",
+      p_berry_royal_ingredients: "Ореховый бисквит, шоколад, ассорти из свежих сезонных ягод.",
+
+      p_berry_nutella_name: "Нутелла",
+      p_berry_nutella_desc: "Шоколадное пирожное со щедрым слоем пасты Nutella и свежей малиной.",
+      p_berry_nutella_ingredients: "Шоколадный бисквит, оригинальная паста Nutella, свежая малина.",
+
+      p_berry_choux_rings_name: "Заварные кольца",
+      p_berry_choux_rings_desc: "Традиционное заварное кольцо с творожным кремом и свежими ягодами клубники.",
+      p_berry_choux_rings_ingredients: "Заварное тесто, легкий творожный крем, сахарная пудра, клубника.",
+
+      p_berry_cupcake_choco_name: "Шоколадный капкейк с ягодами",
+      p_berry_cupcake_choco_desc: "Шоколадный капкейк с ягодным конфи внутри и горкой свежих ягод сверху.",
+      p_berry_cupcake_choco_ingredients: "Шоколадный кекс, сливочный крем, ассорти из свежих ягод.",
+
+      p_berry_pavlova_name: "Павлова с ягодами",
+      p_berry_pavlova_desc: "Классический десерт Анна Павлова с обильным количеством свежей малины и клубники.",
+      p_berry_pavlova_ingredients: "Безе, крем маскарпоне, свежая малина, свежая клубника.",
+
+      p_berry_cheesecake_name: "Чизкейк с ягодами",
+      p_berry_cheesecake_desc: "Нежнейший чизкейк Нью-Йорк, покрытый ягодным соусом и украшенный свежими ягодами.",
+      p_berry_cheesecake_ingredients: "Сырный крем, песочная основа, свежая клубника, черника.",
+
+      p_berry_cupcake_red_name: "Красный капкейк с ягодами",
+      p_berry_cupcake_red_desc: "Капкейк Красный бархат со сливочным кремом и свежей клубникой.",
+      p_berry_cupcake_red_ingredients: "Бисквит Красный бархат, клубничное кули, свежая клубника, крем.",
 
       // 16. cake_pistachio
       p_cake_pistachio_name: "Торт Фисташка-Малина",
@@ -826,31 +960,165 @@
       p_pie_fruits_large_desc: "Таңдаулы мейіз бен кептірілген өрікке толы үлкен тікбұрышты пирог.",
       p_pie_fruits_large_ingredients: "Тәтті қамыр, кептірілген өрік, мейіз, қант, ванилин.",
 
-      // 12. dessert_ekler
-      p_dessert_ekler_name: "Эклер пирожныйы",
-      p_dessert_ekler_desc: "Жібектей кілегейлі-заварной кремімен толтырылған және шоколадты глазурмен қапталған француз заварной пирожныйы.",
-      p_dessert_ekler_ingredients: "Заварной қамыр (су, ұн, сары май, жұмыртқа), Муслин заварной кремі (сүт, май, қант, ваниль), шоколадты ганаш.",
+      p_dessert_napoleon_name: "Наполеон",
+      p_dessert_napoleon_desc: "Нәзік заварной кремі бар классикалық Наполеон тортының порциялық бөлігі.",
+      p_dessert_napoleon_ingredients: "Қатпарлы қамыр, Дипломат заварной кремі, ваниль.",
 
-      // 13. dessert_napoleon
-      p_dessert_napoleon_name: "Наполеон пирожныйы",
-      p_dessert_napoleon_desc: "Наполеон тортының порциялық бөлігі. Кремі мол қытырлақ қабатты корждар.",
-      p_dessert_napoleon_ingredients: "Ашытқысыз қабатты қамыр, кілегей және заварной крем негізіндегі классикалық Дипломат кремі.",
+      p_dessert_ekler_name: "Эклер",
+      p_dessert_ekler_desc: "Нәзік кілегейлі-заварной кремімен толтырылған француз заварной пирожныйы.",
+      p_dessert_ekler_ingredients: "Заварной қамыр, Муслин кремі, шоколад глазурі.",
 
-      // 14. dessert_medovik
-      p_dessert_medovik_name: "Медовик пирожныйы",
+      p_dessert_muraveynik_name: "Муравейник",
+      p_dessert_muraveynik_desc: "Қоюлатылған сүт пен грек жаңғағы қосылған құмды қамырдан жасалған дәстүрлі пирожный.",
+      p_dessert_muraveynik_ingredients: "Құмды қамыр, пісірілген қоюлатылған сүт, сары май, бал, мак.",
+
+      p_dessert_chak_chak_name: "Чак-чак",
+      p_dessert_chak_chak_desc: "Табиғи бал шәрбаты құйылған, қуырылған қамыр кесектерінен жасалған шығыс тәттісі.",
+      p_dessert_chak_chak_ingredients: "Бидай ұны, жұмыртқа, табиғи бал, қант, өсімдік майы.",
+
+      p_dessert_chocolate_name: "Шоколадты",
+      p_dessert_chocolate_desc: "Шоколадты бисквит пен нәзік кремі бар қанық шоколадты пирожный.",
+      p_dessert_chocolate_ingredients: "Шоколадты бисквит, какао қосылған крем, қара шоколад.",
+
+      p_dessert_caramel_name: "Карамельді",
+      p_dessert_caramel_desc: "Жұмсақ бисквит пен үй карамелі қосылған нәзік пирожный.",
+      p_dessert_caramel_ingredients: "Сдобты бисквит, жұмсақ карамель, кілегейлі крем.",
+
+      p_dessert_snickers_airy_name: "Үлпілдек Сникерс",
+      p_dessert_snickers_airy_desc: "Безе, қуырылған жержаңғақ және қоюлатылған сүт қосылған нәзік кремі бар пирожный.",
+      p_dessert_snickers_airy_ingredients: "Үлпілдек безе, қуырылған жержаңғақ, пісірілген қоюлатылған сүт, сары май.",
+
+      p_dessert_medovik_name: "Медовик",
       p_dessert_medovik_desc: "Ауызда еритін қаймақ кремі бар хош іісті бал пирожныйы.",
-      p_dessert_medovik_ingredients: "Табиғи гүл балы қосылған бал корждары, көпіршітілген кілегей қосылған қаймақ кремі.",
+      p_dessert_medovik_ingredients: "Табиғи бал қосылған бал корждары, қаймақ кремі.",
 
-      // 15. dessert_cupcake_red
-      p_dessert_cupcake_red_name: "Красный бархат капкейгі",
-      p_dessert_cupcake_red_desc: "Ылғалды кеуекті бисквиті, ішкі жидек орталығы және нәзік ірімшік кремінің үлпілдек қалпағы бар ашық капкейк.",
-      p_dessert_cupcake_red_ingredients: "«Красный бархат» айран бисквиті, таңқурай конфиі, кілегейлі крем-чиз (сүзбе ірімшік, кілегей, ұнтақ).",
-      p_dessert_cupcake_berry_name: "Жидек қосылған капкейк",
-      p_dessert_cupcake_berry_desc: "Балғын жидектер салмасы бар және кілегейлі кремнен жасалған жеңіл қалпақшасы бар нәзік ванильді капкейк.",
-      p_dessert_cupcake_berry_ingredients: "Бидай ұны, жұмыртқа, қант, құлпынай, көкжидек, кілегейлі крем.",
-      p_cake_custom_celebration_name: "Мерекелік торт (тапсырыспен)",
-      p_cake_custom_celebration_desc: "Сіздің салтанатыңызға арналған эксклюзивті мерекелік торт. Дизайны мен салмасы жеке талқыланады.",
-      p_cake_custom_celebration_ingredients: "Таңдау бойынша салмасы, премиум декор.",
+      p_dessert_caramel_design_name: "Сәнделген карамель",
+      p_dessert_caramel_design_desc: "Сәнді мерекелік безендіруі бар карамельді пирожный.",
+      p_dessert_caramel_design_ingredients: "Бисквит, үй карамелі, крем-чиз, безендіру элементтері.",
+
+      p_dessert_chocolate_design_name: "Сәнделген шоколадты",
+      p_dessert_chocolate_design_desc: "Әдемі мерекелік безендіруі бар шоколадты пирожный.",
+      p_dessert_chocolate_design_ingredients: "Шоколадты бисквит, шоколадты крем, мерекелік декор.",
+
+      p_dessert_banoffee_name: "Баноффи пай",
+      p_dessert_banoffee_desc: "Құмды негіздегі банан, хош иісті карамель және үлпілдек көпіршітілген кілегей қосылған пирожный.",
+      p_dessert_banoffee_ingredients: "Құмды негіз, жаңа піскен банандар, карамель, көпіршітілген кілегей.",
+
+      p_dessert_ryzhik_name: "Рыжик",
+      p_dessert_ryzhik_desc: "Заварной кремі бар классикалық бал пирожныйы.",
+      p_dessert_ryzhik_ingredients: "Бал корждары, Дипломат заварной кремі, үгінді.",
+
+      p_dessert_cheesecake_name: "Чизкейк",
+      p_dessert_cheesecake_desc: "Ваниль қосылған құмды негіздегі нәзік ірімшік десерті.",
+      p_dessert_cheesecake_ingredients: "Құмды үгінді, Cremette кілегейлі ірімшігі, қант, кілегей.",
+
+      p_dessert_pavlova_name: "Павлова",
+      p_dessert_pavlova_desc: "Нәзік креммен безендірілген, қытырлақ қабығы мен жұмсақ ортасы бар үлпілдек безе.",
+      p_dessert_pavlova_ingredients: "Француз меренгасы, маскарпоне, кілегей, қант ұнтағы.",
+
+      p_dessert_milk_girl_name: "Сүтті қыз",
+      p_dessert_milk_girl_desc: "Қоюлатылған сүтке дайындалған нәзік корждары мен жеңіл кремі бар порциялық пирожный.",
+      p_dessert_milk_girl_ingredients: "Рогачев қоюлатылған сүтінен жасалған корждар, көпіршітілген кілегей кремі.",
+
+      p_dessert_carrot_name: "Сәбізді",
+      p_dessert_carrot_desc: "Дәмдеуіштер, грек жаңғағы және кілегейлі ірімшік қосылған сәбіз бисквиті.",
+      p_dessert_carrot_ingredients: "Сәбізді-жаңғақты бисквит, дәріш, кілегейлі ірімшік, карамель.",
+
+      p_dessert_red_velvet_name: "Қызыл барқыт",
+      p_dessert_red_velvet_desc: "Әйгілі шырынды қызыл бисквит пен кремі бар ашық пирожный.",
+      p_dessert_red_velvet_ingredients: "Қызыл барқыт бисквиті, нәзік крем-чиз, сіңіргіш.",
+
+      p_dessert_snickers_name: "Сникерс",
+      p_dessert_snickers_desc: "Арахис пен карамельдің көп мөлшері бар шоколадты бисквит.",
+      p_dessert_snickers_ingredients: "Шоколадты бисквит, үй карамелі, жержаңғақ, нуга.",
+
+      p_dessert_oreo_name: "Орео",
+      p_dessert_oreo_desc: "Түпнұсқа Oreo печеньесінің кесектері бар шоколадты пирожный.",
+      p_dessert_oreo_ingredients: "Шоколадты бисквит, Oreo үгіндісі мен кілегей қосылған крем.",
+
+      p_dessert_banana_name: "Бананды",
+      p_dessert_banana_desc: "Банан муссы мен карамель қосылған хош иісті банан бисквиті.",
+      p_dessert_banana_ingredients: "Банан бисквиті, жаңа піскен банандар, нәзік мусс.",
+
+      p_dessert_royal_name: "Корольдік",
+      p_dessert_royal_desc: "Жаңғақтар мен пралине қабаты бар талғампаз шоколадты пирожный.",
+      p_dessert_royal_ingredients: "Шоколадты бисквит, жаңғақ кремі, орман жаңғағы, пралине.",
+
+      p_dessert_pistachio_name: "Фисташкалы",
+      p_dessert_pistachio_desc: "Фисташка бисквиті мен табиғи фисташка кремі бар пирожный.",
+      p_dessert_pistachio_ingredients: "Фисташка бисквиті, фисташка пастасы, кілегей кремі.",
+
+      p_dessert_cupcake_choco_name: "Шоколадты капкейк",
+      p_dessert_cupcake_choco_desc: "Шоколадты кремі бар үлпілдек қалпақшасы мен салмасы бар шоколадты кекс.",
+      p_dessert_cupcake_choco_ingredients: "Шоколадты бисквит, шоколадты ганаш, шантильи кремі.",
+
+      p_dessert_cupcake_red_plain_name: "Қызыл капкейк",
+      p_dessert_cupcake_red_plain_desc: "Кілегейлі салмасы бар нәзік Қызыл барқыт капкейгі.",
+      p_dessert_cupcake_red_plain_ingredients: "Қызыл бисквит, сүтті сіңіргіш, кілегейлі ірімшік.",
+
+      p_dessert_pistachio_raspberry_name: "Фисташка - таңқурай",
+      p_dessert_pistachio_raspberry_desc: "Фисташка муссы мен таңқурай кулиінің керемет үйлесімі бар премиум десерт.",
+      p_dessert_pistachio_raspberry_ingredients: "Фисташка бисквиті, таңқурай кулиі, фисташка кремі.",
+
+      p_dessert_ekler_choco_name: "Шоколадты эклер",
+      p_dessert_ekler_choco_desc: "Бельгиялық шоколадпен жомарт жабылған үлкейтілген эклер.",
+      p_dessert_ekler_choco_ingredients: "Заварной қамыр, Патисьер кремі, бельгиялық шоколад.",
+
+      p_dessert_almond_fruits_name: "Кептірілген жемістер қосылған бадам десерті",
+      p_dessert_almond_fruits_desc: "Кептірілген өрік, қара өрік және жаңғақтары бар талғампаз бадам пирожныйы.",
+      p_dessert_almond_fruits_ingredients: "Бадам ұны, көпіршітілген жұмыртқа ақуызы, кептірілген жемістер, бадам жапырақшалары.",
+
+      p_dessert_pistachio_magnum_name: "Магнум фисташка",
+      p_dessert_pistachio_magnum_desc: "Фисташка дәмі бар эскимо балмұздағы түріндегі талғампаз пирожный.",
+      p_dessert_pistachio_magnum_ingredients: "Фисташка бисквиті, фисташка кремі, ақ шоколад глазурі.",
+
+      p_dessert_grillage_name: "Грильяж",
+      p_dessert_grillage_desc: "Қытырлақ карамельденген жаңғақтары бар шоколадты-жаңғақты премиум десерт.",
+      p_dessert_grillage_ingredients: "Жаңғақ грильяжы, шоколадты крем, карамель, қара шоколад.",
+
+      p_dessert_latte_name: "Латте",
+      p_dessert_latte_desc: "Классикалық латтенің дәмі мен хош иісі бар нәзік кофе пирожныйы.",
+      p_dessert_latte_ingredients: "Кофе бисквиті, кофе муссы, сүт көбігі, дәріш.",
+
+      p_berry_oreo_name: "Жидек қосылған Орео",
+      p_berry_oreo_desc: "Балғын жидектермен безендірілген танымал Oreo пирожныйы.",
+      p_berry_oreo_ingredients: "Шоколадты бисквит, Oreo үгіндісі, крем, балғын құлпынай, көкжидек.",
+
+      p_berry_milk_girl_name: "Жидек қосылған сүтті қыз",
+      p_berry_milk_girl_desc: "Үстіне балғын жидектер қойылған нәзік порциялық Сүтті қыз пирожныйы.",
+      p_berry_milk_girl_ingredients: "Қоюлатылған сүт корждары, кілегей кремі, балғын жидектер.",
+
+      p_berry_snickers_name: "Жидек қосылған Сникерс",
+      p_berry_snickers_desc: "Балғын құлпынай және таңқурай жидектері бар шоколадты Сникерс пирожныйы.",
+      p_berry_snickers_ingredients: "Шоколадты бисквит, карамель, жержаңғақ, балғын жидектер, шоколад.",
+
+      p_berry_royal_name: "Жидек қосылған Корольдік",
+      p_berry_royal_desc: "Жидектермен және алтын декормен талғампаз безендірілген Корольдік пирожныйы.",
+      p_berry_royal_ingredients: "Жаңғақ бисквиті, шоколад, балғын маусымдық жидектер жиынтығы.",
+
+      p_berry_nutella_name: "Нутелла",
+      p_berry_nutella_desc: "Nutella пастасының қалың қабаты және балғын таңқурайы бар шоколадты пирожный.",
+      p_berry_nutella_ingredients: "Шоколадты бисквит, түпнұсқа Nutella пастасы, балғын таңқурай.",
+
+      p_berry_choux_rings_name: "Заварной сақиналар",
+      p_berry_choux_rings_desc: "Сүзбе кремі және балғын құлпынай жидектері бар дәстүрлі заварной сақинасы.",
+      p_berry_choux_rings_ingredients: "Заварной қамыр, жеңіл сүзбе кремі, қант ұнтағы, құлпынай.",
+
+      p_berry_cupcake_choco_name: "Жидек қосылған шоколадты капкейк",
+      p_berry_cupcake_choco_desc: "Ішінде жидек конфиі және үстінде балғын жидектер үйіндісі бар шоколадты капкейк.",
+      p_berry_cupcake_choco_ingredients: "Шоколадты кекс, кілегейлі крем, балғын жидектер жиынтығы.",
+
+      p_berry_pavlova_name: "Жидек қосылған Павлова",
+      p_berry_pavlova_desc: "Балғын таңқурай мен құлпынайдың көп мөлшері бар Анна Павлова классикалық десерті.",
+      p_berry_pavlova_ingredients: "Безе, маскарпоне кремі, балғын таңқурай, балғын құлпынай.",
+
+      p_berry_cheesecake_name: "Жидек қосылған чизкейк",
+      p_berry_cheesecake_desc: "Жидек соусымен жабылған және балғын жидектермен безендірілген нәзік Нью-Йорк чизкейгі.",
+      p_berry_cheesecake_ingredients: "Ірімшік кремі, құмды негіз, балғын құлпынай, көкжидек.",
+
+      p_berry_cupcake_red_name: "Жидек қосылған қызыл капкейк",
+      p_berry_cupcake_red_desc: "Кілегейлі кремі мен балғын құлпынайы бар Қызыл барқыт капкейгі.",
+      p_berry_cupcake_red_ingredients: "Қызыл барқыт бисквиті, құлпынай кулиі, балғын құлпынай, крем.",
 
       // 16. cake_pistachio
       p_cake_pistachio_name: "Фисташка-таңқурай торты",
