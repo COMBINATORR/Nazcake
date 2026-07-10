@@ -54,6 +54,8 @@
       catalog_cat_desserts: "Пирожные",
       catalog_cat_berry_desserts: "Пирожные с ягодами",
       catalog_cat_cakes: "Торты",
+      catalog_cat_on_order: "На заказ",
+      catalog_cat_on_order: "На заказ",
       catalog_cat_semi: "Полуфабрикаты",
 
       // Bento Customizer
@@ -282,6 +284,12 @@
       p_dessert_cupcake_berry_name: "Капкейк Ягодный микс",
       p_dessert_cupcake_berry_desc: "Нежный ванильный капкейк с начинкой из свежих ягод и легкой шапочкой из сливочного крема.",
       p_dessert_cupcake_berry_ingredients: "Мука пшеничная, яйца, сахар, клубника, черника, сливочный крем.",
+      p_cake_custom_celebration_name: "Праздничный торт (на заказ)",
+      p_cake_custom_celebration_desc: "Эксклюзивный праздничный торт для вашего торжества. Дизайн и начинка обсуждаются индивидуально.",
+      p_cake_custom_celebration_ingredients: "Начинка на выбор, премиальный декор.",
+      p_cake_custom_celebration_name: "Праздничный торт (на заказ)",
+      p_cake_custom_celebration_desc: "Эксклюзивный праздничный торт для вашего торжества. Дизайн и начинка обсуждаются индивидуально.",
+      p_cake_custom_celebration_ingredients: "Начинка на выбор, премиальный декор.",
 
       // 16. cake_pistachio
       p_cake_pistachio_name: "Торт Фисташка-Малина",
@@ -384,6 +392,8 @@
       catalog_cat_desserts: "Пирожныйлар",
       catalog_cat_berry_desserts: "Жидек қосылған пирожныйлар",
       catalog_cat_cakes: "Торттар",
+      catalog_cat_on_order: "Тапсырыс бойынша",
+      catalog_cat_on_order: "Тапсырыс бойынша",
       catalog_cat_semi: "Жартылай фабрикаттар",
 
       // Bento Customizer
@@ -613,6 +623,12 @@
       p_dessert_cupcake_berry_name: "Жидек қосылған капкейк",
       p_dessert_cupcake_berry_desc: "Балғын жидектер салмасы бар және кілегейлі кремнен жасалған жеңіл қалпақшасы бар нәзік ванильді капкейк.",
       p_dessert_cupcake_berry_ingredients: "Бидай ұны, жұмыртқа, қант, құлпынай, көкжидек, кілегейлі крем.",
+      p_cake_custom_celebration_name: "Мерекелік торт (тапсырыспен)",
+      p_cake_custom_celebration_desc: "Сіздің салтанатыңызға арналған эксклюзивті мерекелік торт. Дизайны мен салмасы жеке талқыланады.",
+      p_cake_custom_celebration_ingredients: "Таңдау бойынша салмасы, премиум декор.",
+      p_cake_custom_celebration_name: "Мерекелік торт (тапсырыспен)",
+      p_cake_custom_celebration_desc: "Сіздің салтанатыңызға арналған эксклюзивті мерекелік торт. Дизайны мен салмасы жеке талқыланады.",
+      p_cake_custom_celebration_ingredients: "Таңдау бойынша салмасы, премиум декор.",
 
       // 16. cake_pistachio
       p_cake_pistachio_name: "Фисташка-таңқурай торты",

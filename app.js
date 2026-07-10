@@ -135,14 +135,26 @@ let products = [
   {
     id: "pie_meat_large",
     name: "Мясной пирог (Большой)",
-    category: "pies",
-    categoryLabel: "Пироги",
+    category: "on_order",
+    categoryLabel: "На заказ",
     price: 11000,
     unit: "шт.",
     image: "images/pie_meat_large.jpg",
     desc: "Сытный праздничный пирог внушительного размера (45х30 см) с сочным фаршем из рубленой говядины.",
     ingredients: "Сдобное тесто, охлажденная говядина (фарш), репчатый лук, натуральное сливочное масло, бульон, перец, специи.",
-    badge: "заказной"
+    badge: "custom"
+  },
+  {
+    id: "cake_custom_celebration",
+    name: "Праздничный торт (на заказ)",
+    category: "on_order",
+    categoryLabel: "На заказ",
+    price: 8500,
+    unit: "кг",
+    image: "images/cake_red_velvet.jpg",
+    desc: "Эксклюзивный праздничный торт для вашего торжества. Дизайн и начинка обсуждаются индивидуально при заказе.",
+    ingredients: "Начинка на выбор (Красный бархат, Сникерс, Эстерхази, Молочная девочка), кондитерский велюр, мастичный или ягодный декор.",
+    badge: "custom"
   },
 
   // Пирожные (desserts)
