@@ -258,24 +258,74 @@
       p_bread_flatbread_ingredients: "Мука пшеничная высшего сорта, вода питьевая, сухие дрожжи, кунжут черный, соль.",
 
       // 4. pastry_samsa_meat
-      p_pastry_samsa_meat_name: "Самса с говядиной",
-      p_pastry_samsa_meat_desc: "Хрустящая слоеная самса с начинкой из сочной рубленой говядины и восточными специями.",
-      p_pastry_samsa_meat_ingredients: "Домашнее слоеное тесто на сливочном масле, отборная рубленая говядина, репчатый лук, черный перец, зира, кунжут.",
+      p_pastry_samsa_meat_name: "Самса с мясом",
+      p_pastry_samsa_meat_desc: "Хрустящая слоеная самса с начинкой из сочного фарша с луком и специями.",
+      p_pastry_samsa_meat_ingredients: "Слоеное тесто, говядина, репчатый лук, черный перец, соль.",
+
+      // 4b. pastry_samsa_liver
+      p_pastry_samsa_liver_name: "Самса с печенью",
+      p_pastry_samsa_liver_desc: "Ароматная самса с сытной и сочной начинкой из говяжьей печени с луком.",
+      p_pastry_samsa_liver_ingredients: "Слоеное тесто, печень говяжья, лук, сливочное масло, перец, соль.",
 
       // 5. pastry_samsa_chicken
-      p_pastry_samsa_chicken_name: "Самса с курицей и сыром",
-      p_pastry_samsa_chicken_desc: "Нежная самса с начинкой из сочного куриного филе и тянущегося сыра сулугуни.",
-      p_pastry_samsa_chicken_ingredients: "Слоеное тесто, филе куриной грудки, сыр сулугуни, лук, сливочный соус, специи.",
+      p_pastry_samsa_chicken_name: "Самса с курицей и с сыром",
+      p_pastry_samsa_chicken_desc: "Нежная самса с начинкой из сочного куриного филе и тянущегося сыра.",
+      p_pastry_samsa_chicken_ingredients: "Слоеное тесто, филе куриное, сыр, лук, специи, соль.",
+
+      // 5b. pastry_samsa_cabbage
+      p_pastry_samsa_cabbage_name: "Самса с мясом и капустой",
+      p_pastry_samsa_cabbage_desc: "Сытная самса с традиционным сочетанием мясного фарша и сочной тушеной капусты.",
+      p_pastry_samsa_cabbage_ingredients: "Слоеное тесто, говядина, свежая капуста, лук, сливочное масло, специи.",
+
+      // 5c. pastry_liver_pie
+      p_pastry_liver_pie_name: "Ливерные пирожки",
+      p_pastry_liver_pie_desc: "Румяные домашние пирожки со специями и нежным ливерным паштетом.",
+      p_pastry_liver_pie_ingredients: "Дрожжевое тесто, говяжий ливер (легкое, сердце, печень), лук, специи.",
+
+      // 5d. pastry_liver_pie_mini
+      p_pastry_liver_pie_mini_name: "Ливерные пирожки mini",
+      p_pastry_liver_pie_mini_desc: "Маленькие порционные пирожки на один укус с сытной начинкой из ливера.",
+      p_pastry_liver_pie_mini_ingredients: "Дрожжевое тесто, отборный говяжий ливер, лук репчатый, соль, перец.",
+
+      // 5e. pastry_bun_plain
+      p_pastry_bun_plain_name: "Булочка без начинки",
+      p_pastry_bun_plain_desc: "Мягкая сдобная булочка с румяной корочкой. Отлично подойдет к чаю или молоку.",
+      p_pastry_bun_plain_ingredients: "Мука пшеничная, молоко, яйца, сахар, сливочное масло, дрожжи.",
+
+      // 5f. pastry_bun_condensed
+      p_pastry_bun_condensed_name: "Булочка со сгущенкой",
+      p_pastry_bun_condensed_desc: "Сладкая булочка с начинкой из цельного вареного сгущенного молока.",
+      p_pastry_bun_condensed_ingredients: "Сдобное дрожжевое тесто, вареная сгущенка премиум класса.",
+
+      // 5g. pastry_bun_fruits
+      p_pastry_bun_fruits_name: "Булочка с сухофруктами",
+      p_pastry_bun_fruits_desc: "Ароматная булочка с начинкой из изюма, кураги и чернослива.",
+      p_pastry_bun_fruits_ingredients: "Сдобное тесто, изюм без косточек, курага, чернослив, сахарная пудра.",
+
+      // 5h. pastry_bun_curd
+      p_pastry_bun_curd_name: "Булочка с творогом",
+      p_pastry_bun_curd_desc: "Воздушная булочка с начинкой из сладкого домашнего творога.",
+      p_pastry_bun_curd_ingredients: "Мука, молоко, сахар, натуральный творог, ванилин, сливочное масло.",
+
+      // 7. pastry_sochnik
+      p_pastry_sochnik_name: "Сочник",
+      p_pastry_sochnik_desc: "Классический сочник с золотистой корочкой и нежным творожным центром.",
+      p_pastry_sochnik_ingredients: "Песочное тесто, домашний творог, сахар, ванильный экстракт, желток.",
+
+      // 7b. pastry_manty_condensed
+      p_pastry_manty_condensed_name: "Манты с вареной сгущенкой",
+      p_pastry_manty_condensed_desc: "Необычные сладкие манты с начинкой из ароматной вареной сгущенки. Настоящее лакомство!",
+      p_pastry_manty_condensed_ingredients: "Пресное тесто на яйцах, сгущенное молоко вареное, сливочное масло.",
 
       // 6. pastry_rogaliki
       p_pastry_rogaliki_name: "Рогалики с творогом",
-      p_pastry_rogaliki_desc: "Рассыпчатые домашние рогатки из песочного теста с нежной начинкой из натурального творога.",
-      p_pastry_rogaliki_ingredients: "Мука пшеничная, натуральное сливочное масло, домашний творог 9%, сахар, ванильный экстракт, сахарная пудра.",
+      p_pastry_rogaliki_desc: "Рассыпчатые мини-рогалики с начинкой из нежного сладкого творога.",
+      p_pastry_rogaliki_ingredients: "Сметанно-песочное тесто, творог, сахарная пудра, ваниль.",
 
-      // 7. pastry_sochnik
-      p_pastry_sochnik_name: "Сочник с творогом",
-      p_pastry_sochnik_desc: "Классический сочник с золотистой корочкой и обилием творожной начинки. Вкус родом из детства.",
-      p_pastry_sochnik_ingredients: "Сдобно-песочное тесто, домашний творог, сахар, ванилин, яичный желток для глазури.",
+      // 7c. pastry_tea_set
+      p_pastry_tea_set_name: "Чайный набор",
+      p_pastry_tea_set_desc: "Ассорти из мелкой сладкой домашней выпечки, идеально подходящее для чаепития большой компании.",
+      p_pastry_tea_set_ingredients: "Печенье домашнее, mini-рогалики, кексы, орешки со сгущенкой.",
 
       // 8. pie_smetannik
       p_pie_smetannik_name: "Пирог Сметанник",
@@ -632,24 +682,74 @@
       p_bread_flatbread_ingredients: "Жоғары сұрыпты бидай ұны, ауыз су, құрғақ ашытқы, қара күнжіт, тұз.",
 
       // 4. pastry_samsa_meat
-      p_pastry_samsa_meat_name: "Сиыр етінен жасалған самса",
-      p_pastry_samsa_meat_desc: "Шырынды туралған сиыр еті мен шығыс дәмдеуіштерінен жасалған салмасы бар қытырлақ қабатты самса.",
-      p_pastry_samsa_meat_ingredients: "Сары май қосылған үйдің қабатты қамыры, таңдаулы туралған сиыр еті, пияз, қара бұрыш, зире, күнжіт.",
+      p_pastry_samsa_meat_name: "Ет қосылған самса",
+      p_pastry_samsa_meat_desc: "Пияз бен дәмдеуіштер қосылған шырынды тартылған ет салынған қытырлақ қатпарлы самса.",
+      p_pastry_samsa_meat_ingredients: "Қатпарлы қамыр, сиыр еті, пияз, қара бұрыш, тұз.",
+
+      // 4b. pastry_samsa_liver
+      p_pastry_samsa_liver_name: "Бауыр қосылған самса",
+      p_pastry_samsa_liver_desc: "Пияз қосылған сиыр бауырынан жасалған тойымды әрі шырынды салмасы бар хош иісті самса.",
+      p_pastry_samsa_liver_ingredients: "Қатпарлы қамыр, сиыр бауыры, пияз, сары май, бұрыш, тұз.",
 
       // 5. pastry_samsa_chicken
-      p_pastry_samsa_chicken_name: "Тауық еті және ірімшік қосылған самса",
-      p_pastry_samsa_chicken_desc: "Шырынды тауық филесі мен созылмалы сулугуни ірімшігі салынған нәзік самса.",
-      p_pastry_samsa_chicken_ingredients: "Қабатты қамыр, тауық төс еті, сулугуни ірімшігі, пияз, кілегейлі соус, дәмдеуіштер.",
+      p_pastry_samsa_chicken_name: "Тауық пен сыр қосылған самса",
+      p_pastry_samsa_chicken_desc: "Шырынды тауық филесі мен созылмалы сыр салынған нәзік самса.",
+      p_pastry_samsa_chicken_ingredients: "Қатпарлы қамыр, тауық филесі, сыр, пияз, дәмдеуіштер, тұз.",
+
+      // 5b. pastry_samsa_cabbage
+      p_pastry_samsa_cabbage_name: "Ет пен қырыққабат қосылған самса",
+      p_pastry_samsa_cabbage_desc: "Тартылған ет пен шырынды бұқтырылған қырыққабаттың дәстүрлі үйлесімі бар тойымды самса.",
+      p_pastry_samsa_cabbage_ingredients: "Қатпарлы қамыр, сиыр еті, жаңа пісен қырыққабат, пияз, сары май, дәмдеуіштер.",
+
+      // 5c. pastry_liver_pie
+      p_pastry_liver_pie_name: "Өкпе-бауыр бәліштері",
+      p_pastry_liver_pie_desc: "Дәмдеуіштер мен нәзік өкпе-бауыр паштеті салынған қызарған үй бәліштері.",
+      p_pastry_liver_pie_ingredients: "Ашытқы қамыры, сиырдың өкпе-бауыры, пияз, дәмдеуіштер.",
+
+      // 5d. pastry_liver_pie_mini
+      p_pastry_liver_pie_mini_name: "Мини өкпе-бауыр бәліштері",
+      p_pastry_liver_pie_mini_desc: "Өкпе-бауырдан жасалған тойымды салмасы бар бір тістеп жейтін шағын бәліштер.",
+      p_pastry_liver_pie_mini_ingredients: "Ашытқы қамыры, сиыр өкпе-бауыры, пияз, тұз, бұрыш.",
+
+      // 5e. pastry_bun_plain
+      p_pastry_bun_plain_name: "Салмасыз тоқаш",
+      p_pastry_bun_plain_desc: "Беті қызарған жұмсақ тәтті тоқаш. Шайға немесе сүтке өте жақсы келеді.",
+      p_pastry_bun_plain_ingredients: "Бидай ұны, сүт, жұмыртқа, қант, сары май, ашытқы.",
+
+      // 5f. pastry_bun_condensed
+      p_pastry_bun_condensed_name: "Қоюлатылған сүт қосылған тоқаш",
+      p_pastry_bun_condensed_desc: "Қоюлатылған пісірілген сүт салынған тәтті тоқаш.",
+      p_pastry_bun_condensed_ingredients: "Тәтті ашытқы қамыры, жоғары сапалы пісірілген қоюлатылған сүт.",
+
+      // 5g. pastry_bun_fruits
+      p_pastry_bun_fruits_name: "Кептірілген жемістер қосылған тоқаш",
+      p_pastry_bun_fruits_desc: "Мейіз, өрік және қара өрік салынған хош иісті тоқаш.",
+      p_pastry_bun_fruits_ingredients: "Тәтті қамыр, сүйексіз мейіз, кептірілген өрік, қара өрік, қант ұнтағы.",
+
+      // 5h. pastry_bun_curd
+      p_pastry_bun_curd_name: "Сүзбе қосылған тоқаш",
+      p_pastry_bun_curd_desc: "Тәтті табиғи сүзбе салынған үлпілдек тоқаш.",
+      p_pastry_bun_curd_ingredients: "Ұн, сүт, қант, табиғи сүзбе, ванилин, сары май.",
+
+      // 7. pastry_sochnik
+      p_pastry_sochnik_name: "Сочник",
+      p_pastry_sochnik_desc: "Қытырлақ қабығы мен нәзік сүзбе ортасы бар классикалық сочник бәліші.",
+      p_pastry_sochnik_ingredients: "Құмды қамыр, үй сүзбесі, қант, ваниль сығындысы, жұмыртқаның сарысы.",
+
+      // 7b. pastry_manty_condensed
+      p_pastry_manty_condensed_name: "Қоюлатылған сүт қосылған мәнті",
+      p_pastry_manty_condensed_desc: "Хош иісті пісірілген қоюлатылған сүт салынған ерекше тәтті мәнті. Нағыз дәмді ас!",
+      p_pastry_manty_condensed_ingredients: "Жұмыртқа қосылған тұщы қамыр, пісірілген қоюлатылған сүт, сары май.",
 
       // 6. pastry_rogaliki
       p_pastry_rogaliki_name: "Сүзбе қосылған рогаликтер",
-      p_pastry_rogaliki_desc: "Табиғи сүзбеден жасалған нәзік салмасы бар үгітілмелі үй песочный рогаликтері.",
-      p_pastry_rogaliki_ingredients: "Бидай ұны, табиғи сары май, 9% үй сүзбесі, қант, ваниль сығындысы, қант ұнтағы.",
+      p_pastry_rogaliki_desc: "Нәзік тәтті сүзбе салынған үгітілмелі шағын рогаликтер.",
+      p_pastry_rogaliki_ingredients: "Қаймақты-құмды қамыр, сүзбе, қант ұнтағы, ваниль.",
 
-      // 7. pastry_sochnik
-      p_pastry_sochnik_name: "Сүзбе қосылған сочник",
-      p_pastry_sochnik_desc: "Алтын түстес қабығы бар және сүзбе салмасы мол классикалық сочник. Балалық шақтың дәмі.",
-      p_pastry_sochnik_ingredients: "Сдобно-песочный қамыр, үй сүзбесі, қант, ванилин, бетіне жағуға арналған жұмыртқаның сарысы.",
+      // 7c. pastry_tea_set
+      p_pastry_tea_set_name: "Шәй жиынтығы",
+      p_pastry_tea_set_desc: "Үлкен компанияның шай ішуіне өте ыңғайлы үйде дайындалған шағын тәтті пісірмелер жиынтығы.",
+      p_pastry_tea_set_ingredients: "Үй печеньесі, мини-рогаликтер, кекстер, қоюлатылған сүт қосылған жаңғақтар.",
 
       // 8. pie_smetannik
       p_pie_smetannik_name: "Қаймақ пирогы",
