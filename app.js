@@ -50,7 +50,7 @@ let products = [
     categoryLabel: "Хлебобулочные изделия",
     price: 130,
     unit: "шт.",
-    image: "images/bread_kosichki.webp",
+    image: "images/bread_garlic.webp",
     desc: "Ароматный мини-батон с начинкой из чесночного масла и зелени. Отлично подходит к супам и основным блюдам.",
     ingredients: "Мука пшеничная, чеснок свежий, зелень укропа, сливочное масло, соль.",
     badge: "свежее"
@@ -62,7 +62,7 @@ let products = [
     categoryLabel: "Хлебобулочные изделия",
     price: 120,
     unit: "шт.",
-    image: "images/bread_kosichki.webp",
+    image: "images/bread_saika.webp",
     desc: "Традиционная пшеничная сайка с нежным молочным вкусом и мягкой корочкой. Отличный выбор для завтрака.",
     ingredients: "Мука пшеничная высшего сорта, молоко пастеризованное, масло сливочное, сахар, дрожжи.",
     badge: ""
@@ -122,7 +122,7 @@ let products = [
     categoryLabel: "Хлебобулочные изделия",
     price: 160,
     unit: "шт.",
-    image: "images/bread_burger.webp",
+    image: "images/bread_tandoor_flatbread.webp",
     desc: "Классическая пышная тандырная лепешка с хрустящей корочкой и мягким центром. Выпекается по старинным рецептам.",
     ingredients: "Мука пшеничная высшего сорта, вода питьевая, сухие дрожжи, кунжут черный, соль.",
     badge: "свежее"
@@ -230,7 +230,7 @@ let products = [
     categoryLabel: "Выпечка",
     price: 120,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "images/pastry_bun_dryfruit.webp",
     desc: "Ароматная булочка с начинкой из изюма, кураги и чернослива.",
     ingredients: "Сдобное тесто, изюм без косточек, курага, чернослив, сахарная пудра.",
     badge: ""
@@ -242,7 +242,7 @@ let products = [
     categoryLabel: "Выпечка",
     price: 120,
     unit: "шт.",
-    image: "images/default_placeholder.webp",
+    image: "images/pastry_bun_cottage.webp",
     desc: "Воздушная булочка с начинкой из сладкого домашнего творога.",
     ingredients: "Мука, молоко, сахар, натуральный творог, ванилин, сливочное масло.",
     badge: ""
@@ -266,7 +266,7 @@ let products = [
     categoryLabel: "Выпечка",
     price: 3400,
     unit: "кг",
-    image: "images/bread_baursaki.webp",
+    image: "images/pastry_manti_condensed.webp",
     desc: "Необычные сладкие манты с начинкой из ароматной вареной сгущенки. Настоящее лакомство!",
     ingredients: "Пресное тесто на яйцах, сгущенное молоко вареное, сливочное масло.",
     badge: "новое"
