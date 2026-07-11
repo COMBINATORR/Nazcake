@@ -1458,6 +1458,7 @@ h1, h2, h3, h4, h5, h6 {
 .cart-item-details {
   flex-grow: 1;
   text-align: left;
+  padding-right: 24px;
 }
 
 .cart-item-name {
@@ -1482,16 +1483,24 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .cart-item-remove {
+  position: absolute;
+  top: 10px;
+  right: 15px;
   background: none;
   border: none;
-  color: #dc2626;
-  font-size: 0.8rem;
+  color: var(--text-secondary);
   cursor: pointer;
-  padding: 8px 0; /* touch friendly height */
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease, transform 0.2s ease;
+  z-index: 10;
 }
 
 .cart-item-remove:hover {
-  text-decoration: underline;
+  color: #ef4444;
+  transform: scale(1.05);
 }
 
 .cart-sidebar-footer {
