@@ -3010,3 +3010,156 @@ body.preloader-active {
   filter: blur(14px);
 }
 
+/* Skeleton Loader Styles */
+.skeleton {
+  pointer-events: none;
+}
+
+.skeleton .product-img-wrapper {
+  background-color: var(--bg-tertiary);
+  position: relative;
+}
+
+.skeleton-text {
+  background-color: var(--bg-tertiary);
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.skeleton-title-bar {
+  width: 70%;
+  height: 18px;
+}
+
+.skeleton-desc-bar {
+  width: 90%;
+  height: 12px;
+  margin-top: 10px;
+}
+
+.skeleton-price-bar {
+  width: 40%;
+  height: 16px;
+}
+
+.skeleton-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--bg-tertiary);
+}
+
+/* Shimmer Animation Effect */
+.skeleton-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.4) 20%,
+    rgba(255, 255, 255, 0.6) 60%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Empty Cart Plate & Crumbs Animation */
+.empty-cart-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.empty-cart-plate-svg {
+  margin-bottom: 20px;
+  filter: drop-shadow(0 8px 16px rgba(0,0,0,0.03));
+}
+
+.empty-cart-plate-svg svg {
+  animation: plate-float 4s ease-in-out infinite;
+}
+
+.crumb {
+  transform-origin: center;
+  animation: crumb-jiggle 3s ease-in-out infinite alternate;
+}
+
+.crumb-1 { animation-delay: 0.1s; }
+.crumb-2 { animation-delay: 0.4s; }
+.crumb-3 { animation-delay: 0.7s; }
+.crumb-4 { animation-delay: 1s; }
+
+@keyframes plate-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes crumb-jiggle {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(2px, -2px) scale(0.95); }
+}
+
+.empty-cart-title {
+  font-family: var(--font-title);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--accent-chocolate);
+  margin-bottom: 8px;
+}
+
+.empty-cart-desc {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  max-width: 240px;
+  margin-bottom: 24px;
+  line-height: 1.4;
+}
+
+.empty-cart-btn {
+  font-size: 0.9rem;
+  padding: 10px 24px;
+}
+
+/* Cart Jiggle Bounce Animation */
+@keyframes cart-bounce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  20% {
+    transform: scale(0.85) rotate(-6deg);
+  }
+  50% {
+    transform: scale(1.15) rotate(6deg);
+  }
+  80% {
+    transform: scale(0.95) rotate(-2deg);
+  }
+}
+
+.cart-btn.jiggle {
+  animation: cart-bounce 0.5s ease-in-out;
+}
+
+#sticky-bottom-bar.jiggle {
+  animation: cart-bounce 0.5s ease-in-out;
+}
+

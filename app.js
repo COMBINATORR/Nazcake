@@ -1542,17 +1542,44 @@ function renderBestsellers() {
   refreshScrollReveal();
 }
 
+function renderSkeletons() {
+  if (!catalogGrid) return;
+  const skeletonHtml = Array(4).fill(`
+    <div class="product-card skeleton">
+      <div class="product-img-wrapper skeleton-shimmer"></div>
+      <div class="product-info">
+        <div class="skeleton-text skeleton-title-bar skeleton-shimmer"></div>
+        <div class="skeleton-text skeleton-desc-bar skeleton-shimmer"></div>
+        <div class="product-footer" style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center; width: 100%;">
+          <div class="skeleton-text skeleton-price-bar skeleton-shimmer"></div>
+          <div class="skeleton-btn skeleton-shimmer"></div>
+        </div>
+      </div>
+    </div>
+  `).join("");
+  catalogGrid.innerHTML = skeletonHtml;
+}
+
+let catalogTimeout;
 // Render Catalog by Category Filter
 function renderCatalog(category) {
   if (!catalogGrid) return;
-  let filtered = products;
-  if (category !== "all") {
-    filtered = products.filter(p => p.category === category);
-  }
   
-  catalogGrid.innerHTML = filtered.map(p => createProductCardHtml(p)).join("");
-  attachCardEvents(catalogGrid);
-  refreshScrollReveal();
+  // Render skeletons immediately to indicate loading
+  renderSkeletons();
+  
+  if (catalogTimeout) clearTimeout(catalogTimeout);
+  
+  catalogTimeout = setTimeout(() => {
+    let filtered = products;
+    if (category !== "all") {
+      filtered = products.filter(p => p.category === category);
+    }
+    
+    catalogGrid.innerHTML = filtered.map(p => createProductCardHtml(p)).join("");
+    attachCardEvents(catalogGrid);
+    refreshScrollReveal();
+  }, 250);
 }
 
 // Generate HTML for Product Card
@@ -1853,6 +1880,20 @@ function changeCartItemQty(cartItemId, newQty) {
 function updateCartUi() {
   // Count badge
   const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+
+  // Check if we should trigger jiggle bounce animation
+  const badgeEl = document.querySelector(".cart-count-badge");
+  const currentBadgeCount = badgeEl ? (parseInt(badgeEl.textContent) || 0) : 0;
+  if (totalItems > currentBadgeCount) {
+    const cartBtns = document.querySelectorAll(".cart-btn, #sticky-bottom-bar");
+    cartBtns.forEach(btn => {
+      btn.classList.remove("jiggle");
+      void btn.offsetWidth; // Trigger reflow
+      btn.classList.add("jiggle");
+      setTimeout(() => btn.classList.remove("jiggle"), 500);
+    });
+  }
+
   cartCountBadges.forEach(badge => {
     badge.textContent = totalItems;
   });
@@ -1886,8 +1927,42 @@ function updateCartUi() {
   }
 
   if (cart.length === 0) {
-    const tEmpty = window.i18n ? window.i18n.t("cart_empty") : "Ваша корзина пока пуста. Добавьте вкусняшек!";
-    cartItemsContainer.innerHTML = `<div class="empty-cart-message">${tEmpty}</div>`;
+    const tEmptyTitle = window.i18n ? window.i18n.t("cart_empty_title") : "В корзине пусто";
+    const tEmptyDesc = window.i18n ? window.i18n.t("cart_empty_desc") : "Похоже, вы еще не выбрали десерты. Давайте это исправим!";
+    const tEmptyBtn = window.i18n ? window.i18n.t("cart_empty_btn") : "Хочу сладкого!";
+    
+    cartItemsContainer.innerHTML = `
+      <div class="empty-cart-container">
+        <div class="empty-cart-plate-svg">
+          <svg viewBox="0 0 100 100" width="80" height="80">
+            <circle cx="50" cy="50" r="38" fill="none" stroke="var(--accent-gold)" stroke-width="2" stroke-dasharray="4 2" opacity="0.6"/>
+            <circle cx="50" cy="50" r="30" fill="none" stroke="var(--accent-chocolate)" stroke-width="1.5" opacity="0.3"/>
+            <circle cx="42" cy="46" r="2" fill="var(--accent-chocolate)" class="crumb crumb-1"/>
+            <circle cx="56" cy="40" r="1.5" fill="var(--accent-gold)" class="crumb crumb-2"/>
+            <circle cx="48" cy="58" r="2.5" fill="var(--accent-chocolate)" class="crumb crumb-3"/>
+            <circle cx="60" cy="52" r="1" fill="var(--accent-gold)" class="crumb crumb-4"/>
+            <path d="M 46,32 A 4,4 0 0,0 42,36 A 3,3 0 0,0 39,39 A 4,4 0 0,0 35,43 A 3,3 0 0,0 32,46" fill="none" stroke="var(--accent-gold)" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+          </svg>
+        </div>
+        <h4 class="empty-cart-title">${tEmptyTitle}</h4>
+        <p class="empty-cart-desc">${tEmptyDesc}</p>
+        <button class="empty-cart-btn btn" id="empty-cart-shop-btn">${tEmptyBtn}</button>
+      </div>
+    `;
+
+    const shopBtn = document.getElementById("empty-cart-shop-btn");
+    if (shopBtn) {
+      shopBtn.addEventListener("click", () => {
+        triggerHapticFeedback();
+        const sidebar = document.getElementById("cart-sidebar");
+        const overlay = document.getElementById("cart-overlay");
+        closeModal(sidebar, overlay);
+        const catalogEl = document.getElementById("catalog");
+        if (catalogEl) {
+          catalogEl.scrollIntoView({ behavior: "smooth" });
+        }
+      });
+    }
     return;
   }
 

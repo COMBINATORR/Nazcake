@@ -124,6 +124,9 @@
       // Cart Sidebar
       cart_title: "Ваша Корзина",
       cart_empty: "Ваша корзина пока пуста. Добавьте вкусняшек!",
+      cart_empty_title: "В корзине пусто",
+      cart_empty_desc: "Похоже, вы еще не выбрали десерты. Давайте это исправим!",
+      cart_empty_btn: "Хочу сладкого!",
       cart_subtotal: "Подытог:",
       cart_checkout_title: "Оформление Заказа",
       cart_input_name: "Ваше Имя",
@@ -797,6 +800,9 @@
       // Cart Sidebar
       cart_title: "Сіздің Себетіңіз",
       cart_empty: "Себетіңіз әлі бос. Тәттілер қосыңыз!",
+      cart_empty_title: "Себет бос",
+      cart_empty_desc: "Десерттерді әлі таңдамаған сияқтысыз. Мұны түзетейік!",
+      cart_empty_btn: "Тәтті қалаймын!",
       cart_subtotal: "Жиыны:",
       cart_checkout_title: "Тапсырысты рәсімдеу",
       cart_input_name: "Сіздің есіміңіз",
