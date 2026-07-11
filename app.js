@@ -1905,17 +1905,28 @@ function updateCartUi() {
     
     return `
       <div class="cart-item" data-id="PLACEHOLDER_CART_ITEM_ID">
-        <img src="${p.image}" alt="${tName}" class="cart-item-img">
-        <div class="cart-item-details">
-          <h5 class="cart-item-name">${tName}</h5>
-          <span class="cart-item-price">PLACEHOLDER_ITEM_PRICE ₸</span>
-          <div class="cart-item-actions">
-            <div class="quantity-stepper">
-              <button class="stepper-btn minus-cart-qty" data-id="PLACEHOLDER_CART_ITEM_ID" aria-label="Уменьшить количество">−</button>
-              <span class="quantity-val">${item.qty}</span>
-              <button class="stepper-btn plus-cart-qty" data-id="PLACEHOLDER_CART_ITEM_ID" aria-label="Увеличить количество">+</button>
+        <div class="cart-item-swipe-bg">
+          <span class="swipe-delete-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            ${tRemove}
+          </span>
+        </div>
+        <div class="cart-item-inner">
+          <img src="${p.image}" alt="${tName}" class="cart-item-img">
+          <div class="cart-item-details">
+            <h5 class="cart-item-name">${tName}</h5>
+            <span class="cart-item-price">PLACEHOLDER_ITEM_PRICE ₸</span>
+            <div class="cart-item-actions">
+              <div class="quantity-stepper">
+                <button class="stepper-btn minus-cart-qty" data-id="PLACEHOLDER_CART_ITEM_ID" aria-label="Уменьшить количество">−</button>
+                <span class="quantity-val">${item.qty}</span>
+                <button class="stepper-btn plus-cart-qty" data-id="PLACEHOLDER_CART_ITEM_ID" aria-label="Увеличить количество">+</button>
+              </div>
+              <button class="cart-item-remove" data-id="PLACEHOLDER_CART_ITEM_ID">${tRemove}</button>
             </div>
-            <button class="cart-item-remove" data-id="PLACEHOLDER_CART_ITEM_ID">${tRemove}</button>
           </div>
         </div>
       </div>
@@ -1946,6 +1957,56 @@ function updateCartUi() {
       triggerHapticFeedback();
       const id = btn.getAttribute("data-id");
       removeFromCart(id);
+    });
+  });
+
+  // Swipe-to-delete touch gestures for newly generated cart items
+  cartItemsContainer.querySelectorAll(".cart-item").forEach(itemEl => {
+    const inner = itemEl.querySelector(".cart-item-inner");
+    if (!inner) return;
+    const id = itemEl.getAttribute("data-id");
+
+    let startX = 0;
+    let startY = 0;
+    let currentX = 0;
+    let isDragging = false;
+
+    inner.addEventListener("touchstart", (e) => {
+      if (e.touches.length !== 1) return;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      currentX = startX;
+      isDragging = true;
+      inner.style.transition = "none";
+    }, { passive: true });
+
+    inner.addEventListener("touchmove", (e) => {
+      if (!isDragging) return;
+      currentX = e.touches[0].clientX;
+      const deltaX = currentX - startX;
+      const deltaY = e.touches[0].clientY - startY;
+
+      // Only swipe left and primarily horizontal
+      if (deltaX < 0 && Math.abs(deltaX) > Math.abs(deltaY)) {
+        inner.style.transform = `translateX(${deltaX}px)`;
+      }
+    }, { passive: true });
+
+    inner.addEventListener("touchend", () => {
+      if (!isDragging) return;
+      isDragging = false;
+      inner.style.transition = "";
+
+      const deltaX = currentX - startX;
+      if (deltaX < -120) {
+        triggerHapticFeedback();
+        inner.style.transform = "translateX(-100%)";
+        setTimeout(() => {
+          removeFromCart(id);
+        }, 300);
+      } else {
+        inner.style.transform = "";
+      }
     });
   });
 }
