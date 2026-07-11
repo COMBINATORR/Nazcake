@@ -1,3 +1,19 @@
+// Premium Page Preloader removal logic
+window.addEventListener("load", () => {
+  const preloader = document.getElementById("page-preloader");
+  if (preloader) {
+    setTimeout(() => {
+      preloader.classList.add("fade-out");
+      document.body.classList.remove("preloader-active");
+      setTimeout(() => {
+        preloader.remove();
+      }, 800);
+    }, 1600); // 1.6s minimum display time for the sequence
+  } else {
+    document.body.classList.remove("preloader-active");
+  }
+});
+
 const CONFIG = {
   TELEGRAM_BOT_TOKEN: "YOUR_TELEGRAM_BOT_TOKEN",
   TELEGRAM_CHAT_ID: "YOUR_TELEGRAM_CHAT_ID"
