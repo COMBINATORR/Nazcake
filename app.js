@@ -439,7 +439,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 280,
     unit: "шт.",
-    image: "",
+    image: "images/dessert_napoleon.webp",
     desc: "Порционный кусочек классического торта Наполеон с нежным заварным кремом.",
     ingredients: "Слоеное тесто, заварной крем Дипломат, ваниль.",
     badge: ""
@@ -451,7 +451,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 260,
     unit: "шт.",
-    image: "",
+    image: "images/dessert_ekler.webp",
     desc: "Французское заварное пирожное, наполненное нежным сливочно-заварным кремом.",
     ingredients: "Заварное тесто, крем Муслин, шоколадная глазурь.",
     badge: "хит"
@@ -463,7 +463,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 450,
     unit: "шт.",
-    image: "",
+    image: "images/dessert_muraveynik.webp",
     desc: "Традиционное пирожное из песочного теста со сгущенным молоком и грецкими орехами.",
     ingredients: "Песочное тесто, вареная сгущенка, сливочное масло, мед, мак.",
     badge: ""
@@ -475,7 +475,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 270,
     unit: "шт.",
-    image: "",
+    image: "images/dessert_chak_chak.webp",
     desc: "Восточная сладость из обжаренных кусочков теста, залитых натуральным медовым сиропом.",
     ingredients: "Мука пшеничная, яйца, мед натуральный, сахар, масло растительное.",
     badge: ""
@@ -487,7 +487,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 270,
     unit: "шт.",
-    image: "",
+    image: "images/dessert_chocolate.webp",
     desc: "Насыщенное шоколадное пирожное с шоколадным бисквитом и нежным кремом.",
     ingredients: "Шоколадный бисквит, крем с какао, темный шоколад.",
     badge: ""
@@ -499,7 +499,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 270,
     unit: "шт.",
-    image: "",
+    image: "images/dessert_caramel.webp",
     desc: "Нежное пирожное с мягким бисквитом и домашней карамелью.",
     ingredients: "Сдобный бисквит, мягкая карамель, сливочный крем.",
     badge: ""
@@ -511,7 +511,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 270,
     unit: "шт.",
-    image: "",
+    image: "images/dessert_snickers_airy.webp",
     desc: "Пирожное с безе, жареным арахисом и нежным кремом со сгущенкой.",
     ingredients: "Воздушное безе, жареный арахис, вареная сгущенка, сливочное масло.",
     badge: "бестселлер"
@@ -523,7 +523,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 280,
     unit: "шт.",
-    image: "",
+    image: "images/dessert_medovik.webp",
     desc: "Ароматное медовое пирожное со сметанным кремом, тающее во рту.",
     ingredients: "Медовые коржи с добавлением натурального меда, сметанный крем.",
     badge: ""
@@ -535,7 +535,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 290,
     unit: "шт.",
-    image: "",
+    image: "images/dessert_caramel_design.webp",
     desc: "Карамельное пирожное со стильным праздничным оформлением.",
     ingredients: "Бисквит, домашняя карамель, крем-чиз, элементы декора.",
     badge: ""
