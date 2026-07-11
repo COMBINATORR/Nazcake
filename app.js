@@ -1846,9 +1846,9 @@ function updateCartUi() {
           <span class="cart-item-price">${(p.price * item.qty).toLocaleString()} ₸</span>
           <div class="cart-item-actions">
             <div class="quantity-stepper">
-              <button class="stepper-btn minus-cart-qty" data-id="${p.id}">−</button>
+              <button class="stepper-btn minus-cart-qty" data-id="${p.id}" aria-label="Уменьшить количество">−</button>
               <span class="quantity-val">${item.qty}</span>
-              <button class="stepper-btn plus-cart-qty" data-id="${p.id}">+</button>
+              <button class="stepper-btn plus-cart-qty" data-id="${p.id}" aria-label="Увеличить количество">+</button>
             </div>
             <button class="cart-item-remove" data-id="${p.id}">${tRemove}</button>
           </div>
