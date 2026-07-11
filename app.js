@@ -182,7 +182,7 @@ let products = [
     categoryLabel: "Выпечка",
     price: 240,
     unit: "шт.",
-    image: "images/pastry_rogaliki.webp",
+    image: "images/pastry_pirog_liver.webp",
     desc: "Румяные домашние пирожки со специями и нежным ливерным паштетом.",
     ingredients: "Дрожжевое тесто, говяжий ливер (легкое, сердце, печень), лук, специи.",
     badge: ""
@@ -194,7 +194,7 @@ let products = [
     categoryLabel: "Выпечка",
     price: 180,
     unit: "шт.",
-    image: "images/pastry_rogaliki.webp",
+    image: "images/pastry_pirog_liver_mini.webp",
     desc: "Маленькие порционные пирожки на один укус с сытной начинкой из ливера.",
     ingredients: "Дрожжевое тесто, отборный говяжий ливер, лук репчатый, соль, перец.",
     badge: ""
