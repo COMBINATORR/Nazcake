@@ -2092,6 +2092,12 @@ lon: parseFloat(location.lon)
   };
 }
 
+// Render Dashboard Data
+function renderAdminDashboard() {
+  renderAdminCatalog();
+  renderAdminOrders();
+}
+
 // Render products in catalog management tab
 function renderAdminCatalog() {
   const listContainer = document.getElementById("admin-catalog-list");
