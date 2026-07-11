@@ -1515,9 +1515,12 @@ document.addEventListener("DOMContentLoaded", () => {
   setupGeolocation();
   updateCartUi();
   setupAdminPanel();
+  setupCartSwipeClose();
+  setupModalSwipeClose();
   
   if (window.i18n) {
     window.i18n.onLanguageChange(() => {
+      triggerHapticFeedback();
       renderBestsellers();
       const activeTab = document.querySelector(".tab-btn.active");
       const category = activeTab ? activeTab.getAttribute("data-category") : "all";
@@ -1594,6 +1597,7 @@ function attachCardEvents(gridElement) {
   // Opening Preview Modal on image or name click
   gridElement.querySelectorAll(".btn-preview").forEach(btn => {
     btn.addEventListener("click", (e) => {
+      triggerHapticFeedback();
       const card = e.target.closest(".product-card");
       const id = card.getAttribute("data-id");
       openProductPreview(id);
@@ -1608,6 +1612,7 @@ function attachCardEvents(gridElement) {
     if (addBtn) {
       addBtn.addEventListener("click", (e) => {
         e.stopPropagation(); // Avoid triggering preview modal if clicked
+        triggerHapticFeedback();
         addToCart(id, 1);
         
         if (addBtn.classList.contains("added")) {
@@ -1636,6 +1641,7 @@ function setupEventListeners() {
   // Catalog tabs toggle
   tabButtons.forEach(btn => {
     btn.addEventListener("click", () => {
+      triggerHapticFeedback();
       tabButtons.forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       const category = btn.getAttribute("data-category");
@@ -1720,6 +1726,7 @@ function openProductPreview(id) {
 
       modalSizeContainer.querySelectorAll(".size-option-btn").forEach(btn => {
         btn.addEventListener("click", () => {
+          triggerHapticFeedback();
           modalSizeContainer.querySelectorAll(".size-option-btn").forEach(b => b.classList.remove("active"));
           btn.classList.add("active");
           const index = parseInt(btn.getAttribute("data-index"));
@@ -1739,6 +1746,7 @@ function openProductPreview(id) {
   
   // Clean listeners
   modalMinusBtn.onclick = () => {
+    triggerHapticFeedback();
     let qty = parseInt(modalQtyVal.textContent);
     if (qty > 1) {
       qty--;
@@ -1747,6 +1755,7 @@ function openProductPreview(id) {
   };
   
   modalPlusBtn.onclick = () => {
+    triggerHapticFeedback();
     let qty = parseInt(modalQtyVal.textContent);
     if (p.stock !== undefined && qty >= p.stock) {
       const tMaxStockAlert = window.i18n && window.i18n.getCurrentLanguage() === "kk"
@@ -1760,6 +1769,7 @@ function openProductPreview(id) {
   };
   
   modalAddBtn.onclick = () => {
+    triggerHapticFeedback();
     const qty = parseInt(modalQtyVal.textContent);
     addToCart(activePreviewProductId, qty, selectedSize, selectedPrice);
     closeModal(previewModal);
@@ -1912,6 +1922,7 @@ function updateCartUi() {
   // Add event listeners to newly generated elements inside cart list
   cartItemsContainer.querySelectorAll(".minus-cart-qty").forEach(btn => {
     btn.addEventListener("click", () => {
+      triggerHapticFeedback();
       const id = btn.getAttribute("data-id");
       const item = cart.find(i => (i.cartItemId || i.product.id) === id);
       if (item) changeCartItemQty(id, item.qty - 1);
@@ -1920,6 +1931,7 @@ function updateCartUi() {
 
   cartItemsContainer.querySelectorAll(".plus-cart-qty").forEach(btn => {
     btn.addEventListener("click", () => {
+      triggerHapticFeedback();
       const id = btn.getAttribute("data-id");
       const item = cart.find(i => (i.cartItemId || i.product.id) === id);
       if (item) changeCartItemQty(id, item.qty + 1);
@@ -1928,6 +1940,7 @@ function updateCartUi() {
 
   cartItemsContainer.querySelectorAll(".cart-item-remove").forEach(btn => {
     btn.addEventListener("click", () => {
+      triggerHapticFeedback();
       const id = btn.getAttribute("data-id");
       removeFromCart(id);
     });
@@ -2618,14 +2631,126 @@ function orderSucceeded() {
 
 
 
+function triggerHapticFeedback() {
+  if (navigator.vibrate) {
+    try {
+      navigator.vibrate(12);
+    } catch (e) {
+      // Ignore vibration blocks
+    }
+  }
+}
+
 function openModal(modal, overlay) {
   if (modal) modal.classList.add("open");
   if (overlay) overlay.classList.add("open");
+  triggerHapticFeedback();
 }
 
 function closeModal(modal, overlay) {
   if (modal) modal.classList.remove("open");
   if (overlay) overlay.classList.remove("open");
+  triggerHapticFeedback();
+}
+
+function setupCartSwipeClose() {
+  const sidebar = document.getElementById("cart-sidebar");
+  if (!sidebar) return;
+
+  let startX = 0;
+  let startY = 0;
+  let currentX = 0;
+  let isDragging = false;
+
+  sidebar.addEventListener("touchstart", (e) => {
+    if (e.touches.length !== 1) return;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    currentX = startX;
+    isDragging = true;
+    sidebar.style.transition = "none";
+  }, { passive: true });
+
+  sidebar.addEventListener("touchmove", (e) => {
+    if (!isDragging) return;
+    currentX = e.touches[0].clientX;
+    const deltaX = currentX - startX;
+    const deltaY = e.touches[0].clientY - startY;
+
+    if (deltaX > 0 && Math.abs(deltaX) > Math.abs(deltaY)) {
+      sidebar.style.transform = `translateX(${deltaX}px)`;
+    }
+  }, { passive: true });
+
+  sidebar.addEventListener("touchend", () => {
+    if (!isDragging) return;
+    isDragging = false;
+    sidebar.style.transition = "";
+
+    const deltaX = currentX - startX;
+    if (deltaX > 100) {
+      closeModal(sidebar, cartOverlay);
+      setTimeout(() => {
+        sidebar.style.transform = "";
+      }, 400);
+    } else {
+      sidebar.style.transform = "";
+    }
+  });
+}
+
+function setupModalSwipeClose() {
+  const modalContainer = document.querySelector("#preview-modal .modal-container");
+  if (!modalContainer) return;
+
+  let startX = 0;
+  let startY = 0;
+  let currentY = 0;
+  let isDragging = false;
+
+  modalContainer.addEventListener("touchstart", (e) => {
+    if (modalContainer.scrollTop > 0) return;
+    if (e.touches.length !== 1) return;
+
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    currentY = startY;
+    isDragging = true;
+    modalContainer.style.transition = "none";
+  }, { passive: true });
+
+  modalContainer.addEventListener("touchmove", (e) => {
+    if (!isDragging) return;
+    currentY = e.touches[0].clientY;
+    const deltaY = currentY - startY;
+    const deltaX = e.touches[0].clientX - startX;
+
+    if (deltaY > 0 && Math.abs(deltaY) > Math.abs(deltaX)) {
+      if (e.cancelable) e.preventDefault();
+      modalContainer.style.transform = `scale(1) translateY(${deltaY}px)`;
+    }
+  }, { passive: false });
+
+  modalContainer.addEventListener("touchend", () => {
+    if (!isDragging) return;
+    isDragging = false;
+    modalContainer.style.transition = "";
+
+    const deltaY = currentY - startY;
+    if (deltaY > 120) {
+      const closeBtn = document.getElementById("close-preview-btn");
+      if (closeBtn) {
+        closeBtn.click();
+      } else {
+        closeModal(previewModal, previewModal);
+      }
+      setTimeout(() => {
+        modalContainer.style.transform = "";
+      }, 400);
+    } else {
+      modalContainer.style.transform = "";
+    }
+  });
 }
 
 function setupModal(modal, openBtn, closeBtn, overlay, extraCloseElements = []) {
