@@ -2052,7 +2052,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Language Switcher Styles */
 .lang-switcher {
-  display: flex;
+  display: none;
   background: var(--bg-tertiary);
   border: 1px solid rgba(74, 44, 17, 0.12);
   border-radius: 20px;
@@ -2087,7 +2087,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Mobile Drawer Language Switcher */
 .drawer-lang-switcher {
-  display: flex;
+  display: none;
   justify-content: center;
   margin-top: 30px;
   padding: 0 20px;
