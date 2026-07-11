@@ -266,7 +266,7 @@ let products = [
     categoryLabel: "Выпечка",
     price: 3400,
     unit: "кг",
-    image: "images/pastry_manti_condensed.webp",
+    image: "images/pastry_manty_condensed.webp",
     desc: "Необычные сладкие манты с начинкой из ароматной вареной сгущенки. Настоящее лакомство!",
     ingredients: "Пресное тесто на яйцах, сгущенное молоко вареное, сливочное масло.",
     badge: "новое"
