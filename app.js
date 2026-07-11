@@ -2705,8 +2705,13 @@ function setupAdminPanel() {
   }
   
   if (searchFilterInput) {
+    // ⚡ Bolt: Debounce search input to prevent expensive re-renders on every keystroke
+    let searchTimeout;
     searchFilterInput.addEventListener("input", () => {
-      renderAdminCatalog();
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        renderAdminCatalog();
+      }, 300);
     });
   }
 
