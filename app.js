@@ -1517,6 +1517,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupAdminPanel();
   setupCartSwipeClose();
   setupModalSwipeClose();
+  initScrollReveal();
   
   if (window.i18n) {
     window.i18n.onLanguageChange(() => {
@@ -1538,6 +1539,7 @@ function renderBestsellers() {
   
   bestsellersGrid.innerHTML = bestsellers.map(p => createProductCardHtml(p)).join("");
   attachCardEvents(bestsellersGrid);
+  refreshScrollReveal();
 }
 
 // Render Catalog by Category Filter
@@ -1550,6 +1552,7 @@ function renderCatalog(category) {
   
   catalogGrid.innerHTML = filtered.map(p => createProductCardHtml(p)).join("");
   attachCardEvents(catalogGrid);
+  refreshScrollReveal();
 }
 
 // Generate HTML for Product Card
@@ -1566,10 +1569,10 @@ function createProductCardHtml(p) {
   const activeBadge = outOfStockBadge || (p.badge ? `<span class="product-badge">${tBadge}</span>` : "");
   
   return `
-    <div class="${cardClass}" data-id="${p.id}">
+    <div class="${cardClass} reveal-item" data-id="${p.id}">
       <div class="product-img-wrapper btn-preview">
         ${activeBadge}
-        <img src="${p.image}" alt="${tName}" loading="lazy">
+        <img src="${p.image}" alt="${tName}" class="lazy-image loading" loading="lazy" onload="this.classList.remove('loading')">
       </div>
       <div class="product-info">
         <span class="product-category">${tCategoryLabel}</span>
@@ -2750,6 +2753,37 @@ function setupModalSwipeClose() {
     } else {
       modalContainer.style.transform = "";
     }
+  });
+}
+
+let scrollObserver;
+
+function initScrollReveal() {
+  if (!('IntersectionObserver' in window)) {
+    document.querySelectorAll('.reveal-item').forEach(el => el.classList.add('revealed'));
+    return;
+  }
+
+  scrollObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        scrollObserver.unobserve(entry.target);
+      }
+    });
+  }, {
+    root: null,
+    rootMargin: '0px 0px -40px 0px',
+    threshold: 0.12
+  });
+
+  refreshScrollReveal();
+}
+
+function refreshScrollReveal() {
+  if (!scrollObserver) return;
+  document.querySelectorAll('.reveal-item:not(.revealed)').forEach(el => {
+    scrollObserver.observe(el);
   });
 }
 
