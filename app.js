@@ -302,7 +302,7 @@ let products = [
     categoryLabel: "Пироги",
     price: 2500,
     unit: "шт.",
-    image: "images/pie_smetannik.webp",
+    image: "images/pie_cottage_condensed.webp",
     desc: "Сытный пирог с начинкой из нежного творога и сладкой вареной сгущенки.",
     ingredients: "Песочное тесто, творог 9%, вареное сгущенное молоко, сахар, ванилин.",
     badge: ""
@@ -380,40 +380,21 @@ let products = [
     badge: ""
   },
   {
-    id: "pie_meat_rect_s",
-    name: "Мясной пирог (Размер S)",
+    id: "pie_meat_rect",
+    name: "Мясной пирог (прямоугольный)",
     category: "on_order",
     categoryLabel: "На заказ",
     price: 9000,
     unit: "шт.",
-    image: "images/pie_meat_rect_s.webp",
-    desc: "Сытный прямоугольный мясной пирог размером 36х30 см. Идеально для небольшой компании.",
+    image: "images/pie_meat_rect.webp",
+    desc: "Сытный прямоугольный мясной пирог с сочным фаршем из рубленой говядины и луком.",
     ingredients: "Сдобное тесто, фарш из рубленой говядины, репчатый лук, специи.",
-    badge: "custom"
-  },
-  {
-    id: "pie_meat_rect_m",
-    name: "Мясной пирог (Размер M)",
-    category: "on_order",
-    categoryLabel: "На заказ",
-    price: 11000,
-    unit: "шт.",
-    image: "images/pie_meat_rect_m.webp",
-    desc: "Сытный прямоугольный мясной пирог размером 45х30 см. Традиционное праздничное блюдо.",
-    ingredients: "Сдобное тесто, отборный говяжий фарш, репчатый лук, специи, масло.",
-    badge: "custom"
-  },
-  {
-    id: "pie_meat_rect_l",
-    name: "Мясной пирог (Размер L)",
-    category: "on_order",
-    categoryLabel: "На заказ",
-    price: 14000,
-    unit: "шт.",
-    image: "images/pie_meat_rect_l.webp",
-    desc: "Большой семейный прямоугольный мясной пирог размером 48х35 см для крупных торжеств.",
-    ingredients: "Сдобное тесто, рубленый говяжий фарш, много лука, сливочное масло, специи.",
-    badge: "custom"
+    badge: "custom",
+    sizeOptions: [
+      { "size": "S (36х30 см)", "price": 9000 },
+      { "size": "M (45х30 см)", "price": 11000 },
+      { "size": "L (48х35 см)", "price": 14000 }
+    ]
   },
   {
     id: "pie_curd_large",
