@@ -1393,6 +1393,8 @@ const modalQtyVal = document.getElementById("modal-qty-val");
 const modalMinusBtn = document.getElementById("modal-minus-btn");
 const modalPlusBtn = document.getElementById("modal-plus-btn");
 const modalAddBtn = document.getElementById("modal-add-btn");
+const modalSizeGroup = document.getElementById("modal-size-group");
+const modalSizeContainer = document.getElementById("modal-size-container");
 
 const cartSidebar = document.getElementById("cart-sidebar");
 const cartOverlay = document.getElementById("cart-overlay");
