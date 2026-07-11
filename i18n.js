@@ -118,6 +118,7 @@
       // Product Preview Modal
       preview_lbl_desc: "Описание:",
       preview_lbl_ingredients: "Состав:",
+      preview_lbl_size: "Выберите размер:",
       preview_btn_add: "Добавить в корзину",
 
       // Cart Sidebar
@@ -790,6 +791,7 @@
       // Product Preview Modal
       preview_lbl_desc: "Сипаттамасы:",
       preview_lbl_ingredients: "Құрамы:",
+      preview_lbl_size: "Өлшемді таңдаңыз:",
       preview_btn_add: "Себетке қосу",
 
       // Cart Sidebar
