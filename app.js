@@ -2,9 +2,16 @@
 window.addEventListener("load", () => {
   const preloader = document.getElementById("page-preloader");
   if (preloader) {
+    if (sessionStorage.getItem("nazcake_preloader_shown")) {
+      preloader.remove();
+      document.body.classList.remove("preloader-active");
+      return;
+    }
+    
     setTimeout(() => {
       preloader.classList.add("fade-out");
       document.body.classList.remove("preloader-active");
+      sessionStorage.setItem("nazcake_preloader_shown", "true");
       setTimeout(() => {
         preloader.remove();
       }, 800);

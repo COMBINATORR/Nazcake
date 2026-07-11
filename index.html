@@ -77,6 +77,14 @@
   <link rel="stylesheet" href="style.css?v=4.0">
 </head>
 <body class="preloader-active">
+  <script>
+    if (sessionStorage.getItem("nazcake_preloader_shown")) {
+      document.body.classList.remove("preloader-active");
+      const style = document.createElement('style');
+      style.innerHTML = '#page-preloader { display: none !important; }';
+      document.head.appendChild(style);
+    }
+  </script>
 
   <!-- Premium Page Preloader -->
   <div id="page-preloader" class="page-preloader">
