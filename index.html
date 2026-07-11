@@ -103,9 +103,17 @@
           </svg>
           <span id="location-text">Атырау</span>
         </div>
-        <div class="lang-switcher">
-          <button class="lang-btn active" data-lang="ru">RU</button>
-          <button class="lang-btn" data-lang="kk">KK</button>
+        <div class="lang-dropdown">
+          <button class="lang-dropdown-btn" aria-label="Сменить язык">
+            <span class="lang-current">RU</span>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="10" height="10">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          <div class="lang-dropdown-menu">
+            <button class="lang-btn active" data-lang="ru">RU (Русский)</button>
+            <button class="lang-btn" data-lang="kk">KK (Қазақша)</button>
+          </div>
         </div>
         <button class="cart-btn" id="open-cart-btn" data-i18n-title="cart_title" aria-label="Открыть корзину">
           <svg class="icon-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -150,9 +158,17 @@
       </svg>
       <span id="drawer-location-text">Атырау</span>
     </div>
-    <div class="drawer-lang-switcher">
-      <button class="lang-btn active" data-lang="ru">RU</button>
-      <button class="lang-btn" data-lang="kk">KK</button>
+    <div class="lang-dropdown mobile-drawer-dropdown">
+      <button class="lang-dropdown-btn" aria-label="Сменить язык">
+        <span class="lang-current">RU</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="10" height="10">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </button>
+      <div class="lang-dropdown-menu">
+        <button class="lang-btn active" data-lang="ru">RU (Русский)</button>
+        <button class="lang-btn" data-lang="kk">KK (Қазақша)</button>
+      </div>
     </div>
   </div>
   <div class="drawer-overlay" id="drawer-overlay"></div>

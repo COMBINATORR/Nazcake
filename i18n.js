@@ -1413,8 +1413,12 @@
     if (ogDesc) ogDesc.setAttribute("content", t("meta_desc"));
 
     // 5. Update language switcher buttons active states
-    document.querySelectorAll(".lang-switcher, .drawer-lang-switcher").forEach(switcher => {
-      switcher.querySelectorAll(".lang-btn").forEach(btn => {
+    document.querySelectorAll(".lang-dropdown").forEach(dropdown => {
+      const currentSpan = dropdown.querySelector(".lang-current");
+      if (currentSpan) {
+        currentSpan.textContent = currentLang.toUpperCase();
+      }
+      dropdown.querySelectorAll(".lang-btn").forEach(btn => {
         const lang = btn.getAttribute("data-lang");
         if (lang === currentLang) {
           btn.classList.add("active");
@@ -1460,13 +1464,49 @@
 
     // Delegate language switcher clicks globally
     document.body.addEventListener("click", (e) => {
-      const btn = e.target.closest(".lang-btn");
-      if (btn) {
-        const lang = btn.getAttribute("data-lang");
+      const dropdownBtn = e.target.closest(".lang-dropdown-btn");
+      if (dropdownBtn) {
+        e.stopPropagation();
+        const dropdown = dropdownBtn.closest(".lang-dropdown");
+        const menu = dropdown.querySelector(".lang-dropdown-menu");
+        
+        // Close other dropdowns first
+        document.querySelectorAll(".lang-dropdown").forEach(other => {
+          if (other !== dropdown) {
+            other.classList.remove("open");
+            const otherMenu = other.querySelector(".lang-dropdown-menu");
+            if (otherMenu) otherMenu.classList.remove("show");
+          }
+        });
+        
+        dropdown.classList.toggle("open");
+        if (menu) menu.classList.toggle("show");
+        return;
+      }
+      
+      // Close dropdown when clicking on item
+      const itemBtn = e.target.closest(".lang-dropdown-menu .lang-btn");
+      if (itemBtn) {
+        const lang = itemBtn.getAttribute("data-lang");
         if (lang) {
           setLanguage(lang);
         }
+        // Close menu
+        const dropdown = itemBtn.closest(".lang-dropdown");
+        if (dropdown) {
+          dropdown.classList.remove("open");
+          const menu = dropdown.querySelector(".lang-dropdown-menu");
+          if (menu) menu.classList.remove("show");
+        }
+        return;
       }
+      
+      // Close all dropdowns when clicking outside
+      document.querySelectorAll(".lang-dropdown").forEach(dropdown => {
+        dropdown.classList.remove("open");
+        const menu = dropdown.querySelector(".lang-dropdown-menu");
+        if (menu) menu.classList.remove("show");
+      });
     });
   });
 
