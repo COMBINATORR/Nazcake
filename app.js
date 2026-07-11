@@ -1566,7 +1566,11 @@ function createProductCardHtml(p) {
         <span class="product-category">${tCategoryLabel}</span>
         <h3 class="product-name btn-preview">${tName}</h3>
         <div class="product-footer">
-          <span class="product-price">${p.price.toLocaleString()} ₸ / ${tUnit}</span>
+          <span class="product-price">${
+            p.sizeOptions && p.sizeOptions.length > 0
+              ? `${window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "бастап" : "от"} ${Math.min(...p.sizeOptions.map(o => o.price)).toLocaleString()} ₸`
+              : `${p.price.toLocaleString()} ₸ / ${tUnit}`
+          }</span>
           <button class="btn-card-add btn-add-to-cart" aria-label="Добавить в корзину" ${isOutOfStock ? 'disabled' : ''}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
               <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -1688,11 +1692,44 @@ function openProductPreview(id) {
   modalProductImg.src = p.image;
   modalProductImg.alt = tName;
   modalProductTitle.textContent = tName;
-  modalProductPrice.textContent = `${p.price.toLocaleString()} ₸ / ${tUnit}`;
   modalProductDesc.textContent = tDesc;
   modalProductIngredients.textContent = tIngredients;
-  
   modalQtyVal.textContent = 1; // Reset qty in modal
+
+  let selectedSize = null;
+  let selectedPrice = p.price;
+
+  if (p.sizeOptions && p.sizeOptions.length > 0) {
+    if (modalSizeGroup && modalSizeContainer) {
+      modalSizeGroup.classList.remove("hidden");
+      
+      modalSizeContainer.innerHTML = p.sizeOptions.map((opt, index) => {
+        const isActive = index === 0 ? "active" : "";
+        const sizeLabel = opt.size;
+        return `<button class="size-option-btn ${isActive}" data-index="${index}" data-price="${opt.price}">${sizeLabel}</button>`;
+      }).join("");
+
+      selectedSize = p.sizeOptions[0].size;
+      selectedPrice = p.sizeOptions[0].price;
+
+      modalSizeContainer.querySelectorAll(".size-option-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          modalSizeContainer.querySelectorAll(".size-option-btn").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          const index = parseInt(btn.getAttribute("data-index"));
+          selectedSize = p.sizeOptions[index].size;
+          selectedPrice = p.sizeOptions[index].price;
+          modalProductPrice.textContent = `${selectedPrice.toLocaleString()} ₸ / ${tUnit}`;
+        });
+      });
+    }
+  } else {
+    if (modalSizeGroup) {
+      modalSizeGroup.classList.add("hidden");
+    }
+  }
+
+  modalProductPrice.textContent = `${selectedPrice.toLocaleString()} ₸ / ${tUnit}`;
   
   // Clean listeners
   modalMinusBtn.onclick = () => {
@@ -1718,7 +1755,7 @@ function openProductPreview(id) {
   
   modalAddBtn.onclick = () => {
     const qty = parseInt(modalQtyVal.textContent);
-    addToCart(activePreviewProductId, qty);
+    addToCart(activePreviewProductId, qty, selectedSize, selectedPrice);
     closeModal(previewModal);
 
     // Open cart automatically to show it
@@ -1729,7 +1766,7 @@ function openProductPreview(id) {
 }
 
 // Add Item to Cart
-function addToCart(productOrId, qty) {
+function addToCart(productOrId, qty, selectedSize, selectedPrice) {
   let p;
   if (typeof productOrId === "object") {
     p = productOrId;
@@ -1741,7 +1778,8 @@ function addToCart(productOrId, qty) {
   const isOutOfStock = p.inStock === false || (p.stock !== undefined && p.stock <= 0);
   if (isOutOfStock) return;
 
-  const existing = cart.find(item => item.product.id === p.id);
+  const cartItemId = p.id + (selectedSize ? "_" + selectedSize : "");
+  const existing = cart.find(item => item.cartItemId === cartItemId);
   const currentQtyInCart = existing ? existing.qty : 0;
   if (p.stock !== undefined && currentQtyInCart + qty > p.stock) {
     const tMaxStockAlert = window.i18n && window.i18n.getCurrentLanguage() === "kk"
@@ -1755,8 +1793,11 @@ function addToCart(productOrId, qty) {
     existing.qty += qty;
   } else {
     cart.push({
+      cartItemId: cartItemId,
       product: p,
-      qty: qty
+      qty: qty,
+      selectedSize: selectedSize || null,
+      price: selectedPrice !== undefined ? selectedPrice : p.price
     });
   }
 
@@ -1764,13 +1805,13 @@ function addToCart(productOrId, qty) {
 }
 
 // Remove Item from Cart
-function removeFromCart(id) {
-  cart = cart.filter(item => item.product.id !== id);
+function removeFromCart(cartItemId) {
+  cart = cart.filter(item => (item.cartItemId || item.product.id) !== cartItemId);
   updateCartUi();
 }
 
-function changeCartItemQty(id, newQty) {
-  const item = cart.find(i => i.product.id === id);
+function changeCartItemQty(cartItemId, newQty) {
+  const item = cart.find(i => (i.cartItemId || i.product.id) === cartItemId);
   if (item) {
     if (item.product.stock !== undefined && newQty > item.product.stock) {
       const tMaxStockAlert = window.i18n && window.i18n.getCurrentLanguage() === "kk"
@@ -1781,7 +1822,7 @@ function changeCartItemQty(id, newQty) {
     }
     item.qty = newQty;
     if (item.qty <= 0) {
-      removeFromCart(id);
+      removeFromCart(cartItemId);
     } else {
       updateCartUi();
       updateLocationUi();
@@ -1797,8 +1838,8 @@ function updateCartUi() {
     badge.textContent = totalItems;
   });
 
-  // Calculate sum
-  const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.qty), 0);
+  // Calculate sum using item.price instead of item.product.price
+  const subtotal = cart.reduce((sum, item) => sum + ((item.price !== undefined ? item.price : item.product.price) * item.qty), 0);
   cartTotalSum.textContent = `${subtotal.toLocaleString()} ₸`;
   try {
     localStorage.setItem("nazcake_cart", JSON.stringify(cart));
@@ -1833,35 +1874,40 @@ function updateCartUi() {
 
   cartItemsContainer.innerHTML = cart.map(item => {
     const p = item.product;
-    const tName = p.id.startsWith("bento_custom_") 
+    let tName = p.id.startsWith("bento_custom_") 
       ? (window.i18n ? window.i18n.t("bento_custom_name") : p.name)
       : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name);
+    
+    if (item.selectedSize) {
+      tName += ` (${item.selectedSize})`;
+    }
     const tRemove = window.i18n ? window.i18n.t("cart_lbl_remove") : "Удалить";
+    const itemPrice = item.price !== undefined ? item.price : p.price;
     
     return `
-      <div class="cart-item" data-id="${p.id}">
+      <div class="cart-item" data-id="PLACEHOLDER_CART_ITEM_ID">
         <img src="${p.image}" alt="${tName}" class="cart-item-img">
         <div class="cart-item-details">
           <h5 class="cart-item-name">${tName}</h5>
-          <span class="cart-item-price">${(p.price * item.qty).toLocaleString()} ₸</span>
+          <span class="cart-item-price">PLACEHOLDER_ITEM_PRICE ₸</span>
           <div class="cart-item-actions">
             <div class="quantity-stepper">
-              <button class="stepper-btn minus-cart-qty" data-id="${p.id}" aria-label="Уменьшить количество">−</button>
+              <button class="stepper-btn minus-cart-qty" data-id="PLACEHOLDER_CART_ITEM_ID" aria-label="Уменьшить количество">−</button>
               <span class="quantity-val">${item.qty}</span>
-              <button class="stepper-btn plus-cart-qty" data-id="${p.id}" aria-label="Увеличить количество">+</button>
+              <button class="stepper-btn plus-cart-qty" data-id="PLACEHOLDER_CART_ITEM_ID" aria-label="Увеличить количество">+</button>
             </div>
-            <button class="cart-item-remove" data-id="${p.id}">${tRemove}</button>
+            <button class="cart-item-remove" data-id="PLACEHOLDER_CART_ITEM_ID">${tRemove}</button>
           </div>
         </div>
       </div>
-    `;
+    `.replace(/PLACEHOLDER_CART_ITEM_ID/g, item.cartItemId || p.id).replace(/PLACEHOLDER_ITEM_PRICE/g, (itemPrice * item.qty).toLocaleString());
   }).join("");
 
   // Add event listeners to newly generated elements inside cart list
   cartItemsContainer.querySelectorAll(".minus-cart-qty").forEach(btn => {
     btn.addEventListener("click", () => {
       const id = btn.getAttribute("data-id");
-      const item = cart.find(i => i.product.id === id);
+      const item = cart.find(i => (i.cartItemId || i.product.id) === id);
       if (item) changeCartItemQty(id, item.qty - 1);
     });
   });
@@ -1869,7 +1915,7 @@ function updateCartUi() {
   cartItemsContainer.querySelectorAll(".plus-cart-qty").forEach(btn => {
     btn.addEventListener("click", () => {
       const id = btn.getAttribute("data-id");
-      const item = cart.find(i => i.product.id === id);
+      const item = cart.find(i => (i.cartItemId || i.product.id) === id);
       if (item) changeCartItemQty(id, item.qty + 1);
     });
   });
@@ -2449,8 +2495,8 @@ async function handleCheckoutSubmit(e) {
   submitBtn.disabled = true;
   submitBtn.textContent = window.i18n ? t("cart_btn_submitting") : "Отправка заказа...";
 
-  // Calculate total
-  const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.qty), 0);
+  // Calculate total using item.price
+  const subtotal = cart.reduce((sum, item) => sum + ((item.price !== undefined ? item.price : item.product.price) * item.qty), 0);
   
   // Format message for WhatsApp
   let message = `*🍰 ${window.i18n ? t("tg_order_title") : "Новый заказ от Nazcake!"}*
@@ -2474,11 +2520,17 @@ async function handleCheckoutSubmit(e) {
 
   cart.forEach((item, idx) => {
     const p = item.product;
-    const tName = p.id.startsWith("bento_custom_") 
+    let displayName = p.id.startsWith("bento_custom_") 
       ? (window.i18n ? t("bento_custom_name") : p.name) 
       : (window.i18n ? t(`p_${p.id}_name`) : p.name);
+    
+    if (item.selectedSize) {
+      displayName += ` (${item.selectedSize})`;
+    }
     const tUnit = window.i18n ? t(getUnitTranslationKey(p.unit)) : p.unit;
-    message += `${idx + 1}. *${tName}* — ${item.qty} ${tUnit} (${(p.price * item.qty).toLocaleString()} ₸)
+    const itemPrice = item.price !== undefined ? item.price : p.price;
+    
+    message += `${idx + 1}. *${displayName}* — ${item.qty} ${tUnit} (${(itemPrice * item.qty).toLocaleString()} ₸)
 `;
     if (p.id.startsWith("bento_custom_")) {
       const tDesc = getProductDesc(p);
@@ -2503,14 +2555,17 @@ async function handleCheckoutSubmit(e) {
     address: method === "delivery" ? address : "",
     items: cart.map(item => {
       const p = item.product;
-      const tName = p.id.startsWith("bento_custom_") 
+      let displayName = p.id.startsWith("bento_custom_") 
         ? (window.i18n ? t("bento_custom_name") : p.name) 
         : (window.i18n ? t(`p_${p.id}_name`) : p.name);
+      if (item.selectedSize) {
+        displayName += ` (${item.selectedSize})`;
+      }
       return {
         id: p.id,
-        name: tName,
+        name: displayName,
         qty: item.qty,
-        price: p.price
+        price: item.price !== undefined ? item.price : p.price
       };
     }),
     subtotal: subtotal,
