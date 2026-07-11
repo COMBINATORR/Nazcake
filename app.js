@@ -1371,10 +1371,11 @@ try {
           name: custom.name !== undefined ? custom.name : p.name,
           price: custom.price !== undefined ? custom.price : p.price,
           inStock: custom.inStock !== false,
-          stock: custom.stock !== undefined ? custom.stock : p.stock
+          stock: custom.stock !== undefined ? custom.stock : p.stock,
+          image: custom.image !== undefined ? custom.image : p.image
         };
       }
-      return { ...p, inStock: p.inStock !== false, stock: p.stock };
+      return { ...p, inStock: p.inStock !== false, stock: p.stock, image: p.image };
     });
   } else {
     products = products.map(p => ({ ...p, inStock: true }));
@@ -2129,7 +2130,13 @@ function renderAdminCatalog() {
     
     return `
       <div class="admin-product-row" data-id="${p.id}">
-        ${p.image ? `<img src="${p.image}" alt="${pName}" class="admin-prod-img">` : `<div class="admin-prod-img empty-admin-img" style="background-color: var(--bg-tertiary);"></div>`}
+        <div class="admin-prod-img-container" onclick="triggerAdminImageUpload('${p.id}')">
+          ${p.image ? `<img src="${p.image}" alt="${pName}" class="admin-prod-img">` : `<div class="admin-prod-img empty-admin-img" style="background-color: var(--bg-tertiary);"></div>`}
+          <div class="admin-prod-img-overlay">
+            <span>Изменить</span>
+          </div>
+          <input type="file" id="admin-file-input-${p.id}" class="admin-edit-image-file" accept="image/*" style="display: none;" onchange="handleAdminImageUpload(event, '${p.id}')">
+        </div>
         <div class="admin-product-details">
           <div class="admin-prod-form-group">
             <label>${tName}</label>
@@ -2156,6 +2163,71 @@ function renderAdminCatalog() {
   }).join("");
 }
 
+// Global helper functions for image uploads
+window.triggerAdminImageUpload = function(id) {
+  const fileInput = document.getElementById(`admin-file-input-${id}`);
+  if (fileInput) fileInput.click();
+};
+
+window.handleAdminImageUpload = function(event, id) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      // Resize using canvas to keep it lightweight for localStorage
+      const canvas = document.createElement("canvas");
+      const maxDim = 300;
+      let width = img.width;
+      let height = img.height;
+
+      if (width > height) {
+        if (width > maxDim) {
+          height = Math.round((height * maxDim) / width);
+          width = maxDim;
+        }
+      } else {
+        if (height > maxDim) {
+          width = Math.round((width * maxDim) / height);
+          height = maxDim;
+        }
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, width, height);
+
+      // Convert to compressed jpeg data URL (0.7 quality is about ~10-15KB)
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.7);
+
+      // Preview locally in the admin panel row
+      const row = document.querySelector(`.admin-product-row[data-id="${id}"]`);
+      if (row) {
+        const imgEl = row.querySelector(".admin-prod-img");
+        if (imgEl) {
+          imgEl.src = dataUrl;
+        } else {
+          const imgContainer = row.querySelector(".admin-prod-img-container");
+          const emptyDiv = imgContainer.querySelector(".empty-admin-img");
+          if (emptyDiv) {
+            const newImg = document.createElement("img");
+            newImg.className = "admin-prod-img";
+            newImg.alt = "Preview";
+            newImg.src = dataUrl;
+            imgContainer.replaceChild(newImg, emptyDiv);
+          }
+        }
+        row.setAttribute("data-new-image", dataUrl);
+      }
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+};
+
 // Global helper function to save product edit
 window.saveAdminProduct = function(id) {
   const row = document.querySelector(`.admin-product-row[data-id="${id}"]`);
@@ -2166,6 +2238,7 @@ window.saveAdminProduct = function(id) {
   const inStockInput = row.querySelector(".admin-edit-instock").checked;
   const stockInputVal = row.querySelector(".admin-edit-stock").value.trim();
   const stockInput = stockInputVal === "" ? undefined : parseInt(stockInputVal);
+  const newImageVal = row.getAttribute("data-new-image") || undefined;
 
   if (isNaN(priceInput) || priceInput < 0) {
     alert("Пожалуйста, введите корректную цену!");
@@ -2184,7 +2257,8 @@ window.saveAdminProduct = function(id) {
         name: nameInput, 
         price: priceInput, 
         inStock: inStockInput,
-        stock: stockInput
+        stock: stockInput,
+        image: newImageVal !== undefined ? newImageVal : p.image
       };
     }
     return p;
@@ -2197,7 +2271,8 @@ window.saveAdminProduct = function(id) {
       name: p.name,
       price: p.price,
       inStock: p.inStock,
-      stock: p.stock
+      stock: p.stock,
+      image: p.image
     }));
     localStorage.setItem("nazcake_custom_products", JSON.stringify(customList));
   } catch(e) {
