@@ -2179,7 +2179,7 @@ window.handleAdminImageUpload = function(event, id) {
     img.onload = function() {
       // Resize using canvas to keep it lightweight for localStorage
       const canvas = document.createElement("canvas");
-      const maxDim = 300;
+      const maxDim = 600;
       let width = img.width;
       let height = img.height;
 
