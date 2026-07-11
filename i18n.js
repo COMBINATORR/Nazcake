@@ -186,6 +186,10 @@
       admin_order_status_done: "Выполнен",
       admin_order_status_cancel: "Отменен",
       admin_lbl_status: "Статус",
+      admin_filter_category_lbl: "Категория:",
+      admin_filter_search_lbl: "Поиск:",
+      admin_filter_search_ph: "Поиск по названию...",
+      admin_lbl_stock: "Кол-во в наличии",
       catalog_out_of_stock: "Нет в наличии",
       contacts_val_hours: "Ежедневно с 09:00 до 20:00",
 
@@ -851,6 +855,10 @@
       admin_order_status_done: "Орындалды",
       admin_order_status_cancel: "Бас тартылды",
       admin_lbl_status: "Мәртебе",
+      admin_filter_category_lbl: "Санат:",
+      admin_filter_search_lbl: "Іздеу:",
+      admin_filter_search_ph: "Атауы бойынша іздеу...",
+      admin_lbl_stock: "Қоймадағы саны",
       catalog_out_of_stock: "Қолжетімсіз",
       contacts_val_hours: "Күн сайын 09:00-ден 20:00-ге дейін",
 

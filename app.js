@@ -1370,10 +1370,11 @@ try {
           ...p,
           name: custom.name !== undefined ? custom.name : p.name,
           price: custom.price !== undefined ? custom.price : p.price,
-          inStock: custom.inStock !== false
+          inStock: custom.inStock !== false,
+          stock: custom.stock !== undefined ? custom.stock : p.stock
         };
       }
-      return { ...p, inStock: p.inStock !== false };
+      return { ...p, inStock: p.inStock !== false, stock: p.stock };
     });
   } else {
     products = products.map(p => ({ ...p, inStock: true }));
@@ -1548,7 +1549,7 @@ function createProductCardHtml(p) {
   const tBadge = p.badge ? (window.i18n ? window.i18n.t(getBadgeTranslationKey(p.badge)) : p.badge) : "";
   const tUnit = window.i18n ? window.i18n.t(getUnitTranslationKey(p.unit)) : p.unit;
   
-  const isOutOfStock = p.inStock === false;
+  const isOutOfStock = p.inStock === false || (p.stock !== undefined && p.stock <= 0);
   const cardClass = isOutOfStock ? "product-card out-of-stock" : "product-card";
   const tOutOfStock = window.i18n ? window.i18n.t("catalog_out_of_stock") : "Нет в наличии";
   const outOfStockBadge = isOutOfStock ? `<span class="product-badge product-badge-outofstock">${tOutOfStock}</span>` : "";
@@ -1703,6 +1704,13 @@ function openProductPreview(id) {
   
   modalPlusBtn.onclick = () => {
     let qty = parseInt(modalQtyVal.textContent);
+    if (p.stock !== undefined && qty >= p.stock) {
+      const tMaxStockAlert = window.i18n && window.i18n.getCurrentLanguage() === "kk"
+        ? `Кешіріңіз, бұл тауардан қоймада тек ${p.stock} дана бар.`
+        : `Извините, доступно только ${p.stock} шт. этого товара.`;
+      alert(tMaxStockAlert);
+      return;
+    }
     qty++;
     modalQtyVal.textContent = qty;
   };
@@ -1729,7 +1737,19 @@ function addToCart(productOrId, qty) {
   }
   if (!p) return;
 
+  const isOutOfStock = p.inStock === false || (p.stock !== undefined && p.stock <= 0);
+  if (isOutOfStock) return;
+
   const existing = cart.find(item => item.product.id === p.id);
+  const currentQtyInCart = existing ? existing.qty : 0;
+  if (p.stock !== undefined && currentQtyInCart + qty > p.stock) {
+    const tMaxStockAlert = window.i18n && window.i18n.getCurrentLanguage() === "kk"
+      ? `Кешіріңіз, бұл тауардан қоймада тек ${p.stock} дана бар.`
+      : `Извините, доступно только ${p.stock} шт. этого товара.`;
+    alert(tMaxStockAlert);
+    return;
+  }
+
   if (existing) {
     existing.qty += qty;
   } else {
@@ -1748,10 +1768,16 @@ function removeFromCart(id) {
   updateCartUi();
 }
 
-// Update quantity in Cart directly
 function changeCartItemQty(id, newQty) {
   const item = cart.find(i => i.product.id === id);
   if (item) {
+    if (item.product.stock !== undefined && newQty > item.product.stock) {
+      const tMaxStockAlert = window.i18n && window.i18n.getCurrentLanguage() === "kk"
+        ? `Кешіріңіз, бұл тауардан қоймада тек ${item.product.stock} дана бар.`
+        : `Извините, доступно только ${item.product.stock} шт. этого товара.`;
+      alert(tMaxStockAlert);
+      return;
+    }
     item.qty = newQty;
     if (item.qty <= 0) {
       removeFromCart(id);
@@ -2062,8 +2088,131 @@ async function fetchCoordinates(address) {
   const location = data[0];
   return {
     lat: parseFloat(location.lat),
-    lon: parseFloat(location.lon)
+lon: parseFloat(location.lon)
   };
+}
+
+// Render products in catalog management tab
+function renderAdminCatalog() {
+  const listContainer = document.getElementById("admin-catalog-list");
+  if (!listContainer) return;
+
+  const categoryFilter = document.getElementById("admin-filter-category")?.value || "all";
+  const searchQuery = document.getElementById("admin-filter-search")?.value.toLowerCase() || "";
+
+  let filtered = products;
+  if (categoryFilter !== "all") {
+    filtered = filtered.filter(p => p.category === categoryFilter);
+  }
+  if (searchQuery) {
+    filtered = filtered.filter(p => {
+      const pName = (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name).toLowerCase();
+      return pName.includes(searchQuery);
+    });
+  }
+
+  const tName = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Атауы" : "Название";
+  const tPrice = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Бағасы (₸)" : "Цена (₸)";
+  const tInStock = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Қолжетімді" : "В наличии";
+  const tSave = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Сақтау" : "Сохранить";
+  const tStock = window.i18n ? window.i18n.t("admin_lbl_stock") : "Кол-во";
+
+  listContainer.innerHTML = filtered.map(p => {
+    const isChecked = p.inStock !== false ? "checked" : "";
+    const pName = window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name;
+    
+    return `
+      <div class="admin-product-row" data-id="${p.id}">
+        ${p.image ? `<img src="${p.image}" alt="${pName}" class="admin-prod-img">` : `<div class="admin-prod-img empty-admin-img" style="background-color: var(--bg-tertiary);"></div>`}
+        <div class="admin-product-details">
+          <div class="admin-prod-form-group">
+            <label>${tName}</label>
+            <input type="text" class="admin-edit-name" value="${pName}">
+          </div>
+          <div class="admin-prod-form-group">
+            <label>${tStock}</label>
+            <input type="number" class="admin-edit-stock" value="${p.stock !== undefined ? p.stock : ""}" placeholder="∞">
+          </div>
+          <div class="admin-prod-form-group">
+            <label>${tPrice}</label>
+            <input type="number" class="admin-edit-price" value="${p.price}" min="0">
+          </div>
+          <div class="admin-prod-form-group">
+            <label class="admin-checkbox-label">
+              <input type="checkbox" class="admin-edit-instock" ${isChecked}>
+              ${tInStock}
+            </label>
+          </div>
+          <button class="btn btn-primary btn-admin-save" onclick="saveAdminProduct('${p.id}')">${tSave}</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+// Global helper function to save product edit
+window.saveAdminProduct = function(id) {
+  const row = document.querySelector(`.admin-product-row[data-id="${id}"]`);
+  if (!row) return;
+
+  const nameInput = row.querySelector(".admin-edit-name").value.trim();
+  const priceInput = parseInt(row.querySelector(".admin-edit-price").value.trim());
+  const inStockInput = row.querySelector(".admin-edit-instock").checked;
+  const stockInputVal = row.querySelector(".admin-edit-stock").value.trim();
+  const stockInput = stockInputVal === "" ? undefined : parseInt(stockInputVal);
+
+  if (isNaN(priceInput) || priceInput < 0) {
+    alert("Пожалуйста, введите корректную цену!");
+    return;
+  }
+  if (stockInput !== undefined && (isNaN(stockInput) || stockInput < 0)) {
+    alert("Пожалуйста, введите корректное количество!");
+    return;
+  }
+
+  // Update in local memory array
+  products = products.map(p => {
+    if (p.id === id) {
+      return { 
+        ...p, 
+        name: nameInput, 
+        price: priceInput, 
+        inStock: inStockInput,
+        stock: stockInput
+      };
+    }
+    return p;
+  });
+
+  // Save to local storage
+  try {
+    const customList = products.map(p => ({
+      id: p.id,
+      name: p.name,
+      price: p.price,
+      inStock: p.inStock,
+      stock: p.stock
+    }));
+    localStorage.setItem("nazcake_custom_products", JSON.stringify(customList));
+  } catch(e) {
+    console.warn("Failed to save custom products to localStorage:", e);
+  }
+
+  // Visual feedback on save
+  const saveBtn = row.querySelector(".btn-admin-save");
+  const origText = saveBtn.textContent;
+  saveBtn.textContent = "✓";
+  saveBtn.style.background = "#27ae60";
+  setTimeout(() => {
+    saveBtn.textContent = origText;
+    saveBtn.style.background = "";
+  }, 1000);
+
+  // Re-render main site catalog and bestsellers
+  renderBestsellers();
+  const activeTab = document.querySelector(".tab-btn.active");
+  const category = activeTab ? activeTab.getAttribute("data-category") : "all";
+  renderCatalog(category);
 }
 
 function checkAtyrauBounds(lat, lon, bounds) {
@@ -2465,6 +2614,21 @@ function setupAdminPanel() {
 
   if (!logoLink || !loginModal || !dashModal) return;
 
+  const categoryFilterInput = document.getElementById("admin-filter-category");
+  const searchFilterInput = document.getElementById("admin-filter-search");
+  
+  if (categoryFilterInput) {
+    categoryFilterInput.addEventListener("change", () => {
+      renderAdminCatalog();
+    });
+  }
+  
+  if (searchFilterInput) {
+    searchFilterInput.addEventListener("input", () => {
+      renderAdminCatalog();
+    });
+  }
+
   // 1. Mobile Secret Trigger (3 clicks on logo in 2 seconds)
   logoLink.addEventListener("click", (e) => {
     // If target is links/action, prevent default to avoid scrolling to top if triple clicked
@@ -2560,100 +2724,7 @@ function setupAdminPanel() {
   }
 }
 
-// Render Dashboard Data
-function renderAdminDashboard() {
-  renderAdminCatalog();
-  renderAdminOrders();
-}
 
-// Render products in catalog management tab
-function renderAdminCatalog() {
-  const listContainer = document.getElementById("admin-catalog-list");
-  if (!listContainer) return;
-
-  const tName = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Атауы" : "Название";
-  const tPrice = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Бағасы (₸)" : "Цена (₸)";
-  const tInStock = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Қолжетімді" : "В наличии";
-  const tSave = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Сақтау" : "Сохранить";
-
-  listContainer.innerHTML = products.map(p => {
-    const isChecked = p.inStock !== false ? "checked" : "";
-    const pName = window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name;
-    
-    return `
-      <div class="admin-product-row" data-id="${p.id}">
-        <img src="${p.image}" alt="${pName}" class="admin-prod-img">
-        <div class="admin-prod-form-group">
-          <label>${tName}</label>
-          <input type="text" class="admin-edit-name" value="${pName}">
-        </div>
-        <div class="admin-prod-form-group">
-          <label>${tPrice}</label>
-          <input type="text" class="admin-edit-price" value="${p.price}">
-        </div>
-        <div class="admin-prod-form-group">
-          <label class="admin-checkbox-label">
-            <input type="checkbox" class="admin-edit-instock" ${isChecked}>
-            ${tInStock}
-          </label>
-        </div>
-        <button class="btn btn-primary btn-admin-save" onclick="saveAdminProduct('${p.id}')">${tSave}</button>
-      </div>
-    `;
-  }).join("");
-}
-
-// Global helper function to save product edit
-window.saveAdminProduct = function(id) {
-  const row = document.querySelector(`.admin-product-row[data-id="${id}"]`);
-  if (!row) return;
-
-  const nameInput = row.querySelector(".admin-edit-name").value.trim();
-  const priceInput = parseInt(row.querySelector(".admin-edit-price").value.trim());
-  const inStockInput = row.querySelector(".admin-edit-instock").checked;
-
-  if (isNaN(priceInput) || priceInput < 0) {
-    alert("Пожалуйста, введите корректную цену!");
-    return;
-  }
-
-  // Update in local memory array
-  products = products.map(p => {
-    if (p.id === id) {
-      return { ...p, name: nameInput, price: priceInput, inStock: inStockInput };
-    }
-    return p;
-  });
-
-  // Save to local storage
-  try {
-    const customList = products.map(p => ({
-      id: p.id,
-      name: p.name,
-      price: p.price,
-      inStock: p.inStock
-    }));
-    localStorage.setItem("nazcake_custom_products", JSON.stringify(customList));
-  } catch(e) {
-    console.warn("Failed to save custom products to localStorage:", e);
-  }
-
-  // Visual feedback on save
-  const saveBtn = row.querySelector(".btn-admin-save");
-  const origText = saveBtn.textContent;
-  saveBtn.textContent = "✓";
-  saveBtn.style.background = "#27ae60";
-  setTimeout(() => {
-    saveBtn.textContent = origText;
-    saveBtn.style.background = "";
-  }, 1000);
-
-  // Re-render main site catalog and bestsellers
-  renderBestsellers();
-  const activeTab = document.querySelector(".tab-btn.active");
-  const category = activeTab ? activeTab.getAttribute("data-category") : "all";
-  renderCatalog(category);
-};
 
 // Render orders in history tab
 function renderAdminOrders() {

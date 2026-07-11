@@ -749,6 +749,26 @@
 
       <!-- Catalog Management Tab -->
       <div class="dash-tab-content active" id="tab-content-catalog">
+        <div class="admin-catalog-filters">
+          <div class="admin-filter-group">
+            <label for="admin-filter-category" data-i18n="admin_filter_category_lbl">Категория:</label>
+            <select id="admin-filter-category" class="admin-select-filter">
+              <option value="all" data-i18n="catalog_cat_all">Все товары</option>
+              <option value="bakery" data-i18n="catalog_cat_bakery">Хлебобулочные изделия</option>
+              <option value="pastries" data-i18n="catalog_cat_pastries">Выпечка</option>
+              <option value="pies" data-i18n="catalog_cat_pies">Пироги</option>
+              <option value="desserts" data-i18n="catalog_cat_desserts">Пирожные</option>
+              <option value="berry_desserts" data-i18n="catalog_cat_berry_desserts">Пирожные с ягодами</option>
+              <option value="cakes" data-i18n="catalog_cat_cakes">Торты</option>
+              <option value="on_order" data-i18n="catalog_cat_on_order">На заказ</option>
+              <option value="semi-finished" data-i18n="catalog_cat_semi">Полуфабрикаты</option>
+            </select>
+          </div>
+          <div class="admin-filter-group">
+            <label for="admin-filter-search" data-i18n="admin_filter_search_lbl">Поиск:</label>
+            <input type="text" id="admin-filter-search" class="admin-search-input" placeholder="Поиск по названию..." data-i18n-placeholder="admin_filter_search_ph">
+          </div>
+        </div>
         <div class="admin-catalog-list" id="admin-catalog-list">
           <!-- Product cards populated dynamically -->
         </div>
