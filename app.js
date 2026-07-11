@@ -1885,7 +1885,7 @@ function updateCartUi() {
   const badgeEl = document.querySelector(".cart-count-badge");
   const currentBadgeCount = badgeEl ? (parseInt(badgeEl.textContent) || 0) : 0;
   if (totalItems > currentBadgeCount) {
-    const cartBtns = document.querySelectorAll(".cart-btn, #sticky-bottom-bar");
+    const cartBtns = document.querySelectorAll(".cart-btn");
     cartBtns.forEach(btn => {
       btn.classList.remove("jiggle");
       void btn.offsetWidth; // Trigger reflow
