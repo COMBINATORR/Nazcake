@@ -1545,10 +1545,10 @@ function renderCatalog(category) {
 
 // Generate HTML for Product Card
 function createProductCardHtml(p) {
-  const tName = window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name;
-  const tCategoryLabel = window.i18n ? window.i18n.t(`catalog_cat_${p.category}`) : p.categoryLabel;
-  const tBadge = p.badge ? (window.i18n ? window.i18n.t(getBadgeTranslationKey(p.badge)) : p.badge) : "";
-  const tUnit = window.i18n ? window.i18n.t(getUnitTranslationKey(p.unit)) : p.unit;
+  const tName = escapeHTML(window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name);
+  const tCategoryLabel = escapeHTML(window.i18n ? window.i18n.t(`catalog_cat_${p.category}`) : p.categoryLabel);
+  const tBadge = escapeHTML(p.badge ? (window.i18n ? window.i18n.t(getBadgeTranslationKey(p.badge)) : p.badge) : "");
+  const tUnit = escapeHTML(window.i18n ? window.i18n.t(getUnitTranslationKey(p.unit)) : p.unit);
   
   const isOutOfStock = p.inStock === false || (p.stock !== undefined && p.stock <= 0);
   const cardClass = isOutOfStock ? "product-card out-of-stock" : "product-card";
@@ -2126,7 +2126,7 @@ function renderAdminCatalog() {
 
   listContainer.innerHTML = filtered.map(p => {
     const isChecked = p.inStock !== false ? "checked" : "";
-    const pName = window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name;
+    const pName = escapeHTML(window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name);
     
     return `
       <div class="admin-product-row" data-id="${p.id}">
