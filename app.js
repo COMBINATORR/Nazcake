@@ -474,7 +474,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 260,
     unit: "шт.",
-    image: "images/dessert_ekler_choco.webp",
+    image: "images/dessert_ekler.webp",
     desc: "Французское заварное пирожное, наполненное нежным сливочно-заварным кремом.",
     ingredients: "Заварное тесто, крем Муслин, шоколадная глазурь.",
     badge: "хит"
@@ -2702,7 +2702,7 @@ function escapeHTML(str) {
             .replace(/'/g, "&#039;");
 }
 
-
+// Handle Order Checkout Submission & Send to Telegram
 function formatCheckoutMessage(name, phone, method, address, cart, subtotal, t) {
   let message = `*🍰 ${window.i18n ? t("tg_order_title") : "Новый заказ от Nazcake!"}*\n\n`;
   message += `👤 *${window.i18n ? t("tg_client") : "Клиент"}:* ${name}\n`;
@@ -2773,11 +2773,7 @@ function buildOrderObject(name, phone, method, address, cart, subtotal, t) {
 
 function saveOrderToHistory(newOrder) {
   try {
-    let history = [];
-    const savedHistory = localStorage.getItem("nazcake_orders_history");
-    if (savedHistory) {
-      history = JSON.parse(savedHistory);
-    }
+    let history = getOrdersHistory();
     history.unshift(newOrder);
     localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
   } catch (e) {
@@ -3252,20 +3248,23 @@ function setupAdminPanel() {
 
 
 
+// Helper to get orders history
+function getOrdersHistory() {
+  try {
+    const savedHistory = localStorage.getItem("nazcake_orders_history");
+    return savedHistory ? JSON.parse(savedHistory) : [];
+  } catch (e) {
+    console.warn("Failed to parse orders history:", e);
+    return [];
+  }
+}
+
 // Render orders in history tab
 function renderAdminOrders() {
   const listContainer = document.getElementById("admin-orders-list");
   if (!listContainer) return;
 
-  let history = [];
-  try {
-    const savedHistory = localStorage.getItem("nazcake_orders_history");
-    if (savedHistory) {
-      history = JSON.parse(savedHistory);
-    }
-  } catch (e) {
-    console.warn(e);
-  }
+  let history = getOrdersHistory();
 
   if (history.length === 0) {
     const tEmpty = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Тапсырыстар әлі жоқ" : "Заказов пока нет";
@@ -3339,11 +3338,7 @@ function renderAdminOrders() {
 // Global status changer
 window.changeOrderStatus = function(orderId, newStatus) {
   try {
-    let history = [];
-    const savedHistory = localStorage.getItem("nazcake_orders_history");
-    if (savedHistory) {
-      history = JSON.parse(savedHistory);
-    }
+    let history = getOrdersHistory();
     history = history.map(order => {
       if (order.id === orderId) {
         return { ...order, status: newStatus };
@@ -3445,11 +3440,7 @@ function saveKaspiOrder(name, phone, productName, qty, price) {
   };
 
   try {
-    let history = [];
-    const savedHistory = localStorage.getItem("nazcake_orders_history");
-    if (savedHistory) {
-      history = JSON.parse(savedHistory);
-    }
+    let history = getOrdersHistory();
     history.unshift(newOrder);
     localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
 
@@ -3774,9 +3765,6 @@ function setupBestsellersCarousel() {
 
 if (typeof module !== 'undefined') {
   module.exports = {
-  formatCheckoutMessage,
-  buildOrderObject,
-  saveOrderToHistory,
     addToCart: typeof addToCart !== 'undefined' ? addToCart : null,
     products: typeof products !== 'undefined' ? products : null,
     cart: typeof cart !== 'undefined' ? cart : null,
