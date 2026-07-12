@@ -3231,7 +3231,7 @@ function setupAdminPanel() {
         ? "Барлық тапсырыстар тарихын өшіруді растайсыз ба?"
         : "Вы уверены, что хотите очистить всю историю заказов?";
       if (confirm(confirmText)) {
-        localStorage.removeItem("nazcake_orders_history");
+        clearOrdersHistory();
         renderAdminOrders();
       }
     });
@@ -3241,15 +3241,33 @@ function setupAdminPanel() {
 
 
 // Helper to get orders history
+// --- Orders History Helpers ---
 function getOrdersHistory() {
   try {
-    const savedHistory = localStorage.getItem("nazcake_orders_history");
-    return savedHistory ? JSON.parse(savedHistory) : [];
+    const saved = localStorage.getItem("nazcake_orders_history");
+    return saved ? JSON.parse(saved) : [];
   } catch (e) {
-    console.warn("Failed to parse orders history:", e);
+    console.warn("Failed to get orders history:", e);
     return [];
   }
 }
+
+function saveOrdersHistory(history) {
+  try {
+    localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
+  } catch (e) {
+    console.warn("Failed to save orders history:", e);
+  }
+}
+
+function clearOrdersHistory() {
+  try {
+    localStorage.removeItem("nazcake_orders_history");
+  } catch (e) {
+    console.warn("Failed to clear orders history:", e);
+  }
+}
+// ------------------------------
 
 // Render orders in history tab
 function renderAdminOrders() {
