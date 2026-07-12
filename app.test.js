@@ -27,6 +27,7 @@ describe('Nazcake App Unit Tests', () => {
             window.updateLocationUi = updateLocationUi;
             window.getDetectedCity = () => detectedCity;
             window.setDetectedCity = (c) => { detectedCity = c; };
+            window.calculateDeliveryCost = calculateDeliveryCost;
         `;
 
         eval(appJsCode);
@@ -189,4 +190,22 @@ describe('Nazcake App Unit Tests', () => {
         });
     });
 
+
+    describe('calculateDeliveryCost', () => {
+        it('should return minimum cost of 500', () => {
+            expect(window.calculateDeliveryCost(0)).toBe(500);
+        });
+
+        it('should round up to the nearest 50', () => {
+            // 500 + Math.round(2 * 150) = 800
+            expect(window.calculateDeliveryCost(2)).toBe(800);
+            // 500 + Math.round(2.1 * 150) = 500 + 315 = 815 -> ceil(815/50)*50 = 850
+            expect(window.calculateDeliveryCost(2.1)).toBe(850);
+        });
+
+        it('should cap the maximum cost at 3500', () => {
+            expect(window.calculateDeliveryCost(20)).toBe(3500);
+            expect(window.calculateDeliveryCost(50)).toBe(3500);
+        });
+    });
 });
