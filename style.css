@@ -70,12 +70,11 @@ img {
 
 .container {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1920px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 60px;
 }
 
-/* Typography & Titles */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-title);
   font-weight: 900;
@@ -197,7 +196,7 @@ h1, h2, h3, h4, h5, h6 {
   height: 100%;
   max-width: 1920px;
   margin: 0 auto;
-  padding: 0 40px;
+  padding: 0 60px;
 }
 
 .logo {
@@ -415,9 +414,9 @@ h1, h2, h3, h4, h5, h6 {
   flex-direction: column;
   gap: 45px;
   align-items: center;
-  max-width: 1200px;
+  max-width: 1920px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 60px;
 }
 
 /* Category Circle Navigation */
@@ -491,7 +490,7 @@ h1, h2, h3, h4, h5, h6 {
   grid-template-columns: 1fr 1fr;
   gap: 30px;
   width: 100%;
-  max-height: 520px;
+  max-height: 750px;
   overflow: hidden;
   border-radius: 20px;
 }
@@ -508,7 +507,7 @@ h1, h2, h3, h4, h5, h6 {
   height: 100%;
   object-fit: cover;
   min-height: 400px;
-  max-height: 520px;
+  max-height: 750px;
   display: block;
   transition: transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
@@ -690,9 +689,9 @@ body.dark-theme .ticker-content span {
   grid-template-columns: 0.9fr 1.1fr;
   gap: 60px;
   align-items: center;
-  max-width: 1200px;
+  max-width: 1920px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 60px;
 }
 
 .about-img {
@@ -1087,9 +1086,9 @@ body.dark-theme .bestsellers-arrow {
   grid-template-columns: 1fr 1fr;
   gap: 60px;
   align-items: center;
-  max-width: 1100px;
+  max-width: 1920px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 60px;
 }
 
 .customizer-desc {
@@ -1917,9 +1916,9 @@ body.dark-theme .bestsellers-arrow {
   display: grid;
   grid-template-columns: 1.2fr 0.8fr 1fr 1fr;
   gap: 40px;
-  max-width: 1200px;
+  max-width: 1920px;
   margin: 0 auto;
-  padding: 0 20px 50px 20px;
+  padding: 0 60px 50px 60px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -2105,6 +2104,16 @@ body.dark-theme .bestsellers-arrow {
 }
 
 @media (max-width: 992px) {
+  .container,
+  .hero-container,
+  .about-container,
+  .customizer-container,
+  .footer-container,
+  .header-container {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+
   .hero-container {
     flex-direction: column;
     text-align: center;
