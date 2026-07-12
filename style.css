@@ -2160,16 +2160,17 @@ body.dark-theme .bestsellers-arrow {
   .quantity-stepper {
     width: 100%;
     justify-content: space-between;
+    align-items: center;
   }
 
   .stepper-btn {
-    width: 30px;
-    height: 30px;
+    width: 44px;
+    height: 44px;
   }
 
   .quantity-val {
-    width: 25px;
-    font-size: 0.85rem;
+    width: 30px;
+    font-size: 0.95rem;
   }
 
   .product-card .btn {
@@ -2464,6 +2465,19 @@ body.dark-theme .bestsellers-arrow {
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   flex-shrink: 0;
   padding: 0;
+  position: relative; /* Keep relative for pseudo-element positioning */
+}
+
+/* Touch area expansion for mobile / touch devices */
+@media (pointer: coarse), (max-width: 768px) {
+  .btn-card-add::after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+  }
 }
 
 .btn-card-add:hover {
@@ -3385,7 +3399,7 @@ body.preloader-active {
     scroll-snap-align: start;
     border-radius: 20px;
     font-size: 0.85rem;
-    padding: 8px 16px;
+    padding: 12px 18px; /* Increased vertical padding to reach 44px+ touch-friendly target */
   }
 
 
