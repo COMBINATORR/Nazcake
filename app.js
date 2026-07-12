@@ -3420,6 +3420,7 @@ function setupKaspiQrCheckout() {
   const closeKaspi = () => {
     triggerHapticFeedback();
     kaspiModal.style.display = "none";
+    kaspiModal.classList.remove("open");
     document.body.classList.remove("modal-open");
   };
 
@@ -3436,10 +3437,14 @@ function setupKaspiQrCheckout() {
     const previewModal = document.getElementById("preview-modal");
     if (previewModal) {
       previewModal.style.display = "none";
+      previewModal.classList.remove("open");
     }
 
     // Open Kaspi QR Modal
     kaspiModal.style.display = "flex";
+    setTimeout(() => {
+      kaspiModal.classList.add("open");
+    }, 10);
     document.body.classList.add("modal-open");
 
     // Reset steps
