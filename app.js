@@ -1376,17 +1376,19 @@ try {
           price: custom.price !== undefined ? custom.price : p.price,
           inStock: custom.inStock !== false,
           stock: custom.stock !== undefined ? custom.stock : p.stock,
-          image: custom.image !== undefined ? custom.image : p.image
+          image: custom.image !== undefined ? custom.image : p.image,
+          sizeOptions: custom.sizeOptions !== undefined ? custom.sizeOptions : p.sizeOptions,
+          isCustomName: custom.isCustomName === true
         };
       }
-      return { ...p, inStock: p.inStock !== false, stock: p.stock, image: p.image };
+      return { ...p, inStock: p.inStock !== false };
     });
   } else {
-    products = products.map(p => ({ ...p, inStock: true }));
+    products = products.map(p => ({ ...p, inStock: p.inStock !== false }));
   }
 } catch (e) {
   console.warn("Failed to load custom products:", e);
-  products = products.map(p => ({ ...p, inStock: true }));
+  products = products.map(p => ({ ...p, inStock: p.inStock !== false }));
 }
 
 // Shopping Cart State
@@ -1585,9 +1587,8 @@ function renderCatalog(category) {
   }, 250);
 }
 
-// Generate HTML for Product Card
 function createProductCardHtml(p) {
-  const tName = escapeHTML(window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name);
+  const tName = escapeHTML(p.isCustomName ? p.name : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name));
   const tCategoryLabel = escapeHTML(window.i18n ? window.i18n.t(`catalog_cat_${p.category}`) : p.categoryLabel);
   const tBadge = escapeHTML(p.badge ? (window.i18n ? window.i18n.t(getBadgeTranslationKey(p.badge)) : p.badge) : "");
   const tUnit = escapeHTML(window.i18n ? window.i18n.t(getUnitTranslationKey(p.unit)) : p.unit);
@@ -1728,7 +1729,7 @@ function openProductPreview(id) {
   const p = products.find(prod => prod.id === id);
   if (!p) return;
 
-  const tName = window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name;
+  const tName = p.isCustomName ? p.name : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name);
   const tDesc = getProductDesc(p);
   const tIngredients = window.i18n ? window.i18n.t(`p_${p.id}_ingredients`) : p.ingredients;
   const tUnit = window.i18n ? window.i18n.t(getUnitTranslationKey(p.unit)) : p.unit;
@@ -1971,9 +1972,9 @@ function updateCartUi() {
 
   cartItemsContainer.innerHTML = cart.map(item => {
     const p = item.product;
-    let tName = p.id.startsWith("bento_custom_") 
+    let tName = p.isCustomName ? p.name : (p.id.startsWith("bento_custom_") 
       ? (window.i18n ? window.i18n.t("bento_custom_name") : p.name)
-      : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name);
+      : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name));
     
     if (item.selectedSize) {
       tName += ` (${item.selectedSize})`;
@@ -2325,7 +2326,7 @@ function renderAdminCatalog() {
   }
   if (searchQuery) {
     filtered = filtered.filter(p => {
-      const pName = (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name).toLowerCase();
+      const pName = (p.isCustomName ? p.name : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name)).toLowerCase();
       return pName.includes(searchQuery);
     });
   }
@@ -2338,7 +2339,7 @@ function renderAdminCatalog() {
 
   listContainer.innerHTML = filtered.map(p => {
     const isChecked = p.inStock !== false ? "checked" : "";
-    const pName = escapeHTML(window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name);
+    const pName = escapeHTML(p.isCustomName ? p.name : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name));
     
     return `
       <div class="admin-product-row" data-id="${p.id}">
@@ -2470,7 +2471,8 @@ window.saveAdminProduct = function(id) {
         price: priceInput, 
         inStock: inStockInput,
         stock: stockInput,
-        image: newImageVal !== undefined ? newImageVal : p.image
+        image: newImageVal !== undefined ? newImageVal : p.image,
+        isCustomName: true
       };
     }
     return p;
@@ -2484,7 +2486,8 @@ window.saveAdminProduct = function(id) {
       price: p.price,
       inStock: p.inStock,
       stock: p.stock,
-      image: p.image
+      image: p.image,
+      isCustomName: p.isCustomName || false
     }));
     localStorage.setItem("nazcake_custom_products", JSON.stringify(customList));
   } catch(e) {
@@ -2501,11 +2504,22 @@ window.saveAdminProduct = function(id) {
     saveBtn.style.background = "";
   }, 1000);
 
-  // Re-render main site catalog and bestsellers
+  // Re-render main site catalog, bestsellers, and cart
   renderBestsellers();
   const activeTab = document.querySelector(".tab-btn.active");
   const category = activeTab ? activeTab.getAttribute("data-category") : "all";
   renderCatalog(category);
+
+  // Sync cart items with updated product data
+  cart.forEach(item => {
+    if (item.product && item.product.id === id) {
+      const updatedProduct = products.find(p => p.id === id);
+      if (updatedProduct) {
+        item.product = updatedProduct;
+      }
+    }
+  });
+  updateCartUi();
 }
 
 function checkAtyrauBounds(lat, lon, bounds) {
@@ -2692,9 +2706,9 @@ async function handleCheckoutSubmit(e) {
 
   cart.forEach((item, idx) => {
     const p = item.product;
-    let displayName = p.id.startsWith("bento_custom_") 
+    let displayName = p.isCustomName ? p.name : (p.id.startsWith("bento_custom_") 
       ? (window.i18n ? t("bento_custom_name") : p.name) 
-      : (window.i18n ? t(`p_${p.id}_name`) : p.name);
+      : (window.i18n ? t(`p_${p.id}_name`) : p.name));
     
     if (item.selectedSize) {
       displayName += ` (${item.selectedSize})`;
@@ -2727,9 +2741,9 @@ async function handleCheckoutSubmit(e) {
     address: method === "delivery" ? address : "",
     items: cart.map(item => {
       const p = item.product;
-      let displayName = p.id.startsWith("bento_custom_") 
+      let displayName = p.isCustomName ? p.name : (p.id.startsWith("bento_custom_") 
         ? (window.i18n ? t("bento_custom_name") : p.name) 
-        : (window.i18n ? t(`p_${p.id}_name`) : p.name);
+        : (window.i18n ? t(`p_${p.id}_name`) : p.name));
       if (item.selectedSize) {
         displayName += ` (${item.selectedSize})`;
       }
@@ -3456,7 +3470,7 @@ function setupKaspiQrCheckout() {
     // Populate data
     const p = products.find(prod => prod.id === activePreviewProductId);
     if (p) {
-      let displayName = window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name;
+      let displayName = p.isCustomName ? p.name : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name);
       const selectedSizeBtn = modalSizeContainer ? modalSizeContainer.querySelector(".size-btn.active") : null;
       const selectedSize = selectedSizeBtn ? selectedSizeBtn.getAttribute("data-size") : null;
       if (selectedSize) {
@@ -3559,7 +3573,7 @@ function setupKaspiQrCheckout() {
     const p = products.find(prod => prod.id === activePreviewProductId);
     
     if (p) {
-      let displayName = window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name;
+      let displayName = p.isCustomName ? p.name : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name);
       const selectedSizeBtn = modalSizeContainer ? modalSizeContainer.querySelector(".size-btn.active") : null;
       const selectedSize = selectedSizeBtn ? selectedSizeBtn.getAttribute("data-size") : null;
       if (selectedSize) {
