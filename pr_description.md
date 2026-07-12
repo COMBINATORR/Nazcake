@@ -1,7 +1,7 @@
-🛡️ Sentinel: [HIGH] Fix XSS vulnerability in Product Cards
+Title: 🧹 Refactor duplicated local storage logic for order history
 
-🚨 Severity: HIGH
-💡 Vulnerability: Product names and category labels from localStorage/admin panel were interpolated directly into `innerHTML` strings in `createProductCardHtml` and `renderAdminCatalog` in `app.js` without sanitization. An attacker (or a user modifying local storage or gaining admin access) could inject malicious scripts.
-🎯 Impact: This allows persistent (Self-)XSS as the malicious payload saved in localStorage would be executed when the product catalog is rendered in the user's browser.
-🔧 Fix: Wrapped all user-controlled/dynamically loaded string variables (`pName`, `tName`, `tCategoryLabel`, `tBadge`, `tUnit`) with the existing `escapeHTML()` function before injecting them into `innerHTML`.
-✅ Verification: Ran `npm test` successfully. Verified `escapeHTML` prevents JS execution on malicious product names. Added a journal entry to `.jules/sentinel.md`.
+Description:
+🎯 **What:** Extracted duplicated logic for interacting with `localStorage.getItem("nazcake_orders_history")` and `setItem` into new helper functions `getOrderHistory()` and `saveOrderHistory(history)`.
+💡 **Why:** This reduces code duplication across multiple methods (`orderSucceeded`, `setupKaspiQrCheckout`, `changeOrderStatus`, and `renderAdminOrders`). Centralizing the serialization and deserialization of the history data makes it easier to maintain and resilient to future changes.
+✅ **Verification:** Ran test cases and verified modifications in `app.js` via manual bash verification. Tests pass.
+✨ **Result:** A more maintainable, cleaner, and readable `app.js` without duplicated order history management code.
