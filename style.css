@@ -2,8 +2,8 @@
 
 :root {
   /* Fonts */
-  --font-title: 'Playfair Display', serif;
-  --font-accent: 'Space Mono', monospace;
+  --font-title: 'Inter', sans-serif;
+  --font-accent: 'Inter', sans-serif;
   --font-body: 'Inter', sans-serif;
 
   /* Colors (Light Theme, high contrast, warm premium palette) */
@@ -78,9 +78,11 @@ img {
 /* Typography & Titles */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-title);
-  font-weight: 700;
+  font-weight: 900;
   color: var(--accent-chocolate);
   line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
 }
 
 .accent-text {
@@ -102,8 +104,8 @@ h1, h2, h3, h4, h5, h6 {
 
 .section-title {
   font-size: 2.5rem;
-  font-weight: 800;
-  letter-spacing: -0.5px;
+  font-weight: 900;
+  letter-spacing: -0.03em;
   margin-bottom: 15px;
   text-transform: uppercase;
 }
@@ -206,9 +208,9 @@ h1, h2, h3, h4, h5, h6 {
 
 .logo-main {
   font-family: var(--font-title);
-  font-weight: 800;
+  font-weight: 900;
   font-size: 1.6rem;
-  letter-spacing: -1px;
+  letter-spacing: -0.03em;
   color: var(--accent-chocolate);
   text-transform: uppercase;
 }
@@ -653,10 +655,12 @@ h1, h2, h3, h4, h5, h6 {
 .product-name {
   font-family: var(--font-title);
   font-size: 1.15rem;
-  font-weight: 700;
+  font-weight: 900;
   color: var(--accent-chocolate);
   margin-bottom: 8px;
   cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
 }
 
 .product-name:hover {
@@ -672,9 +676,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .product-price {
-  font-family: var(--font-title);
+  font-family: var(--font-body);
   font-size: 1.25rem;
-  font-weight: 700;
+  font-weight: 500;
   color: var(--accent-chocolate);
 }
 
@@ -874,15 +878,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .price-label {
-  font-family: var(--font-title);
-  font-weight: 700;
+  font-family: var(--font-body);
+  font-weight: 500;
   font-size: 1.1rem;
 }
 
 .price-val {
-  font-family: var(--font-title);
+  font-family: var(--font-body);
   font-size: 1.6rem;
-  font-weight: 800;
+  font-weight: 500;
   color: var(--accent-gold);
 }
 
@@ -1245,9 +1249,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .modal-product-price {
-  font-family: var(--font-title);
+  font-family: var(--font-body);
   font-size: 1.5rem;
-  font-weight: 800;
+  font-weight: 500;
   color: var(--accent-gold);
   display: block;
   margin-bottom: 25px;
@@ -1375,9 +1379,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .cart-sidebar-title {
   font-family: var(--font-title);
-  font-weight: 700;
+  font-weight: 900;
   font-size: 1.25rem;
   text-transform: uppercase;
+  letter-spacing: -0.03em;
 }
 
 .close-cart-btn {
@@ -1470,7 +1475,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .cart-item-price {
-  font-weight: 700;
+  font-weight: 500;
   color: var(--text-secondary);
   font-size: 0.9rem;
 }
@@ -1515,8 +1520,8 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-family: var(--font-title);
-  font-weight: 700;
+  font-family: var(--font-body);
+  font-weight: 500;
   font-size: 1.2rem;
   margin-bottom: 20px;
 }
@@ -1524,7 +1529,7 @@ h1, h2, h3, h4, h5, h6 {
 .cart-total-val {
   color: var(--accent-gold);
   font-size: 1.4rem;
-  font-weight: 800;
+  font-weight: 500;
 }
 
 .cart-overlay {
