@@ -2464,13 +2464,24 @@ window.handleAdminImageUpload = function(event, id) {
       const dataUrl = canvas.toDataURL("image/jpeg", 0.7);
 
       // Preview locally in the admin panel row
+      window.updateAdminImagePreview(id, dataUrl);
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+};
+
+
+window.updateAdminImagePreview = function(id, dataUrl) {
       const row = document.querySelector(`.admin-product-row[data-id="${id}"]`);
-      if (row) {
+  if (!row) return;
+
         const imgEl = row.querySelector(".admin-prod-img");
         if (imgEl) {
           imgEl.src = dataUrl;
         } else {
           const imgContainer = row.querySelector(".admin-prod-img-container");
+    if (!imgContainer) return;
           const emptyDiv = imgContainer.querySelector(".empty-admin-img");
           if (emptyDiv) {
             const newImg = document.createElement("img");
@@ -2481,11 +2492,6 @@ window.handleAdminImageUpload = function(event, id) {
           }
         }
         row.setAttribute("data-new-image", dataUrl);
-      }
-    };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
 };
 
 // Global helper function to save product edit
@@ -2585,6 +2591,21 @@ function calculateDeliveryCost(distance) {
 
 function calculateDeliveryTime(distance) {
   return Math.round(distance * 4) + 20;
+}
+
+function getDeliveryErrorMessage(msg) {
+  if (window.i18n) {
+    if (msg === "delivery_err_geocoder" || msg === "delivery_err_notfound" || msg === "delivery_err_outofbounds") {
+      return window.i18n.t(msg);
+    } else {
+      return window.i18n.t("delivery_err_unknown");
+    }
+  } else {
+    if (msg === "delivery_err_geocoder") return "Не удалось подключиться к серверу геокодирования.";
+    if (msg === "delivery_err_notfound") return "Адрес не найден. Пожалуйста, проверьте правильность написания.";
+    if (msg === "delivery_err_outofbounds") return "Яндекс.Доставка (Экспресс) доступна только в пределах города Атырау.";
+    return "Ошибка при расчете стоимости доставки.";
+  }
 }
 
 function showDeliveryError(msg, errorBox, resultsBox) {
@@ -3233,7 +3254,7 @@ function setupAdminDashboardNav(dashModal) {
         ? "Барлық тапсырыстар тарихын өшіруді растайсыз ба?"
         : "Вы уверены, что хотите очистить всю историю заказов?";
       if (confirm(confirmText)) {
-        localStorage.removeItem("nazcake_orders_history");
+        clearOrdersHistory();
         renderAdminOrders();
       }
     });
@@ -3252,6 +3273,35 @@ function setupAdminPanel() {
   setupAdminLogin(loginModal, dashModal);
   setupAdminDashboardNav(dashModal);
 }
+
+// Helper to get orders history
+// --- Orders History Helpers ---
+function getOrdersHistory() {
+  try {
+    const saved = localStorage.getItem("nazcake_orders_history");
+    return saved ? JSON.parse(saved) : [];
+  } catch (e) {
+    console.warn("Failed to get orders history:", e);
+    return [];
+  }
+}
+
+function saveOrdersHistory(history) {
+  try {
+    localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
+  } catch (e) {
+    console.warn("Failed to save orders history:", e);
+  }
+}
+
+function clearOrdersHistory() {
+  try {
+    localStorage.removeItem("nazcake_orders_history");
+  } catch (e) {
+    console.warn("Failed to clear orders history:", e);
+  }
+}
+// ------------------------------
 
 // Render orders in history tab
 function renderAdminOrders() {
@@ -3757,6 +3807,17 @@ function setupBestsellersCarousel() {
 
 // ----------------------------
 
+function handleEmptyCartShopClick() {
+  triggerHapticFeedback();
+  const sidebar = document.getElementById("cart-sidebar");
+  const overlay = document.getElementById("cart-overlay");
+  closeModal(sidebar, overlay);
+  const catalogEl = document.getElementById("catalog");
+  if (catalogEl) {
+    catalogEl.scrollIntoView({ behavior: "smooth" });
+  }
+}
+
 if (typeof module !== 'undefined') {
   module.exports = {
     addToCart: typeof addToCart !== 'undefined' ? addToCart : null,
@@ -3766,6 +3827,7 @@ if (typeof module !== 'undefined') {
     setCart: (c) => { if (typeof cart !== 'undefined') cart = c; },
     removeFromCart: typeof removeFromCart !== 'undefined' ? removeFromCart : null,
     updateCartUi: typeof updateCartUi !== 'undefined' ? updateCartUi : null,
+    updateAdminImagePreview: typeof updateAdminImagePreview !== 'undefined' ? updateAdminImagePreview : null,
     adjustColorBrightness: typeof adjustColorBrightness !== 'undefined' ? adjustColorBrightness : null
   };
 }
