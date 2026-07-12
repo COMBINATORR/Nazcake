@@ -225,30 +225,67 @@
   </div>
   <div class="drawer-overlay" id="drawer-overlay"></div>
 
-  <!-- Hero Section -->
+  <!-- Hero Section (Milk Bar Redesign Style) -->
   <section class="hero-section">
     <div class="hero-container">
-      <div id="location-alert-banner" class="location-alert-banner hidden">
-        <svg class="warning-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
-          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-          <line x1="12" y1="9" x2="12" y2="13"></line>
-          <line x1="12" y1="17" x2="12.01" y2="17"></line>
-        </svg>
-        <span class="warning-text" id="location-alert-text" data-i18n="location_only_atyrau">Обратите внимание: мы осуществляем доставку только по г. Атырау!</span>
+      
+      <!-- Category Circle Navigation -->
+      <div class="hero-category-nav">
+        <a href="#catalog" class="category-nav-item" data-category="cakes">
+          <div class="category-nav-circle">
+            <img src="images/dessert_chocolate_design.webp" alt="Торты" width="120" height="120" class="lazy-image" loading="lazy">
+          </div>
+          <span class="category-nav-label" data-i18n="hero_nav_cakes">Торты на заказ</span>
+        </a>
+        <a href="#catalog" class="category-nav-item" data-category="pastries">
+          <div class="category-nav-circle">
+            <img src="images/pastry_tea_set.webp" alt="Выпечка" width="120" height="120" class="lazy-image" loading="lazy">
+          </div>
+          <span class="category-nav-label" data-i18n="hero_nav_pastries">Свежая выпечка</span>
+        </a>
+        <a href="#customizer" class="category-nav-item">
+          <div class="category-nav-circle">
+            <img src="images/dessert_caramel_design.webp" alt="Конструктор" width="120" height="120" class="lazy-image" loading="lazy">
+          </div>
+          <span class="category-nav-label" data-i18n="hero_nav_customizer">Конструктор Бенто</span>
+        </a>
+        <a href="#bestsellers" class="category-nav-item">
+          <div class="category-nav-circle">
+            <img src="images/pie_snickers.webp" alt="Бестселлеры" width="120" height="120" class="lazy-image" loading="lazy">
+          </div>
+          <span class="category-nav-label" data-i18n="hero_nav_bestsellers">Бестселлеры</span>
+        </a>
       </div>
-      <div class="hero-content">
-        <span class="hero-subtitle" data-i18n="hero_subtitle">Премиальные кондитерские шедевры в Атырау</span>
+
+      <!-- Two-Column Showcase Banner -->
+      <div class="hero-showcase-grid">
+        <div class="showcase-column">
+          <img src="images/pastry_tea_set.webp" alt="Выпечка Nazcake" class="showcase-img lazy-image" loading="lazy" width="600" height="600">
+        </div>
+        <div class="showcase-column">
+          <img src="images/dessert_chocolate_design.webp" alt="Торты Nazcake" class="showcase-img lazy-image" loading="lazy" width="600" height="600">
+        </div>
+      </div>
+
+      <!-- Introducing Text Block (Centered Below) -->
+      <div class="hero-introducing-block">
+        <div id="location-alert-banner" class="location-alert-banner hidden">
+          <svg class="warning-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+          <span class="warning-text" id="location-alert-text" data-i18n="location_only_atyrau">Обратите внимание: мы осуществляем доставку только по г. Атырау!</span>
+        </div>
+        
+        <span class="hero-subtitle-intro" data-i18n="hero_subtitle">Премиальные кондитерские шедевры в Атырау</span>
         <h1 class="hero-title" data-i18n="hero_title">Искусство <br><span class="accent-text">Премиальных</span> Десертов</h1>
         <p class="hero-desc" data-i18n="hero_desc">Авторские торты на заказ, изысканная выпечка и премиальные домашние полуфабрикаты, созданные по традиционным рецептам исключительно из натуральных ингредиентов.</p>
         <div class="hero-actions">
-          <a href="#catalog" class="btn btn-primary btn-gradient" data-i18n="hero_btn_catalog">Посмотреть каталог</a>
-          <!-- <a href="#customizer" class="btn btn-secondary" data-i18n="hero_btn_customizer">Создать свой бенто-торт</a> -->
+          <a href="#catalog" class="btn btn-premium-shop" data-i18n="hero_btn_catalog">Посмотреть каталог</a>
         </div>
       </div>
-      <div class="hero-image-wrapper">
-        <div class="hero-img-backdrop"></div>
-        <img src="images/dessert_chocolate_design.webp" alt="Роскошный праздничный торт Nazcake" class="hero-img" width="600" height="600">
-      </div>
+
     </div>
   </section>
 

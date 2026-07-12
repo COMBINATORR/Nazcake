@@ -1702,6 +1702,25 @@ function setupEventListeners() {
     });
   });
 
+  // Hero circular category nav listeners
+  document.querySelectorAll(".category-nav-item").forEach(item => {
+    item.addEventListener("click", (e) => {
+      const category = item.getAttribute("data-category");
+      if (category) {
+        e.preventDefault();
+        const targetTab = Array.from(tabButtons).find(btn => btn.getAttribute("data-category") === category);
+        if (targetTab) {
+          triggerHapticFeedback();
+          targetTab.click();
+        }
+        const targetSec = document.getElementById("catalog");
+        if (targetSec) {
+          targetSec.scrollIntoView({ behavior: "smooth" });
+        }
+      }
+    });
+  });
+
   // Mobile Menu Drawer toggles
   setupModal(mobileDrawer, mobileMenuBtn, closeDrawerBtn, drawerOverlay, drawerLinks);
 
