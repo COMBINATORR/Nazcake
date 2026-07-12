@@ -1,7 +1,15 @@
-Title: 🧹 Refactor duplicated local storage logic for order history
+## 🧹 [Code Health] Extract duplicated localStorage order history logic
 
-Description:
-🎯 **What:** Extracted duplicated logic for interacting with `localStorage.getItem("nazcake_orders_history")` and `setItem` into new helper functions `getOrderHistory()` and `saveOrderHistory(history)`.
-💡 **Why:** This reduces code duplication across multiple methods (`orderSucceeded`, `setupKaspiQrCheckout`, `changeOrderStatus`, and `renderAdminOrders`). Centralizing the serialization and deserialization of the history data makes it easier to maintain and resilient to future changes.
-✅ **Verification:** Ran test cases and verified modifications in `app.js` via manual bash verification. Tests pass.
-✨ **Result:** A more maintainable, cleaner, and readable `app.js` without duplicated order history management code.
+**What:**
+Extracted the repeated code pattern for retrieving and parsing `nazcake_orders_history` from `localStorage` into a new shared helper function called `getOrdersHistory()`.
+
+**Why:**
+The application accesses the order history from `localStorage` in four distinct locations (`checkoutSubmit`, `renderAdminOrders`, `changeOrderStatus`, `saveKaspiOrder`). In each place, the exact same `try/catch` and `JSON.parse` logic was written out manually. Extracting this to a single helper function improves code maintainability, reduces lines of code, and ensures any future changes to how history is parsed only need to be made in one place.
+
+**Verification:**
+- Used `git diff` and syntax checks to ensure no typos or syntax errors were introduced.
+- Evaluated scope placement of `getOrdersHistory()` to ensure it's globally available for all call sites.
+- Ran the Jest test suite using `pnpm test` to confirm no regressions.
+
+**Result:**
+The codebase is cleaner and duplication is reduced without altering the existing functionality.
