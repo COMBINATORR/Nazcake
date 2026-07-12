@@ -1921,6 +1921,7 @@ function changeCartItemQty(cartItemId, newQty) {
 }
 
 // Update Cart Display & Badges
+// Update Cart Display & Badges
 function updateCartUi() {
   // Count badge
   const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
@@ -1951,7 +1952,20 @@ function updateCartUi() {
     console.warn("Failed to save cart to localStorage:", e);
   }
 
-  // Update floating glass pill sticky bar
+  updateStickyBarUi(totalItems, subtotal);
+
+  if (cart.length === 0) {
+    renderEmptyCartUi();
+    return;
+  }
+
+  cartItemsContainer.innerHTML = renderCartItemsUi();
+
+  attachCartItemListeners();
+  attachSwipeToDelete();
+}
+
+function updateStickyBarUi(totalItems, subtotal) {
   const stickyBar = document.getElementById("sticky-bottom-bar");
   const stickyBadge = document.getElementById("sticky-bar-badge");
   const stickyTotal = document.getElementById("sticky-bar-total");
@@ -1978,59 +1992,60 @@ function updateCartUi() {
       }
     }
   }
+}
 
-  if (cart.length === 0) {
-    const tEmptyTitle = window.i18n ? window.i18n.t("cart_empty_title") : "В корзине пусто";
-    const tEmptyDesc = window.i18n ? window.i18n.t("cart_empty_desc") : "Похоже, вы еще не выбрали десерты. Давайте это исправим!";
-    const tEmptyBtn = window.i18n ? window.i18n.t("cart_empty_btn") : "Хочу сладкого!";
-    
-    cartItemsContainer.innerHTML = `
-      <div class="empty-cart-container">
-        <div class="empty-cart-plate-svg">
-          <svg viewBox="0 0 100 100" width="80" height="80">
-            <circle cx="50" cy="50" r="38" fill="none" stroke="var(--accent-gold)" stroke-width="2" stroke-dasharray="4 2" opacity="0.6"/>
-            <circle cx="50" cy="50" r="30" fill="none" stroke="var(--accent-chocolate)" stroke-width="1.5" opacity="0.3"/>
-            <circle cx="42" cy="46" r="2" fill="var(--accent-chocolate)" class="crumb crumb-1"/>
-            <circle cx="56" cy="40" r="1.5" fill="var(--accent-gold)" class="crumb crumb-2"/>
-            <circle cx="48" cy="58" r="2.5" fill="var(--accent-chocolate)" class="crumb crumb-3"/>
-            <circle cx="60" cy="52" r="1" fill="var(--accent-gold)" class="crumb crumb-4"/>
-            <path d="M 46,32 A 4,4 0 0,0 42,36 A 3,3 0 0,0 39,39 A 4,4 0 0,0 35,43 A 3,3 0 0,0 32,46" fill="none" stroke="var(--accent-gold)" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
-          </svg>
-        </div>
-        <h4 class="empty-cart-title">${tEmptyTitle}</h4>
-        <p class="empty-cart-desc">${tEmptyDesc}</p>
-        <button class="empty-cart-btn btn" id="empty-cart-shop-btn">${tEmptyBtn}</button>
+function renderEmptyCartUi() {
+  const tEmptyTitle = window.i18n ? window.i18n.t("cart_empty_title") : "В корзине пусто";
+  const tEmptyDesc = window.i18n ? window.i18n.t("cart_empty_desc") : "Похоже, вы еще не выбрали десерты. Давайте это исправим!";
+  const tEmptyBtn = window.i18n ? window.i18n.t("cart_empty_btn") : "Хочу сладкого!";
+
+  cartItemsContainer.innerHTML = `
+    <div class="empty-cart-container">
+      <div class="empty-cart-plate-svg">
+        <svg viewBox="0 0 100 100" width="80" height="80">
+          <circle cx="50" cy="50" r="38" fill="none" stroke="var(--accent-gold)" stroke-width="2" stroke-dasharray="4 2" opacity="0.6"/>
+          <circle cx="50" cy="50" r="30" fill="none" stroke="var(--accent-chocolate)" stroke-width="1.5" opacity="0.3"/>
+          <circle cx="42" cy="46" r="2" fill="var(--accent-chocolate)" class="crumb crumb-1"/>
+          <circle cx="56" cy="40" r="1.5" fill="var(--accent-gold)" class="crumb crumb-2"/>
+          <circle cx="48" cy="58" r="2.5" fill="var(--accent-chocolate)" class="crumb crumb-3"/>
+          <circle cx="60" cy="52" r="1" fill="var(--accent-gold)" class="crumb crumb-4"/>
+          <path d="M 46,32 A 4,4 0 0,0 42,36 A 3,3 0 0,0 39,39 A 4,4 0 0,0 35,43 A 3,3 0 0,0 32,46" fill="none" stroke="var(--accent-gold)" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+        </svg>
       </div>
-    `;
+      <h4 class="empty-cart-title">${escapeHTML(tEmptyTitle)}</h4>
+      <p class="empty-cart-desc">${escapeHTML(tEmptyDesc)}</p>
+      <button class="empty-cart-btn btn" id="empty-cart-shop-btn">${escapeHTML(tEmptyBtn)}</button>
+    </div>
+  `;
 
-    const shopBtn = document.getElementById("empty-cart-shop-btn");
-    if (shopBtn) {
-      shopBtn.addEventListener("click", () => {
-        triggerHapticFeedback();
-        const sidebar = document.getElementById("cart-sidebar");
-        const overlay = document.getElementById("cart-overlay");
-        closeModal(sidebar, overlay);
-        const catalogEl = document.getElementById("catalog");
-        if (catalogEl) {
-          catalogEl.scrollIntoView({ behavior: "smooth" });
-        }
-      });
-    }
-    return;
+  const shopBtn = document.getElementById("empty-cart-shop-btn");
+  if (shopBtn) {
+    shopBtn.addEventListener("click", () => {
+      triggerHapticFeedback();
+      const sidebar = document.getElementById("cart-sidebar");
+      const overlay = document.getElementById("cart-overlay");
+      closeModal(sidebar, overlay);
+      const catalogEl = document.getElementById("catalog");
+      if (catalogEl) {
+        catalogEl.scrollIntoView({ behavior: "smooth" });
+      }
+    });
   }
+}
 
-  cartItemsContainer.innerHTML = cart.map(item => {
+function renderCartItemsUi() {
+  return cart.map(item => {
     const p = item.product;
-    let tName = p.isCustomName ? p.name : (p.id.startsWith("bento_custom_") 
+    let tName = p.isCustomName ? p.name : (p.id.startsWith("bento_custom_")
       ? (window.i18n ? window.i18n.t("bento_custom_name") : p.name)
       : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name));
-    
+
     if (item.selectedSize) {
       tName += ` (${item.selectedSize})`;
     }
     const tRemove = window.i18n ? window.i18n.t("cart_lbl_remove") : "Удалить";
     const itemPrice = item.price !== undefined ? item.price : p.price;
-    
+
     return `
       <div class="cart-item" data-id="PLACEHOLDER_CART_ITEM_ID">
         <div class="cart-item-swipe-bg">
@@ -2039,23 +2054,23 @@ function updateCartUi() {
               <polyline points="3 6 5 6 21 6"></polyline>
               <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
             </svg>
-            ${tRemove}
+            ${escapeHTML(tRemove)}
           </span>
         </div>
         <div class="cart-item-inner">
-          <img src="${p.image}" alt="${tName}" class="cart-item-img" width="64" height="64">
+          <img src="${escapeHTML(p.image)}" alt="${escapeHTML(tName)}" class="cart-item-img" width="64" height="64">
           <div class="cart-item-details">
-            <h5 class="cart-item-name">${tName}</h5>
+            <h5 class="cart-item-name">${escapeHTML(tName)}</h5>
             <span class="cart-item-price">PLACEHOLDER_ITEM_PRICE ₸</span>
             <div class="cart-item-actions">
               <div class="quantity-stepper">
                 <button class="stepper-btn minus-cart-qty" data-id="PLACEHOLDER_CART_ITEM_ID" aria-label="Уменьшить количество">−</button>
-                <span class="quantity-val">${item.qty}</span>
+                <span class="quantity-val">${escapeHTML(String(item.qty))}</span>
                 <button class="stepper-btn plus-cart-qty" data-id="PLACEHOLDER_CART_ITEM_ID" aria-label="Увеличить количество">+</button>
               </div>
             </div>
           </div>
-          <button class="cart-item-remove" data-id="PLACEHOLDER_CART_ITEM_ID" aria-label="${tRemove}">
+          <button class="cart-item-remove" data-id="PLACEHOLDER_CART_ITEM_ID" aria-label="${escapeHTML(tRemove)}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
               <polyline points="3 6 5 6 21 6"></polyline>
               <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -2063,10 +2078,11 @@ function updateCartUi() {
           </button>
         </div>
       </div>
-    `.replace(/PLACEHOLDER_CART_ITEM_ID/g, item.cartItemId || p.id).replace(/PLACEHOLDER_ITEM_PRICE/g, (itemPrice * item.qty).toLocaleString());
+    `.replace(/PLACEHOLDER_CART_ITEM_ID/g, escapeHTML(item.cartItemId || p.id)).replace(/PLACEHOLDER_ITEM_PRICE/g, escapeHTML((itemPrice * item.qty).toLocaleString()));
   }).join("");
+}
 
-  // Add event listeners to newly generated elements inside cart list
+function attachCartItemListeners() {
   cartItemsContainer.querySelectorAll(".minus-cart-qty").forEach(btn => {
     btn.addEventListener("click", () => {
       triggerHapticFeedback();
@@ -2092,8 +2108,9 @@ function updateCartUi() {
       removeFromCart(id);
     });
   });
+}
 
-  // Swipe-to-delete touch gestures for newly generated cart items
+function attachSwipeToDelete() {
   cartItemsContainer.querySelectorAll(".cart-item").forEach(itemEl => {
     const inner = itemEl.querySelector(".cart-item-inner");
     if (!inner) return;
