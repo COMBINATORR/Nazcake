@@ -1491,12 +1491,13 @@ function getUnitTranslationKey(unit) {
 }
 
 function getProductDesc(p) {
-  if (p.id.startsWith("bento_custom_") && p.bentoConfig) {
-    if (!window.i18n) return p.desc;
-    const baseColorName = window.i18n.t(colorNameKeys[p.bentoConfig.baseColor] || "bento_color_pink");
-    const textColorName = window.i18n.t(colorNameKeys[p.bentoConfig.textColor] || "bento_color_chocolate");
-    const sprinklesName = window.i18n.t(sprinkleKeys[p.bentoConfig.sprinkles] || "bento_opt_sprinkles_none");
-    const textVal = p.bentoConfig.text || (window.i18n.getCurrentLanguage() === "ru" ? "нет" : "жоқ");
+  const { id, bentoConfig, desc } = p;
+  if (id.startsWith("bento_custom_") && bentoConfig) {
+    if (!window.i18n) return desc;
+    const baseColorName = window.i18n.t(colorNameKeys[bentoConfig.baseColor] || "bento_color_pink");
+    const textColorName = window.i18n.t(colorNameKeys[bentoConfig.textColor] || "bento_color_chocolate");
+    const sprinklesName = window.i18n.t(sprinkleKeys[bentoConfig.sprinkles] || "bento_opt_sprinkles_none");
+    const textVal = bentoConfig.text || (window.i18n.getCurrentLanguage() === "ru" ? "нет" : "жоқ");
     
     return window.i18n.t("bento_custom_desc")
       .replace("{base}", baseColorName)
@@ -1504,7 +1505,7 @@ function getProductDesc(p) {
       .replace("{sprinkles}", sprinklesName)
       .replace("{text}", textVal);
   }
-  return window.i18n ? window.i18n.t(`p_${p.id}_desc`) : p.desc;
+  return window.i18n ? window.i18n.t(`p_${id}_desc`) : desc;
 }
 
 // Init App
