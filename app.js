@@ -474,7 +474,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 260,
     unit: "шт.",
-    image: "images/dessert_ekler_choco.webp",
+    image: "images/dessert_ekler.webp",
     desc: "Французское заварное пирожное, наполненное нежным сливочно-заварным кремом.",
     ingredients: "Заварное тесто, крем Муслин, шоколадная глазурь.",
     badge: "хит"
@@ -2473,25 +2473,25 @@ window.handleAdminImageUpload = function(event, id) {
 
 
 window.updateAdminImagePreview = function(id, dataUrl) {
-  const row = document.querySelector(`.admin-product-row[data-id="${id}"]`);
+      const row = document.querySelector(`.admin-product-row[data-id="${id}"]`);
   if (!row) return;
 
-  const imgEl = row.querySelector(".admin-prod-img");
-  if (imgEl) {
-    imgEl.src = dataUrl;
-  } else {
-    const imgContainer = row.querySelector(".admin-prod-img-container");
+        const imgEl = row.querySelector(".admin-prod-img");
+        if (imgEl) {
+          imgEl.src = dataUrl;
+        } else {
+          const imgContainer = row.querySelector(".admin-prod-img-container");
     if (!imgContainer) return;
-    const emptyDiv = imgContainer.querySelector(".empty-admin-img");
-    if (emptyDiv) {
-      const newImg = document.createElement("img");
-      newImg.className = "admin-prod-img";
-      newImg.alt = "Preview";
-      newImg.src = dataUrl;
-      imgContainer.replaceChild(newImg, emptyDiv);
-    }
-  }
-  row.setAttribute("data-new-image", dataUrl);
+          const emptyDiv = imgContainer.querySelector(".empty-admin-img");
+          if (emptyDiv) {
+            const newImg = document.createElement("img");
+            newImg.className = "admin-prod-img";
+            newImg.alt = "Preview";
+            newImg.src = dataUrl;
+            imgContainer.replaceChild(newImg, emptyDiv);
+          }
+        }
+        row.setAttribute("data-new-image", dataUrl);
 };
 
 // Global helper function to save product edit
@@ -2810,12 +2810,9 @@ async function handleCheckoutSubmit(e) {
     subtotal: subtotal,
     status: "new"
   };
+
   try {
-    let history = [];
-    const savedHistory = localStorage.getItem("nazcake_orders_history");
-    if (savedHistory) {
-      history = JSON.parse(savedHistory);
-    }
+    let history = getOrdersHistory();
     history.unshift(newOrder);
     localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
   } catch (e) {
@@ -3249,20 +3246,23 @@ function setupAdminPanel() {
 
 
 
+// Helper to get orders history
+function getOrdersHistory() {
+  try {
+    const savedHistory = localStorage.getItem("nazcake_orders_history");
+    return savedHistory ? JSON.parse(savedHistory) : [];
+  } catch (e) {
+    console.warn("Failed to parse orders history:", e);
+    return [];
+  }
+}
+
 // Render orders in history tab
 function renderAdminOrders() {
   const listContainer = document.getElementById("admin-orders-list");
   if (!listContainer) return;
 
-  let history = [];
-  try {
-    const savedHistory = localStorage.getItem("nazcake_orders_history");
-    if (savedHistory) {
-      history = JSON.parse(savedHistory);
-    }
-  } catch (e) {
-    console.warn(e);
-  }
+  let history = getOrdersHistory();
 
   if (history.length === 0) {
     const tEmpty = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Тапсырыстар әлі жоқ" : "Заказов пока нет";
@@ -3336,11 +3336,7 @@ function renderAdminOrders() {
 // Global status changer
 window.changeOrderStatus = function(orderId, newStatus) {
   try {
-    let history = [];
-    const savedHistory = localStorage.getItem("nazcake_orders_history");
-    if (savedHistory) {
-      history = JSON.parse(savedHistory);
-    }
+    let history = getOrdersHistory();
     history = history.map(order => {
       if (order.id === orderId) {
         return { ...order, status: newStatus };
@@ -3442,11 +3438,7 @@ function saveKaspiOrder(name, phone, productName, qty, price) {
   };
 
   try {
-    let history = [];
-    const savedHistory = localStorage.getItem("nazcake_orders_history");
-    if (savedHistory) {
-      history = JSON.parse(savedHistory);
-    }
+    let history = getOrdersHistory();
     history.unshift(newOrder);
     localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
 
