@@ -474,7 +474,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 260,
     unit: "шт.",
-    image: "images/dessert_ekler_choco.webp",
+    image: "images/dessert_ekler.webp",
     desc: "Французское заварное пирожное, наполненное нежным сливочно-заварным кремом.",
     ingredients: "Заварное тесто, крем Муслин, шоколадная глазурь.",
     badge: "хит"
@@ -2804,9 +2804,14 @@ async function handleCheckoutSubmit(e) {
     subtotal: subtotal,
     status: "new"
   };
-  let history = getOrdersHistory();
-  history.unshift(newOrder);
-  saveOrdersHistory(history);
+
+  try {
+    let history = getOrdersHistory();
+    history.unshift(newOrder);
+    localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
+  } catch (e) {
+    console.warn("Failed to save order to history:", e);
+  }
 
   window.open(waUrl, '_blank');
   orderSucceeded();
@@ -3100,35 +3105,6 @@ function updateLocationUi() {
 let logoClickCount = 0;
 let logoClickTimeout = null;
 
-
-// --- Orders History Helpers ---
-function getOrdersHistory() {
-  try {
-    const saved = localStorage.getItem("nazcake_orders_history");
-    return saved ? JSON.parse(saved) : [];
-  } catch (e) {
-    console.warn("Failed to get orders history:", e);
-    return [];
-  }
-}
-
-function saveOrdersHistory(history) {
-  try {
-    localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
-  } catch (e) {
-    console.warn("Failed to save orders history:", e);
-  }
-}
-
-function clearOrdersHistory() {
-  try {
-    localStorage.removeItem("nazcake_orders_history");
-  } catch (e) {
-    console.warn("Failed to clear orders history:", e);
-  }
-}
-// ------------------------------
-
 function setupAdminPanel() {
   const logoLink = document.querySelector(".logo");
   const loginModal = document.getElementById("admin-login-modal");
@@ -3264,6 +3240,35 @@ function setupAdminPanel() {
 
 
 
+// Helper to get orders history
+// --- Orders History Helpers ---
+function getOrdersHistory() {
+  try {
+    const saved = localStorage.getItem("nazcake_orders_history");
+    return saved ? JSON.parse(saved) : [];
+  } catch (e) {
+    console.warn("Failed to get orders history:", e);
+    return [];
+  }
+}
+
+function saveOrdersHistory(history) {
+  try {
+    localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
+  } catch (e) {
+    console.warn("Failed to save orders history:", e);
+  }
+}
+
+function clearOrdersHistory() {
+  try {
+    localStorage.removeItem("nazcake_orders_history");
+  } catch (e) {
+    console.warn("Failed to clear orders history:", e);
+  }
+}
+// ------------------------------
+
 // Render orders in history tab
 function renderAdminOrders() {
   const listContainer = document.getElementById("admin-orders-list");
@@ -3342,15 +3347,19 @@ function renderAdminOrders() {
 
 // Global status changer
 window.changeOrderStatus = function(orderId, newStatus) {
-  let history = getOrdersHistory();
-  history = history.map(order => {
-    if (order.id === orderId) {
-      return { ...order, status: newStatus };
-    }
-    return order;
-  });
-  saveOrdersHistory(history);
-  renderAdminOrders();
+  try {
+    let history = getOrdersHistory();
+    history = history.map(order => {
+      if (order.id === orderId) {
+        return { ...order, status: newStatus };
+      }
+      return order;
+    });
+    localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
+    renderAdminOrders();
+  } catch (e) {
+    console.warn(e);
+  }
 };
 // ----------------------------
 
@@ -3440,12 +3449,16 @@ function saveKaspiOrder(name, phone, productName, qty, price) {
     status: "new"
   };
 
-  let history = getOrdersHistory();
-  history.unshift(newOrder);
-  saveOrdersHistory(history);
+  try {
+    let history = getOrdersHistory();
+    history.unshift(newOrder);
+    localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
 
-  if (typeof renderAdminOrders === "function") {
-    renderAdminOrders();
+    if (typeof renderAdminOrders === "function") {
+      renderAdminOrders();
+    }
+  } catch (e) {
+    console.warn("Failed to save order to history:", e);
   }
 }
 
