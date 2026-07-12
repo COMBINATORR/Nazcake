@@ -1,7 +1,7 @@
-🛡️ Sentinel: [HIGH] Fix XSS vulnerability in Product Cards
+Title: 🧹 [Code Health Improvement: Refactored Error Message Generation in app.js]
 
-🚨 Severity: HIGH
-💡 Vulnerability: Product names and category labels from localStorage/admin panel were interpolated directly into `innerHTML` strings in `createProductCardHtml` and `renderAdminCatalog` in `app.js` without sanitization. An attacker (or a user modifying local storage or gaining admin access) could inject malicious scripts.
-🎯 Impact: This allows persistent (Self-)XSS as the malicious payload saved in localStorage would be executed when the product catalog is rendered in the user's browser.
-🔧 Fix: Wrapped all user-controlled/dynamically loaded string variables (`pName`, `tName`, `tCategoryLabel`, `tBadge`, `tUnit`) with the existing `escapeHTML()` function before injecting them into `innerHTML`.
-✅ Verification: Ran `npm test` successfully. Verified `escapeHTML` prevents JS execution on malicious product names. Added a journal entry to `.jules/sentinel.md`.
+Description:
+🎯 **What:** Extracted the deeply nested error message logic in `app.js` (around line 2673) into a pure helper function called `getDeliveryErrorMessage`.
+💡 **Why:** Reduces nesting, improves readability, and makes the code more maintainable and easier to extend or test in the future.
+✅ **Verification:** Ran `pnpm test` successfully (2 passed suites, 18 passed tests) to ensure no regressions were introduced. Evaluated changes manually.
+✨ **Result:** Improved code structure while preserving exact behavior.

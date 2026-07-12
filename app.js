@@ -2586,6 +2586,21 @@ function calculateDeliveryCost(distance) {
 function calculateDeliveryTime(distance) {
   return Math.round(distance * 4) + 20;
 }
+function getDeliveryErrorMessage(msg) {
+  if (window.i18n) {
+    if (msg === "delivery_err_geocoder" || msg === "delivery_err_notfound" || msg === "delivery_err_outofbounds") {
+      return window.i18n.t(msg);
+    } else {
+      return window.i18n.t("delivery_err_unknown");
+    }
+  } else {
+    if (msg === "delivery_err_geocoder") return "Не удалось подключиться к серверу геокодирования.";
+    if (msg === "delivery_err_notfound") return "Адрес не найден. Пожалуйста, проверьте правильность написания.";
+    if (msg === "delivery_err_outofbounds") return "Яндекс.Доставка (Экспресс) доступна только в пределах города Атырау.";
+    return "Ошибка при расчете стоимости доставки.";
+  }
+}
+
 
 function showDeliveryError(msg, errorBox, resultsBox) {
   errorBox.textContent = msg;
@@ -2670,19 +2685,7 @@ calcBtn.textContent = window.i18n ? window.i18n.t("delivery_btn_calculating") : 
       }
 
     } catch (err) {
-let msg = err.message;
-      if (window.i18n) {
-        if (msg === "delivery_err_geocoder" || msg === "delivery_err_notfound" || msg === "delivery_err_outofbounds") {
-          msg = window.i18n.t(msg);
-        } else {
-          msg = window.i18n.t("delivery_err_unknown");
-        }
-      } else {
-        if (msg === "delivery_err_geocoder") msg = "Не удалось подключиться к серверу геокодирования.";
-        else if (msg === "delivery_err_notfound") msg = "Адрес не найден. Пожалуйста, проверьте правильность написания.";
-        else if (msg === "delivery_err_outofbounds") msg = "Яндекс.Доставка (Экспресс) доступна только в пределах города Атырау.";
-        else msg = "Ошибка при расчете стоимости доставки.";
-      }
+      const msg = getDeliveryErrorMessage(err.message);
       showDeliveryError(msg, errorBox, resultsBox);
     } finally {
       calcBtn.disabled = false;
