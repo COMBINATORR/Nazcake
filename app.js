@@ -1521,6 +1521,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadCachedCustomerData();
   setupKaspiQrCheckout();
   setupThemeToggler();
+  setupBestsellersCarousel();
   
   if (window.i18n) {
     window.i18n.onLanguageChange(() => {
@@ -3628,6 +3629,75 @@ function setupThemeToggler() {
     document.body.classList.remove("dark-theme");
   }
   updateIcons(isDark);
+}
+
+function setupBestsellersCarousel() {
+  const grid = document.getElementById("bestsellers-grid");
+  const wrapper = document.querySelector(".bestsellers-carousel-wrapper");
+  if (!grid || !wrapper) return;
+
+  const prevBtn = wrapper.querySelector(".prev-btn");
+  const nextBtn = wrapper.querySelector(".next-btn");
+
+  // Scroll by buttons
+  const cardWidth = 310; // card 280 + gap 30
+  if (prevBtn) {
+    prevBtn.addEventListener("click", () => {
+      triggerHapticFeedback();
+      grid.scrollBy({ left: -cardWidth, behavior: "smooth" });
+    });
+  }
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => {
+      triggerHapticFeedback();
+      grid.scrollBy({ left: cardWidth, behavior: "smooth" });
+    });
+  }
+
+  // Mouse Drag-to-Scroll (LKM drag)
+  let isDown = false;
+  let hasMoved = false;
+  let startX;
+  let scrollLeft;
+
+  grid.addEventListener("mousedown", (e) => {
+    // Only drag with left click
+    if (e.button !== 0) return;
+    isDown = true;
+    hasMoved = false;
+    grid.classList.add("active-drag");
+    startX = e.pageX - grid.offsetLeft;
+    scrollLeft = grid.scrollLeft;
+  });
+
+  grid.addEventListener("mouseleave", () => {
+    isDown = false;
+    grid.classList.remove("active-drag");
+  });
+
+  grid.addEventListener("mouseup", () => {
+    isDown = false;
+    grid.classList.remove("active-drag");
+  });
+
+  grid.addEventListener("mousemove", (e) => {
+    if (!isDown) return;
+    const x = e.pageX - grid.offsetLeft;
+    const walk = (x - startX) * 1.5; // Scroll speed modifier
+    if (Math.abs(x - startX) > 5) {
+      hasMoved = true;
+    }
+    grid.scrollLeft = scrollLeft - walk;
+  });
+
+  // Capture click events and block them if we dragged
+  grid.addEventListener("click", (e) => {
+    if (hasMoved) {
+      e.preventDefault();
+      e.stopPropagation();
+      hasMoved = false;
+    }
+  }, true);
 }
 
 // ----------------------------
