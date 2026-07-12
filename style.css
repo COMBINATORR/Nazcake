@@ -517,7 +517,7 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--bg-primary);
   border-top: 1px solid rgba(220, 166, 116, 0.2);
   border-bottom: 1px solid rgba(220, 166, 116, 0.2);
-  padding: 16px 0;
+  padding: 14px 0;
   display: flex;
   align-items: center;
   cursor: default;
@@ -526,26 +526,29 @@ h1, h2, h3, h4, h5, h6 {
 .ticker-content {
   display: flex;
   align-items: center;
-  gap: 50px;
+  gap: 24px; /* Reduced gap to bring sentences closer */
   min-width: max-content;
   animation: ticker-scrolling 35s linear infinite;
   will-change: transform;
 }
 
 .ticker-content span {
-  font-family: var(--font-title);
-  font-weight: 700;
-  font-size: 0.85rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-family: 'Cormorant Garamond', serif; /* Premium serif font */
+  font-weight: 500;
+  font-style: italic; /* Elegant italics */
+  font-size: 1.2rem; /* Adjusted size for serif readability */
+  letter-spacing: 0.01em;
+  text-transform: none; /* Keep natural case for elegant italic flow */
   color: var(--accent-chocolate);
   white-space: nowrap;
 }
 
 .ticker-separator {
-  color: var(--accent-gold) !important;
-  font-size: 1.1rem;
-  text-shadow: 0 0 8px rgba(220, 166, 116, 0.2);
+  color: rgba(220, 166, 116, 0.5) !important; /* Soft, subtle gold dot */
+  font-size: 1.4rem;
+  line-height: 1;
+  display: inline-block;
+  transform: translateY(-2px); /* Align middle dot vertically */
 }
 
 @keyframes ticker-scrolling {
