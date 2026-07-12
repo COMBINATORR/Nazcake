@@ -1911,22 +1911,31 @@ function updateCartUi() {
     console.warn("Failed to save cart to localStorage:", e);
   }
 
-  // Update sticky bottom bar
+  // Update floating glass pill sticky bar
   const stickyBar = document.getElementById("sticky-bottom-bar");
-  const stickyText = document.getElementById("sticky-bar-text");
-  if (stickyBar && stickyText) {
+  const stickyBadge = document.getElementById("sticky-bar-badge");
+  const stickyTotal = document.getElementById("sticky-bar-total");
+  if (stickyBar) {
     if (totalItems > 0) {
-      stickyBar.classList.remove("hidden");
+      if (stickyBar.classList.contains("hidden")) {
+        stickyBar.classList.remove("hidden", "hiding");
+        // Re-trigger bounce animation
+        stickyBar.style.animation = "none";
+        stickyBar.offsetHeight; // force reflow
+        stickyBar.style.animation = "";
+      }
       document.body.classList.add("has-sticky-bar");
-      const currentLang = window.i18n ? window.i18n.getCurrentLanguage() : "ru";
-      const formattedSum = subtotal.toLocaleString();
-      const text = currentLang === "ru"
-        ? `🛍️ В корзине: ${totalItems} шт. — ${formattedSum} ₸`
-        : `🛍️ Себетте: ${totalItems} дана — ${formattedSum} ₸`;
-      stickyText.textContent = text;
+      if (stickyBadge) stickyBadge.textContent = totalItems;
+      if (stickyTotal) stickyTotal.textContent = subtotal.toLocaleString() + " ₸";
     } else {
-      stickyBar.classList.add("hidden");
-      document.body.classList.remove("has-sticky-bar");
+      if (!stickyBar.classList.contains("hidden")) {
+        stickyBar.classList.add("hiding");
+        stickyBar.addEventListener("animationend", () => {
+          stickyBar.classList.add("hidden");
+          stickyBar.classList.remove("hiding");
+          document.body.classList.remove("has-sticky-bar");
+        }, { once: true });
+      }
     }
   }
 

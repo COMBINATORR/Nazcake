@@ -2454,7 +2454,7 @@ body.dark-theme .bestsellers-arrow {
   box-shadow: 0 4px 10px rgba(76, 209, 55, 0.15);
 }
 
-/* Sticky Bottom Bar */
+/* ===== Floating Glass Pill — Sticky Bottom Bar ===== */
 .sticky-bottom-bar {
   display: none !important; /* Hidden on desktop always */
 }
@@ -2463,30 +2463,36 @@ body.dark-theme .bestsellers-arrow {
   .sticky-bottom-bar {
     display: block !important;
     position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-top: 1px solid rgba(74, 44, 17, 0.08);
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    left: 12px;
+    right: 12px;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(74, 44, 17, 0.08);
+    box-shadow: 0 8px 32px rgba(74, 44, 17, 0.12),
+                0 2px 8px rgba(0, 0, 0, 0.04);
     padding: 10px 16px;
     z-index: 999;
-    box-shadow: 0 -8px 24px rgba(74, 44, 17, 0.08);
-    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: stickyBarBounceIn 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   }
-  
+
   .sticky-bottom-bar.hidden {
     display: none !important;
   }
-  
+
+  .sticky-bottom-bar.hiding {
+    animation: stickyBarSlideOut 0.3s ease-in forwards;
+  }
+
   body.has-sticky-bar {
-    padding-bottom: 80px;
+    padding-bottom: calc(80px + env(safe-area-inset-bottom));
   }
 }
 
 .sticky-bar-content {
-  max-width: 600px;
+  max-width: 500px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -2494,27 +2500,83 @@ body.dark-theme .bestsellers-arrow {
   gap: 12px;
 }
 
-.sticky-bar-text {
-  font-family: var(--font-title);
-  font-size: 0.9rem;
-  font-weight: 700;
+/* Cart icon container */
+.sticky-bar-cart-icon {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
   color: var(--accent-chocolate);
 }
 
+/* Red badge counter */
+.sticky-bar-badge {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  background: #EF4444;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 800;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  line-height: 1;
+  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.35);
+}
+
+/* Total price */
+.sticky-bar-total {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--accent-chocolate);
+  letter-spacing: -0.02em;
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Pill CTA button */
 .sticky-bar-btn {
-  padding: 8px 20px;
-  font-size: 0.85rem;
+  padding: 10px 22px;
+  font-size: 0.8rem;
   font-weight: 700;
   border-radius: 20px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(220, 166, 116, 0.2);
-  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(220, 166, 116, 0.2);
+  transition: all 0.25s ease;
   min-height: auto;
   width: auto;
 }
 
-.sticky-bar-btn:hover {
-  transform: translateY(-2px);
+.sticky-bar-btn:active {
+  transform: scale(0.96);
+}
+
+/* ===== Sticky Bar Animations ===== */
+@keyframes stickyBarBounceIn {
+  0%   { transform: translateY(100px); opacity: 0; }
+  50%  { transform: translateY(-6px);  opacity: 1; }
+  70%  { transform: translateY(3px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes stickyBarSlideOut {
+  0%   { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(100px); opacity: 0; }
 }
 
 @keyframes slideUp {
@@ -3467,8 +3529,34 @@ body.dark-theme .cart-item {
 }
 
 body.dark-theme .sticky-bottom-bar {
-  background-color: rgba(8, 33, 21, 0.95);
-  border-top-color: var(--border-color);
+  background: rgba(15, 35, 20, 0.78);
+  border: 1px solid rgba(74, 124, 89, 0.18);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35),
+              0 0 0 1px rgba(74, 124, 89, 0.06);
+}
+
+body.dark-theme .sticky-bar-total {
+  color: #E8DCC8;
+}
+
+body.dark-theme .sticky-bar-cart-icon {
+  color: rgba(232, 220, 200, 0.8);
+}
+
+body.dark-theme .sticky-bar-badge {
+  background: #EF4444;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+}
+
+body.dark-theme .sticky-bar-btn {
+  background: linear-gradient(135deg, #4A7C59, #3D6B4A) !important;
+  color: #F5F0E8 !important;
+  border: 1px solid rgba(74, 124, 89, 0.3);
+  box-shadow: 0 4px 16px rgba(74, 124, 89, 0.25);
+}
+
+body.dark-theme .sticky-bar-btn:active {
+  background: linear-gradient(135deg, #3D6B4A, #2F5A3C) !important;
 }
 
 body.dark-theme .preloader-logo-sub {
