@@ -3184,26 +3184,7 @@ body.preloader-active {
     padding: 8px 16px;
   }
 
-  /* Single column vertical grid for catalog items on mobile */
-  #catalog-grid {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-    gap: 24px !important;
-    padding: 10px 20px !important;
-    margin: 0 !important;
-    overflow-x: visible !important;
-  }
-  
-  #catalog-grid .product-card {
-    flex: none !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
-  }
 
-  #catalog-grid .product-card .product-img-wrapper {
-    padding-bottom: 95% !important; /* Huge visual */
-  }
 
   /* Premium Bottom Sheet border radius and touch handles */
   .preview-modal-container {
