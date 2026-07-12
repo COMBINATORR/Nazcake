@@ -1,7 +1,15 @@
-Title: 🧹 [Code Health Improvement: Refactored Error Message Generation in app.js]
+## 🧹 [Code Health] Extract duplicated localStorage order history logic
 
-Description:
-🎯 **What:** Extracted the deeply nested error message logic in `app.js` (around line 2673) into a pure helper function called `getDeliveryErrorMessage`.
-💡 **Why:** Reduces nesting, improves readability, and makes the code more maintainable and easier to extend or test in the future.
-✅ **Verification:** Ran `pnpm test` successfully (2 passed suites, 18 passed tests) to ensure no regressions were introduced. Evaluated changes manually.
-✨ **Result:** Improved code structure while preserving exact behavior.
+**What:**
+Extracted the repeated code pattern for retrieving and parsing `nazcake_orders_history` from `localStorage` into a new shared helper function called `getOrdersHistory()`.
+
+**Why:**
+The application accesses the order history from `localStorage` in four distinct locations (`checkoutSubmit`, `renderAdminOrders`, `changeOrderStatus`, `saveKaspiOrder`). In each place, the exact same `try/catch` and `JSON.parse` logic was written out manually. Extracting this to a single helper function improves code maintainability, reduces lines of code, and ensures any future changes to how history is parsed only need to be made in one place.
+
+**Verification:**
+- Used `git diff` and syntax checks to ensure no typos or syntax errors were introduced.
+- Evaluated scope placement of `getOrdersHistory()` to ensure it's globally available for all call sites.
+- Ran the Jest test suite using `pnpm test` to confirm no regressions.
+
+**Result:**
+The codebase is cleaner and duplication is reduced without altering the existing functionality.
