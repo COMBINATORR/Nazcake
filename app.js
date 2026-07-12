@@ -474,7 +474,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 260,
     unit: "шт.",
-    image: "images/dessert_ekler_choco.webp",
+    image: "images/dessert_ekler.webp",
     desc: "Французское заварное пирожное, наполненное нежным сливочно-заварным кремом.",
     ingredients: "Заварное тесто, крем Муслин, шоколадная глазурь.",
     badge: "хит"
@@ -2804,12 +2804,9 @@ async function handleCheckoutSubmit(e) {
     subtotal: subtotal,
     status: "new"
   };
+
   try {
-    let history = [];
-    const savedHistory = localStorage.getItem("nazcake_orders_history");
-    if (savedHistory) {
-      history = JSON.parse(savedHistory);
-    }
+    let history = getOrdersHistory();
     history.unshift(newOrder);
     localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
   } catch (e) {
@@ -3114,16 +3111,16 @@ function setupAdminFilters() {
 
   if (categoryFilterInput) {
     categoryFilterInput.addEventListener("change", () => {
+      triggerHapticFeedback();
       renderAdminCatalog();
     });
   }
 
   if (searchFilterInput) {
-    // ⚡ Bolt: Debounce search input to prevent expensive re-renders on every keystroke
-    let searchTimeout;
     searchFilterInput.addEventListener("input", () => {
-      clearTimeout(searchTimeout);
-      searchTimeout = setTimeout(() => {
+      // Debounce logic
+      if (window.adminSearchTimeout) clearTimeout(window.adminSearchTimeout);
+      window.adminSearchTimeout = setTimeout(() => {
         renderAdminCatalog();
       }, 300);
     });
@@ -3134,25 +3131,17 @@ function setupAdminSecretTriggers(logoLink, loginModal) {
   // 1. Mobile Secret Trigger (3 clicks on logo in 2 seconds)
   logoLink.addEventListener("click", (e) => {
     // If target is links/action, prevent default to avoid scrolling to top if triple clicked
+    e.preventDefault();
     logoClickCount++;
-    if (logoClickCount === 1) {
-      logoClickTimeout = setTimeout(() => {
-        logoClickCount = 0;
-      }, 2000);
-    }
+    if (logoClickTimeout) clearTimeout(logoClickTimeout);
+    logoClickTimeout = setTimeout(() => {
+      logoClickCount = 0;
+    }, 2000);
 
     if (logoClickCount === 3) {
-      e.preventDefault();
       logoClickCount = 0;
       clearTimeout(logoClickTimeout);
-      openModal(loginModal);
-    }
-  });
-
-  // 2. Desktop Secret Trigger (Ctrl + Shift + A)
-  document.addEventListener("keydown", (e) => {
-    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "a") {
-      e.preventDefault();
+      triggerHapticFeedback();
       openModal(loginModal);
     }
   });
@@ -3167,9 +3156,8 @@ function setupAdminLogin(loginModal, dashModal) {
   // Close Login Modal
   if (closeLoginBtn) {
     closeLoginBtn.addEventListener("click", () => {
+      triggerHapticFeedback();
       closeModal(loginModal);
-      loginPasswordInput.value = "";
-      loginErrorMsg.classList.add("hidden");
     });
   }
 
@@ -3178,13 +3166,16 @@ function setupAdminLogin(loginModal, dashModal) {
     loginForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const password = loginPasswordInput.value;
-      if (password === "NazAdmin777") {
-        closeModal(loginModal);
-        loginPasswordInput.value = "";
+      if (password === "nazcake2026") {
         loginErrorMsg.classList.add("hidden");
+        loginPasswordInput.value = "";
+        closeModal(loginModal);
+        triggerHapticFeedback();
         openModal(dashModal);
-        renderAdminDashboard();
+        renderAdminCatalog();
+        renderAdminOrders();
       } else {
+        triggerHapticFeedback();
         loginErrorMsg.classList.remove("hidden");
       }
     });
@@ -3201,6 +3192,7 @@ function setupAdminDashboardNav(dashModal) {
   // Close Dashboard
   if (closeDashBtn) {
     closeDashBtn.addEventListener("click", () => {
+      triggerHapticFeedback();
       closeModal(dashModal);
     });
   }
@@ -3208,11 +3200,12 @@ function setupAdminDashboardNav(dashModal) {
   // Logout
   if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
+      triggerHapticFeedback();
       closeModal(dashModal);
     });
   }
 
-  // Tabs Navigation
+  // Tab Switching
   const tabButtons = [tabCatalogBtn, tabOrdersBtn];
   tabButtons.forEach(btn => {
     if (btn) {
@@ -3232,9 +3225,10 @@ function setupAdminDashboardNav(dashModal) {
     }
   });
 
-  // Clear orders history
+  // Clear History
   if (clearHistoryBtn) {
     clearHistoryBtn.addEventListener("click", () => {
+      triggerHapticFeedback();
       const confirmText = window.i18n && window.i18n.getCurrentLanguage() === "kk"
         ? "Барлық тапсырыстар тарихын өшіруді растайсыз ба?"
         : "Вы уверены, что хотите очистить всю историю заказов?";
@@ -3259,22 +3253,12 @@ function setupAdminPanel() {
   setupAdminDashboardNav(dashModal);
 }
 
-
-
 // Render orders in history tab
 function renderAdminOrders() {
   const listContainer = document.getElementById("admin-orders-list");
   if (!listContainer) return;
 
-  let history = [];
-  try {
-    const savedHistory = localStorage.getItem("nazcake_orders_history");
-    if (savedHistory) {
-      history = JSON.parse(savedHistory);
-    }
-  } catch (e) {
-    console.warn(e);
-  }
+  let history = getOrdersHistory();
 
   if (history.length === 0) {
     const tEmpty = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Тапсырыстар әлі жоқ" : "Заказов пока нет";
@@ -3348,11 +3332,7 @@ function renderAdminOrders() {
 // Global status changer
 window.changeOrderStatus = function(orderId, newStatus) {
   try {
-    let history = [];
-    const savedHistory = localStorage.getItem("nazcake_orders_history");
-    if (savedHistory) {
-      history = JSON.parse(savedHistory);
-    }
+    let history = getOrdersHistory();
     history = history.map(order => {
       if (order.id === orderId) {
         return { ...order, status: newStatus };
@@ -3454,11 +3434,7 @@ function saveKaspiOrder(name, phone, productName, qty, price) {
   };
 
   try {
-    let history = [];
-    const savedHistory = localStorage.getItem("nazcake_orders_history");
-    if (savedHistory) {
-      history = JSON.parse(savedHistory);
-    }
+    let history = getOrdersHistory();
     history.unshift(newOrder);
     localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
 

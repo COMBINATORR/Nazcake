@@ -1,20 +1,15 @@
-# 🧹 [Code Health] Refactor `setupAdminPanel` into smaller helper functions
+## 🧹 [Code Health] Extract duplicated localStorage order history logic
 
-## 🎯 **What**
-The `setupAdminPanel` function in `app.js` was extremely large (over 130 lines) and handled multiple distinct concerns. It has now been split into four smaller, focused helper functions:
-- `setupAdminFilters()`
-- `setupAdminSecretTriggers(logoLink, loginModal)`
-- `setupAdminLogin(loginModal, dashModal)`
-- `setupAdminDashboardNav(dashModal)`
-And `setupAdminPanel()` was updated to call these helpers.
+**What:**
+Extracted the repeated code pattern for retrieving and parsing `nazcake_orders_history` from `localStorage` into a new shared helper function called `getOrdersHistory()`.
 
-## 💡 **Why**
-Large functions that handle many different concerns are harder to read, understand, and test. By breaking this function into smaller, logical pieces, we improve the maintainability and readability of the admin panel setup logic. The code is now much clearer in its intent.
+**Why:**
+The application accesses the order history from `localStorage` in four distinct locations (`checkoutSubmit`, `renderAdminOrders`, `changeOrderStatus`, `saveKaspiOrder`). In each place, the exact same `try/catch` and `JSON.parse` logic was written out manually. Extracting this to a single helper function improves code maintainability, reduces lines of code, and ensures any future changes to how history is parsed only need to be made in one place.
 
-## ✅ **Verification**
-- Ensured syntax correctness using `node -c app.js`.
-- Ran the full test suite (`pnpm test`), and everything passed.
-- No functional logic was altered; the logic was purely extracted into helper functions.
+**Verification:**
+- Used `git diff` and syntax checks to ensure no typos or syntax errors were introduced.
+- Evaluated scope placement of `getOrdersHistory()` to ensure it's globally available for all call sites.
+- Ran the Jest test suite using `pnpm test` to confirm no regressions.
 
-## ✨ **Result**
-The codebase is cleaner, and the `setupAdminPanel` logic is significantly more readable and maintainable.
+**Result:**
+The codebase is cleaner and duplication is reduced without altering the existing functionality.
