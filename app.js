@@ -2464,13 +2464,24 @@ window.handleAdminImageUpload = function(event, id) {
       const dataUrl = canvas.toDataURL("image/jpeg", 0.7);
 
       // Preview locally in the admin panel row
+      window.updateAdminImagePreview(id, dataUrl);
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+};
+
+
+window.updateAdminImagePreview = function(id, dataUrl) {
       const row = document.querySelector(`.admin-product-row[data-id="${id}"]`);
-      if (row) {
+  if (!row) return;
+
         const imgEl = row.querySelector(".admin-prod-img");
         if (imgEl) {
           imgEl.src = dataUrl;
         } else {
           const imgContainer = row.querySelector(".admin-prod-img-container");
+    if (!imgContainer) return;
           const emptyDiv = imgContainer.querySelector(".empty-admin-img");
           if (emptyDiv) {
             const newImg = document.createElement("img");
@@ -2481,11 +2492,6 @@ window.handleAdminImageUpload = function(event, id) {
           }
         }
         row.setAttribute("data-new-image", dataUrl);
-      }
-    };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
 };
 
 // Global helper function to save product edit
@@ -3808,6 +3814,7 @@ if (typeof module !== 'undefined') {
     setCart: (c) => { if (typeof cart !== 'undefined') cart = c; },
     removeFromCart: typeof removeFromCart !== 'undefined' ? removeFromCart : null,
     updateCartUi: typeof updateCartUi !== 'undefined' ? updateCartUi : null,
+    updateAdminImagePreview: typeof updateAdminImagePreview !== 'undefined' ? updateAdminImagePreview : null,
     adjustColorBrightness: typeof adjustColorBrightness !== 'undefined' ? adjustColorBrightness : null
   };
 }
