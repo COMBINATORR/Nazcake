@@ -2724,6 +2724,85 @@ function escapeHTML(str) {
 }
 
 // Handle Order Checkout Submission & Send to Telegram
+function formatCheckoutMessage(name, phone, method, address, cart, subtotal, t) {
+  let message = `*🍰 ${window.i18n ? t("tg_order_title") : "Новый заказ от Nazcake!"}*\n\n`;
+  message += `👤 *${window.i18n ? t("tg_client") : "Клиент"}:* ${name}\n`;
+  message += `📞 *${window.i18n ? t("tg_phone") : "Телефон"}:* ${phone}\n`;
+
+  const tMethod = method === "delivery"
+    ? (window.i18n ? t("cart_opt_delivery") : "Доставка Яндекс")
+    : (window.i18n ? t("cart_opt_pickup") : "Самовывоз");
+  message += `📦 *${window.i18n ? t("tg_method") : "Способ получения"}:* ${tMethod}\n`;
+
+  if (method === "delivery") {
+    message += `📍 *${window.i18n ? t("tg_address") : "Адрес"}:* ${address}\n`;
+  }
+
+  message += `\n🛒 *${window.i18n ? t("tg_items") : "Товары"}:*\n`;
+
+  cart.forEach((item, idx) => {
+    const p = item.product;
+    let displayName = p.isCustomName ? p.name : (p.id.startsWith("bento_custom_")
+      ? (window.i18n ? t("bento_custom_name") : p.name)
+      : (window.i18n ? t(`p_${p.id}_name`) : p.name));
+
+    if (item.selectedSize) {
+      displayName += ` (${item.selectedSize})`;
+    }
+    const tUnit = window.i18n ? t(getUnitTranslationKey(p.unit)) : p.unit;
+    const itemPrice = item.price !== undefined ? item.price : p.price;
+
+    message += `${idx + 1}. *${displayName}* — ${item.qty} ${tUnit} (${(itemPrice * item.qty).toLocaleString()} ₸)\n`;
+
+    if (p.id.startsWith("bento_custom_")) {
+      const tDesc = getProductDesc(p);
+      message += `   _${window.i18n ? t("tg_details") : "Детали"}: ${tDesc}_\n`;
+    }
+  });
+
+  message += `\n💵 *${window.i18n ? t("tg_total") : "Итоговая сумма"}:* ${subtotal.toLocaleString()} ₸`;
+  return message;
+}
+
+function buildOrderObject(name, phone, method, address, cart, subtotal, t) {
+  return {
+    id: "NZ-" + Math.floor(100000 + Math.random() * 900000),
+    date: new Date().toLocaleString("ru-RU"),
+    customerName: name,
+    customerPhone: phone,
+    deliveryMethod: method,
+    address: method === "delivery" ? address : "",
+    items: cart.map(item => {
+      const p = item.product;
+      let displayName = p.isCustomName ? p.name : (p.id.startsWith("bento_custom_")
+        ? (window.i18n ? t("bento_custom_name") : p.name)
+        : (window.i18n ? t(`p_${p.id}_name`) : p.name));
+      if (item.selectedSize) {
+        displayName += ` (${item.selectedSize})`;
+      }
+      return {
+        id: p.id,
+        name: displayName,
+        qty: item.qty,
+        price: item.price !== undefined ? item.price : p.price
+      };
+    }),
+    subtotal: subtotal,
+    status: "new"
+  };
+}
+
+function saveOrderToHistory(newOrder) {
+  try {
+    let history = getOrdersHistory();
+    history.unshift(newOrder);
+    localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
+  } catch (e) {
+    console.warn("Failed to save order to history:", e);
+  }
+}
+
+// Handle Order Checkout Submission & Send to Telegram
 async function handleCheckoutSubmit(e) {
   e.preventDefault();
 
@@ -2752,87 +2831,16 @@ async function handleCheckoutSubmit(e) {
   // Calculate total using item.price
   const subtotal = cart.reduce((sum, item) => sum + ((item.price !== undefined ? item.price : item.product.price) * item.qty), 0);
 
-  // Format message for WhatsApp
-  let message = `*🍰 ${window.i18n ? t("tg_order_title") : "Новый заказ от Nazcake!"}*
-
-`;
-  message += `👤 *${window.i18n ? t("tg_client") : "Клиент"}:* ${name}
-`;
-  message += `📞 *${window.i18n ? t("tg_phone") : "Телефон"}:* ${phone}
-`;
-
-  const tMethod = method === "delivery"
-    ? (window.i18n ? t("cart_opt_delivery") : "Доставка Яндекс")
-    : (window.i18n ? t("cart_opt_pickup") : "Самовывоз");
-  message += `📦 *${window.i18n ? t("tg_method") : "Способ получения"}:* ${tMethod}
-`;
-  if (method === "delivery") {
-    message += `📍 *${window.i18n ? t("tg_address") : "Адрес"}:* ${address}
-`;
-  }
-  message += `\n🛒 *${window.i18n ? t("tg_items") : "Товары"}:*\n`;
-
-  cart.forEach((item, idx) => {
-    const p = item.product;
-    let displayName = p.isCustomName ? p.name : (p.id.startsWith("bento_custom_")
-      ? (window.i18n ? t("bento_custom_name") : p.name)
-      : (window.i18n ? t(`p_${p.id}_name`) : p.name));
-
-    if (item.selectedSize) {
-      displayName += ` (${item.selectedSize})`;
-    }
-    const tUnit = window.i18n ? t(getUnitTranslationKey(p.unit)) : p.unit;
-    const itemPrice = item.price !== undefined ? item.price : p.price;
-
-    message += `${idx + 1}. *${displayName}* — ${item.qty} ${tUnit} (${(itemPrice * item.qty).toLocaleString()} ₸)
-`;
-    if (p.id.startsWith("bento_custom_")) {
-      const tDesc = getProductDesc(p);
-      message += `   _${window.i18n ? t("tg_details") : "Детали"}: ${tDesc}_
-`;
-    }
-  });
-
-  message += `\n💵 *${window.i18n ? t("tg_total") : "Итоговая сумма"}:* ${subtotal.toLocaleString()} ₸`;
+  // Format message for WhatsApp (Telegram)
+  const message = formatCheckoutMessage(name, phone, method, address, cart, subtotal, t);
 
   // Send to WhatsApp
   const phoneWA = "77783567221"; // Target WhatsApp number
   const waUrl = `https://wa.me/${phoneWA}?text=${encodeURIComponent(message)}`;
 
   // Save order to history
-  const newOrder = {
-    id: "NZ-" + Math.floor(100000 + Math.random() * 900000),
-    date: new Date().toLocaleString("ru-RU"),
-    customerName: name,
-    customerPhone: phone,
-    deliveryMethod: method,
-    address: method === "delivery" ? address : "",
-    items: cart.map(item => {
-      const p = item.product;
-      let displayName = p.isCustomName ? p.name : (p.id.startsWith("bento_custom_")
-        ? (window.i18n ? t("bento_custom_name") : p.name)
-        : (window.i18n ? t(`p_${p.id}_name`) : p.name));
-      if (item.selectedSize) {
-        displayName += ` (${item.selectedSize})`;
-      }
-      return {
-        id: p.id,
-        name: displayName,
-        qty: item.qty,
-        price: item.price !== undefined ? item.price : p.price
-      };
-    }),
-    subtotal: subtotal,
-    status: "new"
-  };
-
-  try {
-    let history = getOrdersHistory();
-    history.unshift(newOrder);
-    localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
-  } catch (e) {
-    console.warn("Failed to save order to history:", e);
-  }
+  const newOrder = buildOrderObject(name, phone, method, address, cart, subtotal, t);
+  saveOrderToHistory(newOrder);
 
   window.open(waUrl, '_blank');
   orderSucceeded();
