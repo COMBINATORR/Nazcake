@@ -1628,6 +1628,23 @@ function createProductCardHtml(p) {
 
 // Attach Events (Preview click, stepper click, add click) to Rendered Cards
 function attachCardEvents(gridElement) {
+  // Remove loading blur class if image is already cached/loaded
+  gridElement.querySelectorAll(".lazy-image").forEach(img => {
+    if (img.complete && img.naturalWidth > 0) {
+      img.classList.remove("loading");
+    } else {
+      img.addEventListener("load", () => {
+        img.classList.remove("loading");
+      });
+      // Failsafe timeout to clear loading blur if event missed
+      setTimeout(() => {
+        if (img.complete) {
+          img.classList.remove("loading");
+        }
+      }, 300);
+    }
+  });
+
   // Opening Preview Modal on image or name click
   gridElement.querySelectorAll(".btn-preview").forEach(btn => {
     btn.addEventListener("click", (e) => {
