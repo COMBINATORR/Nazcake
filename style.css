@@ -503,6 +503,75 @@ h1, h2, h3, h4, h5, h6 {
   display: block;
 }
 
+/* Ticker Tape (Marquee) */
+.ticker-tape-wrapper {
+  width: 100%;
+  overflow: hidden;
+  background-color: var(--bg-secondary);
+  padding: 5px 0;
+}
+
+.ticker-tape {
+  width: 100%;
+  overflow: hidden;
+  background: var(--bg-primary);
+  border-top: 1px solid rgba(220, 166, 116, 0.2);
+  border-bottom: 1px solid rgba(220, 166, 116, 0.2);
+  padding: 16px 0;
+  display: flex;
+  align-items: center;
+  cursor: default;
+}
+
+.ticker-content {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+  min-width: max-content;
+  animation: ticker-scrolling 35s linear infinite;
+  will-change: transform;
+}
+
+.ticker-content span {
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-chocolate);
+  white-space: nowrap;
+}
+
+.ticker-separator {
+  color: var(--accent-gold) !important;
+  font-size: 1.1rem;
+  text-shadow: 0 0 8px rgba(220, 166, 116, 0.2);
+}
+
+@keyframes ticker-scrolling {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-33.3333%, 0, 0);
+  }
+}
+
+.ticker-tape:hover .ticker-content {
+  animation-play-state: paused;
+}
+
+/* Dark Theme overrides for Ticker Tape */
+body.dark-theme .ticker-tape {
+  background: rgba(15, 35, 20, 0.4) !important;
+  border-top-color: rgba(220, 166, 116, 0.15) !important;
+  border-bottom-color: rgba(220, 166, 116, 0.15) !important;
+}
+
+body.dark-theme .ticker-content span {
+  color: var(--text-primary) !important;
+}
+
 /* About Us Section */
 .about-section {
   background-color: var(--bg-secondary);
