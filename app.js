@@ -3238,6 +3238,7 @@ function setupAdminPanel() {
 
   // Tabs Navigation
   const tabButtons = [tabCatalogBtn, tabOrdersBtn];
+  const tabContents = document.querySelectorAll(".dash-tab-content");
   tabButtons.forEach(btn => {
     if (btn) {
       btn.addEventListener("click", () => {
@@ -3245,7 +3246,7 @@ function setupAdminPanel() {
         btn.classList.add("active");
 
         const tab = btn.getAttribute("data-tab");
-        document.querySelectorAll(".dash-tab-content").forEach(content => {
+        tabContents.forEach(content => {
           content.classList.remove("active");
         });
         document.getElementById("tab-content-" + tab).classList.add("active");
