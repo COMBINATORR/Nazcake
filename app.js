@@ -3362,21 +3362,16 @@ function formatPhoneInput(e) {
   
   let formatted = "";
   if (input.length > 0) {
-    formatted += "+7 (";
-    if (input.length <= 3) {
-      formatted += input;
-    } else {
-      formatted += input.substring(0, 3) + ") ";
-      if (input.length <= 6) {
-        formatted += input.substring(3);
-      } else {
-        formatted += input.substring(3, 6) + "-";
-        if (input.length <= 8) {
-          formatted += input.substring(6);
-        } else {
-          formatted += input.substring(6, 8) + "-" + input.substring(8);
-        }
-      }
+    formatted = "+7 (";
+    formatted += input.substring(0, 3);
+    if (input.length >= 4) {
+      formatted += ") " + input.substring(3, 6);
+    }
+    if (input.length >= 7) {
+      formatted += "-" + input.substring(6, 8);
+    }
+    if (input.length >= 9) {
+      formatted += "-" + input.substring(8);
     }
   }
   e.target.value = formatted;
