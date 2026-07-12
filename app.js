@@ -474,7 +474,7 @@ let products = [
     categoryLabel: "Пирожные",
     price: 260,
     unit: "шт.",
-    image: "images/dessert_ekler_choco.webp",
+    image: "images/dessert_ekler.webp",
     desc: "Французское заварное пирожное, наполненное нежным сливочно-заварным кремом.",
     ingredients: "Заварное тесто, крем Муслин, шоколадная глазурь.",
     badge: "хит"
@@ -2005,7 +2005,16 @@ function updateCartUi() {
 
     const shopBtn = document.getElementById("empty-cart-shop-btn");
     if (shopBtn) {
-      shopBtn.addEventListener("click", handleEmptyCartShopClick);
+      shopBtn.addEventListener("click", () => {
+        triggerHapticFeedback();
+        const sidebar = document.getElementById("cart-sidebar");
+        const overlay = document.getElementById("cart-overlay");
+        closeModal(sidebar, overlay);
+        const catalogEl = document.getElementById("catalog");
+        if (catalogEl) {
+          catalogEl.scrollIntoView({ behavior: "smooth" });
+        }
+      });
     }
     return;
   }
@@ -2795,12 +2804,9 @@ async function handleCheckoutSubmit(e) {
     subtotal: subtotal,
     status: "new"
   };
+
   try {
-    let history = [];
-    const savedHistory = localStorage.getItem("nazcake_orders_history");
-    if (savedHistory) {
-      history = JSON.parse(savedHistory);
-    }
+    let history = getOrdersHistory();
     history.unshift(newOrder);
     localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
   } catch (e) {
@@ -3234,20 +3240,23 @@ function setupAdminPanel() {
 
 
 
+// Helper to get orders history
+function getOrdersHistory() {
+  try {
+    const savedHistory = localStorage.getItem("nazcake_orders_history");
+    return savedHistory ? JSON.parse(savedHistory) : [];
+  } catch (e) {
+    console.warn("Failed to parse orders history:", e);
+    return [];
+  }
+}
+
 // Render orders in history tab
 function renderAdminOrders() {
   const listContainer = document.getElementById("admin-orders-list");
   if (!listContainer) return;
 
-  let history = [];
-  try {
-    const savedHistory = localStorage.getItem("nazcake_orders_history");
-    if (savedHistory) {
-      history = JSON.parse(savedHistory);
-    }
-  } catch (e) {
-    console.warn(e);
-  }
+  let history = getOrdersHistory();
 
   if (history.length === 0) {
     const tEmpty = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Тапсырыстар әлі жоқ" : "Заказов пока нет";
@@ -3321,11 +3330,7 @@ function renderAdminOrders() {
 // Global status changer
 window.changeOrderStatus = function(orderId, newStatus) {
   try {
-    let history = [];
-    const savedHistory = localStorage.getItem("nazcake_orders_history");
-    if (savedHistory) {
-      history = JSON.parse(savedHistory);
-    }
+    let history = getOrdersHistory();
     history = history.map(order => {
       if (order.id === orderId) {
         return { ...order, status: newStatus };
@@ -3427,11 +3432,7 @@ function saveKaspiOrder(name, phone, productName, qty, price) {
   };
 
   try {
-    let history = [];
-    const savedHistory = localStorage.getItem("nazcake_orders_history");
-    if (savedHistory) {
-      history = JSON.parse(savedHistory);
-    }
+    let history = getOrdersHistory();
     history.unshift(newOrder);
     localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
 
@@ -3754,7 +3755,6 @@ function setupBestsellersCarousel() {
 
 // ----------------------------
 
-
 function handleEmptyCartShopClick() {
   triggerHapticFeedback();
   const sidebar = document.getElementById("cart-sidebar");
@@ -3775,7 +3775,6 @@ if (typeof module !== 'undefined') {
     setCart: (c) => { if (typeof cart !== 'undefined') cart = c; },
     removeFromCart: typeof removeFromCart !== 'undefined' ? removeFromCart : null,
     updateCartUi: typeof updateCartUi !== 'undefined' ? updateCartUi : null,
-    adjustColorBrightness: typeof adjustColorBrightness !== 'undefined' ? adjustColorBrightness : null,
-    handleEmptyCartShopClick: typeof handleEmptyCartShopClick !== 'undefined' ? handleEmptyCartShopClick : null
+    adjustColorBrightness: typeof adjustColorBrightness !== 'undefined' ? adjustColorBrightness : null
   };
 }
