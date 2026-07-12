@@ -1520,6 +1520,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initScrollReveal();
   loadCachedCustomerData();
   setupKaspiQrCheckout();
+  setupThemeToggler();
   
   if (window.i18n) {
     window.i18n.onLanguageChange(() => {
@@ -3580,6 +3581,54 @@ function setupKaspiQrCheckout() {
     stepQr.style.display = "none";
     stepSuccess.style.display = "block";
   });
+}
+
+function setupThemeToggler() {
+  const headerToggle = document.getElementById("theme-toggle-btn");
+  const drawerToggle = document.getElementById("drawer-theme-toggle-btn");
+
+  const updateIcons = (isDark) => {
+    const sunIcons = document.querySelectorAll(".theme-icon-sun");
+    const moonIcons = document.querySelectorAll(".theme-icon-moon");
+    
+    if (isDark) {
+      sunIcons.forEach(icon => icon.style.display = "block");
+      moonIcons.forEach(icon => icon.style.display = "none");
+    } else {
+      sunIcons.forEach(icon => icon.style.display = "none");
+      moonIcons.forEach(icon => icon.style.display = "block");
+    }
+
+    // Update text in drawer button
+    const drawerText = drawerToggle ? drawerToggle.querySelector("span") : null;
+    if (drawerText) {
+      const key = isDark ? "theme_light" : "theme_dark";
+      drawerText.setAttribute("data-i18n", key);
+      drawerText.textContent = window.i18n ? window.i18n.t(key) : (isDark ? "Светлая тема" : "Темная тема");
+    }
+  };
+
+  const toggleTheme = () => {
+    triggerHapticFeedback();
+    const isDark = document.body.classList.toggle("dark-theme");
+    localStorage.setItem("nazcake_theme", isDark ? "dark" : "light");
+    updateIcons(isDark);
+  };
+
+  if (headerToggle) headerToggle.addEventListener("click", toggleTheme);
+  if (drawerToggle) drawerToggle.addEventListener("click", toggleTheme);
+
+  // Initialize theme from localStorage or system preference
+  const savedTheme = localStorage.getItem("nazcake_theme");
+  const systemPrefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const isDark = savedTheme === "dark" || (!savedTheme && systemPrefersDark);
+
+  if (isDark) {
+    document.body.classList.add("dark-theme");
+  } else {
+    document.body.classList.remove("dark-theme");
+  }
+  updateIcons(isDark);
 }
 
 // ----------------------------

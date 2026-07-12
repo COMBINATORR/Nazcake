@@ -130,6 +130,8 @@
       kaspi_success_title: "Заказ оформлен!",
       kaspi_success_desc: "Оплата получена. Наш курьер свяжется с вами в течение 10 минут для уточнения адреса доставки.",
       kaspi_close_btn: "Отлично",
+      theme_dark: "Темная тема",
+      theme_light: "Светлая тема",
 
       // Cart Sidebar
       cart_title: "Ваша Корзина",
@@ -816,6 +818,8 @@
       kaspi_success_title: "Тапсырыс қабылданды!",
       kaspi_success_desc: "Төлем қабылданды. Курьер жеткізу мекенжайын нақтылау үшін 10 минут ішінде хабарласады.",
       kaspi_close_btn: "Тамаша",
+      theme_dark: "Қараңғы тақырып",
+      theme_light: "Жарық тақырып",
 
       // Cart Sidebar
       cart_title: "Сіздің Себетіңіз",

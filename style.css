@@ -3199,3 +3199,191 @@ body.preloader-active {
   }
 }
 
+/* ==========================================================================
+   Luxury Dark Green Theme & Theme Toggler Styles
+   ========================================================================== */
+
+/* Dark Theme Variables Override */
+body.dark-theme {
+  --bg-primary: #04140d; /* Ultra deep forest-black */
+  --bg-secondary: #082115; /* Rich dark emerald */
+  --bg-tertiary: #103322; /* Moss green for inputs/components */
+  
+  --text-primary: #f0f7f3; /* Mint cream text */
+  --text-secondary: #9cbcae; /* Sage green metadata */
+  --text-muted: #648674; /* Muted green details */
+  
+  --accent-gold: #e5c158; /* Warm champagne gold */
+  --accent-gold-light: #f3dfa2; /* Soft warm glow */
+  --accent-chocolate: #f0f7f3; /* Headings become mint cream for readability */
+  --border-color: #15422c; /* Forest green borders */
+  
+  --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  --hover-shadow: 0 20px 40px rgba(229, 193, 88, 0.08);
+}
+
+/* Specific component fixes for dark theme */
+body.dark-theme .main-header {
+  background-color: rgba(4, 20, 13, 0.92);
+  border-bottom: 1px solid rgba(229, 193, 88, 0.15);
+}
+
+body.dark-theme .main-footer {
+  background-color: #030f09;
+  border-top: 3px solid var(--accent-gold);
+}
+
+body.dark-theme .theme-toggle-btn {
+  color: var(--accent-gold) !important;
+}
+
+body.dark-theme .logo-sub {
+  color: var(--accent-gold);
+}
+
+body.dark-theme .section-subtitle {
+  color: var(--accent-gold);
+}
+
+body.dark-theme .bestsellers-section {
+  background-color: var(--bg-primary);
+}
+
+body.dark-theme .tab-btn {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+body.dark-theme .tab-btn.active {
+  background-color: var(--accent-gold);
+  color: #04140d;
+}
+
+body.dark-theme .product-card {
+  border-color: var(--border-color);
+}
+
+body.dark-theme .product-badge {
+  background-color: var(--accent-gold);
+  color: #04140d;
+}
+
+body.dark-theme .product-badge-outofstock {
+  background-color: #3f1515;
+  color: #ff8585;
+}
+
+body.dark-theme .quantity-stepper {
+  border-color: var(--border-color);
+  background-color: var(--bg-tertiary);
+}
+
+body.dark-theme .stepper-btn {
+  color: var(--text-primary);
+}
+
+body.dark-theme .stepper-btn:hover {
+  background-color: var(--border-color);
+}
+
+body.dark-theme .btn-secondary {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+body.dark-theme .btn-secondary:hover {
+  background-color: var(--border-color);
+}
+
+body.dark-theme .about-metrics-grid {
+  border-color: var(--border-color);
+}
+
+body.dark-theme .about-metric-card {
+  background-color: var(--bg-secondary);
+}
+
+body.dark-theme .delivery-card {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+body.dark-theme .contact-card {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+body.dark-theme .contact-input {
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+body.dark-theme .contact-input:focus {
+  border-color: var(--accent-gold);
+}
+
+body.dark-theme .custom-input {
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+body.dark-theme .custom-input:focus {
+  border-color: var(--accent-gold);
+}
+
+body.dark-theme .modal-close-btn {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+body.dark-theme .modal-close-btn:hover {
+  background-color: var(--border-color);
+}
+
+body.dark-theme .cart-sidebar-header {
+  border-bottom-color: var(--border-color);
+}
+
+body.dark-theme .cart-sidebar-footer {
+  border-top-color: var(--border-color);
+  background-color: var(--bg-primary);
+}
+
+body.dark-theme .cart-item {
+  border-bottom-color: var(--border-color);
+}
+
+body.dark-theme .sticky-bottom-bar {
+  background-color: rgba(8, 33, 21, 0.95);
+  border-top-color: var(--border-color);
+}
+
+body.dark-theme .preloader-logo-sub {
+  color: var(--accent-gold);
+}
+
+body.dark-theme .page-preloader {
+  background-color: var(--bg-primary);
+}
+
+body.dark-theme .wave-transition path {
+  fill: var(--bg-primary);
+}
+
+body.dark-theme .wave-about path {
+  fill: var(--bg-secondary);
+}
+
+body.dark-theme .about-section {
+  background-color: var(--bg-secondary);
+}
+
+body.dark-theme .delivery-section {
+  background-color: var(--bg-secondary);
+}
+
