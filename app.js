@@ -1535,10 +1535,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// Render Bestsellers (4 items with 'бестселлеры', 'хит', or 'vip' badges)
 function renderBestsellers() {
   if (!bestsellersGrid) return;
-  const bestsellers = products.filter(p => p.badge === "бестселлер" || p.badge === "хит" || p.badge === "премиум").slice(0, 4);
+  const bestsellers = products.filter(p => p.badge === "бестселлер" || p.badge === "хит" || p.badge === "премиум");
   
   bestsellersGrid.innerHTML = bestsellers.map(p => createProductCardHtml(p)).join("");
   attachCardEvents(bestsellersGrid);

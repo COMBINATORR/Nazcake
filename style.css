@@ -581,6 +581,55 @@ h1, h2, h3, h4, h5, h6 {
   gap: 30px;
 }
 
+/* Horizontal scroll styling for Bestsellers Grid on all viewports */
+#bestsellers-grid {
+  display: flex !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scroll-snap-type: x mandatory !important;
+  gap: 30px !important;
+  padding: 10px 5px 25px 5px !important;
+  scrollbar-width: thin !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+#bestsellers-grid::-webkit-scrollbar {
+  height: 6px !important;
+  display: block !important;
+}
+#bestsellers-grid::-webkit-scrollbar-track {
+  background: var(--bg-tertiary) !important;
+  border-radius: 10px !important;
+}
+#bestsellers-grid::-webkit-scrollbar-thumb {
+  background: var(--border-color) !important;
+  border-radius: 10px !important;
+}
+#bestsellers-grid::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-gold) !important;
+}
+
+#bestsellers-grid .product-card {
+  flex: 0 0 280px !important;
+  scroll-snap-align: start !important;
+  max-width: 280px !important;
+}
+
+@media (max-width: 768px) {
+  #bestsellers-grid {
+    gap: 16px !important;
+    padding: 10px 20px 25px 20px !important;
+    margin: 0 -20px !important;
+  }
+  #bestsellers-grid::-webkit-scrollbar {
+    display: none !important;
+  }
+  #bestsellers-grid .product-card {
+    flex: 0 0 78vw !important;
+    max-width: 300px !important;
+  }
+}
+
 /* Product Card Styling */
 .product-card {
   background: var(--bg-primary);
