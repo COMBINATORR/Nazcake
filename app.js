@@ -2021,14 +2021,16 @@ function updateCartUi() {
 
   cartItemsContainer.innerHTML = cart.map(item => {
     const p = item.product;
-    let tName = p.isCustomName ? p.name : (p.id.startsWith("bento_custom_")
+    let rawName = p.isCustomName ? p.name : (p.id.startsWith("bento_custom_")
       ? (window.i18n ? window.i18n.t("bento_custom_name") : p.name)
       : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name));
 
     if (item.selectedSize) {
-      tName += ` (${item.selectedSize})`;
+      rawName += ` (${item.selectedSize})`;
     }
-    const tRemove = window.i18n ? window.i18n.t("cart_lbl_remove") : "Удалить";
+    const tName = escapeHTML(rawName);
+    const tRemove = escapeHTML(window.i18n ? window.i18n.t("cart_lbl_remove") : "Удалить");
+    const tImage = escapeHTML(p.image);
     const itemPrice = item.price !== undefined ? item.price : p.price;
 
     return `
@@ -2043,7 +2045,7 @@ function updateCartUi() {
           </span>
         </div>
         <div class="cart-item-inner">
-          <img src="${p.image}" alt="${tName}" class="cart-item-img" width="64" height="64">
+          <img src="${tImage}" alt="${tName}" class="cart-item-img" width="64" height="64">
           <div class="cart-item-details">
             <h5 class="cart-item-name">${tName}</h5>
             <span class="cart-item-price">PLACEHOLDER_ITEM_PRICE ₸</span>
@@ -2391,7 +2393,7 @@ function renderAdminCatalog() {
     return `
       <div class="admin-product-row" data-id="${p.id}">
         <div class="admin-prod-img-container" onclick="triggerAdminImageUpload('${p.id}')">
-          ${p.image ? `<img src="${p.image}" alt="${pName}" class="admin-prod-img" width="50" height="50">` : `<div class="admin-prod-img empty-admin-img" style="background-color: var(--bg-tertiary);"></div>`}
+          ${p.image ? `<img src="${escapeHTML(p.image)}" alt="${pName}" class="admin-prod-img" width="50" height="50">` : `<div class="admin-prod-img empty-admin-img" style="background-color: var(--bg-tertiary);"></div>`}
           <div class="admin-prod-img-overlay">
             <span>Изменить</span>
           </div>
