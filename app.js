@@ -1,3 +1,26 @@
+
+// ----------------------------
+// LocalStorage Orders History Helpers
+// ----------------------------
+function getOrdersHistory() {
+  try {
+    const savedHistory = localStorage.getItem("nazcake_orders_history");
+    if (savedHistory) {
+      return JSON.parse(savedHistory);
+    }
+  } catch (e) {
+    console.warn("Failed to parse orders history:", e);
+  }
+  return [];
+}
+
+function saveOrdersHistory(history) {
+  try {
+    localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
+  } catch (e) {
+    console.warn("Failed to save orders history:", e);
+  }
+}
 // Premium Page Preloader removal logic
 window.addEventListener("load", () => {
   const preloader = document.getElementById("page-preloader");
@@ -2804,17 +2827,9 @@ async function handleCheckoutSubmit(e) {
     subtotal: subtotal,
     status: "new"
   };
-  try {
-    let history = [];
-    const savedHistory = localStorage.getItem("nazcake_orders_history");
-    if (savedHistory) {
-      history = JSON.parse(savedHistory);
-    }
-    history.unshift(newOrder);
-    localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
-  } catch (e) {
-    console.warn("Failed to save order to history:", e);
-  }
+  let history = getOrdersHistory();
+  history.unshift(newOrder);
+  saveOrdersHistory(history);
 
   window.open(waUrl, '_blank');
   orderSucceeded();
@@ -3248,15 +3263,7 @@ function renderAdminOrders() {
   const listContainer = document.getElementById("admin-orders-list");
   if (!listContainer) return;
 
-  let history = [];
-  try {
-    const savedHistory = localStorage.getItem("nazcake_orders_history");
-    if (savedHistory) {
-      history = JSON.parse(savedHistory);
-    }
-  } catch (e) {
-    console.warn(e);
-  }
+  let history = getOrdersHistory();
 
   if (history.length === 0) {
     const tEmpty = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Тапсырыстар әлі жоқ" : "Заказов пока нет";
@@ -3329,23 +3336,15 @@ function renderAdminOrders() {
 
 // Global status changer
 window.changeOrderStatus = function(orderId, newStatus) {
-  try {
-    let history = [];
-    const savedHistory = localStorage.getItem("nazcake_orders_history");
-    if (savedHistory) {
-      history = JSON.parse(savedHistory);
+  let history = getOrdersHistory();
+  history = history.map(order => {
+    if (order.id === orderId) {
+      return { ...order, status: newStatus };
     }
-    history = history.map(order => {
-      if (order.id === orderId) {
-        return { ...order, status: newStatus };
-      }
-      return order;
-    });
-    localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
-    renderAdminOrders();
-  } catch (e) {
-    console.warn(e);
-  }
+    return order;
+  });
+  saveOrdersHistory(history);
+  renderAdminOrders();
 };
 // ----------------------------
 
@@ -3435,20 +3434,12 @@ function saveKaspiOrder(name, phone, productName, qty, price) {
     status: "new"
   };
 
-  try {
-    let history = [];
-    const savedHistory = localStorage.getItem("nazcake_orders_history");
-    if (savedHistory) {
-      history = JSON.parse(savedHistory);
-    }
-    history.unshift(newOrder);
-    localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
-    
-    if (typeof renderAdminOrders === "function") {
-      renderAdminOrders();
-    }
-  } catch (e) {
-    console.warn("Failed to save order to history:", e);
+  let history = getOrdersHistory();
+  history.unshift(newOrder);
+  saveOrdersHistory(history);
+
+  if (typeof renderAdminOrders === "function") {
+    renderAdminOrders();
   }
 }
 
