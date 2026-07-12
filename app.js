@@ -3823,6 +3823,8 @@ if (typeof module !== 'undefined') {
     removeFromCart: typeof removeFromCart !== 'undefined' ? removeFromCart : null,
     updateCartUi: typeof updateCartUi !== 'undefined' ? updateCartUi : null,
     updateAdminImagePreview: typeof updateAdminImagePreview !== 'undefined' ? updateAdminImagePreview : null,
+    getHaversineDistance: typeof getHaversineDistance !== 'undefined' ? getHaversineDistance : null,
+    deg2rad: typeof deg2rad !== 'undefined' ? deg2rad : null,
     adjustColorBrightness: typeof adjustColorBrightness !== 'undefined' ? adjustColorBrightness : null
   };
 }
