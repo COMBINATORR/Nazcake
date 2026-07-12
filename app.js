@@ -1603,7 +1603,7 @@ function createProductCardHtml(p) {
     <div class="${cardClass} reveal-item" data-id="${p.id}">
       <div class="product-img-wrapper btn-preview">
         ${activeBadge}
-        <img src="${p.image}" alt="${tName}" class="lazy-image loading" loading="lazy" onload="this.classList.remove('loading')">
+        <img src="${p.image}" alt="${tName}" class="lazy-image loading" loading="lazy" width="360" height="360" onload="this.classList.remove('loading')">
       </div>
       <div class="product-info">
         <span class="product-category">${tCategoryLabel}</span>
@@ -2003,7 +2003,7 @@ function updateCartUi() {
           </span>
         </div>
         <div class="cart-item-inner">
-          <img src="${p.image}" alt="${tName}" class="cart-item-img">
+          <img src="${p.image}" alt="${tName}" class="cart-item-img" width="64" height="64">
           <div class="cart-item-details">
             <h5 class="cart-item-name">${tName}</h5>
             <span class="cart-item-price">PLACEHOLDER_ITEM_PRICE ₸</span>
@@ -2353,7 +2353,7 @@ function renderAdminCatalog() {
     return `
       <div class="admin-product-row" data-id="${p.id}">
         <div class="admin-prod-img-container" onclick="triggerAdminImageUpload('${p.id}')">
-          ${p.image ? `<img src="${p.image}" alt="${pName}" class="admin-prod-img">` : `<div class="admin-prod-img empty-admin-img" style="background-color: var(--bg-tertiary);"></div>`}
+          ${p.image ? `<img src="${p.image}" alt="${pName}" class="admin-prod-img" width="50" height="50">` : `<div class="admin-prod-img empty-admin-img" style="background-color: var(--bg-tertiary);"></div>`}
           <div class="admin-prod-img-overlay">
             <span>Изменить</span>
           </div>

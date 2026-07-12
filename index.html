@@ -247,7 +247,7 @@
       </div>
       <div class="hero-image-wrapper">
         <div class="hero-img-backdrop"></div>
-        <img src="images/dessert_chocolate_design.webp" alt="Роскошный праздничный торт Nazcake" class="hero-img">
+        <img src="images/dessert_chocolate_design.webp" alt="Роскошный праздничный торт Nazcake" class="hero-img" width="600" height="600">
       </div>
     </div>
   </section>
@@ -263,7 +263,7 @@
   <section id="about" class="about-section">
     <div class="about-container">
       <div class="about-image-side">
-        <img src="images/pastry_tea_set.webp" alt="Изысканные десерты Nazcake" class="about-img">
+        <img src="images/pastry_tea_set.webp" alt="Изысканные десерты Nazcake" class="about-img" width="600" height="400">
       </div>
       <div class="about-content-side">
         <span class="section-subtitle reveal-item" data-i18n="about_subtitle">Наша философия</span>
@@ -685,11 +685,11 @@
         <h4 class="form-title" data-i18n="cart_checkout_title">Оформление Заказа</h4>
         
         <div class="form-group">
-          <input type="text" id="checkout-name" class="custom-input" data-i18n-placeholder="cart_input_name" placeholder="Ваше Имя" required>
+          <input type="text" id="checkout-name" name="name" autocomplete="name" class="custom-input" data-i18n-placeholder="cart_input_name" placeholder="Ваше Имя" required>
         </div>
         
         <div class="form-group">
-          <input type="tel" id="checkout-phone" class="custom-input" data-i18n-placeholder="cart_input_phone" placeholder="Номер Телефона (+7...)" required>
+          <input type="tel" id="checkout-phone" name="tel" autocomplete="tel" class="custom-input" data-i18n-placeholder="cart_input_phone" placeholder="Номер Телефона (+7…)" required>
         </div>
         
         <div class="form-group">
@@ -707,7 +707,7 @@
         </div>
         
         <div class="form-group hidden" id="checkout-address-group">
-          <input type="text" id="checkout-address" class="custom-input" data-i18n-placeholder="cart_input_address" placeholder="Адрес доставки в Атырау">
+          <input type="text" id="checkout-address" name="address" autocomplete="street-address" class="custom-input" data-i18n-placeholder="cart_input_address" placeholder="Адрес доставки в Атырау">
           <span class="address-hint" data-i18n="cart_address_hint">Для точного расчета стоимости доставки воспользуйтесь калькулятором на сайте.</span>
         </div>
         <button type="submit" class="btn btn-primary btn-gradient w-100" id="checkout-submit-btn" data-i18n="cart_btn_checkout">Оформить заказ в WhatsApp</button>
@@ -807,11 +807,11 @@
       <form id="admin-login-form" class="admin-login-form">
         <div class="form-group">
           <label class="control-label">Логин</label>
-          <input type="text" id="admin-username" class="custom-input" value="Admin" readonly>
+          <input type="text" id="admin-username" name="username" autocomplete="username" spellcheck="false" class="custom-input" value="Admin" readonly>
         </div>
         <div class="form-group">
           <label class="control-label">Пароль</label>
-          <input type="password" id="admin-password" class="custom-input" placeholder="Введите пароль" required autocomplete="current-password">
+          <input type="password" id="admin-password" name="password" class="custom-input" placeholder="Введите пароль" required autocomplete="current-password">
         </div>
         <div class="admin-login-error hidden" id="admin-login-error-msg" data-i18n="admin_login_err">Неверный пароль!</div>
         <button type="submit" class="btn btn-primary btn-gradient w-100" data-i18n="admin_login_btn">Войти</button>
@@ -852,7 +852,7 @@
           </div>
           <div class="admin-filter-group">
             <label for="admin-filter-search" data-i18n="admin_filter_search_lbl">Поиск:</label>
-            <input type="text" id="admin-filter-search" class="admin-search-input" placeholder="Поиск по названию..." data-i18n-placeholder="admin_filter_search_ph">
+            <input type="text" id="admin-filter-search" class="admin-search-input" placeholder="Поиск по названию…" data-i18n-placeholder="admin_filter_search_ph">
           </div>
         </div>
         <div class="admin-catalog-list" id="admin-catalog-list">
@@ -906,12 +906,12 @@
         
         <div class="form-group" style="text-align: left; margin-bottom: 15px;">
           <label for="kaspi-name" style="font-size: 0.85rem; font-weight: 700; margin-bottom: 6px; display: block;" data-i18n="cart_input_name">Ваше Имя</label>
-          <input type="text" id="kaspi-name" class="contact-input" placeholder="Иван" style="width: 100%; height: 44px; padding: 0 12px; border-radius: 12px; border: 1px solid var(--border-color); font-family: var(--font-body); font-size: 0.95rem;">
+          <input type="text" id="kaspi-name" name="name" autocomplete="name" class="contact-input" placeholder="Иван" style="width: 100%; height: 44px; padding: 0 12px; border-radius: 12px; border: 1px solid var(--border-color); font-family: var(--font-body); font-size: 0.95rem;">
         </div>
         
         <div class="form-group" style="text-align: left; margin-bottom: 20px;">
-          <label for="kaspi-phone" style="font-size: 0.85rem; font-weight: 700; margin-bottom: 6px; display: block;" data-i18n="cart_input_phone">Номер Телефона (+7...)</label>
-          <input type="tel" id="kaspi-phone" class="contact-input" placeholder="+7 (701) 123-45-67" style="width: 100%; height: 44px; padding: 0 12px; border-radius: 12px; border: 1px solid var(--border-color); font-family: var(--font-body); font-size: 0.95rem;">
+          <label for="kaspi-phone" style="font-size: 0.85rem; font-weight: 700; margin-bottom: 6px; display: block;" data-i18n="cart_input_phone">Номер Телефона (+7…)</label>
+          <input type="tel" id="kaspi-phone" name="tel" autocomplete="tel" class="contact-input" placeholder="+7 (701) 123-45-67" style="width: 100%; height: 44px; padding: 0 12px; border-radius: 12px; border: 1px solid var(--border-color); font-family: var(--font-body); font-size: 0.95rem;">
         </div>
 
         <div style="background-color: var(--bg-secondary); padding: 15px; border-radius: 16px; margin-bottom: 20px; text-align: left;">
