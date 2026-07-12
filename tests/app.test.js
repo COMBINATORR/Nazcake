@@ -142,4 +142,25 @@ describe('App Functions', () => {
     expect(dist).toBeGreaterThan(340);
     expect(dist).toBeLessThan(350);
   });
+
+  describe('calculateDeliveryTime', () => {
+    beforeEach(() => {
+      const codeWithExports = appJsCode + "\nwindow.calculateDeliveryTime = calculateDeliveryTime;";
+      eval(codeWithExports);
+    });
+
+    it('should calculate time for 0 distance correctly', () => {
+      expect(window.calculateDeliveryTime(0)).toBe(20);
+    });
+
+    it('should calculate time for integer distance correctly', () => {
+      expect(window.calculateDeliveryTime(5)).toBe(40);
+      expect(window.calculateDeliveryTime(10)).toBe(60);
+    });
+
+    it('should round appropriately for fractional distance', () => {
+      expect(window.calculateDeliveryTime(5.125)).toBe(41);
+      expect(window.calculateDeliveryTime(5.1)).toBe(40);
+    });
+  });
 });
