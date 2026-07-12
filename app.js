@@ -2587,6 +2587,21 @@ function calculateDeliveryTime(distance) {
   return Math.round(distance * 4) + 20;
 }
 
+function getDeliveryErrorMessage(msg) {
+  if (window.i18n) {
+    if (msg === "delivery_err_geocoder" || msg === "delivery_err_notfound" || msg === "delivery_err_outofbounds") {
+      return window.i18n.t(msg);
+    } else {
+      return window.i18n.t("delivery_err_unknown");
+    }
+  } else {
+    if (msg === "delivery_err_geocoder") return "Не удалось подключиться к серверу геокодирования.";
+    if (msg === "delivery_err_notfound") return "Адрес не найден. Пожалуйста, проверьте правильность написания.";
+    if (msg === "delivery_err_outofbounds") return "Яндекс.Доставка (Экспресс) доступна только в пределах города Атырау.";
+    return "Ошибка при расчете стоимости доставки.";
+  }
+}
+
 function showDeliveryError(msg, errorBox, resultsBox) {
   errorBox.textContent = msg;
   errorBox.classList.remove("hidden");
