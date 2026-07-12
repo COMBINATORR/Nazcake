@@ -1588,31 +1588,32 @@ function renderCatalog(category) {
 }
 
 function createProductCardHtml(p) {
-  const tName = escapeHTML(p.isCustomName ? p.name : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name));
-  const tCategoryLabel = escapeHTML(window.i18n ? window.i18n.t(`catalog_cat_${p.category}`) : p.categoryLabel);
-  const tBadge = escapeHTML(p.badge ? (window.i18n ? window.i18n.t(getBadgeTranslationKey(p.badge)) : p.badge) : "");
-  const tUnit = escapeHTML(window.i18n ? window.i18n.t(getUnitTranslationKey(p.unit)) : p.unit);
+  const { id, name, category, categoryLabel, badge, unit, price, sizeOptions, inStock, stock, image, isCustomName } = p;
+  const tName = escapeHTML(isCustomName ? name : (window.i18n ? window.i18n.t(`p_${id}_name`) : name));
+  const tCategoryLabel = escapeHTML(window.i18n ? window.i18n.t(`catalog_cat_${category}`) : categoryLabel);
+  const tBadge = escapeHTML(badge ? (window.i18n ? window.i18n.t(getBadgeTranslationKey(badge)) : badge) : "");
+  const tUnit = escapeHTML(window.i18n ? window.i18n.t(getUnitTranslationKey(unit)) : unit);
   
-  const isOutOfStock = p.inStock === false || (p.stock !== undefined && p.stock <= 0);
+  const isOutOfStock = inStock === false || (stock !== undefined && stock <= 0);
   const cardClass = isOutOfStock ? "product-card out-of-stock" : "product-card";
   const tOutOfStock = window.i18n ? window.i18n.t("catalog_out_of_stock") : "Нет в наличии";
   const outOfStockBadge = isOutOfStock ? `<span class="product-badge product-badge-outofstock">${tOutOfStock}</span>` : "";
-  const activeBadge = outOfStockBadge || (p.badge ? `<span class="product-badge">${tBadge}</span>` : "");
+  const activeBadge = outOfStockBadge || (badge ? `<span class="product-badge">${tBadge}</span>` : "");
   
   return `
-    <div class="${cardClass} reveal-item" data-id="${p.id}">
+    <div class="${cardClass} reveal-item" data-id="${id}">
       <div class="product-img-wrapper btn-preview">
         ${activeBadge}
-        <img src="${p.image}" alt="${tName}" class="lazy-image loading" loading="lazy" width="360" height="360" onload="this.classList.remove('loading')">
+        <img src="${image}" alt="${tName}" class="lazy-image loading" loading="lazy" width="360" height="360" onload="this.classList.remove('loading')">
       </div>
       <div class="product-info">
         <span class="product-category">${tCategoryLabel}</span>
         <h3 class="product-name btn-preview">${tName}</h3>
         <div class="product-footer">
           <span class="product-price">${
-            p.sizeOptions && p.sizeOptions.length > 0
-              ? `${window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "бастап" : "от"} ${Math.min(...p.sizeOptions.map(o => o.price)).toLocaleString()} ₸`
-              : `${p.price.toLocaleString()} ₸ / ${tUnit}`
+            sizeOptions && sizeOptions.length > 0
+              ? `${window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "бастап" : "от"} ${Math.min(...sizeOptions.map(o => o.price)).toLocaleString()} ₸`
+              : `${price.toLocaleString()} ₸ / ${tUnit}`
           }</span>
           <button class="btn-card-add btn-add-to-cart" aria-label="Добавить в корзину" ${isOutOfStock ? 'disabled' : ''}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
@@ -1746,13 +1747,15 @@ function openProductPreview(id) {
   const p = products.find(prod => prod.id === id);
   if (!p) return;
 
-  const tName = p.isCustomName ? p.name : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name);
+  const { name, price, sizeOptions, ingredients, unit, image, isCustomName } = p;
+
+  const tName = isCustomName ? name : (window.i18n ? window.i18n.t(`p_${id}_name`) : name);
   const tDesc = getProductDesc(p);
-  const tIngredients = window.i18n ? window.i18n.t(`p_${p.id}_ingredients`) : p.ingredients;
-  const tUnit = window.i18n ? window.i18n.t(getUnitTranslationKey(p.unit)) : p.unit;
+  const tIngredients = window.i18n ? window.i18n.t(`p_${id}_ingredients`) : ingredients;
+  const tUnit = window.i18n ? window.i18n.t(getUnitTranslationKey(unit)) : unit;
 
   activePreviewProductId = id;
-  modalProductImg.src = p.image;
+  modalProductImg.src = image;
   modalProductImg.alt = tName;
   modalProductTitle.textContent = tName;
   modalProductDesc.textContent = tDesc;
@@ -1760,20 +1763,20 @@ function openProductPreview(id) {
   modalQtyVal.textContent = 1; // Reset qty in modal
 
   let selectedSize = null;
-  let selectedPrice = p.price;
+  let selectedPrice = price;
 
-  if (p.sizeOptions && p.sizeOptions.length > 0) {
+  if (sizeOptions && sizeOptions.length > 0) {
     if (modalSizeGroup && modalSizeContainer) {
       modalSizeGroup.classList.remove("hidden");
       
-      modalSizeContainer.innerHTML = p.sizeOptions.map((opt, index) => {
+      modalSizeContainer.innerHTML = sizeOptions.map((opt, index) => {
         const isActive = index === 0 ? "active" : "";
         const sizeLabel = opt.size;
         return `<button class="size-option-btn ${isActive}" data-index="${index}" data-price="${opt.price}">${sizeLabel}</button>`;
       }).join("");
 
-      selectedSize = p.sizeOptions[0].size;
-      selectedPrice = p.sizeOptions[0].price;
+      selectedSize = sizeOptions[0].size;
+      selectedPrice = sizeOptions[0].price;
 
       modalSizeContainer.querySelectorAll(".size-option-btn").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -1781,8 +1784,8 @@ function openProductPreview(id) {
           modalSizeContainer.querySelectorAll(".size-option-btn").forEach(b => b.classList.remove("active"));
           btn.classList.add("active");
           const index = parseInt(btn.getAttribute("data-index"));
-          selectedSize = p.sizeOptions[index].size;
-          selectedPrice = p.sizeOptions[index].price;
+          selectedSize = sizeOptions[index].size;
+          selectedPrice = sizeOptions[index].price;
           modalProductPrice.textContent = `${selectedPrice.toLocaleString()} ₸ / ${tUnit}`;
         });
       });
@@ -2203,18 +2206,16 @@ function drawSprinkles(type, sprinklesGroup) {
   sprinklesGroup.innerHTML = "";
   if (type === "none") return;
 
-let points = [];
-  // Generate static spread of sprinkles inside ellipse boundaries
+  // Generate static spread of sprinkles inside ellipse boundaries using modern ES6 Array.from()
   // x = 150 + cos(t) * rx * scale, y = 150 + sin(t) * ry * scale
   const count = type === "pearls" ? 30 : 20;
-  for (let i = 0; i < count; i++) {
+  const points = Array.from({ length: count }, () => {
     const angle = Math.random() * Math.PI * 2;
     const rScale = Math.random() * 0.75 + 0.1; // keep away from edges
     const x = 150 + Math.cos(angle) * 90 * rScale;
     const y = 150 + Math.sin(angle) * 20 * rScale;
-    points.push({ x, y });
-
-  }
+    return { x, y };
+  });
 
   points.forEach((pt, idx) => {
     if (type === "pearls") {
