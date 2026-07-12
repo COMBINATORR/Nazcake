@@ -3788,6 +3788,17 @@ function setupBestsellersCarousel() {
 
 // ----------------------------
 
+function handleEmptyCartShopClick() {
+  triggerHapticFeedback();
+  const sidebar = document.getElementById("cart-sidebar");
+  const overlay = document.getElementById("cart-overlay");
+  closeModal(sidebar, overlay);
+  const catalogEl = document.getElementById("catalog");
+  if (catalogEl) {
+    catalogEl.scrollIntoView({ behavior: "smooth" });
+  }
+}
+
 if (typeof module !== 'undefined') {
   module.exports = {
     addToCart: typeof addToCart !== 'undefined' ? addToCart : null,
