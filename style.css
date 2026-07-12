@@ -2,8 +2,8 @@
 
 :root {
   /* Fonts */
-  --font-title: 'Montserrat', sans-serif;
-  --font-accent: 'Cormorant Garamond', serif;
+  --font-title: 'Playfair Display', serif;
+  --font-accent: 'Space Mono', monospace;
   --font-body: 'Inter', sans-serif;
 
   /* Colors (Light Theme, high contrast, warm premium palette) */
@@ -3157,5 +3157,59 @@ body.preloader-active {
 
 .cart-btn.jiggle {
   animation: cart-bounce 0.5s ease-in-out;
+}
+
+/* Mobile-First Layout Improvements */
+@media (max-width: 768px) {
+  /* Horizontal scroll for category tabs on mobile */
+  .catalog-tabs {
+    display: flex !important;
+    justify-content: flex-start !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 10px 20px;
+    margin: 0 -20px 20px -20px;
+    scrollbar-width: none;
+  }
+  .catalog-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .catalog-tabs .tab-btn {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    padding: 8px 16px;
+  }
+
+  /* Single column vertical grid for catalog items on mobile */
+  #catalog-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+    padding: 10px 20px !important;
+    margin: 0 !important;
+    overflow-x: visible !important;
+  }
+  
+  #catalog-grid .product-card {
+    flex: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+  }
+
+  #catalog-grid .product-card .product-img-wrapper {
+    padding-bottom: 95% !important; /* Huge visual */
+  }
+
+  /* Premium Bottom Sheet border radius and touch handles */
+  .preview-modal-container {
+    border-top-left-radius: 24px !important;
+    border-top-right-radius: 24px !important;
+    overflow: hidden;
+  }
 }
 

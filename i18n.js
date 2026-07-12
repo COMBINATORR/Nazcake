@@ -120,6 +120,16 @@
       preview_lbl_ingredients: "Состав:",
       preview_lbl_size: "Выберите размер:",
       preview_btn_add: "Добавить в корзину",
+      preview_btn_kaspi_quick: "Быстрый заказ (Kaspi QR)",
+      kaspi_title: "Быстрый заказ",
+      kaspi_subtitle: "Заполните данные для оплаты по Kaspi QR",
+      kaspi_pay_btn: "Сгенерировать QR",
+      kaspi_qr_title: "Оплата по Kaspi QR",
+      kaspi_qr_subtitle: "Откройте приложение Kaspi и отсканируйте код:",
+      kaspi_success_btn: "Оплата подтверждена",
+      kaspi_success_title: "Заказ оформлен!",
+      kaspi_success_desc: "Оплата получена. Наш курьер свяжется с вами в течение 10 минут для уточнения адреса доставки.",
+      kaspi_close_btn: "Отлично",
 
       // Cart Sidebar
       cart_title: "Ваша Корзина",
@@ -796,6 +806,16 @@
       preview_lbl_ingredients: "Құрамы:",
       preview_lbl_size: "Өлшемді таңдаңыз:",
       preview_btn_add: "Себетке қосу",
+      preview_btn_kaspi_quick: "Тез тапсырыс (Kaspi QR)",
+      kaspi_title: "Тез тапсырыс",
+      kaspi_subtitle: "Kaspi QR арқылы төлеу үшін деректерді толтырыңыз",
+      kaspi_pay_btn: "QR-кодты шығару",
+      kaspi_qr_title: "Kaspi QR арқылы төлеу",
+      kaspi_qr_subtitle: "Kaspi қосымшасын ашып, кодты сканерлеңіз:",
+      kaspi_success_btn: "Төлем расталды",
+      kaspi_success_title: "Тапсырыс қабылданды!",
+      kaspi_success_desc: "Төлем қабылданды. Курьер жеткізу мекенжайын нақтылау үшін 10 минут ішінде хабарласады.",
+      kaspi_close_btn: "Тамаша",
 
       // Cart Sidebar
       cart_title: "Сіздің Себетіңіз",

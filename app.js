@@ -1518,6 +1518,8 @@ document.addEventListener("DOMContentLoaded", () => {
   setupCartSwipeClose();
   setupModalSwipeClose();
   initScrollReveal();
+  loadCachedCustomerData();
+  setupKaspiQrCheckout();
   
   if (window.i18n) {
     window.i18n.onLanguageChange(() => {
@@ -2647,6 +2649,12 @@ async function handleCheckoutSubmit(e) {
   const method = document.querySelector('input[name="delivery-method"]:checked').value;
   const address = document.getElementById("checkout-address").value.trim();
 
+  // Save customer data to localStorage
+  localStorage.setItem("nazcake_customer_name", name);
+  localStorage.setItem("nazcake_customer_phone", phone);
+  localStorage.setItem("nazcake_customer_address", address);
+  localStorage.setItem("nazcake_customer_method", method);
+
   const t = window.i18n ? window.i18n.t.bind(window.i18n) : (k) => k;
 
   if (cart.length === 0) {
@@ -3277,6 +3285,298 @@ window.changeOrderStatus = function(orderId, newStatus) {
     console.warn(e);
   }
 };
+// ----------------------------
+
+// ----------------------------
+// Kaspi QR & Auto-Fill & Phone Mask UX Improvements
+// ----------------------------
+
+function formatPhoneInput(e) {
+  let input = e.target.value.replace(/\D/g, "");
+  if (input.startsWith("7") || input.startsWith("8")) {
+    input = input.substring(1);
+  }
+  input = input.substring(0, 10);
+  
+  let formatted = "";
+  if (input.length > 0) {
+    formatted += "+7 (";
+    if (input.length <= 3) {
+      formatted += input;
+    } else {
+      formatted += input.substring(0, 3) + ") ";
+      if (input.length <= 6) {
+        formatted += input.substring(3);
+      } else {
+        formatted += input.substring(3, 6) + "-";
+        if (input.length <= 8) {
+          formatted += input.substring(6);
+        } else {
+          formatted += input.substring(6, 8) + "-" + input.substring(8);
+        }
+      }
+    }
+  }
+  e.target.value = formatted;
+}
+
+function loadCachedCustomerData() {
+  const cachedName = localStorage.getItem("nazcake_customer_name");
+  const cachedPhone = localStorage.getItem("nazcake_customer_phone");
+  const cachedAddress = localStorage.getItem("nazcake_customer_address");
+  const cachedMethod = localStorage.getItem("nazcake_customer_method");
+
+  if (cachedName) {
+    const cName = document.getElementById("checkout-name");
+    const kName = document.getElementById("kaspi-name");
+    if (cName) cName.value = cachedName;
+    if (kName) kName.value = cachedName;
+  }
+  if (cachedPhone) {
+    const cPhone = document.getElementById("checkout-phone");
+    const kPhone = document.getElementById("kaspi-phone");
+    if (cPhone) cPhone.value = cachedPhone;
+    if (kPhone) kPhone.value = cachedPhone;
+  }
+  if (cachedAddress) {
+    const cAddress = document.getElementById("checkout-address");
+    if (cAddress) cAddress.value = cachedAddress;
+  }
+  if (cachedMethod) {
+    const radio = document.querySelector(`input[name="delivery-method"][value="${cachedMethod}"]`);
+    if (radio) {
+      radio.checked = true;
+      // Trigger change event to show/hide address group
+      const event = new Event('change');
+      radio.dispatchEvent(event);
+    }
+  }
+}
+
+function saveKaspiOrder(name, phone, productName, qty, price) {
+  const newOrder = {
+    id: "NZ-K-" + Math.floor(100000 + Math.random() * 900000),
+    date: new Date().toLocaleString("ru-RU"),
+    customerName: name,
+    customerPhone: phone,
+    deliveryMethod: "pickup",
+    address: "",
+    items: [
+      {
+        id: activePreviewProductId,
+        name: productName,
+        qty: qty,
+        price: price
+      }
+    ],
+    subtotal: qty * price,
+    status: "new"
+  };
+
+  try {
+    let history = [];
+    const savedHistory = localStorage.getItem("nazcake_orders_history");
+    if (savedHistory) {
+      history = JSON.parse(savedHistory);
+    }
+    history.unshift(newOrder);
+    localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
+    
+    if (typeof renderAdminOrders === "function") {
+      renderAdminOrders();
+    }
+  } catch (e) {
+    console.warn("Failed to save order to history:", e);
+  }
+}
+
+function setupKaspiQrCheckout() {
+  const quickKaspiBtn = document.getElementById("modal-quick-kaspi-btn");
+  const kaspiModal = document.getElementById("kaspi-qr-modal");
+  const closeKaspiBtn = document.getElementById("close-kaspi-modal-btn");
+  const btnKaspiGenerate = document.getElementById("btn-kaspi-generate");
+  const btnKaspiComplete = document.getElementById("btn-kaspi-complete");
+  const btnKaspiCloseFinal = document.getElementById("btn-kaspi-close-final");
+
+  const stepForm = document.getElementById("kaspi-form-step");
+  const stepQr = document.getElementById("kaspi-qr-step");
+  const stepSuccess = document.getElementById("kaspi-success-step");
+
+  const kaspiProdName = document.getElementById("kaspi-product-name");
+  const kaspiProdQty = document.getElementById("kaspi-product-qty");
+  const kaspiTotalPrice = document.getElementById("kaspi-total-price");
+  const kaspiQrAmount = document.getElementById("kaspi-qr-amount");
+  const kaspiQrPlaceholder = document.getElementById("kaspi-qr-placeholder");
+
+  if (!quickKaspiBtn || !kaspiModal) return;
+
+  // Phone masks
+  const chPhone = document.getElementById("checkout-phone");
+  const kaPhone = document.getElementById("kaspi-phone");
+  if (chPhone) chPhone.addEventListener("input", formatPhoneInput);
+  if (kaPhone) kaPhone.addEventListener("input", formatPhoneInput);
+
+  // Close helper
+  const closeKaspi = () => {
+    triggerHapticFeedback();
+    kaspiModal.style.display = "none";
+    document.body.classList.remove("modal-open");
+  };
+
+  closeKaspiBtn.addEventListener("click", closeKaspi);
+  btnKaspiCloseFinal.addEventListener("click", closeKaspi);
+  kaspiModal.addEventListener("click", (e) => {
+    if (e.target === kaspiModal) closeKaspi();
+  });
+
+  quickKaspiBtn.addEventListener("click", () => {
+    triggerHapticFeedback();
+    
+    // Close preview modal
+    const previewModal = document.getElementById("preview-modal");
+    if (previewModal) {
+      previewModal.style.display = "none";
+    }
+
+    // Open Kaspi QR Modal
+    kaspiModal.style.display = "flex";
+    document.body.classList.add("modal-open");
+
+    // Reset steps
+    stepForm.style.display = "block";
+    stepQr.style.display = "none";
+    stepSuccess.style.display = "none";
+
+    // Populate data
+    const p = products.find(prod => prod.id === activePreviewProductId);
+    if (p) {
+      let displayName = window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name;
+      const selectedSizeBtn = modalSizeContainer ? modalSizeContainer.querySelector(".size-btn.active") : null;
+      const selectedSize = selectedSizeBtn ? selectedSizeBtn.getAttribute("data-size") : null;
+      if (selectedSize) {
+        displayName += ` (${selectedSize})`;
+      }
+
+      // Quantity
+      const qtyVal = parseInt(document.getElementById("modal-qty-val").textContent) || 1;
+
+      // Price calculation
+      let itemPrice = p.price;
+      if (selectedSize && p.sizeOptions) {
+        const opt = p.sizeOptions.find(o => o.size === selectedSize);
+        if (opt) itemPrice = opt.price;
+      }
+
+      const total = itemPrice * qtyVal;
+
+      kaspiProdName.textContent = displayName;
+      kaspiProdQty.textContent = `x${qtyVal}`;
+      kaspiTotalPrice.textContent = `${total.toLocaleString()} ₸`;
+      kaspiQrAmount.textContent = `${total.toLocaleString()} ₸`;
+
+      // Draw custom simulated Kaspi QR code inside placeholder using custom SVG
+      kaspiQrPlaceholder.innerHTML = `
+        <svg viewBox="0 0 100 100" width="160" height="160" style="display: block;">
+          <!-- Corner anchors -->
+          <rect x="5" y="5" width="25" height="25" fill="#e11d48" rx="2"/>
+          <rect x="9" y="9" width="17" height="17" fill="white" rx="1"/>
+          <rect x="13" y="13" width="9" height="9" fill="#e11d48"/>
+
+          <rect x="70" y="5" width="25" height="25" fill="#e11d48" rx="2"/>
+          <rect x="74" y="74" width="17" height="17" fill="white" rx="1"/>
+          <rect x="78" y="78" width="9" height="9" fill="#e11d48"/>
+
+          <rect x="5" y="70" width="25" height="25" fill="#e11d48" rx="2"/>
+          <rect x="9" y="74" width="17" height="17" fill="white" rx="1"/>
+          <rect x="13" y="78" width="9" height="9" fill="#e11d48"/>
+
+          <!-- Random QR-like blocks -->
+          <rect x="35" y="5" width="8" height="15" fill="#4a2c11"/>
+          <rect x="48" y="12" width="12" height="8" fill="#4a2c11"/>
+          <rect x="35" y="25" width="15" height="8" fill="#4a2c11"/>
+          <rect x="5" y="35" width="15" height="8" fill="#4a2c11"/>
+          <rect x="25" y="35" width="8" height="12" fill="#4a2c11"/>
+          <rect x="40" y="40" width="20" height="20" fill="#e11d48" rx="4"/>
+          <rect x="45" y="45" width="10" height="10" fill="white" rx="2"/>
+          <circle cx="50" cy="50" r="3" fill="#e11d48"/>
+          
+          <rect x="70" y="35" width="8" height="15" fill="#4a2c11"/>
+          <rect x="85" y="42" width="10" height="8" fill="#4a2c11"/>
+          
+          <rect x="35" y="70" width="12" height="8" fill="#4a2c11"/>
+          <rect x="52" y="78" width="8" height="12" fill="#4a2c11"/>
+          <rect x="35" y="85" width="20" height="8" fill="#4a2c11"/>
+          
+          <rect x="70" y="70" width="25" height="25" fill="#e11d48" rx="2"/>
+        </svg>
+      `;
+
+      // Load cache
+      loadCachedCustomerData();
+    }
+  });
+
+  btnKaspiGenerate.addEventListener("click", () => {
+    triggerHapticFeedback();
+    const nameVal = document.getElementById("kaspi-name").value.trim();
+    const phoneVal = document.getElementById("kaspi-phone").value.trim();
+
+    if (!nameVal) {
+      alert(window.i18n ? window.i18n.t("cart_err_empty_cart") : "Пожалуйста, введите ваше имя.");
+      return;
+    }
+    if (phoneVal.length < 17) {
+      alert(window.i18n ? window.i18n.t("cart_err_empty_cart") : "Пожалуйста, введите корректный номер телефона.");
+      return;
+    }
+
+    // Save cache
+    localStorage.setItem("nazcake_customer_name", nameVal);
+    localStorage.setItem("nazcake_customer_phone", phoneVal);
+
+    // Sync checkout form in cart
+    const cName = document.getElementById("checkout-name");
+    const cPhone = document.getElementById("checkout-phone");
+    if (cName) cName.value = nameVal;
+    if (cPhone) cPhone.value = phoneVal;
+
+    // Proceed to QR code step
+    stepForm.style.display = "none";
+    stepQr.style.display = "block";
+  });
+
+  btnKaspiComplete.addEventListener("click", () => {
+    triggerHapticFeedback();
+
+    const nameVal = document.getElementById("kaspi-name").value.trim();
+    const phoneVal = document.getElementById("kaspi-phone").value.trim();
+    const p = products.find(prod => prod.id === activePreviewProductId);
+    
+    if (p) {
+      let displayName = window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name;
+      const selectedSizeBtn = modalSizeContainer ? modalSizeContainer.querySelector(".size-btn.active") : null;
+      const selectedSize = selectedSizeBtn ? selectedSizeBtn.getAttribute("data-size") : null;
+      if (selectedSize) {
+        displayName += ` (${selectedSize})`;
+      }
+
+      const qtyVal = parseInt(document.getElementById("modal-qty-val").textContent) || 1;
+      let itemPrice = p.price;
+      if (selectedSize && p.sizeOptions) {
+        const opt = p.sizeOptions.find(o => o.size === selectedSize);
+        if (opt) itemPrice = opt.price;
+      }
+
+      // Save order to history
+      saveKaspiOrder(nameVal, phoneVal, displayName, qtyVal, itemPrice);
+    }
+
+    // Success step
+    stepQr.style.display = "none";
+    stepSuccess.style.display = "block";
+  });
+}
+
 // ----------------------------
 
 if (typeof module !== 'undefined') {
