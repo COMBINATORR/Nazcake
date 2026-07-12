@@ -1,7 +1,15 @@
-🛡️ Sentinel: [HIGH] Fix XSS vulnerability in Product Cards
+## 🧹 [Code Health] Extract duplicated localStorage order history logic
 
-🚨 Severity: HIGH
-💡 Vulnerability: Product names and category labels from localStorage/admin panel were interpolated directly into `innerHTML` strings in `createProductCardHtml` and `renderAdminCatalog` in `app.js` without sanitization. An attacker (or a user modifying local storage or gaining admin access) could inject malicious scripts.
-🎯 Impact: This allows persistent (Self-)XSS as the malicious payload saved in localStorage would be executed when the product catalog is rendered in the user's browser.
-🔧 Fix: Wrapped all user-controlled/dynamically loaded string variables (`pName`, `tName`, `tCategoryLabel`, `tBadge`, `tUnit`) with the existing `escapeHTML()` function before injecting them into `innerHTML`.
-✅ Verification: Ran `npm test` successfully. Verified `escapeHTML` prevents JS execution on malicious product names. Added a journal entry to `.jules/sentinel.md`.
+**What:**
+Extracted the repeated code pattern for retrieving and parsing `nazcake_orders_history` from `localStorage` into a new shared helper function called `getOrdersHistory()`.
+
+**Why:**
+The application accesses the order history from `localStorage` in four distinct locations (`checkoutSubmit`, `renderAdminOrders`, `changeOrderStatus`, `saveKaspiOrder`). In each place, the exact same `try/catch` and `JSON.parse` logic was written out manually. Extracting this to a single helper function improves code maintainability, reduces lines of code, and ensures any future changes to how history is parsed only need to be made in one place.
+
+**Verification:**
+- Used `git diff` and syntax checks to ensure no typos or syntax errors were introduced.
+- Evaluated scope placement of `getOrdersHistory()` to ensure it's globally available for all call sites.
+- Ran the Jest test suite using `pnpm test` to confirm no regressions.
+
+**Result:**
+The codebase is cleaner and duplication is reduced without altering the existing functionality.
