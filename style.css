@@ -212,8 +212,15 @@ body.dark-theme .main-header.scrolled {
 
 .logo {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
   flex-shrink: 0;
+}
+
+.logo-text-wrapper {
+  display: flex;
+  flex-direction: column;
 }
 
 .logo-main {
@@ -3946,4 +3953,19 @@ body.dark-theme .btn-secondary:hover {
     min-height: 100vh;
     padding: 0;
   }
+}
+
+.footer-logo-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+/* Dark theme logo contrast optimization (brand gold) */
+body.dark-theme .logo-img,
+body.dark-theme .preloader-logo-img,
+body.dark-theme .footer-logo-img {
+  filter: brightness(0) invert(1) sepia(1) saturate(5) hue-rotate(10deg) brightness(0.9);
 }
