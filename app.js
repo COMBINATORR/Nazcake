@@ -1362,8 +1362,9 @@ try {
   const customProducts = localStorage.getItem("nazcake_custom_products");
   if (customProducts) {
     const parsed = JSON.parse(customProducts);
+    const customMap = new Map(parsed.map(cp => [cp.id, cp]));
     products = products.map(p => {
-      const custom = parsed.find(cp => cp.id === p.id);
+      const custom = customMap.get(p.id);
       if (custom) {
         return {
           ...p,
