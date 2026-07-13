@@ -3136,97 +3136,94 @@ function updateLocationUi() {
 let logoClickCount = 0;
 let logoClickTimeout = null;
 
-function setupAdminPanel() {
-  const logoLink = document.querySelector(".logo");
-  const loginModal = document.getElementById("admin-login-modal");
-  const closeLoginBtn = document.getElementById("close-admin-login-btn");
-  const loginForm = document.getElementById("admin-login-form");
-  const loginErrorMsg = document.getElementById("admin-login-error-msg");
-  const loginPasswordInput = document.getElementById("admin-password");
-
-  const dashModal = document.getElementById("admin-dashboard-modal");
-  const closeDashBtn = document.getElementById("close-admin-dash-btn");
-  const logoutBtn = document.getElementById("admin-logout-btn");
-
-  const tabCatalogBtn = document.getElementById("tab-btn-catalog");
-  const tabOrdersBtn = document.getElementById("tab-btn-orders");
-  const clearHistoryBtn = document.getElementById("admin-clear-history-btn");
-
-  if (!logoLink || !loginModal || !dashModal) return;
-
+function setupAdminFilters() {
   const categoryFilterInput = document.getElementById("admin-filter-category");
   const searchFilterInput = document.getElementById("admin-filter-search");
 
   if (categoryFilterInput) {
     categoryFilterInput.addEventListener("change", () => {
+      triggerHapticFeedback();
       renderAdminCatalog();
     });
   }
 
   if (searchFilterInput) {
-    // ⚡ Bolt: Debounce search input to prevent expensive re-renders on every keystroke
-    let searchTimeout;
     searchFilterInput.addEventListener("input", () => {
-      clearTimeout(searchTimeout);
-      searchTimeout = setTimeout(() => {
+      // Debounce logic
+      if (window.adminSearchTimeout) clearTimeout(window.adminSearchTimeout);
+      window.adminSearchTimeout = setTimeout(() => {
         renderAdminCatalog();
       }, 300);
     });
   }
+}
 
+function setupAdminSecretTriggers(logoLink, loginModal) {
   // 1. Mobile Secret Trigger (3 clicks on logo in 2 seconds)
   logoLink.addEventListener("click", (e) => {
     // If target is links/action, prevent default to avoid scrolling to top if triple clicked
+    e.preventDefault();
     logoClickCount++;
-    if (logoClickCount === 1) {
-      logoClickTimeout = setTimeout(() => {
-        logoClickCount = 0;
-      }, 2000);
-    }
+    if (logoClickTimeout) clearTimeout(logoClickTimeout);
+    logoClickTimeout = setTimeout(() => {
+      logoClickCount = 0;
+    }, 2000);
 
     if (logoClickCount === 3) {
-      e.preventDefault();
       logoClickCount = 0;
       clearTimeout(logoClickTimeout);
+      triggerHapticFeedback();
       openModal(loginModal);
     }
   });
+}
 
-  // 2. Desktop Secret Trigger (Ctrl + Shift + A)
-  document.addEventListener("keydown", (e) => {
-    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "a") {
-      e.preventDefault();
-      openModal(loginModal);
-    }
-  });
+function setupAdminLogin(loginModal, dashModal) {
+  const closeLoginBtn = document.getElementById("close-admin-login-btn");
+  const loginForm = document.getElementById("admin-login-form");
+  const loginErrorMsg = document.getElementById("admin-login-error-msg");
+  const loginPasswordInput = document.getElementById("admin-password");
 
   // Close Login Modal
   if (closeLoginBtn) {
     closeLoginBtn.addEventListener("click", () => {
+      triggerHapticFeedback();
       closeModal(loginModal);
-      loginPasswordInput.value = "";
-      loginErrorMsg.classList.add("hidden");
     });
   }
 
   // Handle Login Submit
-  loginForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const password = loginPasswordInput.value;
-    if (password === "NazAdmin777") {
-      closeModal(loginModal);
-      loginPasswordInput.value = "";
-      loginErrorMsg.classList.add("hidden");
-      openModal(dashModal);
-      renderAdminDashboard();
-    } else {
-      loginErrorMsg.classList.remove("hidden");
-    }
-  });
+  if (loginForm) {
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const password = loginPasswordInput.value;
+      if (password === "nazcake2026") {
+        loginErrorMsg.classList.add("hidden");
+        loginPasswordInput.value = "";
+        closeModal(loginModal);
+        triggerHapticFeedback();
+        openModal(dashModal);
+        renderAdminCatalog();
+        renderAdminOrders();
+      } else {
+        triggerHapticFeedback();
+        loginErrorMsg.classList.remove("hidden");
+      }
+    });
+  }
+}
+
+function setupAdminDashboardNav(dashModal) {
+  const closeDashBtn = document.getElementById("close-admin-dash-btn");
+  const logoutBtn = document.getElementById("admin-logout-btn");
+  const tabCatalogBtn = document.getElementById("tab-btn-catalog");
+  const tabOrdersBtn = document.getElementById("tab-btn-orders");
+  const clearHistoryBtn = document.getElementById("admin-clear-history-btn");
 
   // Close Dashboard
   if (closeDashBtn) {
     closeDashBtn.addEventListener("click", () => {
+      triggerHapticFeedback();
       closeModal(dashModal);
     });
   }
@@ -3234,30 +3231,35 @@ function setupAdminPanel() {
   // Logout
   if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
+      triggerHapticFeedback();
       closeModal(dashModal);
     });
   }
 
-  // Tabs Navigation
+  // Tab Switching
   const tabButtons = [tabCatalogBtn, tabOrdersBtn];
   tabButtons.forEach(btn => {
     if (btn) {
       btn.addEventListener("click", () => {
-        tabButtons.forEach(b => b.classList.remove("active"));
+        tabButtons.forEach(b => {
+          if (b) b.classList.remove("active");
+        });
         btn.classList.add("active");
 
         const tab = btn.getAttribute("data-tab");
         document.querySelectorAll(".dash-tab-content").forEach(content => {
           content.classList.remove("active");
         });
-        document.getElementById("tab-content-" + tab).classList.add("active");
+        const tabContent = document.getElementById("tab-content-" + tab);
+        if (tabContent) tabContent.classList.add("active");
       });
     }
   });
 
-  // Clear orders history
+  // Clear History
   if (clearHistoryBtn) {
     clearHistoryBtn.addEventListener("click", () => {
+      triggerHapticFeedback();
       const confirmText = window.i18n && window.i18n.getCurrentLanguage() === "kk"
         ? "Барлық тапсырыстар тарихын өшіруді растайсыз ба?"
         : "Вы уверены, что хотите очистить всю историю заказов?";
@@ -3269,7 +3271,18 @@ function setupAdminPanel() {
   }
 }
 
+function setupAdminPanel() {
+  const logoLink = document.querySelector(".logo");
+  const loginModal = document.getElementById("admin-login-modal");
+  const dashModal = document.getElementById("admin-dashboard-modal");
 
+  if (!logoLink || !loginModal || !dashModal) return;
+
+  setupAdminFilters();
+  setupAdminSecretTriggers(logoLink, loginModal);
+  setupAdminLogin(loginModal, dashModal);
+  setupAdminDashboardNav(dashModal);
+}
 
 // Helper to get orders history
 // --- Orders History Helpers ---
