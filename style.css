@@ -732,7 +732,7 @@ body.dark-theme .ticker-content span {
 /* About Us Section */
 .about-section {
   background-color: var(--bg-secondary);
-  padding: 80px 0;
+  padding: 40px 0;
 }
 
 .about-container {
@@ -797,7 +797,7 @@ body.dark-theme .ticker-content span {
 
 /* Bestsellers Section */
 .bestsellers-section {
-  padding: 80px 0;
+  padding: 40px 0;
   background-color: var(--bg-primary);
 }
 
@@ -1087,7 +1087,7 @@ body.dark-theme .bestsellers-arrow {
 
 /* Catalog Section */
 .catalog-section {
-  padding: 80px 0;
+  padding: 40px 0;
   background-color: var(--bg-secondary);
 }
 
@@ -1128,7 +1128,7 @@ body.dark-theme .bestsellers-arrow {
 
 /* Bento Customizer Section */
 .customizer-section {
-  padding: 100px 0;
+  padding: 50px 0;
   background-color: var(--bg-primary);
 }
 
@@ -1303,7 +1303,7 @@ body.dark-theme .bestsellers-arrow {
 
 /* Delivery Section */
 .delivery-section {
-  padding: 80px 0;
+  padding: 40px 0;
   background-color: var(--bg-secondary);
 }
 
@@ -1959,7 +1959,7 @@ body.dark-theme .bestsellers-arrow {
 .main-footer {
   background-color: #120b08; /* Deep chocolate dark background */
   color: #efe8e2;
-  padding: 80px 0 20px 0;
+  padding: 40px 0 10px 0;
   border-top: 3px solid var(--accent-gold);
 }
 
@@ -1969,7 +1969,7 @@ body.dark-theme .bestsellers-arrow {
   gap: 40px;
   max-width: 1920px;
   margin: 0 auto;
-  padding: 0 60px 50px 60px;
+  padding: 0 60px 25px 60px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -2348,7 +2348,7 @@ body.dark-theme .bestsellers-arrow {
   }
 
   .about-section {
-    padding: 50px 0;
+    padding: 25px 0;
   }
 
   .about-features {
