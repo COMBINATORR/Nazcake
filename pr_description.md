@@ -1,12 +1,15 @@
-🧪 [Testing] Add tests for calculateDeliveryTime
+🧪 Add edge case tests for escapeHTML function
 
-🎯 **What:** The testing gap addressed
-This PR addresses an untested pure utility function, `calculateDeliveryTime`, in `app.js`. Testing it adds confidence in delivery cost/time estimation logic.
+🎯 **What:**
+The `escapeHTML` helper function in `app.js` lacked dedicated tests, leading to a gap in testing coverage. This function sanitizes user input before rendering it in the DOM or placing it in checkout links, making it crucial for security.
 
-📊 **Coverage:** What scenarios are now tested
-- Validates the base logic for zero distance (`20`).
-- Validates behavior for standard integer distances (e.g., `5`, `10`).
-- Verifies edge case rounding logic for fractional distances testing `Math.round` behavior correctly.
+📊 **Coverage:**
+New tests were added to the test suite in both `app.test.js` and `tests/app.test.js` covering:
+- **Non-string inputs:** Ensuring `null`, `undefined`, numbers, objects, arrays, and booleans fail safely by returning an empty string instead of causing exceptions.
+- **HTML character escaping:** Verifying the replacement of `&`, `<`, `>`, `"`, and `'` with their respective HTML entities.
+- **Complex inputs:** Handling strings with multiple interspersed HTML characters that need escaping.
+- **Clean inputs:** Confirming strings with no HTML characters are returned unmodified.
+- **Empty strings:** Handling empty string input gracefully.
 
-✨ **Result:** The improvement in test coverage
-The previously untested function now has a dedicated `describe` block in the test suite that successfully handles normal and edge cases without polluting the test environment.
+✨ **Result:**
+The `escapeHTML` function is now fully covered by unit tests, ensuring the safety net catches any regressions to this function in future refactors or optimizations. 30 tests are now executed and pass reliably.
