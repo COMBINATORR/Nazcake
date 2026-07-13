@@ -7,7 +7,7 @@ window.addEventListener("load", () => {
       document.body.classList.remove("preloader-active");
       return;
     }
-    
+
     setTimeout(() => {
       preloader.classList.add("fade-out");
       document.body.classList.remove("preloader-active");
@@ -1400,7 +1400,7 @@ function getProductDesc(p) {
     const textColorName = window.i18n.t(colorNameKeys[bentoConfig.textColor] || "bento_color_chocolate");
     const sprinklesName = window.i18n.t(sprinkleKeys[bentoConfig.sprinkles] || "bento_opt_sprinkles_none");
     const textVal = bentoConfig.text || (window.i18n.getCurrentLanguage() === "ru" ? "нет" : "жоқ");
-    
+
     return window.i18n.t("bento_custom_desc")
       .replace("{base}", baseColorName)
       .replace("{text_color}", textColorName)
@@ -1441,7 +1441,7 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("scroll", handleScroll);
     handleScroll();
   }
-  
+
   if (window.i18n) {
     window.i18n.onLanguageChange(() => {
       triggerHapticFeedback();
@@ -1458,7 +1458,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function renderBestsellers() {
   if (!bestsellersGrid) return;
   const bestsellers = products.filter(p => p.badge === "бестселлер" || p.badge === "хит" || p.badge === "премиум");
-  
+
   bestsellersGrid.innerHTML = bestsellers.map(p => createProductCardHtml(p)).join("");
   attachCardEvents(bestsellersGrid);
   refreshScrollReveal();
@@ -1486,18 +1486,18 @@ let catalogTimeout;
 // Render Catalog by Category Filter
 function renderCatalog(category) {
   if (!catalogGrid) return;
-  
+
   // Render skeletons immediately to indicate loading
   renderSkeletons();
-  
+
   if (catalogTimeout) clearTimeout(catalogTimeout);
-  
+
   catalogTimeout = setTimeout(() => {
     let filtered = products;
     if (category !== "all") {
       filtered = products.filter(p => p.category === category);
     }
-    
+
     catalogGrid.innerHTML = filtered.map(p => createProductCardHtml(p)).join("");
     attachCardEvents(catalogGrid);
     refreshScrollReveal();
@@ -1510,13 +1510,13 @@ function createProductCardHtml(p) {
   const tCategoryLabel = escapeHTML(window.i18n ? window.i18n.t(`catalog_cat_${category}`) : categoryLabel);
   const tBadge = escapeHTML(badge ? (window.i18n ? window.i18n.t(getBadgeTranslationKey(badge)) : badge) : "");
   const tUnit = escapeHTML(window.i18n ? window.i18n.t(getUnitTranslationKey(unit)) : unit);
-  
+
   const isOutOfStock = inStock === false || (stock !== undefined && stock <= 0);
   const cardClass = isOutOfStock ? "product-card out-of-stock" : "product-card";
   const tOutOfStock = window.i18n ? window.i18n.t("catalog_out_of_stock") : "Нет в наличии";
   const outOfStockBadge = isOutOfStock ? `<span class="product-badge product-badge-outofstock">${tOutOfStock}</span>` : "";
   const activeBadge = outOfStockBadge || (badge ? `<span class="product-badge">${tBadge}</span>` : "");
-  
+
   return `
     <div class="${cardClass} reveal-item" data-id="${id}">
       <div class="product-img-wrapper btn-preview">
@@ -1583,11 +1583,11 @@ function attachCardEvents(gridElement) {
         e.stopPropagation(); // Avoid triggering preview modal if clicked
         triggerHapticFeedback();
         addToCart(id, 1);
-        
+
         if (addBtn.classList.contains("added")) {
           return;
         }
-        
+
         // Visual feedback on button click: change plus icon to checkmark icon
         const originalHtml = addBtn.innerHTML;
         addBtn.innerHTML = `
@@ -1704,7 +1704,7 @@ function openProductPreview(id) {
   if (sizeOptions && sizeOptions.length > 0) {
     if (modalSizeGroup && modalSizeContainer) {
       modalSizeGroup.classList.remove("hidden");
-      
+
       modalSizeContainer.innerHTML = sizeOptions.map((opt, index) => {
         const isActive = index === 0 ? "active" : "";
         const sizeLabel = opt.size;
@@ -1733,7 +1733,7 @@ function openProductPreview(id) {
   }
 
   modalProductPrice.textContent = `${selectedPrice.toLocaleString()} ₸ / ${tUnit}`;
-  
+
   // Clean listeners
   modalMinusBtn.onclick = () => {
     triggerHapticFeedback();
@@ -1743,7 +1743,7 @@ function openProductPreview(id) {
       modalQtyVal.textContent = qty;
     }
   };
-  
+
   modalPlusBtn.onclick = () => {
     triggerHapticFeedback();
     let qty = parseInt(modalQtyVal.textContent);
@@ -1757,7 +1757,7 @@ function openProductPreview(id) {
     qty++;
     modalQtyVal.textContent = qty;
   };
-  
+
   modalAddBtn.onclick = () => {
     triggerHapticFeedback();
     const qty = parseInt(modalQtyVal.textContent);
@@ -1870,7 +1870,7 @@ function renderEmptyCartUi() {
   const tEmptyTitle = window.i18n ? window.i18n.t("cart_empty_title") : "В корзине пусто";
   const tEmptyDesc = window.i18n ? window.i18n.t("cart_empty_desc") : "Похоже, вы еще не выбрали десерты. Давайте это исправим!";
   const tEmptyBtn = window.i18n ? window.i18n.t("cart_empty_btn") : "Хочу сладкого!";
-    
+
   cartItemsContainer.innerHTML = `
     <div class="empty-cart-container">
       <div class="empty-cart-plate-svg">
@@ -1899,16 +1899,16 @@ function renderEmptyCartUi() {
 function renderCartItemsUi() {
   return cart.map(item => {
     const p = item.product;
-    let tName = p.isCustomName ? p.name : (p.id.startsWith("bento_custom_") 
+    let tName = p.isCustomName ? p.name : (p.id.startsWith("bento_custom_")
       ? (window.i18n ? window.i18n.t("bento_custom_name") : p.name)
       : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name));
-    
+
     if (item.selectedSize) {
       tName += ` (${item.selectedSize})`;
     }
     const tRemove = window.i18n ? window.i18n.t("cart_lbl_remove") : "Удалить";
     const itemPrice = item.price !== undefined ? item.price : p.price;
-    
+
     return `
       <div class="cart-item" data-id="PLACEHOLDER_CART_ITEM_ID">
         <div class="cart-item-swipe-bg">
@@ -2007,7 +2007,7 @@ function attachSwipeToDelete() {
       if (currentX < -maxSwipe) currentX = -maxSwipe;
 
       inner.style.transform = `translateX(${currentX}px)`;
-      
+
       const swipeBg = itemEl.querySelector(".cart-item-swipe-bg");
       if (swipeBg) {
         if (Math.abs(currentX) >= threshold) {
@@ -2094,7 +2094,7 @@ function setupBentoCustomizer() {
   const textColorOptions = document.getElementById("text-color-options");
   const sprinklesSelect = document.getElementById("sprinkles-select");
   const addBentoBtn = document.getElementById("add-bento-btn");
-  
+
   const cakeTop = document.getElementById("cake-top");
   const cakeSide = document.getElementById("cake-side");
   const sprinklesGroup = document.getElementById("sprinkles-group");
@@ -2120,7 +2120,7 @@ function setupBaseColorOptions(bentoConfig, baseColorOptions, cakeTop, cakeSide)
       dot.classList.add("active");
       const color = dot.getAttribute("data-color");
       bentoConfig.baseColor = color;
-      
+
       // Update SVG Cake colors
       cakeTop.setAttribute("fill", color);
       // Generate slightly darker color for the side shade
@@ -2220,7 +2220,7 @@ function setupAddBentoBtn(bentoConfig, addBentoBtn) {
   addBentoBtn.addEventListener("click", () => {
     const bentoId = `bento_custom_${Date.now()}`;
     const descText = `Покрытие: ${bentoConfig.baseColor}, Крем: ${bentoConfig.textColor}, Посыпка: ${bentoConfig.sprinkles}, Надпись: "${bentoConfig.text || 'нет'}"`;
-    
+
     const customizedBentoProduct = {
       id: bentoId,
       name: `Бенто-торт Индивидуальный`,
@@ -2234,7 +2234,7 @@ function setupAddBentoBtn(bentoConfig, addBentoBtn) {
     };
 
     addToCart(customizedBentoProduct, 1);
-    
+
     // Show feedback
     const originalText = addBentoBtn.textContent;
     addBentoBtn.textContent = window.i18n ? window.i18n.t("bento_btn_added") : "Шедевр в корзине! ✓";
@@ -2328,7 +2328,7 @@ function renderAdminCatalog() {
   listContainer.innerHTML = filtered.map(p => {
     const isChecked = p.inStock !== false ? "checked" : "";
     const pName = escapeHTML(p.isCustomName ? p.name : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name));
-    
+
     return `
       <div class="admin-product-row" data-id="${p.id}">
         <div class="admin-prod-img-container" onclick="triggerAdminImageUpload('${p.id}')">
@@ -2459,10 +2459,10 @@ window.saveAdminProduct = function(id) {
   // Update in local memory array
   products = products.map(p => {
     if (p.id === id) {
-      return { 
-        ...p, 
-        name: nameInput, 
-        price: priceInput, 
+      return {
+        ...p,
+        name: nameInput,
+        price: priceInput,
         inStock: inStockInput,
         stock: stockInput,
         image: newImageVal !== undefined ? newImageVal : p.image,
@@ -2581,7 +2581,7 @@ function setupDeliveryCalculator() {
   const addressInput = document.getElementById("delivery-address");
   const resultsBox = document.getElementById("calc-results-box");
   const errorBox = document.getElementById("calc-error-box");
-  
+
   const resDistance = document.getElementById("result-distance");
   const resCost = document.getElementById("result-cost");
   const resTime = document.getElementById("result-time");
@@ -2612,7 +2612,7 @@ calcBtn.textContent = window.i18n ? window.i18n.t("delivery_btn_calculating") : 
 
     try {
       const { lat, lon } = await fetchCoordinates(address);
-      
+
       checkAtyrauBounds(lat, lon, atyrauBounds);
 
 
@@ -2625,7 +2625,7 @@ calcBtn.textContent = window.i18n ? window.i18n.t("delivery_btn_calculating") : 
       resTime.textContent = `~${estTime} минут`;
 
       resultsBox.classList.remove("hidden");
-      
+
       const checkoutAddressField = document.getElementById("checkout-address");
       if (checkoutAddressField) {
         checkoutAddressField.value = address;
@@ -2771,7 +2771,7 @@ async function handleCheckoutSubmit(e) {
 
   // Calculate total using item.price
   const subtotal = cart.reduce((sum, item) => sum + ((item.price !== undefined ? item.price : item.product.price) * item.qty), 0);
-  
+
   // Format message for WhatsApp (Telegram)
   const message = formatCheckoutMessage(name, phone, method, address, cart, subtotal, t);
 
@@ -2795,7 +2795,7 @@ function orderSucceeded() {
 
   // Close Cart Sidebar
   closeModal(cartSidebar, cartOverlay);
-  
+
   // Clear checkout form fields
   checkoutForm.reset();
   checkoutAddressGroup.classList.add("hidden");
@@ -2998,7 +2998,7 @@ async function setupGeolocation() {
     const response = await fetch("https://ipapi.co/json/");
     if (!response.ok) throw new Error("Geolocation failed");
     const data = await response.json();
-    
+
     if (data && data.city) {
       detectedCity = data.city.toLowerCase().trim();
     }
@@ -3078,14 +3078,14 @@ let logoClickTimeout = null;
 function setupAdminFilters() {
   const categoryFilterInput = document.getElementById("admin-filter-category");
   const searchFilterInput = document.getElementById("admin-filter-search");
-  
+
   if (categoryFilterInput) {
     categoryFilterInput.addEventListener("change", () => {
       triggerHapticFeedback();
       renderAdminCatalog();
     });
   }
-  
+
   if (searchFilterInput) {
     searchFilterInput.addEventListener("input", () => {
       // Debounce logic
@@ -3107,7 +3107,7 @@ function setupAdminSecretTriggers(logoLink, loginModal) {
     logoClickTimeout = setTimeout(() => {
       logoClickCount = 0;
     }, 2000);
-    
+
     if (logoClickCount === 3) {
       logoClickCount = 0;
       clearTimeout(logoClickTimeout);
@@ -3152,6 +3152,21 @@ function setupAdminLogin(loginModal, dashModal) {
   }
 }
 
+
+function handleAdminTabClick(btn, tabButtons, tabContents) {
+  tabButtons.forEach(b => {
+    if (b) b.classList.remove("active");
+  });
+  btn.classList.add("active");
+
+  const tab = btn.getAttribute("data-tab");
+  tabContents.forEach(content => {
+    content.classList.remove("active");
+  });
+  const tabContent = document.getElementById("tab-content-" + tab);
+  if (tabContent) tabContent.classList.add("active");
+}
+
 function setupAdminDashboardNav(dashModal) {
   const closeDashBtn = document.getElementById("close-admin-dash-btn");
   const logoutBtn = document.getElementById("admin-logout-btn");
@@ -3180,19 +3195,7 @@ function setupAdminDashboardNav(dashModal) {
   const tabContents = document.querySelectorAll(".dash-tab-content");
   tabButtons.forEach(btn => {
     if (btn) {
-      btn.addEventListener("click", () => {
-        tabButtons.forEach(b => {
-          if (b) b.classList.remove("active");
-        });
-        btn.classList.add("active");
-        
-        const tab = btn.getAttribute("data-tab");
-        tabContents.forEach(content => {
-          content.classList.remove("active");
-        });
-        const tabContent = document.getElementById("tab-content-" + tab);
-        if (tabContent) tabContent.classList.add("active");
-      });
+      btn.addEventListener("click", () => handleAdminTabClick(btn, tabButtons, tabContents));
     }
   });
 
@@ -3272,19 +3275,19 @@ function renderAdminOrders() {
   const tTotal = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Қорытынды" : "Итого";
   const tStatus = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Мәртебе" : "Статус";
   const tItems = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Тауарлар" : "Товары";
-  
+
   const statusNew = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Жаңа" : "Новый";
   const statusWork = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Жұмыста" : "В работе";
   const statusDone = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Орындалды" : "Выполнен";
   const statusCancel = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Бас тартылды" : "Отменен";
 
   listContainer.innerHTML = history.map(order => {
-    const methodText = order.deliveryMethod === "delivery" 
+    const methodText = order.deliveryMethod === "delivery"
       ? (window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Яндекс жеткізу" : "Доставка Яндекс")
       : (window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Өзіңіз алып кету" : "Самовывоз");
-      
+
     const statusClass = "status-badge-" + order.status;
-    
+
     return `
       <div class="admin-order-card" data-order-id="${order.id}">
         <div class="admin-order-title-row">
@@ -3357,7 +3360,7 @@ function formatPhoneInput(e) {
     input = input.substring(1);
   }
   input = input.substring(0, 10);
-  
+
   let formatted = "";
   if (input.length > 0) {
     formatted += "+7 (";
@@ -3437,7 +3440,7 @@ function saveKaspiOrder(name, phone, productName, qty, price) {
     let history = getOrdersHistory();
     history.unshift(newOrder);
     localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
-    
+
     if (typeof renderAdminOrders === "function") {
       renderAdminOrders();
     }
@@ -3488,7 +3491,7 @@ function setupKaspiQrCheckout() {
 
   quickKaspiBtn.addEventListener("click", () => {
     triggerHapticFeedback();
-    
+
     // Close preview modal
     const previewModal = document.getElementById("preview-modal");
     if (previewModal) {
@@ -3560,14 +3563,14 @@ function setupKaspiQrCheckout() {
           <rect x="40" y="40" width="20" height="20" fill="#e11d48" rx="4"/>
           <rect x="45" y="45" width="10" height="10" fill="white" rx="2"/>
           <circle cx="50" cy="50" r="3" fill="#e11d48"/>
-          
+
           <rect x="70" y="35" width="8" height="15" fill="#4a2c11"/>
           <rect x="85" y="42" width="10" height="8" fill="#4a2c11"/>
-          
+
           <rect x="35" y="70" width="12" height="8" fill="#4a2c11"/>
           <rect x="52" y="78" width="8" height="12" fill="#4a2c11"/>
           <rect x="35" y="85" width="20" height="8" fill="#4a2c11"/>
-          
+
           <rect x="70" y="70" width="25" height="25" fill="#e11d48" rx="2"/>
         </svg>
       `;
@@ -3612,7 +3615,7 @@ function setupKaspiQrCheckout() {
     const nameVal = document.getElementById("kaspi-name").value.trim();
     const phoneVal = document.getElementById("kaspi-phone").value.trim();
     const p = products.find(prod => prod.id === activePreviewProductId);
-    
+
     if (p) {
       let displayName = p.isCustomName ? p.name : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name);
       const selectedSizeBtn = modalSizeContainer ? modalSizeContainer.querySelector(".size-btn.active") : null;
@@ -3645,7 +3648,7 @@ function setupThemeToggler() {
   const updateIcons = (isDark) => {
     const sunIcons = document.querySelectorAll(".theme-icon-sun");
     const moonIcons = document.querySelectorAll(".theme-icon-moon");
-    
+
     if (isDark) {
       sunIcons.forEach(icon => icon.style.display = "block");
       moonIcons.forEach(icon => icon.style.display = "none");
@@ -3782,4 +3785,4 @@ if (typeof module !== 'undefined') {
     adjustColorBrightness: typeof adjustColorBrightness !== 'undefined' ? adjustColorBrightness : null,
     checkAtyrauBounds: typeof checkAtyrauBounds !== 'undefined' ? checkAtyrauBounds : null
   };
-}
+}
