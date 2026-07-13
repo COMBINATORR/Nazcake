@@ -3262,6 +3262,7 @@ function setupAdminDashboardNav(dashModal) {
 
   // Tab Switching
   const tabButtons = [tabCatalogBtn, tabOrdersBtn];
+  const tabContents = document.querySelectorAll(".dash-tab-content");
   tabButtons.forEach(btn => {
     if (btn) {
       btn.addEventListener("click", () => {
@@ -3271,7 +3272,7 @@ function setupAdminDashboardNav(dashModal) {
         btn.classList.add("active");
 
         const tab = btn.getAttribute("data-tab");
-        document.querySelectorAll(".dash-tab-content").forEach(content => {
+        tabContents.forEach(content => {
           content.classList.remove("active");
         });
         const tabContent = document.getElementById("tab-content-" + tab);
