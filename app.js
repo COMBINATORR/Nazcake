@@ -1453,6 +1453,27 @@ document.addEventListener("DOMContentLoaded", () => {
       updateLocationUi();
     });
   }
+
+  // Mobile Autoplay Force
+  const heroVideo = document.querySelector('.hero-video-bg');
+  if (heroVideo) {
+    const playVideo = () => {
+      heroVideo.play().catch(err => {
+        console.log("Auto-play was prevented, waiting for interaction:", err);
+      });
+    };
+    // Try playing immediately
+    playVideo();
+    // Also try on first touch or click
+    const handleInteraction = () => {
+      heroVideo.play().catch(e => console.log("Play on interaction failed:", e));
+      document.removeEventListener('click', handleInteraction);
+      document.removeEventListener('touchstart', handleInteraction);
+    };
+    document.addEventListener('click', handleInteraction);
+    document.addEventListener('touchstart', handleInteraction);
+  }
+
 });
 
 function renderBestsellers() {

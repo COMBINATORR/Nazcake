@@ -421,14 +421,17 @@ body.dark-theme .main-header.scrolled {
 
 /* Hero Section (Milk Bar Redesign Style) */
 .hero-section {
+  height: 100vh;
+  height: 100dvh;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: var(--bg-primary);
   position: relative;
   overflow: hidden;
-  padding: 120px 0 80px 0;
+  padding: 0 !important;
 }
 
 .hero-video-bg {
@@ -450,10 +453,13 @@ body.dark-theme .main-header.scrolled {
   align-items: center;
   max-width: 1920px;
   margin: 0 auto;
-  padding: 0 60px;
+  padding: 90px 60px 40px 60px;
   position: relative;
   z-index: 2;
   width: 100%;
+  height: 100%;
+  justify-content: center;
+  box-sizing: border-box;
 }
 
 /* Category Circle Navigation */
@@ -2157,8 +2163,11 @@ body.dark-theme .bestsellers-arrow {
   .hero-container {
     flex-direction: column;
     text-align: center;
-    gap: 30px;
-    padding-top: 10px;
+    gap: 24px !important;
+    padding: 85px 20px 20px 20px !important;
+    height: 100%;
+    justify-content: center;
+    box-sizing: border-box;
   }
   
   .hero-category-nav {
@@ -2188,9 +2197,7 @@ body.dark-theme .bestsellers-arrow {
     white-space: normal;
   }
 
-  .hero-section {
-    padding: 100px 0 40px 0 !important;
-  }
+  /* Removed hero-section padding for full-screen dvh alignment */
 
   .hero-showcase-grid {
     display: grid !important;
@@ -2283,9 +2290,7 @@ body.dark-theme .bestsellers-arrow {
     font-size: 0.95rem;
   }
 
-  .hero-section {
-    padding: 110px 0 60px 0;
-  }
+  /* Removed hero-section padding for full-screen dvh alignment */
 
   .nav-menu {
     display: none;
@@ -3947,13 +3952,7 @@ body.dark-theme .btn-secondary:hover {
   color: var(--accent-gold-light) !important;
 }
 
-@media (min-width: 992px) {
-  .hero-section {
-    height: 100vh;
-    min-height: 100vh;
-    padding: 0;
-  }
-}
+/* Base hero-section is 100vh globally */
 
 .footer-logo-wrapper {
   display: flex;
