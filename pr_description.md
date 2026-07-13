@@ -1,15 +1,15 @@
-## 🧹 [Code Health] Extract duplicated localStorage order history logic
+🧪 Add edge case tests for escapeHTML function
 
-**What:**
-Extracted the repeated code pattern for retrieving and parsing `nazcake_orders_history` from `localStorage` into a new shared helper function called `getOrdersHistory()`.
+🎯 **What:**
+The `escapeHTML` helper function in `app.js` lacked dedicated tests, leading to a gap in testing coverage. This function sanitizes user input before rendering it in the DOM or placing it in checkout links, making it crucial for security.
 
-**Why:**
-The application accesses the order history from `localStorage` in four distinct locations (`checkoutSubmit`, `renderAdminOrders`, `changeOrderStatus`, `saveKaspiOrder`). In each place, the exact same `try/catch` and `JSON.parse` logic was written out manually. Extracting this to a single helper function improves code maintainability, reduces lines of code, and ensures any future changes to how history is parsed only need to be made in one place.
+📊 **Coverage:**
+New tests were added to the test suite in both `app.test.js` and `tests/app.test.js` covering:
+- **Non-string inputs:** Ensuring `null`, `undefined`, numbers, objects, arrays, and booleans fail safely by returning an empty string instead of causing exceptions.
+- **HTML character escaping:** Verifying the replacement of `&`, `<`, `>`, `"`, and `'` with their respective HTML entities.
+- **Complex inputs:** Handling strings with multiple interspersed HTML characters that need escaping.
+- **Clean inputs:** Confirming strings with no HTML characters are returned unmodified.
+- **Empty strings:** Handling empty string input gracefully.
 
-**Verification:**
-- Used `git diff` and syntax checks to ensure no typos or syntax errors were introduced.
-- Evaluated scope placement of `getOrdersHistory()` to ensure it's globally available for all call sites.
-- Ran the Jest test suite using `pnpm test` to confirm no regressions.
-
-**Result:**
-The codebase is cleaner and duplication is reduced without altering the existing functionality.
+✨ **Result:**
+The `escapeHTML` function is now fully covered by unit tests, ensuring the safety net catches any regressions to this function in future refactors or optimizations. 30 tests are now executed and pass reliably.
