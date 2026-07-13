@@ -7,7 +7,7 @@ window.addEventListener("load", () => {
       document.body.classList.remove("preloader-active");
       return;
     }
-
+    
     setTimeout(() => {
       preloader.classList.add("fade-out");
       document.body.classList.remove("preloader-active");
@@ -29,7 +29,6 @@ let products = [
     id: "bread_burger",
     name: "Булочка для бургера",
     category: "bakery",
-    categoryLabel: "Хлебобулочные изделия",
     price: 120,
     unit: "шт.",
     image: "images/bread_burger.webp",
@@ -41,7 +40,6 @@ let products = [
     id: "bread_baursaki",
     name: "Бауырсаки",
     category: "bakery",
-    categoryLabel: "Хлебобулочные изделия",
     price: 70,
     unit: "шт.",
     image: "images/bread_baursaki.webp",
@@ -53,7 +51,6 @@ let products = [
     id: "bread_rye",
     name: "Ржаной хлеб",
     category: "bakery",
-    categoryLabel: "Хлебобулочные изделия",
     price: 120,
     unit: "шт.",
     image: "images/bread_rye.webp",
@@ -65,7 +62,6 @@ let products = [
     id: "bread_garlic_baguette",
     name: "Чесночный мини батон",
     category: "bakery",
-    categoryLabel: "Хлебобулочные изделия",
     price: 130,
     unit: "шт.",
     image: "images/bread_garlic.webp",
@@ -77,7 +73,6 @@ let products = [
     id: "bread_sayka",
     name: "Сайка",
     category: "bakery",
-    categoryLabel: "Хлебобулочные изделия",
     price: 120,
     unit: "шт.",
     image: "images/bread_saika.webp",
@@ -89,7 +84,6 @@ let products = [
     id: "bread_kosichki",
     name: "Косички",
     category: "bakery",
-    categoryLabel: "Хлебобулочные изделия",
     price: 130,
     unit: "шт.",
     image: "images/bread_kosichki.webp",
@@ -101,7 +95,6 @@ let products = [
     id: "bread_pancakes_meat",
     name: "Блины с мясом",
     category: "bakery",
-    categoryLabel: "Хлебобулочные изделия",
     price: 350,
     unit: "шт.",
     image: "images/bread_pancakes_meat.webp",
@@ -113,7 +106,6 @@ let products = [
     id: "bread_pancakes_plain",
     name: "Блины без начинки",
     category: "bakery",
-    categoryLabel: "Хлебобулочные изделия",
     price: 150,
     unit: "шт.",
     image: "images/bread_pancakes_plain.webp",
@@ -125,7 +117,6 @@ let products = [
     id: "bread_rye_flatbread",
     name: "Ржаные тандырные лепешки",
     category: "bakery",
-    categoryLabel: "Хлебобулочные изделия",
     price: 160,
     unit: "шт.",
     image: "images/bread_rye_flatbread.webp",
@@ -137,7 +128,6 @@ let products = [
     id: "bread_flatbread",
     name: "Тандырные лепешки",
     category: "bakery",
-    categoryLabel: "Хлебобулочные изделия",
     price: 160,
     unit: "шт.",
     image: "images/bread_tandoor_flatbread.webp",
@@ -149,7 +139,6 @@ let products = [
     id: "pastry_samsa_meat",
     name: "Самса с мясом",
     category: "pastries",
-    categoryLabel: "Выпечка",
     price: 250,
     unit: "шт.",
     image: "images/pastry_samsa_meat.webp",
@@ -161,7 +150,6 @@ let products = [
     id: "pastry_samsa_liver",
     name: "Самса с печенью",
     category: "pastries",
-    categoryLabel: "Выпечка",
     price: 250,
     unit: "шт.",
     image: "images/pastry_samsa_liver.webp",
@@ -173,7 +161,6 @@ let products = [
     id: "pastry_samsa_chicken",
     name: "Самса с курицей и с сыром",
     category: "pastries",
-    categoryLabel: "Выпечка",
     price: 250,
     unit: "шт.",
     image: "images/pastry_samsa_chicken.webp",
@@ -185,7 +172,6 @@ let products = [
     id: "pastry_samsa_cabbage",
     name: "Самса с мясом и капустой",
     category: "pastries",
-    categoryLabel: "Выпечка",
     price: 250,
     unit: "шт.",
     image: "images/pastry_samsa_cabbage.webp",
@@ -197,7 +183,6 @@ let products = [
     id: "pastry_liver_pie",
     name: "Ливерные пирожки",
     category: "pastries",
-    categoryLabel: "Выпечка",
     price: 240,
     unit: "шт.",
     image: "images/pastry_pirog_liver.webp",
@@ -209,7 +194,6 @@ let products = [
     id: "pastry_liver_pie_mini",
     name: "Ливерные пирожки мини",
     category: "pastries",
-    categoryLabel: "Выпечка",
     price: 180,
     unit: "шт.",
     image: "images/pastry_pirog_liver_mini.webp",
@@ -221,7 +205,6 @@ let products = [
     id: "pastry_bun_plain",
     name: "Булочка без начинки",
     category: "pastries",
-    categoryLabel: "Выпечка",
     price: 100,
     unit: "шт.",
     image: "images/pastry_bun_plain.webp",
@@ -233,7 +216,6 @@ let products = [
     id: "pastry_bun_condensed",
     name: "Булочка со сгущенкой",
     category: "pastries",
-    categoryLabel: "Выпечка",
     price: 110,
     unit: "шт.",
     image: "images/pastry_bun_condensed.webp",
@@ -245,7 +227,6 @@ let products = [
     id: "pastry_bun_fruits",
     name: "Булочка с сухофруктами",
     category: "pastries",
-    categoryLabel: "Выпечка",
     price: 120,
     unit: "шт.",
     image: "images/pastry_bun_dryfruit.webp",
@@ -257,7 +238,6 @@ let products = [
     id: "pastry_bun_curd",
     name: "Булочка с творогом",
     category: "pastries",
-    categoryLabel: "Выпечка",
     price: 120,
     unit: "шт.",
     image: "images/pastry_bun_cottage.webp",
@@ -269,7 +249,6 @@ let products = [
     id: "pastry_sochnik",
     name: "Сочник",
     category: "pastries",
-    categoryLabel: "Выпечка",
     price: 190,
     unit: "шт.",
     image: "images/pastry_sochnik.webp",
@@ -281,7 +260,6 @@ let products = [
     id: "pastry_manty_condensed",
     name: "Манты с вареной сгущенкой",
     category: "pastries",
-    categoryLabel: "Выпечка",
     price: 3400,
     unit: "кг",
     image: "images/pastry_manty_condensed.webp",
@@ -293,7 +271,6 @@ let products = [
     id: "pastry_rogaliki",
     name: "Рогалики с творогом",
     category: "pastries",
-    categoryLabel: "Выпечка",
     price: 3000,
     unit: "кг",
     image: "images/pastry_rogaliki.webp",
@@ -305,7 +282,6 @@ let products = [
     id: "pastry_tea_set",
     name: "Чайный набор",
     category: "pastries",
-    categoryLabel: "Выпечка",
     price: 4200,
     unit: "кг",
     image: "images/pastry_tea_set.webp",
@@ -317,7 +293,6 @@ let products = [
     id: "pie_curd_condensed",
     name: "Пирог с творогом со сгущенкой",
     category: "pies",
-    categoryLabel: "Пироги",
     price: 2500,
     unit: "шт.",
     image: "images/pie_cottage_condensed.webp",
@@ -329,7 +304,6 @@ let products = [
     id: "pie_smetannik",
     name: "Сметанник",
     category: "pies",
-    categoryLabel: "Пироги",
     price: 2200,
     unit: "шт.",
     image: "images/pie_smetannik.webp",
@@ -341,7 +315,6 @@ let products = [
     id: "pie_snickers",
     name: "Пирог Сникерс",
     category: "pies",
-    categoryLabel: "Пироги",
     price: 4200,
     unit: "шт.",
     image: "images/pie_snickers.webp",
@@ -353,7 +326,6 @@ let products = [
     id: "pie_caramel",
     name: "Пирог карамель",
     category: "pies",
-    categoryLabel: "Пироги",
     price: 2600,
     unit: "шт.",
     image: "images/pie_caramel.webp",
@@ -365,7 +337,6 @@ let products = [
     id: "pie_poppy",
     name: "Маковый пирог",
     category: "pies",
-    categoryLabel: "Пироги",
     price: 2600,
     unit: "шт.",
     image: "images/pie_poppy.webp",
@@ -377,7 +348,6 @@ let products = [
     id: "pie_mix",
     name: "Микс пироги",
     category: "pies",
-    categoryLabel: "Пироги",
     price: 3500,
     unit: "шт.",
     image: "images/pie_mix.webp",
@@ -389,7 +359,6 @@ let products = [
     id: "pie_meat_round",
     name: "Мясной пирог (круглый)",
     category: "pies",
-    categoryLabel: "Пироги",
     price: 4000,
     unit: "шт.",
     image: "images/pie_meat_round.webp",
@@ -401,7 +370,6 @@ let products = [
     id: "pie_meat_rect",
     name: "Мясной пирог (прямоугольный)",
     category: "on_order",
-    categoryLabel: "На заказ",
     price: 9000,
     unit: "шт.",
     image: "images/pie_meat_rect.webp",
@@ -418,7 +386,6 @@ let products = [
     id: "pie_curd_large",
     name: "Пирог с творогом",
     category: "on_order",
-    categoryLabel: "На заказ",
     price: 7500,
     unit: "шт.",
     image: "images/pie_smetannik.webp",
@@ -430,7 +397,6 @@ let products = [
     id: "pie_fruits_large",
     name: "Пирог с сухофруктами",
     category: "on_order",
-    categoryLabel: "На заказ",
     price: 7500,
     unit: "шт.",
     image: "images/pie_poppy.webp",
@@ -442,7 +408,6 @@ let products = [
     id: "cake_custom_celebration",
     name: "Праздничный торт (на заказ)",
     category: "on_order",
-    categoryLabel: "На заказ",
     price: 8500,
     unit: "кг",
     image: "",
@@ -454,7 +419,6 @@ let products = [
     id: "dessert_napoleon",
     name: "Наполеон",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 280,
     unit: "шт.",
     image: "images/dessert_napoleon.webp",
@@ -466,7 +430,6 @@ let products = [
     id: "dessert_ekler",
     name: "Эклер",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 260,
     unit: "шт.",
     image: "images/dessert_ekler.webp",
@@ -478,7 +441,6 @@ let products = [
     id: "dessert_muraveynik",
     name: "Муравейник",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 450,
     unit: "шт.",
     image: "images/dessert_muraveynik.webp",
@@ -490,7 +452,6 @@ let products = [
     id: "dessert_chak_chak",
     name: "Чак-чак",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 270,
     unit: "шт.",
     image: "images/dessert_chak_chak.webp",
@@ -502,7 +463,6 @@ let products = [
     id: "dessert_chocolate",
     name: "Шоколадный",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 270,
     unit: "шт.",
     image: "images/dessert_chocolate.webp",
@@ -514,7 +474,6 @@ let products = [
     id: "dessert_caramel",
     name: "Карамельный",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 270,
     unit: "шт.",
     image: "images/dessert_caramel.webp",
@@ -526,7 +485,6 @@ let products = [
     id: "dessert_snickers_airy",
     name: "Воздушный сникерс",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 270,
     unit: "шт.",
     image: "images/dessert_snickers_airy.webp",
@@ -538,7 +496,6 @@ let products = [
     id: "dessert_medovik",
     name: "Медовик",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 280,
     unit: "шт.",
     image: "images/dessert_medovik.webp",
@@ -550,7 +507,6 @@ let products = [
     id: "dessert_caramel_design",
     name: "Карамель с оформлением",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 290,
     unit: "шт.",
     image: "images/dessert_caramel_design.webp",
@@ -562,7 +518,6 @@ let products = [
     id: "dessert_chocolate_design",
     name: "Шоколадный с оформлением",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 290,
     unit: "шт.",
     image: "images/dessert_chocolate_design.webp",
@@ -574,7 +529,6 @@ let products = [
     id: "dessert_banoffee",
     name: "Банофи пай",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 440,
     unit: "шт.",
     image: "images/dessert_banoffee.webp",
@@ -586,7 +540,6 @@ let products = [
     id: "dessert_ryzhik",
     name: "Рыжик",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 300,
     unit: "шт.",
     image: "images/dessert_ryzhik.webp",
@@ -598,7 +551,6 @@ let products = [
     id: "dessert_cheesecake",
     name: "Чизкейк",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 295,
     unit: "шт.",
     image: "images/dessert_cheesecake.webp",
@@ -610,7 +562,6 @@ let products = [
     id: "dessert_pavlova",
     name: "Павлова",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 380,
     unit: "шт.",
     image: "images/dessert_pavlova.webp",
@@ -622,7 +573,6 @@ let products = [
     id: "dessert_milk_girl",
     name: "Молочная девочка",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 450,
     unit: "шт.",
     image: "images/dessert_milk_girl.webp",
@@ -634,7 +584,6 @@ let products = [
     id: "dessert_carrot",
     name: "Морковный",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 420,
     unit: "шт.",
     image: "images/dessert_carrot.webp",
@@ -646,7 +595,6 @@ let products = [
     id: "dessert_red_velvet",
     name: "Красный бархат",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 420,
     unit: "шт.",
     image: "images/dessert_red_velvet.webp",
@@ -658,7 +606,6 @@ let products = [
     id: "dessert_snickers",
     name: "Сникерс",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 480,
     unit: "шт.",
     image: "images/dessert_snickers.webp",
@@ -670,7 +617,6 @@ let products = [
     id: "dessert_oreo",
     name: "Орео",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 420,
     unit: "шт.",
     image: "images/dessert_oreo.webp",
@@ -682,7 +628,6 @@ let products = [
     id: "dessert_banana",
     name: "Банановый",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 420,
     unit: "шт.",
     image: "images/dessert_banana.webp",
@@ -694,7 +639,6 @@ let products = [
     id: "dessert_royal",
     name: "Королевский",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 450,
     unit: "шт.",
     image: "images/dessert_royal.webp",
@@ -706,7 +650,6 @@ let products = [
     id: "dessert_pistachio",
     name: "Фисташковый",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 470,
     unit: "шт.",
     image: "images/dessert_pistachio.webp",
@@ -718,7 +661,6 @@ let products = [
     id: "dessert_cupcake_choco",
     name: "Шоколадный капкейк",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 360,
     unit: "шт.",
     image: "images/dessert_cupcake_choco.webp",
@@ -730,7 +672,6 @@ let products = [
     id: "dessert_cupcake_red_plain",
     name: "Красный капкейк",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 360,
     unit: "шт.",
     image: "images/dessert_cupcake_red_plain.webp",
@@ -742,7 +683,6 @@ let products = [
     id: "dessert_pistachio_raspberry",
     name: "Фисташка - малина",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 1000,
     unit: "шт.",
     image: "images/dessert_pistachio_raspberry.webp",
@@ -754,7 +694,6 @@ let products = [
     id: "dessert_ekler_choco",
     name: "Эклер в шоколаде",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 800,
     unit: "шт.",
     image: "images/dessert_ekler_choco.webp",
@@ -766,7 +705,6 @@ let products = [
     id: "dessert_almond_fruits",
     name: "Миндальный с сухофруктами",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 1000,
     unit: "шт.",
     image: "images/dessert_almond_fruits.webp",
@@ -778,7 +716,6 @@ let products = [
     id: "dessert_pistachio_magnum",
     name: "Фисташка магнум",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 1200,
     unit: "шт.",
     image: "images/dessert_pistachio_magnum.webp",
@@ -790,7 +727,6 @@ let products = [
     id: "dessert_grillage",
     name: "Грилляж",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 1400,
     unit: "шт.",
     image: "images/dessert_grillage.webp",
@@ -802,7 +738,6 @@ let products = [
     id: "dessert_latte",
     name: "Латте",
     category: "desserts",
-    categoryLabel: "Пирожные",
     price: 1200,
     unit: "шт.",
     image: "images/dessert_latte.webp",
@@ -814,7 +749,6 @@ let products = [
     id: "berry_oreo",
     name: "Орео с ягодами",
     category: "berry_desserts",
-    categoryLabel: "Пирожные с ягодами",
     price: 850,
     unit: "шт.",
     image: "images/berry_oreo.webp",
@@ -826,7 +760,6 @@ let products = [
     id: "berry_milk_girl",
     name: "Молочная девочка с ягодами",
     category: "berry_desserts",
-    categoryLabel: "Пирожные с ягодами",
     price: 850,
     unit: "шт.",
     image: "images/berry_milk_girl.webp",
@@ -838,7 +771,6 @@ let products = [
     id: "berry_snickers",
     name: "Сникерс с ягодами",
     category: "berry_desserts",
-    categoryLabel: "Пирожные с ягодами",
     price: 800,
     unit: "шт.",
     image: "images/berry_snickers.webp",
@@ -850,7 +782,6 @@ let products = [
     id: "berry_royal",
     name: "Королевский с ягодами",
     category: "berry_desserts",
-    categoryLabel: "Пирожные с ягодами",
     price: 780,
     unit: "шт.",
     image: "images/berry_royal.webp",
@@ -862,7 +793,6 @@ let products = [
     id: "berry_nutella",
     name: "Нутелла",
     category: "berry_desserts",
-    categoryLabel: "Пирожные с ягодами",
     price: 700,
     unit: "шт.",
     image: "images/berry_nutella.webp",
@@ -874,7 +804,6 @@ let products = [
     id: "berry_choux_rings",
     name: "Заварные кольца",
     category: "berry_desserts",
-    categoryLabel: "Пирожные с ягодами",
     price: 500,
     unit: "шт.",
     image: "images/berry_choux_rings.webp",
@@ -886,7 +815,6 @@ let products = [
     id: "berry_cupcake_choco",
     name: "Шоколадный капкейк с ягодами",
     category: "berry_desserts",
-    categoryLabel: "Пирожные с ягодами",
     price: 750,
     unit: "шт.",
     image: "images/berry_cupcake_choco.webp",
@@ -898,7 +826,6 @@ let products = [
     id: "berry_pavlova",
     name: "Павлова с ягодами",
     category: "berry_desserts",
-    categoryLabel: "Пирожные с ягодами",
     price: 750,
     unit: "шт.",
     image: "images/berry_pavlova.webp",
@@ -910,7 +837,6 @@ let products = [
     id: "berry_cheesecake",
     name: "Чизкейк с ягодами",
     category: "berry_desserts",
-    categoryLabel: "Пирожные с ягодами",
     price: 700,
     unit: "шт.",
     image: "images/berry_cheesecake.webp",
@@ -922,7 +848,6 @@ let products = [
     id: "berry_cupcake_red",
     name: "Красный капкейк с ягодами",
     category: "berry_desserts",
-    categoryLabel: "Пирожные с ягодами",
     price: 700,
     unit: "шт.",
     image: "images/berry_cupcake_red.webp",
@@ -934,7 +859,6 @@ let products = [
     id: "cake_banana",
     name: "Банановый торт",
     category: "cakes",
-    categoryLabel: "Торты",
     price: 6500,
     unit: "шт.",
     image: "images/Банановый торт.webp",
@@ -947,7 +871,6 @@ let products = [
     id: "cake_pistachio",
     name: "Торт Фисташка-Малина",
     category: "cakes",
-    categoryLabel: "Торты",
     price: 7500,
     unit: "шт.",
     image: "images/Фисташковый торт.webp",
@@ -960,7 +883,6 @@ let products = [
     id: "cake_carrot",
     name: "Морковный торт",
     category: "cakes",
-    categoryLabel: "Торты",
     price: 6500,
     unit: "шт.",
     image: "images/Морковный торт.webp",
@@ -973,7 +895,6 @@ let products = [
     id: "cake_oreo",
     name: "Торт Орео",
     category: "cakes",
-    categoryLabel: "Торты",
     price: 6500,
     unit: "шт.",
     image: "images/Торт Орео.webp",
@@ -986,7 +907,6 @@ let products = [
     id: "cake_royal",
     name: "Торт Королевский",
     category: "cakes",
-    categoryLabel: "Торты",
     price: 7000,
     unit: "шт.",
     image: "images/Королевский торт.webp",
@@ -999,7 +919,6 @@ let products = [
     id: "cake_woopi_pai",
     name: "Торт Вупи Пай",
     category: "cakes",
-    categoryLabel: "Торты",
     price: 6500,
     unit: "шт.",
     image: "images/Торт вупипай.webp",
@@ -1012,7 +931,6 @@ let products = [
     id: "cake_red_velvet",
     name: "Торт Красный Бархат",
     category: "cakes",
-    categoryLabel: "Торты",
     price: 6500,
     unit: "шт.",
     image: "images/Торт красный бархат.webp",
@@ -1025,7 +943,6 @@ let products = [
     id: "cake_snickers",
     name: "Торт Сникерс",
     category: "cakes",
-    categoryLabel: "Торты",
     price: 6500,
     unit: "шт.",
     image: "images/Торт сникерс.webp",
@@ -1038,7 +955,6 @@ let products = [
     id: "cake_milk_girl",
     name: "Торт Молочная девочка",
     category: "cakes",
-    categoryLabel: "Торты",
     price: 6500,
     unit: "шт.",
     image: "images/Торт молочная девочка.webp",
@@ -1051,7 +967,6 @@ let products = [
     id: "cake_chocolate",
     name: "Шоколадный торт",
     category: "cakes",
-    categoryLabel: "Торты",
     price: 7500,
     unit: "шт. (26 см)",
     image: "images/Шоколадный торт.webp",
@@ -1063,7 +978,6 @@ let products = [
     id: "cake_kitkat",
     name: "Торт Киткат",
     category: "cakes",
-    categoryLabel: "Торты",
     price: 8500,
     unit: "шт.",
     image: "images/Торт киткат.webp",
@@ -1076,7 +990,6 @@ let products = [
     id: "cake_esterhazy",
     name: "Торт Эстерхази",
     category: "cakes",
-    categoryLabel: "Торты",
     price: 9800,
     unit: "шт.",
     image: "images/Торт Эстерхазе.webp",
@@ -1089,7 +1002,6 @@ let products = [
     id: "cake_honey",
     name: "Медовый торт",
     category: "cakes",
-    categoryLabel: "Торты",
     price: 3200,
     unit: "шт.",
     image: "images/Торт медовый.webp",
@@ -1101,7 +1013,6 @@ let products = [
     id: "cake_napoleon",
     name: "Торт Наполеон",
     category: "cakes",
-    categoryLabel: "Торты",
     price: 3200,
     unit: "шт.",
     image: "images/Торт наполеон.webp",
@@ -1113,7 +1024,6 @@ let products = [
     id: "cake_graf_ruins",
     name: "Торт Графские развалины",
     category: "cakes",
-    categoryLabel: "Торты",
     price: 5500,
     unit: "шт.",
     image: "images/Торт Графские развалины.webp",
@@ -1125,7 +1035,6 @@ let products = [
     id: "cake_banoffee_pie",
     name: "Баноффи пай (торт)",
     category: "cakes",
-    categoryLabel: "Торты",
     price: 4200,
     unit: "шт.",
     image: "images/Торт Баноффи пай.webp",
@@ -1137,7 +1046,6 @@ let products = [
     id: "cake_cheesecake_spanish",
     name: "Испанский чизкейк Сан-Себастьян",
     category: "cakes",
-    categoryLabel: "Торты",
     price: 7000,
     unit: "шт.",
     image: "images/Торт Испанский чизкейк.webp",
@@ -1150,7 +1058,6 @@ let products = [
     id: "cake_cheesecake_tary",
     name: "Тары чизкейк",
     category: "cakes",
-    categoryLabel: "Торты",
     price: 6500,
     unit: "шт.",
     image: "images/Торт Тары Чизкейк.webp",
@@ -1163,7 +1070,6 @@ let products = [
     id: "cake_meringue_roll",
     name: "Меренговый рулет",
     category: "cakes",
-    categoryLabel: "Торты",
     price: 3500,
     unit: "шт.",
     image: "images/Миренговый рулет.webp",
@@ -1175,7 +1081,6 @@ let products = [
     id: "cake_biscuit_roll",
     name: "Рулет бисквитный",
     category: "cakes",
-    categoryLabel: "Торты",
     price: 2400,
     unit: "шт.",
     image: "images/Рулет бисквитный.webp",
@@ -1187,7 +1092,6 @@ let products = [
     id: "semi_meatballs",
     name: "Фрикадельки (1 кг)",
     category: "semi-finished",
-    categoryLabel: "Полуфабрикаты",
     price: 3300,
     unit: "кг",
     image: "images/Фрикадельки куриные.webp",
@@ -1200,7 +1104,6 @@ let products = [
     id: "semi_tefteli",
     name: "Тефтели (1 кг)",
     category: "semi-finished",
-    categoryLabel: "Полуфабрикаты",
     price: 3300,
     unit: "кг",
     image: "images/Тефтели.webp",
@@ -1213,7 +1116,6 @@ let products = [
     id: "semi_kotlety",
     name: "Котлеты (6 шт.)",
     category: "semi-finished",
-    categoryLabel: "Полуфабрикаты",
     price: 1700,
     unit: "уп.",
     image: "images/Котлеты.webp",
@@ -1226,7 +1128,6 @@ let products = [
     id: "semi_golubtsy",
     name: "Голубцы (1 кг)",
     category: "semi-finished",
-    categoryLabel: "Полуфабрикаты",
     price: 3900,
     unit: "кг",
     image: "images/Голубцы.webp",
@@ -1238,7 +1139,6 @@ let products = [
     id: "semi_pelmeni",
     name: "Пельмени домашние (1 кг)",
     category: "semi-finished",
-    categoryLabel: "Полуфабрикаты",
     price: 4100,
     unit: "кг",
     image: "images/Пельмени.webp",
@@ -1250,7 +1150,6 @@ let products = [
     id: "semi_manty",
     name: "Манты с говядиной (1 кг)",
     category: "semi-finished",
-    categoryLabel: "Полуфабрикаты",
     price: 4100,
     unit: "кг",
     image: "images/Манты.webp",
@@ -1262,7 +1161,6 @@ let products = [
     id: "semi_borek",
     name: "Сигара борек (12 шт.)",
     category: "semi-finished",
-    categoryLabel: "Полуфабрикаты",
     price: 1800,
     unit: "уп.",
     image: "images/Сигара борек.webp",
@@ -1275,7 +1173,6 @@ let products = [
     id: "semi_chebureki",
     name: "Чебуреки с говядиной (12 шт.)",
     category: "semi-finished",
-    categoryLabel: "Полуфабрикаты",
     price: 1500,
     unit: "уп.",
     image: "images/Чебукери.webp",
@@ -1287,7 +1184,6 @@ let products = [
     id: "semi_vareniki",
     name: "Вареники с картофелем (1 уп.)",
     category: "semi-finished",
-    categoryLabel: "Полуфабрикаты",
     price: 2000,
     unit: "уп.",
     image: "images/Вареники.webp",
@@ -1299,7 +1195,6 @@ let products = [
     id: "semi_soup_lentil",
     name: "Чечевичный суп (замороженный)",
     category: "semi-finished",
-    categoryLabel: "Полуфабрикаты",
     price: 2100,
     unit: "кг",
     image: "images/Чечевичный суп.webp",
@@ -1311,7 +1206,6 @@ let products = [
     id: "semi_beef_broth",
     name: "Говяжий бульон (замороженный)",
     category: "semi-finished",
-    categoryLabel: "Полуфабрикаты",
     price: 1900,
     unit: "кг",
     image: "images/Бульон говяжий.webp",
@@ -1323,7 +1217,6 @@ let products = [
     id: "semi_dough_baursak",
     name: "Тесто для бауырсака",
     category: "semi-finished",
-    categoryLabel: "Полуфабрикаты",
     price: 1200,
     unit: "кг",
     image: "images/Тесто для бауырсаков.webp",
@@ -1335,7 +1228,6 @@ let products = [
     id: "semi_dough_beshbarmak",
     name: "Тесто для бешбармака",
     category: "semi-finished",
-    categoryLabel: "Полуфабрикаты",
     price: 650,
     unit: "шт.",
     image: "images/Тесто для бешбармака.webp",
@@ -1347,7 +1239,6 @@ let products = [
     id: "semi_dough_puff",
     name: "Слоеное тесто",
     category: "semi-finished",
-    categoryLabel: "Полуфабрикаты",
     price: 1400,
     unit: "кг",
     image: "images/Слоёное тесто.webp",
@@ -1356,6 +1247,21 @@ let products = [
     badge: "тесто"
   },
 ];
+const CATEGORY_LABELS = {
+  bakery: "Хлебобулочные изделия",
+  pastries: "Выпечка",
+  pies: "Пироги",
+  on_order: "На заказ",
+  desserts: "Пирожные",
+  berry_desserts: "Пирожные с ягодами",
+  cakes: "Торты",
+  "semi-finished": "Полуфабрикаты"
+};
+
+products.forEach(p => {
+  p.categoryLabel = CATEGORY_LABELS[p.category];
+});
+
 
 // Load custom products from local storage on load
 try {
@@ -1494,7 +1400,7 @@ function getProductDesc(p) {
     const textColorName = window.i18n.t(colorNameKeys[bentoConfig.textColor] || "bento_color_chocolate");
     const sprinklesName = window.i18n.t(sprinkleKeys[bentoConfig.sprinkles] || "bento_opt_sprinkles_none");
     const textVal = bentoConfig.text || (window.i18n.getCurrentLanguage() === "ru" ? "нет" : "жоқ");
-
+    
     return window.i18n.t("bento_custom_desc")
       .replace("{base}", baseColorName)
       .replace("{text_color}", textColorName)
@@ -1521,7 +1427,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupKaspiQrCheckout();
   setupThemeToggler();
   setupBestsellersCarousel();
-
+  
   if (window.i18n) {
     window.i18n.onLanguageChange(() => {
       triggerHapticFeedback();
@@ -1538,7 +1444,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function renderBestsellers() {
   if (!bestsellersGrid) return;
   const bestsellers = products.filter(p => p.badge === "бестселлер" || p.badge === "хит" || p.badge === "премиум");
-
+  
   bestsellersGrid.innerHTML = bestsellers.map(p => createProductCardHtml(p)).join("");
   attachCardEvents(bestsellersGrid);
   refreshScrollReveal();
@@ -1566,18 +1472,18 @@ let catalogTimeout;
 // Render Catalog by Category Filter
 function renderCatalog(category) {
   if (!catalogGrid) return;
-
+  
   // Render skeletons immediately to indicate loading
   renderSkeletons();
-
+  
   if (catalogTimeout) clearTimeout(catalogTimeout);
-
+  
   catalogTimeout = setTimeout(() => {
     let filtered = products;
     if (category !== "all") {
       filtered = products.filter(p => p.category === category);
     }
-
+    
     catalogGrid.innerHTML = filtered.map(p => createProductCardHtml(p)).join("");
     attachCardEvents(catalogGrid);
     refreshScrollReveal();
@@ -1590,13 +1496,13 @@ function createProductCardHtml(p) {
   const tCategoryLabel = escapeHTML(window.i18n ? window.i18n.t(`catalog_cat_${category}`) : categoryLabel);
   const tBadge = escapeHTML(badge ? (window.i18n ? window.i18n.t(getBadgeTranslationKey(badge)) : badge) : "");
   const tUnit = escapeHTML(window.i18n ? window.i18n.t(getUnitTranslationKey(unit)) : unit);
-
+  
   const isOutOfStock = inStock === false || (stock !== undefined && stock <= 0);
   const cardClass = isOutOfStock ? "product-card out-of-stock" : "product-card";
   const tOutOfStock = window.i18n ? window.i18n.t("catalog_out_of_stock") : "Нет в наличии";
   const outOfStockBadge = isOutOfStock ? `<span class="product-badge product-badge-outofstock">${tOutOfStock}</span>` : "";
   const activeBadge = outOfStockBadge || (badge ? `<span class="product-badge">${tBadge}</span>` : "");
-
+  
   return `
     <div class="${cardClass} reveal-item" data-id="${id}">
       <div class="product-img-wrapper btn-preview">
@@ -1663,11 +1569,11 @@ function attachCardEvents(gridElement) {
         e.stopPropagation(); // Avoid triggering preview modal if clicked
         triggerHapticFeedback();
         addToCart(id, 1);
-
+        
         if (addBtn.classList.contains("added")) {
           return;
         }
-
+        
         // Visual feedback on button click: change plus icon to checkmark icon
         const originalHtml = addBtn.innerHTML;
         addBtn.innerHTML = `
@@ -1784,7 +1690,7 @@ function openProductPreview(id) {
   if (sizeOptions && sizeOptions.length > 0) {
     if (modalSizeGroup && modalSizeContainer) {
       modalSizeGroup.classList.remove("hidden");
-
+      
       modalSizeContainer.innerHTML = sizeOptions.map((opt, index) => {
         const isActive = index === 0 ? "active" : "";
         const sizeLabel = opt.size;
@@ -1813,7 +1719,7 @@ function openProductPreview(id) {
   }
 
   modalProductPrice.textContent = `${selectedPrice.toLocaleString()} ₸ / ${tUnit}`;
-
+  
   // Clean listeners
   modalMinusBtn.onclick = () => {
     triggerHapticFeedback();
@@ -1823,7 +1729,7 @@ function openProductPreview(id) {
       modalQtyVal.textContent = qty;
     }
   };
-
+  
   modalPlusBtn.onclick = () => {
     triggerHapticFeedback();
     let qty = parseInt(modalQtyVal.textContent);
@@ -1837,7 +1743,7 @@ function openProductPreview(id) {
     qty++;
     modalQtyVal.textContent = qty;
   };
-
+  
   modalAddBtn.onclick = () => {
     triggerHapticFeedback();
     const qty = parseInt(modalQtyVal.textContent);
@@ -1950,7 +1856,7 @@ function renderEmptyCartUi() {
   const tEmptyTitle = window.i18n ? window.i18n.t("cart_empty_title") : "В корзине пусто";
   const tEmptyDesc = window.i18n ? window.i18n.t("cart_empty_desc") : "Похоже, вы еще не выбрали десерты. Давайте это исправим!";
   const tEmptyBtn = window.i18n ? window.i18n.t("cart_empty_btn") : "Хочу сладкого!";
-
+    
   cartItemsContainer.innerHTML = `
     <div class="empty-cart-container">
       <div class="empty-cart-plate-svg">
@@ -1979,16 +1885,16 @@ function renderEmptyCartUi() {
 function renderCartItemsUi() {
   return cart.map(item => {
     const p = item.product;
-    let tName = p.isCustomName ? p.name : (p.id.startsWith("bento_custom_")
+    let tName = p.isCustomName ? p.name : (p.id.startsWith("bento_custom_") 
       ? (window.i18n ? window.i18n.t("bento_custom_name") : p.name)
       : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name));
-
+    
     if (item.selectedSize) {
       tName += ` (${item.selectedSize})`;
     }
     const tRemove = window.i18n ? window.i18n.t("cart_lbl_remove") : "Удалить";
     const itemPrice = item.price !== undefined ? item.price : p.price;
-
+    
     return `
       <div class="cart-item" data-id="PLACEHOLDER_CART_ITEM_ID">
         <div class="cart-item-swipe-bg">
@@ -2081,7 +1987,7 @@ function attachSwipeToDelete() {
     itemEl.addEventListener("touchmove", (e) => {
       if (!isSwiping) return;
       currentX = e.touches[0].clientX - startX;
-      
+
       // Only swipe left
       if (currentX > 0) currentX = 0;
       if (currentX < -maxSwipe) currentX = -maxSwipe;
@@ -2174,7 +2080,7 @@ function setupBentoCustomizer() {
   const textColorOptions = document.getElementById("text-color-options");
   const sprinklesSelect = document.getElementById("sprinkles-select");
   const addBentoBtn = document.getElementById("add-bento-btn");
-
+  
   const cakeTop = document.getElementById("cake-top");
   const cakeSide = document.getElementById("cake-side");
   const sprinklesGroup = document.getElementById("sprinkles-group");
@@ -2200,7 +2106,7 @@ function setupBaseColorOptions(bentoConfig, baseColorOptions, cakeTop, cakeSide)
       dot.classList.add("active");
       const color = dot.getAttribute("data-color");
       bentoConfig.baseColor = color;
-
+      
       // Update SVG Cake colors
       cakeTop.setAttribute("fill", color);
       // Generate slightly darker color for the side shade
@@ -2300,12 +2206,11 @@ function setupAddBentoBtn(bentoConfig, addBentoBtn) {
   addBentoBtn.addEventListener("click", () => {
     const bentoId = `bento_custom_${Date.now()}`;
     const descText = `Покрытие: ${bentoConfig.baseColor}, Крем: ${bentoConfig.textColor}, Посыпка: ${bentoConfig.sprinkles}, Надпись: "${bentoConfig.text || 'нет'}"`;
-
+    
     const customizedBentoProduct = {
       id: bentoId,
       name: `Бенто-торт Индивидуальный`,
       category: "cakes",
-      categoryLabel: "Торты",
       price: 3500,
       unit: "шт.",
       image: "images/bento_cake.webp", // default bento image
@@ -2315,7 +2220,7 @@ function setupAddBentoBtn(bentoConfig, addBentoBtn) {
     };
 
     addToCart(customizedBentoProduct, 1);
-
+    
     // Show feedback
     const originalText = addBentoBtn.textContent;
     addBentoBtn.textContent = window.i18n ? window.i18n.t("bento_btn_added") : "Шедевр в корзине! ✓";
@@ -2409,7 +2314,7 @@ function renderAdminCatalog() {
   listContainer.innerHTML = filtered.map(p => {
     const isChecked = p.inStock !== false ? "checked" : "";
     const pName = escapeHTML(p.isCustomName ? p.name : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name));
-
+    
     return `
       <div class="admin-product-row" data-id="${p.id}">
         <div class="admin-prod-img-container" onclick="triggerAdminImageUpload('${p.id}')">
@@ -2540,10 +2445,10 @@ window.saveAdminProduct = function(id) {
   // Update in local memory array
   products = products.map(p => {
     if (p.id === id) {
-      return {
-        ...p,
-        name: nameInput,
-        price: priceInput,
+      return { 
+        ...p, 
+        name: nameInput, 
+        price: priceInput, 
         inStock: inStockInput,
         stock: stockInput,
         image: newImageVal !== undefined ? newImageVal : p.image,
@@ -2662,7 +2567,7 @@ function setupDeliveryCalculator() {
   const addressInput = document.getElementById("delivery-address");
   const resultsBox = document.getElementById("calc-results-box");
   const errorBox = document.getElementById("calc-error-box");
-
+  
   const resDistance = document.getElementById("result-distance");
   const resCost = document.getElementById("result-cost");
   const resTime = document.getElementById("result-time");
@@ -2693,7 +2598,7 @@ calcBtn.textContent = window.i18n ? window.i18n.t("delivery_btn_calculating") : 
 
     try {
       const { lat, lon } = await fetchCoordinates(address);
-
+      
       checkAtyrauBounds(lat, lon, atyrauBounds);
 
 
@@ -2706,7 +2611,7 @@ calcBtn.textContent = window.i18n ? window.i18n.t("delivery_btn_calculating") : 
       resTime.textContent = `~${estTime} минут`;
 
       resultsBox.classList.remove("hidden");
-
+      
       const checkoutAddressField = document.getElementById("checkout-address");
       if (checkoutAddressField) {
         checkoutAddressField.value = address;
@@ -2852,7 +2757,7 @@ async function handleCheckoutSubmit(e) {
 
   // Calculate total using item.price
   const subtotal = cart.reduce((sum, item) => sum + ((item.price !== undefined ? item.price : item.product.price) * item.qty), 0);
-
+  
   // Format message for WhatsApp (Telegram)
   const message = formatCheckoutMessage(name, phone, method, address, cart, subtotal, t);
 
@@ -2876,7 +2781,7 @@ function orderSucceeded() {
 
   // Close Cart Sidebar
   closeModal(cartSidebar, cartOverlay);
-
+  
   // Clear checkout form fields
   checkoutForm.reset();
   checkoutAddressGroup.classList.add("hidden");
@@ -3079,7 +2984,7 @@ async function setupGeolocation() {
     const response = await fetch("https://ipapi.co/json/");
     if (!response.ok) throw new Error("Geolocation failed");
     const data = await response.json();
-
+    
     if (data && data.city) {
       detectedCity = data.city.toLowerCase().trim();
     }
@@ -3159,14 +3064,14 @@ let logoClickTimeout = null;
 function setupAdminFilters() {
   const categoryFilterInput = document.getElementById("admin-filter-category");
   const searchFilterInput = document.getElementById("admin-filter-search");
-
+  
   if (categoryFilterInput) {
     categoryFilterInput.addEventListener("change", () => {
       triggerHapticFeedback();
       renderAdminCatalog();
     });
   }
-
+  
   if (searchFilterInput) {
     searchFilterInput.addEventListener("input", () => {
       // Debounce logic
@@ -3188,7 +3093,7 @@ function setupAdminSecretTriggers(logoLink, loginModal) {
     logoClickTimeout = setTimeout(() => {
       logoClickCount = 0;
     }, 2000);
-
+    
     if (logoClickCount === 3) {
       logoClickCount = 0;
       clearTimeout(logoClickTimeout);
@@ -3266,7 +3171,7 @@ function setupAdminDashboardNav(dashModal) {
           if (b) b.classList.remove("active");
         });
         btn.classList.add("active");
-
+        
         const tab = btn.getAttribute("data-tab");
         tabContents.forEach(content => {
           content.classList.remove("active");
@@ -3353,19 +3258,19 @@ function renderAdminOrders() {
   const tTotal = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Қорытынды" : "Итого";
   const tStatus = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Мәртебе" : "Статус";
   const tItems = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Тауарлар" : "Товары";
-
+  
   const statusNew = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Жаңа" : "Новый";
   const statusWork = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Жұмыста" : "В работе";
   const statusDone = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Орындалды" : "Выполнен";
   const statusCancel = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Бас тартылды" : "Отменен";
 
   listContainer.innerHTML = history.map(order => {
-    const methodText = order.deliveryMethod === "delivery"
+    const methodText = order.deliveryMethod === "delivery" 
       ? (window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Яндекс жеткізу" : "Доставка Яндекс")
       : (window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Өзіңіз алып кету" : "Самовывоз");
-
+      
     const statusClass = "status-badge-" + order.status;
-
+    
     return `
       <div class="admin-order-card" data-order-id="${order.id}">
         <div class="admin-order-title-row">
@@ -3438,7 +3343,7 @@ function formatPhoneInput(e) {
     input = input.substring(1);
   }
   input = input.substring(0, 10);
-
+  
   let formatted = "";
   if (input.length > 0) {
     formatted += "+7 (";
@@ -3518,7 +3423,7 @@ function saveKaspiOrder(name, phone, productName, qty, price) {
     let history = getOrdersHistory();
     history.unshift(newOrder);
     localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
-
+    
     if (typeof renderAdminOrders === "function") {
       renderAdminOrders();
     }
@@ -3569,7 +3474,7 @@ function setupKaspiQrCheckout() {
 
   quickKaspiBtn.addEventListener("click", () => {
     triggerHapticFeedback();
-
+    
     // Close preview modal
     const previewModal = document.getElementById("preview-modal");
     if (previewModal) {
@@ -3641,14 +3546,14 @@ function setupKaspiQrCheckout() {
           <rect x="40" y="40" width="20" height="20" fill="#e11d48" rx="4"/>
           <rect x="45" y="45" width="10" height="10" fill="white" rx="2"/>
           <circle cx="50" cy="50" r="3" fill="#e11d48"/>
-
+          
           <rect x="70" y="35" width="8" height="15" fill="#4a2c11"/>
           <rect x="85" y="42" width="10" height="8" fill="#4a2c11"/>
-
+          
           <rect x="35" y="70" width="12" height="8" fill="#4a2c11"/>
           <rect x="52" y="78" width="8" height="12" fill="#4a2c11"/>
           <rect x="35" y="85" width="20" height="8" fill="#4a2c11"/>
-
+          
           <rect x="70" y="70" width="25" height="25" fill="#e11d48" rx="2"/>
         </svg>
       `;
@@ -3693,7 +3598,7 @@ function setupKaspiQrCheckout() {
     const nameVal = document.getElementById("kaspi-name").value.trim();
     const phoneVal = document.getElementById("kaspi-phone").value.trim();
     const p = products.find(prod => prod.id === activePreviewProductId);
-
+    
     if (p) {
       let displayName = p.isCustomName ? p.name : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name);
       const selectedSizeBtn = modalSizeContainer ? modalSizeContainer.querySelector(".size-btn.active") : null;
@@ -3726,7 +3631,7 @@ function setupThemeToggler() {
   const updateIcons = (isDark) => {
     const sunIcons = document.querySelectorAll(".theme-icon-sun");
     const moonIcons = document.querySelectorAll(".theme-icon-moon");
-
+    
     if (isDark) {
       sunIcons.forEach(icon => icon.style.display = "block");
       moonIcons.forEach(icon => icon.style.display = "none");
@@ -3863,4 +3768,4 @@ if (typeof module !== 'undefined') {
     adjustColorBrightness: typeof adjustColorBrightness !== 'undefined' ? adjustColorBrightness : null,
     checkAtyrauBounds: typeof checkAtyrauBounds !== 'undefined' ? checkAtyrauBounds : null
   };
-}
+}
