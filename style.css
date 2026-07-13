@@ -444,6 +444,9 @@ body.dark-theme .main-header.scrolled {
   max-width: 1920px;
   margin: 0 auto;
   padding: 0 60px;
+  position: relative;
+  z-index: 2;
+  width: 100%;
 }
 
 /* Category Circle Navigation */
@@ -555,31 +558,35 @@ body.dark-theme .main-header.scrolled {
 
 .hero-subtitle-intro {
   display: block;
-  font-family: var(--font-title);
-  font-size: 0.85rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.22em;
-  color: var(--accent-gold);
+  letter-spacing: 0.25em;
+  color: var(--accent-gold-light) !important;
   margin-bottom: 15px;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.45);
 }
 
 .hero-introducing-block .hero-title {
-  font-size: 3.4rem;
-  font-weight: 900;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 3.8rem;
+  font-weight: 800;
   line-height: 1.1;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.01em;
   text-transform: uppercase;
   margin-bottom: 20px;
-  color: var(--text-primary);
+  color: #ffffff !important;
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.55);
 }
 
 .hero-introducing-block .hero-desc {
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   line-height: 1.6;
-  color: var(--text-secondary);
+  color: #f7f3ed !important;
   max-width: 680px;
   margin-bottom: 35px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
 }
 
 .btn-premium-shop {
