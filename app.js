@@ -2586,14 +2586,14 @@ window.saveAdminProduct = function(id) {
   renderCatalog(category);
 
   // Sync cart items with updated product data
-  cart.forEach(item => {
-    if (item.product && item.product.id === id) {
-      const updatedProduct = products.find(p => p.id === id);
-      if (updatedProduct) {
+  const updatedProduct = products.find(p => p.id === id);
+  if (updatedProduct) {
+    cart.forEach(item => {
+      if (item.product && item.product.id === id) {
         item.product = updatedProduct;
       }
-    }
-  });
+    });
+  }
   updateCartUi();
 }
 
@@ -3860,6 +3860,7 @@ if (typeof module !== 'undefined') {
     removeFromCart: typeof removeFromCart !== 'undefined' ? removeFromCart : null,
     updateCartUi: typeof updateCartUi !== 'undefined' ? updateCartUi : null,
     updateAdminImagePreview: typeof updateAdminImagePreview !== 'undefined' ? updateAdminImagePreview : null,
-    adjustColorBrightness: typeof adjustColorBrightness !== 'undefined' ? adjustColorBrightness : null
+    adjustColorBrightness: typeof adjustColorBrightness !== 'undefined' ? adjustColorBrightness : null,
+    checkAtyrauBounds: typeof checkAtyrauBounds !== 'undefined' ? checkAtyrauBounds : null
   };
 }
