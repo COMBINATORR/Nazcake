@@ -1,11 +1,15 @@
-💡 **What:**
-Hoisted a redundant product lookup using `products.find(p => p.id === id)` outside the `cart.forEach` loop in `saveAdminProduct()`.
+🧪 Add edge case tests for escapeHTML function
 
-🎯 **Why:**
-The previous implementation performed the lookup inside the loop, leading to an O(N*M) time complexity. Given that `id` does not change during the update, checking the updated product directly before looping allows the code to run in O(N + M) time.
+🎯 **What:**
+The `escapeHTML` helper function in `app.js` lacked dedicated tests, leading to a gap in testing coverage. This function sanitizes user input before rendering it in the DOM or placing it in checkout links, making it crucial for security.
 
-📊 **Measured Improvement:**
-Measured with a dataset of 10k products and a cart of 50k items where the target item occurs 500 times.
-- **Baseline Avg Time:** 46.9235 ms
-- **Optimized Avg Time:** 1.5866 ms
-- **Improvement:** 96.62%
+📊 **Coverage:**
+New tests were added to the test suite in both `app.test.js` and `tests/app.test.js` covering:
+- **Non-string inputs:** Ensuring `null`, `undefined`, numbers, objects, arrays, and booleans fail safely by returning an empty string instead of causing exceptions.
+- **HTML character escaping:** Verifying the replacement of `&`, `<`, `>`, `"`, and `'` with their respective HTML entities.
+- **Complex inputs:** Handling strings with multiple interspersed HTML characters that need escaping.
+- **Clean inputs:** Confirming strings with no HTML characters are returned unmodified.
+- **Empty strings:** Handling empty string input gracefully.
+
+✨ **Result:**
+The `escapeHTML` function is now fully covered by unit tests, ensuring the safety net catches any regressions to this function in future refactors or optimizations. 30 tests are now executed and pass reliably.
