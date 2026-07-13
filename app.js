@@ -21,11 +21,6 @@ window.addEventListener("load", () => {
   }
 });
 
-const CONFIG = {
-  TELEGRAM_BOT_TOKEN: "YOUR_TELEGRAM_BOT_TOKEN",
-  TELEGRAM_CHAT_ID: "YOUR_TELEGRAM_CHAT_ID"
-};
-
 // Confectionery Nazcake App Logic
 
 // Product Catalog Data
@@ -1921,37 +1916,7 @@ function changeCartItemQty(cartItemId, newQty) {
 }
 
 // Update Cart Display & Badges
-function updateCartUi() {
-  // Count badge
-  const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
-
-  // Check if we should trigger jiggle bounce animation
-  const badgeEl = document.querySelector(".cart-count-badge");
-  const currentBadgeCount = badgeEl ? (parseInt(badgeEl.textContent) || 0) : 0;
-  if (totalItems > currentBadgeCount) {
-    const cartBtns = document.querySelectorAll(".cart-btn");
-    cartBtns.forEach(btn => {
-      btn.classList.remove("jiggle");
-      void btn.offsetWidth; // Trigger reflow
-      btn.classList.add("jiggle");
-      setTimeout(() => btn.classList.remove("jiggle"), 500);
-    });
-  }
-
-  cartCountBadges.forEach(badge => {
-    badge.textContent = totalItems;
-  });
-
-  // Calculate sum using item.price instead of item.product.price
-  const subtotal = cart.reduce((sum, item) => sum + ((item.price !== undefined ? item.price : item.product.price) * item.qty), 0);
-  cartTotalSum.textContent = `${subtotal.toLocaleString()} ₸`;
-  try {
-    localStorage.setItem("nazcake_cart", JSON.stringify(cart));
-  } catch (e) {
-    console.warn("Failed to save cart to localStorage:", e);
-  }
-
-  // Update floating glass pill sticky bar
+function updateStickyBarUi(totalItems, subtotal) {
   const stickyBar = document.getElementById("sticky-bottom-bar");
   const stickyBadge = document.getElementById("sticky-bar-badge");
   const stickyTotal = document.getElementById("sticky-bar-total");
@@ -1978,59 +1943,49 @@ function updateCartUi() {
       }
     }
   }
+}
 
-  if (cart.length === 0) {
-    const tEmptyTitle = window.i18n ? window.i18n.t("cart_empty_title") : "В корзине пусто";
-    const tEmptyDesc = window.i18n ? window.i18n.t("cart_empty_desc") : "Похоже, вы еще не выбрали десерты. Давайте это исправим!";
-    const tEmptyBtn = window.i18n ? window.i18n.t("cart_empty_btn") : "Хочу сладкого!";
+function renderEmptyCartUi() {
+  const tEmptyTitle = window.i18n ? window.i18n.t("cart_empty_title") : "В корзине пусто";
+  const tEmptyDesc = window.i18n ? window.i18n.t("cart_empty_desc") : "Похоже, вы еще не выбрали десерты. Давайте это исправим!";
+  const tEmptyBtn = window.i18n ? window.i18n.t("cart_empty_btn") : "Хочу сладкого!";
 
-    cartItemsContainer.innerHTML = `
-      <div class="empty-cart-container">
-        <div class="empty-cart-plate-svg">
-          <svg viewBox="0 0 100 100" width="80" height="80">
-            <circle cx="50" cy="50" r="38" fill="none" stroke="var(--accent-gold)" stroke-width="2" stroke-dasharray="4 2" opacity="0.6"/>
-            <circle cx="50" cy="50" r="30" fill="none" stroke="var(--accent-chocolate)" stroke-width="1.5" opacity="0.3"/>
-            <circle cx="42" cy="46" r="2" fill="var(--accent-chocolate)" class="crumb crumb-1"/>
-            <circle cx="56" cy="40" r="1.5" fill="var(--accent-gold)" class="crumb crumb-2"/>
-            <circle cx="48" cy="58" r="2.5" fill="var(--accent-chocolate)" class="crumb crumb-3"/>
-            <circle cx="60" cy="52" r="1" fill="var(--accent-gold)" class="crumb crumb-4"/>
-            <path d="M 46,32 A 4,4 0 0,0 42,36 A 3,3 0 0,0 39,39 A 4,4 0 0,0 35,43 A 3,3 0 0,0 32,46" fill="none" stroke="var(--accent-gold)" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
-          </svg>
-        </div>
-        <h4 class="empty-cart-title">${tEmptyTitle}</h4>
-        <p class="empty-cart-desc">${tEmptyDesc}</p>
-        <button class="empty-cart-btn btn" id="empty-cart-shop-btn">${tEmptyBtn}</button>
+  cartItemsContainer.innerHTML = `
+    <div class="empty-cart-container">
+      <div class="empty-cart-plate-svg">
+        <svg viewBox="0 0 100 100" width="80" height="80">
+          <circle cx="50" cy="50" r="38" fill="none" stroke="var(--accent-gold)" stroke-width="2" stroke-dasharray="4 2" opacity="0.6"/>
+          <circle cx="50" cy="50" r="30" fill="none" stroke="var(--accent-chocolate)" stroke-width="1.5" opacity="0.3"/>
+          <circle cx="42" cy="46" r="2" fill="var(--accent-chocolate)" class="crumb crumb-1"/>
+          <circle cx="56" cy="40" r="1.5" fill="var(--accent-gold)" class="crumb crumb-2"/>
+          <circle cx="48" cy="58" r="2.5" fill="var(--accent-chocolate)" class="crumb crumb-3"/>
+          <circle cx="60" cy="52" r="1" fill="var(--accent-gold)" class="crumb crumb-4"/>
+          <path d="M 46,32 A 4,4 0 0,0 42,36 A 3,3 0 0,0 39,39 A 4,4 0 0,0 35,43 A 3,3 0 0,0 32,46" fill="none" stroke="var(--accent-gold)" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+        </svg>
       </div>
-    `;
+      <h4 class="empty-cart-title">${escapeHTML(tEmptyTitle)}</h4>
+      <p class="empty-cart-desc">${escapeHTML(tEmptyDesc)}</p>
+      <button class="empty-cart-btn btn" id="empty-cart-shop-btn">${escapeHTML(tEmptyBtn)}</button>
+    </div>
+  `;
 
-    const shopBtn = document.getElementById("empty-cart-shop-btn");
-    if (shopBtn) {
-      shopBtn.addEventListener("click", () => {
-        triggerHapticFeedback();
-        const sidebar = document.getElementById("cart-sidebar");
-        const overlay = document.getElementById("cart-overlay");
-        closeModal(sidebar, overlay);
-        const catalogEl = document.getElementById("catalog");
-        if (catalogEl) {
-          catalogEl.scrollIntoView({ behavior: "smooth" });
-        }
-      });
-    }
-    return;
+  const shopBtn = document.getElementById("empty-cart-shop-btn");
+  if (shopBtn) {
+    shopBtn.addEventListener("click", handleEmptyCartShopClick);
   }
+}
 
-  cartItemsContainer.innerHTML = cart.map(item => {
+function renderCartItemsUi() {
+  return cart.map(item => {
     const p = item.product;
-    let rawName = p.isCustomName ? p.name : (p.id.startsWith("bento_custom_")
+    let tName = p.isCustomName ? p.name : (p.id.startsWith("bento_custom_")
       ? (window.i18n ? window.i18n.t("bento_custom_name") : p.name)
       : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name));
 
     if (item.selectedSize) {
-      rawName += ` (${item.selectedSize})`;
+      tName += ` (${item.selectedSize})`;
     }
-    const tName = escapeHTML(rawName);
-    const tRemove = escapeHTML(window.i18n ? window.i18n.t("cart_lbl_remove") : "Удалить");
-    const tImage = escapeHTML(p.image);
+    const tRemove = window.i18n ? window.i18n.t("cart_lbl_remove") : "Удалить";
     const itemPrice = item.price !== undefined ? item.price : p.price;
 
     return `
@@ -2041,23 +1996,23 @@ function updateCartUi() {
               <polyline points="3 6 5 6 21 6"></polyline>
               <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
             </svg>
-            ${tRemove}
+            ${escapeHTML(tRemove)}
           </span>
         </div>
         <div class="cart-item-inner">
-          <img src="${tImage}" alt="${tName}" class="cart-item-img" width="64" height="64">
+          <img src="${escapeHTML(p.image)}" alt="${escapeHTML(tName)}" class="cart-item-img" width="64" height="64">
           <div class="cart-item-details">
-            <h5 class="cart-item-name">${tName}</h5>
+            <h5 class="cart-item-name">${escapeHTML(tName)}</h5>
             <span class="cart-item-price">PLACEHOLDER_ITEM_PRICE ₸</span>
             <div class="cart-item-actions">
               <div class="quantity-stepper">
                 <button class="stepper-btn minus-cart-qty" data-id="PLACEHOLDER_CART_ITEM_ID" aria-label="Уменьшить количество">−</button>
-                <span class="quantity-val">${item.qty}</span>
+                <span class="quantity-val">${escapeHTML(String(item.qty))}</span>
                 <button class="stepper-btn plus-cart-qty" data-id="PLACEHOLDER_CART_ITEM_ID" aria-label="Увеличить количество">+</button>
               </div>
             </div>
           </div>
-          <button class="cart-item-remove" data-id="PLACEHOLDER_CART_ITEM_ID" aria-label="${tRemove}">
+          <button class="cart-item-remove" data-id="PLACEHOLDER_CART_ITEM_ID" aria-label="${escapeHTML(tRemove)}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
               <polyline points="3 6 5 6 21 6"></polyline>
               <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -2065,16 +2020,23 @@ function updateCartUi() {
           </button>
         </div>
       </div>
-    `.replace(/PLACEHOLDER_CART_ITEM_ID/g, item.cartItemId || p.id).replace(/PLACEHOLDER_ITEM_PRICE/g, (itemPrice * item.qty).toLocaleString());
+    `.replace(/PLACEHOLDER_CART_ITEM_ID/g, escapeHTML(item.cartItemId || p.id)).replace(/PLACEHOLDER_ITEM_PRICE/g, escapeHTML((itemPrice * item.qty).toLocaleString()));
   }).join("");
+}
 
-  // Add event listeners to newly generated elements inside cart list
+function attachCartItemListeners() {
   cartItemsContainer.querySelectorAll(".minus-cart-qty").forEach(btn => {
     btn.addEventListener("click", () => {
       triggerHapticFeedback();
       const id = btn.getAttribute("data-id");
       const item = cart.find(i => (i.cartItemId || i.product.id) === id);
-      if (item) changeCartItemQty(id, item.qty - 1);
+      if (item) {
+        if (item.qty > 1) {
+          changeCartItemQty(id, item.qty - 1);
+        } else {
+          removeFromCart(id);
+        }
+      }
     });
   });
 
@@ -2083,7 +2045,9 @@ function updateCartUi() {
       triggerHapticFeedback();
       const id = btn.getAttribute("data-id");
       const item = cart.find(i => (i.cartItemId || i.product.id) === id);
-      if (item) changeCartItemQty(id, item.qty + 1);
+      if (item) {
+        changeCartItemQty(id, item.qty + 1);
+      }
     });
   });
 
@@ -2094,56 +2058,111 @@ function updateCartUi() {
       removeFromCart(id);
     });
   });
+}
 
-  // Swipe-to-delete touch gestures for newly generated cart items
+function attachSwipeToDelete() {
   cartItemsContainer.querySelectorAll(".cart-item").forEach(itemEl => {
     const inner = itemEl.querySelector(".cart-item-inner");
     if (!inner) return;
-    const id = itemEl.getAttribute("data-id");
 
     let startX = 0;
-    let startY = 0;
     let currentX = 0;
-    let isDragging = false;
+    let isSwiping = false;
+    const maxSwipe = 100; // max swipe left distance in px
+    const threshold = 60; // distance to trigger delete
 
-    inner.addEventListener("touchstart", (e) => {
-      if (e.touches.length !== 1) return;
+    itemEl.addEventListener("touchstart", (e) => {
       startX = e.touches[0].clientX;
-      startY = e.touches[0].clientY;
-      currentX = startX;
-      isDragging = true;
-      inner.style.transition = "none";
+      isSwiping = true;
+      itemEl.classList.add("swiping");
     }, { passive: true });
 
-    inner.addEventListener("touchmove", (e) => {
-      if (!isDragging) return;
-      currentX = e.touches[0].clientX;
-      const deltaX = currentX - startX;
-      const deltaY = e.touches[0].clientY - startY;
+    itemEl.addEventListener("touchmove", (e) => {
+      if (!isSwiping) return;
+      currentX = e.touches[0].clientX - startX;
+      
+      // Only swipe left
+      if (currentX > 0) currentX = 0;
+      if (currentX < -maxSwipe) currentX = -maxSwipe;
 
-      // Only swipe left and primarily horizontal
-      if (deltaX < 0 && Math.abs(deltaX) > Math.abs(deltaY)) {
-        inner.style.transform = `translateX(${deltaX}px)`;
+      inner.style.transform = `translateX(${currentX}px)`;
+      
+      const swipeBg = itemEl.querySelector(".cart-item-swipe-bg");
+      if (swipeBg) {
+        if (Math.abs(currentX) >= threshold) {
+          swipeBg.classList.add("active");
+        } else {
+          swipeBg.classList.remove("active");
+        }
       }
     }, { passive: true });
 
-    inner.addEventListener("touchend", () => {
-      if (!isDragging) return;
-      isDragging = false;
-      inner.style.transition = "";
+    itemEl.addEventListener("touchend", () => {
+      if (!isSwiping) return;
+      isSwiping = false;
+      itemEl.classList.remove("swiping");
 
-      const deltaX = currentX - startX;
-      if (deltaX < -120) {
+      if (currentX <= -threshold) {
+        // Trigger delete
         triggerHapticFeedback();
-        inner.style.transform = "translateX(-100%)";
+        inner.style.transform = `translateX(-100%)`;
         setTimeout(() => {
+          const id = itemEl.getAttribute("data-id");
           removeFromCart(id);
         }, 300);
       } else {
-        inner.style.transform = "";
+        // Reset position
+        inner.style.transform = "translateX(0)";
+        const swipeBg = itemEl.querySelector(".cart-item-swipe-bg");
+        if (swipeBg) swipeBg.classList.remove("active");
       }
+      currentX = 0;
     });
   });
+}
+
+// Update Cart Display & Badges
+function updateCartUi() {
+  // Count badge
+  const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+
+  // Animate cart button if item count increased
+  const badgeEl = document.querySelector(".cart-count-badge");
+  const currentBadgeCount = badgeEl ? (parseInt(badgeEl.textContent) || 0) : 0;
+  if (totalItems > currentBadgeCount) {
+    const cartBtns = document.querySelectorAll(".cart-btn");
+    cartBtns.forEach(btn => {
+      btn.classList.remove("jiggle");
+      void btn.offsetWidth; // Trigger reflow
+      btn.classList.add("jiggle");
+      setTimeout(() => btn.classList.remove("jiggle"), 500);
+    });
+  }
+
+  cartCountBadges.forEach(badge => {
+    badge.textContent = totalItems;
+  });
+
+  // Calculate sum using item.price instead of item.product.price
+  const subtotal = cart.reduce((sum, item) => sum + ((item.price !== undefined ? item.price : item.product.price) * item.qty), 0);
+  cartTotalSum.textContent = `${subtotal.toLocaleString()} ₸`;
+  try {
+    localStorage.setItem("nazcake_cart", JSON.stringify(cart));
+  } catch (e) {
+    console.warn("Failed to save cart to localStorage:", e);
+  }
+
+  updateStickyBarUi(totalItems, subtotal);
+
+  if (cart.length === 0) {
+    renderEmptyCartUi();
+    return;
+  }
+
+  cartItemsContainer.innerHTML = renderCartItemsUi();
+
+  attachCartItemListeners();
+  attachSwipeToDelete();
 }
 
 // Setup Interactive Bento Customizer
@@ -2393,7 +2412,7 @@ function renderAdminCatalog() {
     return `
       <div class="admin-product-row" data-id="${p.id}">
         <div class="admin-prod-img-container" onclick="triggerAdminImageUpload('${p.id}')">
-          ${p.image ? `<img src="${escapeHTML(p.image)}" alt="${pName}" class="admin-prod-img" width="50" height="50">` : `<div class="admin-prod-img empty-admin-img" style="background-color: var(--bg-tertiary);"></div>`}
+          ${p.image ? `<img src="${p.image}" alt="${pName}" class="admin-prod-img" width="50" height="50">` : `<div class="admin-prod-img empty-admin-img" style="background-color: var(--bg-tertiary);"></div>`}
           <div class="admin-prod-img-overlay">
             <span>Изменить</span>
           </div>
@@ -3238,6 +3257,7 @@ function setupAdminDashboardNav(dashModal) {
 
   // Tab Switching
   const tabButtons = [tabCatalogBtn, tabOrdersBtn];
+  const tabContents = document.querySelectorAll(".dash-tab-content");
   tabButtons.forEach(btn => {
     if (btn) {
       btn.addEventListener("click", () => {
@@ -3247,7 +3267,7 @@ function setupAdminDashboardNav(dashModal) {
         btn.classList.add("active");
 
         const tab = btn.getAttribute("data-tab");
-        document.querySelectorAll(".dash-tab-content").forEach(content => {
+        tabContents.forEach(content => {
           content.classList.remove("active");
         });
         const tabContent = document.getElementById("tab-content-" + tab);
@@ -3830,6 +3850,7 @@ function handleEmptyCartShopClick() {
 
 if (typeof module !== 'undefined') {
   module.exports = {
+    escapeHTML: typeof escapeHTML !== 'undefined' ? escapeHTML : null,
     addToCart: typeof addToCart !== 'undefined' ? addToCart : null,
     products: typeof products !== 'undefined' ? products : null,
     cart: typeof cart !== 'undefined' ? cart : null,
