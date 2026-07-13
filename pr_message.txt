@@ -1,0 +1,12 @@
+🧪 Add boundary tests for calculateDeliveryCost
+
+🎯 **What:** The testing gap addressed
+This PR adds test coverage for the `calculateDeliveryCost` function in `app.js`.
+
+📊 **Coverage:** What scenarios are now tested
+- Validates the minimum delivery cost boundary (`< 500` logic).
+- Validates the maximum delivery cost capping (`> 3500` logic).
+- Tests the correct rounding calculations up to the nearest 50.
+
+✨ **Result:** The improvement in test coverage
+The logic of delivery pricing has robust validation checks against distance bounds, providing a safety net against future refactoring.
