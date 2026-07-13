@@ -30,6 +30,9 @@ describe('Nazcake App Unit Tests', () => {
             window.setDetectedCity = (c) => { detectedCity = c; };
 window.calculateDeliveryCost = calculateDeliveryCost;
 
+window.getHaversineDistance = getHaversineDistance;
+            window.deg2rad = deg2rad;
+
 window.checkAtyrauBounds = checkAtyrauBounds;
         `;
 
@@ -210,6 +213,85 @@ describe('calculateDeliveryCost', () => {
             expect(window.calculateDeliveryCost(20)).toBe(3500);
             expect(window.calculateDeliveryCost(50)).toBe(3500);
         });
+  });
+
+describe('Distance Calculator (Haversine)', () => {
+        describe('deg2rad', () => {
+            it('should be defined', () => {
+                expect(window.deg2rad).toBeDefined();
+            });
+
+            it('should convert 0 degrees to 0 radians', () => {
+                expect(window.deg2rad(0)).toBe(0);
+            });
+
+            it('should convert 90 degrees to PI/2 radians', () => {
+                expect(window.deg2rad(90)).toBeCloseTo(Math.PI / 2);
+            });
+
+            it('should convert 180 degrees to PI radians', () => {
+                expect(window.deg2rad(180)).toBeCloseTo(Math.PI);
+            });
+
+            it('should convert 360 degrees to 2*PI radians', () => {
+                expect(window.deg2rad(360)).toBeCloseTo(2 * Math.PI);
+            });
+
+            it('should handle negative degrees correctly', () => {
+                expect(window.deg2rad(-90)).toBeCloseTo(-Math.PI / 2);
+            });
+        });
+
+        describe('getHaversineDistance', () => {
+            it('should be defined', () => {
+                expect(window.getHaversineDistance).toBeDefined();
+            });
+
+            it('should return 0 when coordinates are exactly the same', () => {
+                expect(window.getHaversineDistance(0, 0, 0, 0)).toBe(0);
+                expect(window.getHaversineDistance(45.5, -122.6, 45.5, -122.6)).toBe(0);
+            });
+
+            it('should calculate distance across longitude (0,0 to 0,1)', () => {
+                // Circumference is ~40075 km, so 1 degree longitude at equator is ~111.32 km
+                // Using 6371 radius, 1 degree is ~111.19 km
+                expect(window.getHaversineDistance(0, 0, 0, 1)).toBeCloseTo(111.195, 2);
+            });
+
+            it('should calculate a real-world distance (New York to London)', () => {
+                const nyLat = 40.7128;
+                const nyLon = -74.0060;
+                const lonLat = 51.5074;
+                const lonLon = -0.1278;
+
+                // Approximate distance is ~5570 km
+                const distance = window.getHaversineDistance(nyLat, nyLon, lonLat, lonLon);
+                expect(distance).toBeGreaterThan(5500);
+                expect(distance).toBeLessThan(5600);
+            });
+
+            it('should have commutative property (distance A->B equals B->A)', () => {
+                const nyLat = 40.7128, nyLon = -74.0060;
+                const lonLat = 51.5074, lonLon = -0.1278;
+
+                const distAB = window.getHaversineDistance(nyLat, nyLon, lonLat, lonLon);
+                const distBA = window.getHaversineDistance(lonLat, lonLon, nyLat, nyLon);
+
+                expect(distAB).toBe(distBA);
+            });
+
+            it('should handle negative coordinates correctly', () => {
+                // Sydney (33.8688° S, 151.2093° E) to Cape Town (33.9249° S, 18.4241° E)
+                const sydLat = -33.8688, sydLon = 151.2093;
+                const ctLat = -33.9249, ctLon = 18.4241;
+
+                const distance = window.getHaversineDistance(sydLat, sydLon, ctLat, ctLon);
+                expect(distance).toBeGreaterThan(0);
+
+                // Opposite sides of globe
+                expect(window.getHaversineDistance(0, -90, 0, 90)).toBeCloseTo(20015.08, 1);
+            });
+  });
   });
 
 describe('checkAtyrauBounds', () => {
