@@ -72,6 +72,7 @@ describe('App Functions', () => {
   it('tests adjustColorBrightness', () => {
     const codeWithExports = appJsCode + `
       window.adjustColorBrightness = adjustColorBrightness;
+      window.escapeHTML = escapeHTML;
     `;
     eval(codeWithExports);
 
@@ -141,5 +142,97 @@ describe('App Functions', () => {
     const dist = window.getHaversineDistance(51.5074, -0.1278, 48.8566, 2.3522);
     expect(dist).toBeGreaterThan(340);
     expect(dist).toBeLessThan(350);
+  });
+
+describe('calculateDeliveryTime', () => {
+    beforeEach(() => {
+      const codeWithExports = appJsCode + "\nwindow.calculateDeliveryTime = calculateDeliveryTime;";
+      eval(codeWithExports);
+    });
+
+    it('should calculate time for 0 distance correctly', () => {
+      expect(window.calculateDeliveryTime(0)).toBe(20);
+    });
+
+    it('should calculate time for integer distance correctly', () => {
+      expect(window.calculateDeliveryTime(5)).toBe(40);
+      expect(window.calculateDeliveryTime(10)).toBe(60);
+    });
+
+    it('should round appropriately for fractional distance', () => {
+      expect(window.calculateDeliveryTime(5.125)).toBe(41);
+      expect(window.calculateDeliveryTime(5.1)).toBe(40);
+  });
+  });
+
+it('prevents XSS in cart UI', () => {
+    const codeWithExports = appJsCode + `
+      window.updateCartUi = updateCartUi;
+      window.setCart = (c) => { cart = c; };
+      window.escapeHTML = escapeHTML;
+    `;
+    eval(codeWithExports);
+
+    window.setCart([{
+      product: {
+        id: "test",
+        name: "<script>alert(1)</script>",
+        price: 100,
+        image: "img.jpg",
+        isCustomName: true
+      },
+      qty: 1
+    }]);
+
+    window.updateCartUi();
+
+    const cartHtml = document.getElementById('cart-items-container').innerHTML;
+    expect(cartHtml).not.toContain('<h5 class="cart-item-name"><script>');
+    expect(cartHtml).toContain('&lt;script&gt;');
+  });
+
+describe('escapeHTML', () => {
+    beforeEach(() => {
+      const codeWithExports = appJsCode + `
+        window.escapeHTML = escapeHTML;
+      `;
+      eval(codeWithExports);
+    });
+
+    it('should be defined', () => {
+      expect(window.escapeHTML).toBeDefined();
+    });
+
+    it('should return empty string for non-string inputs', () => {
+      expect(window.escapeHTML(null)).toBe('');
+      expect(window.escapeHTML(undefined)).toBe('');
+      expect(window.escapeHTML(123)).toBe('');
+      expect(window.escapeHTML({})).toBe('');
+      expect(window.escapeHTML([])).toBe('');
+      expect(window.escapeHTML(true)).toBe('');
+    });
+
+    it('should escape HTML characters correctly', () => {
+      expect(window.escapeHTML('&')).toBe('&amp;');
+      expect(window.escapeHTML('<')).toBe('&lt;');
+      expect(window.escapeHTML('>')).toBe('&gt;');
+      expect(window.escapeHTML('"')).toBe('&quot;');
+      expect(window.escapeHTML("'")).toBe('&#039;');
+    });
+
+    it('should escape a string with multiple HTML characters', () => {
+      const input = '<script>alert("XSS & test\'s")</script>';
+      const expected = '&lt;script&gt;alert(&quot;XSS &amp; test&#039;s&quot;)&lt;/script&gt;';
+      expect(window.escapeHTML(input)).toBe(expected);
+    });
+
+    it('should return the exact same string if no characters to escape', () => {
+      const input = 'Just a regular string 123.';
+      expect(window.escapeHTML(input)).toBe(input);
+    });
+
+    it('should handle empty string', () => {
+      expect(window.escapeHTML('')).toBe('');
+    });
   });
 });

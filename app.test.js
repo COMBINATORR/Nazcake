@@ -23,10 +23,17 @@ describe('Nazcake App Unit Tests', () => {
             updateCartUi = jest.fn(); // Mocking updateCartUi
             window.getUpdateCartUiMock = () => updateCartUi;
             window.adjustColorBrightness = adjustColorBrightness;
+            window.escapeHTML = escapeHTML;
             window.setupGeolocation = setupGeolocation;
             window.updateLocationUi = updateLocationUi;
             window.getDetectedCity = () => detectedCity;
             window.setDetectedCity = (c) => { detectedCity = c; };
+window.calculateDeliveryCost = calculateDeliveryCost;
+
+window.getHaversineDistance = getHaversineDistance;
+            window.deg2rad = deg2rad;
+
+window.checkAtyrauBounds = checkAtyrauBounds;
         `;
 
         eval(appJsCode);
@@ -189,4 +196,174 @@ describe('Nazcake App Unit Tests', () => {
         });
     });
 
+
+describe('calculateDeliveryCost', () => {
+        it('should return minimum cost of 500', () => {
+            expect(window.calculateDeliveryCost(0)).toBe(500);
+        });
+
+        it('should round up to the nearest 50', () => {
+            // 500 + Math.round(2 * 150) = 800
+            expect(window.calculateDeliveryCost(2)).toBe(800);
+            // 500 + Math.round(2.1 * 150) = 500 + 315 = 815 -> ceil(815/50)*50 = 850
+            expect(window.calculateDeliveryCost(2.1)).toBe(850);
+        });
+
+        it('should cap the maximum cost at 3500', () => {
+            expect(window.calculateDeliveryCost(20)).toBe(3500);
+            expect(window.calculateDeliveryCost(50)).toBe(3500);
+        });
+  });
+
+describe('Distance Calculator (Haversine)', () => {
+        describe('deg2rad', () => {
+            it('should be defined', () => {
+                expect(window.deg2rad).toBeDefined();
+            });
+
+            it('should convert 0 degrees to 0 radians', () => {
+                expect(window.deg2rad(0)).toBe(0);
+            });
+
+            it('should convert 90 degrees to PI/2 radians', () => {
+                expect(window.deg2rad(90)).toBeCloseTo(Math.PI / 2);
+            });
+
+            it('should convert 180 degrees to PI radians', () => {
+                expect(window.deg2rad(180)).toBeCloseTo(Math.PI);
+            });
+
+            it('should convert 360 degrees to 2*PI radians', () => {
+                expect(window.deg2rad(360)).toBeCloseTo(2 * Math.PI);
+            });
+
+            it('should handle negative degrees correctly', () => {
+                expect(window.deg2rad(-90)).toBeCloseTo(-Math.PI / 2);
+            });
+        });
+
+        describe('getHaversineDistance', () => {
+            it('should be defined', () => {
+                expect(window.getHaversineDistance).toBeDefined();
+            });
+
+            it('should return 0 when coordinates are exactly the same', () => {
+                expect(window.getHaversineDistance(0, 0, 0, 0)).toBe(0);
+                expect(window.getHaversineDistance(45.5, -122.6, 45.5, -122.6)).toBe(0);
+            });
+
+            it('should calculate distance across longitude (0,0 to 0,1)', () => {
+                // Circumference is ~40075 km, so 1 degree longitude at equator is ~111.32 km
+                // Using 6371 radius, 1 degree is ~111.19 km
+                expect(window.getHaversineDistance(0, 0, 0, 1)).toBeCloseTo(111.195, 2);
+            });
+
+            it('should calculate a real-world distance (New York to London)', () => {
+                const nyLat = 40.7128;
+                const nyLon = -74.0060;
+                const lonLat = 51.5074;
+                const lonLon = -0.1278;
+
+                // Approximate distance is ~5570 km
+                const distance = window.getHaversineDistance(nyLat, nyLon, lonLat, lonLon);
+                expect(distance).toBeGreaterThan(5500);
+                expect(distance).toBeLessThan(5600);
+            });
+
+            it('should have commutative property (distance A->B equals B->A)', () => {
+                const nyLat = 40.7128, nyLon = -74.0060;
+                const lonLat = 51.5074, lonLon = -0.1278;
+
+                const distAB = window.getHaversineDistance(nyLat, nyLon, lonLat, lonLon);
+                const distBA = window.getHaversineDistance(lonLat, lonLon, nyLat, nyLon);
+
+                expect(distAB).toBe(distBA);
+            });
+
+            it('should handle negative coordinates correctly', () => {
+                // Sydney (33.8688° S, 151.2093° E) to Cape Town (33.9249° S, 18.4241° E)
+                const sydLat = -33.8688, sydLon = 151.2093;
+                const ctLat = -33.9249, ctLon = 18.4241;
+
+                const distance = window.getHaversineDistance(sydLat, sydLon, ctLat, ctLon);
+                expect(distance).toBeGreaterThan(0);
+
+                // Opposite sides of globe
+                expect(window.getHaversineDistance(0, -90, 0, 90)).toBeCloseTo(20015.08, 1);
+            });
+  });
+  });
+
+describe('checkAtyrauBounds', () => {
+        const bounds = {
+            minLat: 46.9,
+            maxLat: 47.2,
+            minLon: 51.7,
+            maxLon: 52.1
+        };
+
+        it('should be defined', () => {
+            expect(window.checkAtyrauBounds).toBeDefined();
+        });
+
+        it('should not throw an error when coordinates are within bounds', () => {
+            expect(() => window.checkAtyrauBounds(47.0, 51.9, bounds)).not.toThrow();
+            expect(() => window.checkAtyrauBounds(46.9, 51.7, bounds)).not.toThrow();
+            expect(() => window.checkAtyrauBounds(47.2, 52.1, bounds)).not.toThrow();
+        });
+
+        it('should throw an error when latitude is too small', () => {
+            expect(() => window.checkAtyrauBounds(46.8, 51.9, bounds)).toThrow("delivery_err_outofbounds");
+        });
+
+        it('should throw an error when latitude is too large', () => {
+            expect(() => window.checkAtyrauBounds(47.3, 51.9, bounds)).toThrow("delivery_err_outofbounds");
+        });
+
+        it('should throw an error when longitude is too small', () => {
+            expect(() => window.checkAtyrauBounds(47.0, 51.6, bounds)).toThrow("delivery_err_outofbounds");
+        });
+
+        it('should throw an error when longitude is too large', () => {
+            expect(() => window.checkAtyrauBounds(47.0, 52.2, bounds)).toThrow("delivery_err_outofbounds");
+        });
+    });
+
+describe('escapeHTML', () => {
+      it('should be defined', () => {
+        expect(window.escapeHTML).toBeDefined();
+      });
+
+      it('should return empty string for non-string inputs', () => {
+        expect(window.escapeHTML(null)).toBe('');
+        expect(window.escapeHTML(undefined)).toBe('');
+        expect(window.escapeHTML(123)).toBe('');
+        expect(window.escapeHTML({})).toBe('');
+        expect(window.escapeHTML([])).toBe('');
+        expect(window.escapeHTML(true)).toBe('');
+      });
+
+      it('should escape HTML characters correctly', () => {
+        expect(window.escapeHTML('&')).toBe('&amp;');
+        expect(window.escapeHTML('<')).toBe('&lt;');
+        expect(window.escapeHTML('>')).toBe('&gt;');
+        expect(window.escapeHTML('"')).toBe('&quot;');
+        expect(window.escapeHTML("'")).toBe('&#039;');
+      });
+
+      it('should escape a string with multiple HTML characters', () => {
+        const input = '<script>alert("XSS & test\'s")</script>';
+        const expected = '&lt;script&gt;alert(&quot;XSS &amp; test&#039;s&quot;)&lt;/script&gt;';
+        expect(window.escapeHTML(input)).toBe(expected);
+      });
+
+      it('should return the exact same string if no characters to escape', () => {
+        const input = 'Just a regular string 123.';
+        expect(window.escapeHTML(input)).toBe(input);
+      });
+
+      it('should handle empty string', () => {
+        expect(window.escapeHTML('')).toBe('');
+      });
+    });
 });

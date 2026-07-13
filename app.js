@@ -21,11 +21,6 @@ window.addEventListener("load", () => {
   }
 });
 
-const CONFIG = {
-  TELEGRAM_BOT_TOKEN: "YOUR_TELEGRAM_BOT_TOKEN",
-  TELEGRAM_CHAT_ID: "YOUR_TELEGRAM_CHAT_ID"
-};
-
 // Confectionery Nazcake App Logic
 
 // Product Catalog Data
@@ -437,7 +432,7 @@ let products = [
     category: "desserts",
     price: 260,
     unit: "шт.",
-    image: "images/dessert_ekler_choco.webp",
+    image: "images/dessert_ekler.webp",
     desc: "Французское заварное пирожное, наполненное нежным сливочно-заварным кремом.",
     ingredients: "Заварное тесто, крем Муслин, шоколадная глазурь.",
     badge: "хит"
@@ -1273,8 +1268,9 @@ try {
   const customProducts = localStorage.getItem("nazcake_custom_products");
   if (customProducts) {
     const parsed = JSON.parse(customProducts);
+    const customMap = new Map(parsed.map(cp => [cp.id, cp]));
     products = products.map(p => {
-      const custom = parsed.find(cp => cp.id === p.id);
+      const custom = customMap.get(p.id);
       if (custom) {
         return {
           ...p,
@@ -1827,37 +1823,7 @@ function changeCartItemQty(cartItemId, newQty) {
 }
 
 // Update Cart Display & Badges
-function updateCartUi() {
-  // Count badge
-  const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
-
-  // Check if we should trigger jiggle bounce animation
-  const badgeEl = document.querySelector(".cart-count-badge");
-  const currentBadgeCount = badgeEl ? (parseInt(badgeEl.textContent) || 0) : 0;
-  if (totalItems > currentBadgeCount) {
-    const cartBtns = document.querySelectorAll(".cart-btn");
-    cartBtns.forEach(btn => {
-      btn.classList.remove("jiggle");
-      void btn.offsetWidth; // Trigger reflow
-      btn.classList.add("jiggle");
-      setTimeout(() => btn.classList.remove("jiggle"), 500);
-    });
-  }
-
-  cartCountBadges.forEach(badge => {
-    badge.textContent = totalItems;
-  });
-
-  // Calculate sum using item.price instead of item.product.price
-  const subtotal = cart.reduce((sum, item) => sum + ((item.price !== undefined ? item.price : item.product.price) * item.qty), 0);
-  cartTotalSum.textContent = `${subtotal.toLocaleString()} ₸`;
-  try {
-    localStorage.setItem("nazcake_cart", JSON.stringify(cart));
-  } catch (e) {
-    console.warn("Failed to save cart to localStorage:", e);
-  }
-
-  // Update floating glass pill sticky bar
+function updateStickyBarUi(totalItems, subtotal) {
   const stickyBar = document.getElementById("sticky-bottom-bar");
   const stickyBadge = document.getElementById("sticky-bar-badge");
   const stickyTotal = document.getElementById("sticky-bar-total");
@@ -1884,48 +1850,40 @@ function updateCartUi() {
       }
     }
   }
+}
 
-  if (cart.length === 0) {
-    const tEmptyTitle = window.i18n ? window.i18n.t("cart_empty_title") : "В корзине пусто";
-    const tEmptyDesc = window.i18n ? window.i18n.t("cart_empty_desc") : "Похоже, вы еще не выбрали десерты. Давайте это исправим!";
-    const tEmptyBtn = window.i18n ? window.i18n.t("cart_empty_btn") : "Хочу сладкого!";
+function renderEmptyCartUi() {
+  const tEmptyTitle = window.i18n ? window.i18n.t("cart_empty_title") : "В корзине пусто";
+  const tEmptyDesc = window.i18n ? window.i18n.t("cart_empty_desc") : "Похоже, вы еще не выбрали десерты. Давайте это исправим!";
+  const tEmptyBtn = window.i18n ? window.i18n.t("cart_empty_btn") : "Хочу сладкого!";
     
-    cartItemsContainer.innerHTML = `
-      <div class="empty-cart-container">
-        <div class="empty-cart-plate-svg">
-          <svg viewBox="0 0 100 100" width="80" height="80">
-            <circle cx="50" cy="50" r="38" fill="none" stroke="var(--accent-gold)" stroke-width="2" stroke-dasharray="4 2" opacity="0.6"/>
-            <circle cx="50" cy="50" r="30" fill="none" stroke="var(--accent-chocolate)" stroke-width="1.5" opacity="0.3"/>
-            <circle cx="42" cy="46" r="2" fill="var(--accent-chocolate)" class="crumb crumb-1"/>
-            <circle cx="56" cy="40" r="1.5" fill="var(--accent-gold)" class="crumb crumb-2"/>
-            <circle cx="48" cy="58" r="2.5" fill="var(--accent-chocolate)" class="crumb crumb-3"/>
-            <circle cx="60" cy="52" r="1" fill="var(--accent-gold)" class="crumb crumb-4"/>
-            <path d="M 46,32 A 4,4 0 0,0 42,36 A 3,3 0 0,0 39,39 A 4,4 0 0,0 35,43 A 3,3 0 0,0 32,46" fill="none" stroke="var(--accent-gold)" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
-          </svg>
-        </div>
-        <h4 class="empty-cart-title">${tEmptyTitle}</h4>
-        <p class="empty-cart-desc">${tEmptyDesc}</p>
-        <button class="empty-cart-btn btn" id="empty-cart-shop-btn">${tEmptyBtn}</button>
+  cartItemsContainer.innerHTML = `
+    <div class="empty-cart-container">
+      <div class="empty-cart-plate-svg">
+        <svg viewBox="0 0 100 100" width="80" height="80">
+          <circle cx="50" cy="50" r="38" fill="none" stroke="var(--accent-gold)" stroke-width="2" stroke-dasharray="4 2" opacity="0.6"/>
+          <circle cx="50" cy="50" r="30" fill="none" stroke="var(--accent-chocolate)" stroke-width="1.5" opacity="0.3"/>
+          <circle cx="42" cy="46" r="2" fill="var(--accent-chocolate)" class="crumb crumb-1"/>
+          <circle cx="56" cy="40" r="1.5" fill="var(--accent-gold)" class="crumb crumb-2"/>
+          <circle cx="48" cy="58" r="2.5" fill="var(--accent-chocolate)" class="crumb crumb-3"/>
+          <circle cx="60" cy="52" r="1" fill="var(--accent-gold)" class="crumb crumb-4"/>
+          <path d="M 46,32 A 4,4 0 0,0 42,36 A 3,3 0 0,0 39,39 A 4,4 0 0,0 35,43 A 3,3 0 0,0 32,46" fill="none" stroke="var(--accent-gold)" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+        </svg>
       </div>
-    `;
+      <h4 class="empty-cart-title">${escapeHTML(tEmptyTitle)}</h4>
+      <p class="empty-cart-desc">${escapeHTML(tEmptyDesc)}</p>
+      <button class="empty-cart-btn btn" id="empty-cart-shop-btn">${escapeHTML(tEmptyBtn)}</button>
+    </div>
+  `;
 
-    const shopBtn = document.getElementById("empty-cart-shop-btn");
-    if (shopBtn) {
-      shopBtn.addEventListener("click", () => {
-        triggerHapticFeedback();
-        const sidebar = document.getElementById("cart-sidebar");
-        const overlay = document.getElementById("cart-overlay");
-        closeModal(sidebar, overlay);
-        const catalogEl = document.getElementById("catalog");
-        if (catalogEl) {
-          catalogEl.scrollIntoView({ behavior: "smooth" });
-        }
-      });
-    }
-    return;
+  const shopBtn = document.getElementById("empty-cart-shop-btn");
+  if (shopBtn) {
+    shopBtn.addEventListener("click", handleEmptyCartShopClick);
   }
+}
 
-  cartItemsContainer.innerHTML = cart.map(item => {
+function renderCartItemsUi() {
+  return cart.map(item => {
     const p = item.product;
     let tName = p.isCustomName ? p.name : (p.id.startsWith("bento_custom_") 
       ? (window.i18n ? window.i18n.t("bento_custom_name") : p.name)
@@ -1945,23 +1903,23 @@ function updateCartUi() {
               <polyline points="3 6 5 6 21 6"></polyline>
               <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
             </svg>
-            ${tRemove}
+            ${escapeHTML(tRemove)}
           </span>
         </div>
         <div class="cart-item-inner">
-          <img src="${p.image}" alt="${tName}" class="cart-item-img" width="64" height="64">
+          <img src="${escapeHTML(p.image)}" alt="${escapeHTML(tName)}" class="cart-item-img" width="64" height="64">
           <div class="cart-item-details">
-            <h5 class="cart-item-name">${tName}</h5>
+            <h5 class="cart-item-name">${escapeHTML(tName)}</h5>
             <span class="cart-item-price">PLACEHOLDER_ITEM_PRICE ₸</span>
             <div class="cart-item-actions">
               <div class="quantity-stepper">
                 <button class="stepper-btn minus-cart-qty" data-id="PLACEHOLDER_CART_ITEM_ID" aria-label="Уменьшить количество">−</button>
-                <span class="quantity-val">${item.qty}</span>
+                <span class="quantity-val">${escapeHTML(String(item.qty))}</span>
                 <button class="stepper-btn plus-cart-qty" data-id="PLACEHOLDER_CART_ITEM_ID" aria-label="Увеличить количество">+</button>
               </div>
             </div>
           </div>
-          <button class="cart-item-remove" data-id="PLACEHOLDER_CART_ITEM_ID" aria-label="${tRemove}">
+          <button class="cart-item-remove" data-id="PLACEHOLDER_CART_ITEM_ID" aria-label="${escapeHTML(tRemove)}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
               <polyline points="3 6 5 6 21 6"></polyline>
               <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -1969,16 +1927,23 @@ function updateCartUi() {
           </button>
         </div>
       </div>
-    `.replace(/PLACEHOLDER_CART_ITEM_ID/g, item.cartItemId || p.id).replace(/PLACEHOLDER_ITEM_PRICE/g, (itemPrice * item.qty).toLocaleString());
+    `.replace(/PLACEHOLDER_CART_ITEM_ID/g, escapeHTML(item.cartItemId || p.id)).replace(/PLACEHOLDER_ITEM_PRICE/g, escapeHTML((itemPrice * item.qty).toLocaleString()));
   }).join("");
+}
 
-  // Add event listeners to newly generated elements inside cart list
+function attachCartItemListeners() {
   cartItemsContainer.querySelectorAll(".minus-cart-qty").forEach(btn => {
     btn.addEventListener("click", () => {
       triggerHapticFeedback();
       const id = btn.getAttribute("data-id");
       const item = cart.find(i => (i.cartItemId || i.product.id) === id);
-      if (item) changeCartItemQty(id, item.qty - 1);
+      if (item) {
+        if (item.qty > 1) {
+          changeCartItemQty(id, item.qty - 1);
+        } else {
+          removeFromCart(id);
+        }
+      }
     });
   });
 
@@ -1987,7 +1952,9 @@ function updateCartUi() {
       triggerHapticFeedback();
       const id = btn.getAttribute("data-id");
       const item = cart.find(i => (i.cartItemId || i.product.id) === id);
-      if (item) changeCartItemQty(id, item.qty + 1);
+      if (item) {
+        changeCartItemQty(id, item.qty + 1);
+      }
     });
   });
 
@@ -1998,56 +1965,111 @@ function updateCartUi() {
       removeFromCart(id);
     });
   });
+}
 
-  // Swipe-to-delete touch gestures for newly generated cart items
+function attachSwipeToDelete() {
   cartItemsContainer.querySelectorAll(".cart-item").forEach(itemEl => {
     const inner = itemEl.querySelector(".cart-item-inner");
     if (!inner) return;
-    const id = itemEl.getAttribute("data-id");
 
     let startX = 0;
-    let startY = 0;
     let currentX = 0;
-    let isDragging = false;
+    let isSwiping = false;
+    const maxSwipe = 100; // max swipe left distance in px
+    const threshold = 60; // distance to trigger delete
 
-    inner.addEventListener("touchstart", (e) => {
-      if (e.touches.length !== 1) return;
+    itemEl.addEventListener("touchstart", (e) => {
       startX = e.touches[0].clientX;
-      startY = e.touches[0].clientY;
-      currentX = startX;
-      isDragging = true;
-      inner.style.transition = "none";
+      isSwiping = true;
+      itemEl.classList.add("swiping");
     }, { passive: true });
 
-    inner.addEventListener("touchmove", (e) => {
-      if (!isDragging) return;
-      currentX = e.touches[0].clientX;
-      const deltaX = currentX - startX;
-      const deltaY = e.touches[0].clientY - startY;
+    itemEl.addEventListener("touchmove", (e) => {
+      if (!isSwiping) return;
+      currentX = e.touches[0].clientX - startX;
 
-      // Only swipe left and primarily horizontal
-      if (deltaX < 0 && Math.abs(deltaX) > Math.abs(deltaY)) {
-        inner.style.transform = `translateX(${deltaX}px)`;
+      // Only swipe left
+      if (currentX > 0) currentX = 0;
+      if (currentX < -maxSwipe) currentX = -maxSwipe;
+
+      inner.style.transform = `translateX(${currentX}px)`;
+      
+      const swipeBg = itemEl.querySelector(".cart-item-swipe-bg");
+      if (swipeBg) {
+        if (Math.abs(currentX) >= threshold) {
+          swipeBg.classList.add("active");
+        } else {
+          swipeBg.classList.remove("active");
+        }
       }
     }, { passive: true });
 
-    inner.addEventListener("touchend", () => {
-      if (!isDragging) return;
-      isDragging = false;
-      inner.style.transition = "";
+    itemEl.addEventListener("touchend", () => {
+      if (!isSwiping) return;
+      isSwiping = false;
+      itemEl.classList.remove("swiping");
 
-      const deltaX = currentX - startX;
-      if (deltaX < -120) {
+      if (currentX <= -threshold) {
+        // Trigger delete
         triggerHapticFeedback();
-        inner.style.transform = "translateX(-100%)";
+        inner.style.transform = `translateX(-100%)`;
         setTimeout(() => {
+          const id = itemEl.getAttribute("data-id");
           removeFromCart(id);
         }, 300);
       } else {
-        inner.style.transform = "";
+        // Reset position
+        inner.style.transform = "translateX(0)";
+        const swipeBg = itemEl.querySelector(".cart-item-swipe-bg");
+        if (swipeBg) swipeBg.classList.remove("active");
       }
+      currentX = 0;
     });
   });
+}
+
+// Update Cart Display & Badges
+function updateCartUi() {
+  // Count badge
+  const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+
+  // Animate cart button if item count increased
+  const badgeEl = document.querySelector(".cart-count-badge");
+  const currentBadgeCount = badgeEl ? (parseInt(badgeEl.textContent) || 0) : 0;
+  if (totalItems > currentBadgeCount) {
+    const cartBtns = document.querySelectorAll(".cart-btn");
+    cartBtns.forEach(btn => {
+      btn.classList.remove("jiggle");
+      void btn.offsetWidth; // Trigger reflow
+      btn.classList.add("jiggle");
+      setTimeout(() => btn.classList.remove("jiggle"), 500);
+    });
+  }
+
+  cartCountBadges.forEach(badge => {
+    badge.textContent = totalItems;
+  });
+
+  // Calculate sum using item.price instead of item.product.price
+  const subtotal = cart.reduce((sum, item) => sum + ((item.price !== undefined ? item.price : item.product.price) * item.qty), 0);
+  cartTotalSum.textContent = `${subtotal.toLocaleString()} ₸`;
+  try {
+    localStorage.setItem("nazcake_cart", JSON.stringify(cart));
+  } catch (e) {
+    console.warn("Failed to save cart to localStorage:", e);
+  }
+
+  updateStickyBarUi(totalItems, subtotal);
+
+  if (cart.length === 0) {
+    renderEmptyCartUi();
+    return;
+  }
+
+  cartItemsContainer.innerHTML = renderCartItemsUi();
+
+  attachCartItemListeners();
+  attachSwipeToDelete();
 }
 
 // Setup Interactive Bento Customizer
@@ -2369,13 +2391,24 @@ window.handleAdminImageUpload = function(event, id) {
       const dataUrl = canvas.toDataURL("image/jpeg", 0.7);
 
       // Preview locally in the admin panel row
+      window.updateAdminImagePreview(id, dataUrl);
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+};
+
+
+window.updateAdminImagePreview = function(id, dataUrl) {
       const row = document.querySelector(`.admin-product-row[data-id="${id}"]`);
-      if (row) {
+  if (!row) return;
+
         const imgEl = row.querySelector(".admin-prod-img");
         if (imgEl) {
           imgEl.src = dataUrl;
         } else {
           const imgContainer = row.querySelector(".admin-prod-img-container");
+    if (!imgContainer) return;
           const emptyDiv = imgContainer.querySelector(".empty-admin-img");
           if (emptyDiv) {
             const newImg = document.createElement("img");
@@ -2386,11 +2419,6 @@ window.handleAdminImageUpload = function(event, id) {
           }
         }
         row.setAttribute("data-new-image", dataUrl);
-      }
-    };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
 };
 
 // Global helper function to save product edit
@@ -2463,14 +2491,14 @@ window.saveAdminProduct = function(id) {
   renderCatalog(category);
 
   // Sync cart items with updated product data
-  cart.forEach(item => {
-    if (item.product && item.product.id === id) {
-      const updatedProduct = products.find(p => p.id === id);
-      if (updatedProduct) {
+  const updatedProduct = products.find(p => p.id === id);
+  if (updatedProduct) {
+    cart.forEach(item => {
+      if (item.product && item.product.id === id) {
         item.product = updatedProduct;
       }
-    }
-  });
+    });
+  }
   updateCartUi();
 }
 
@@ -2490,6 +2518,21 @@ function calculateDeliveryCost(distance) {
 
 function calculateDeliveryTime(distance) {
   return Math.round(distance * 4) + 20;
+}
+
+function getDeliveryErrorMessage(msg) {
+  if (window.i18n) {
+    if (msg === "delivery_err_geocoder" || msg === "delivery_err_notfound" || msg === "delivery_err_outofbounds") {
+      return window.i18n.t(msg);
+    } else {
+      return window.i18n.t("delivery_err_unknown");
+    }
+  } else {
+    if (msg === "delivery_err_geocoder") return "Не удалось подключиться к серверу геокодирования.";
+    if (msg === "delivery_err_notfound") return "Адрес не найден. Пожалуйста, проверьте правильность написания.";
+    if (msg === "delivery_err_outofbounds") return "Яндекс.Доставка (Экспресс) доступна только в пределах города Атырау.";
+    return "Ошибка при расчете стоимости доставки.";
+  }
 }
 
 function showDeliveryError(msg, errorBox, resultsBox) {
@@ -2608,6 +2651,85 @@ function escapeHTML(str) {
 }
 
 // Handle Order Checkout Submission & Send to Telegram
+function formatCheckoutMessage(name, phone, method, address, cart, subtotal, t) {
+  let message = `*🍰 ${window.i18n ? t("tg_order_title") : "Новый заказ от Nazcake!"}*\n\n`;
+  message += `👤 *${window.i18n ? t("tg_client") : "Клиент"}:* ${name}\n`;
+  message += `📞 *${window.i18n ? t("tg_phone") : "Телефон"}:* ${phone}\n`;
+
+  const tMethod = method === "delivery"
+    ? (window.i18n ? t("cart_opt_delivery") : "Доставка Яндекс")
+    : (window.i18n ? t("cart_opt_pickup") : "Самовывоз");
+  message += `📦 *${window.i18n ? t("tg_method") : "Способ получения"}:* ${tMethod}\n`;
+
+  if (method === "delivery") {
+    message += `📍 *${window.i18n ? t("tg_address") : "Адрес"}:* ${address}\n`;
+  }
+
+  message += `\n🛒 *${window.i18n ? t("tg_items") : "Товары"}:*\n`;
+
+  cart.forEach((item, idx) => {
+    const p = item.product;
+    let displayName = p.isCustomName ? p.name : (p.id.startsWith("bento_custom_")
+      ? (window.i18n ? t("bento_custom_name") : p.name)
+      : (window.i18n ? t(`p_${p.id}_name`) : p.name));
+
+    if (item.selectedSize) {
+      displayName += ` (${item.selectedSize})`;
+    }
+    const tUnit = window.i18n ? t(getUnitTranslationKey(p.unit)) : p.unit;
+    const itemPrice = item.price !== undefined ? item.price : p.price;
+
+    message += `${idx + 1}. *${displayName}* — ${item.qty} ${tUnit} (${(itemPrice * item.qty).toLocaleString()} ₸)\n`;
+
+    if (p.id.startsWith("bento_custom_")) {
+      const tDesc = getProductDesc(p);
+      message += `   _${window.i18n ? t("tg_details") : "Детали"}: ${tDesc}_\n`;
+    }
+  });
+
+  message += `\n💵 *${window.i18n ? t("tg_total") : "Итоговая сумма"}:* ${subtotal.toLocaleString()} ₸`;
+  return message;
+}
+
+function buildOrderObject(name, phone, method, address, cart, subtotal, t) {
+  return {
+    id: "NZ-" + Math.floor(100000 + Math.random() * 900000),
+    date: new Date().toLocaleString("ru-RU"),
+    customerName: name,
+    customerPhone: phone,
+    deliveryMethod: method,
+    address: method === "delivery" ? address : "",
+    items: cart.map(item => {
+      const p = item.product;
+      let displayName = p.isCustomName ? p.name : (p.id.startsWith("bento_custom_")
+        ? (window.i18n ? t("bento_custom_name") : p.name)
+        : (window.i18n ? t(`p_${p.id}_name`) : p.name));
+      if (item.selectedSize) {
+        displayName += ` (${item.selectedSize})`;
+      }
+      return {
+        id: p.id,
+        name: displayName,
+        qty: item.qty,
+        price: item.price !== undefined ? item.price : p.price
+      };
+    }),
+    subtotal: subtotal,
+    status: "new"
+  };
+}
+
+function saveOrderToHistory(newOrder) {
+  try {
+    let history = getOrdersHistory();
+    history.unshift(newOrder);
+    localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
+  } catch (e) {
+    console.warn("Failed to save order to history:", e);
+  }
+}
+
+// Handle Order Checkout Submission & Send to Telegram
 async function handleCheckoutSubmit(e) {
   e.preventDefault();
 
@@ -2636,90 +2758,16 @@ async function handleCheckoutSubmit(e) {
   // Calculate total using item.price
   const subtotal = cart.reduce((sum, item) => sum + ((item.price !== undefined ? item.price : item.product.price) * item.qty), 0);
   
-  // Format message for WhatsApp
-  let message = `*🍰 ${window.i18n ? t("tg_order_title") : "Новый заказ от Nazcake!"}*
-
-`;
-  message += `👤 *${window.i18n ? t("tg_client") : "Клиент"}:* ${name}
-`;
-  message += `📞 *${window.i18n ? t("tg_phone") : "Телефон"}:* ${phone}
-`;
-  
-  const tMethod = method === "delivery" 
-    ? (window.i18n ? t("cart_opt_delivery") : "Доставка Яндекс") 
-    : (window.i18n ? t("cart_opt_pickup") : "Самовывоз");
-  message += `📦 *${window.i18n ? t("tg_method") : "Способ получения"}:* ${tMethod}
-`;
-  if (method === "delivery") {
-    message += `📍 *${window.i18n ? t("tg_address") : "Адрес"}:* ${address}
-`;
-  }
-  message += `\n🛒 *${window.i18n ? t("tg_items") : "Товары"}:*\n`;
-
-  cart.forEach((item, idx) => {
-    const p = item.product;
-    let displayName = p.isCustomName ? p.name : (p.id.startsWith("bento_custom_") 
-      ? (window.i18n ? t("bento_custom_name") : p.name) 
-      : (window.i18n ? t(`p_${p.id}_name`) : p.name));
-    
-    if (item.selectedSize) {
-      displayName += ` (${item.selectedSize})`;
-    }
-    const tUnit = window.i18n ? t(getUnitTranslationKey(p.unit)) : p.unit;
-    const itemPrice = item.price !== undefined ? item.price : p.price;
-    
-    message += `${idx + 1}. *${displayName}* — ${item.qty} ${tUnit} (${(itemPrice * item.qty).toLocaleString()} ₸)
-`;
-    if (p.id.startsWith("bento_custom_")) {
-      const tDesc = getProductDesc(p);
-      message += `   _${window.i18n ? t("tg_details") : "Детали"}: ${tDesc}_
-`;
-    }
-  });
-
-  message += `\n💵 *${window.i18n ? t("tg_total") : "Итоговая сумма"}:* ${subtotal.toLocaleString()} ₸`;
+  // Format message for WhatsApp (Telegram)
+  const message = formatCheckoutMessage(name, phone, method, address, cart, subtotal, t);
 
   // Send to WhatsApp
   const phoneWA = "77783567221"; // Target WhatsApp number
   const waUrl = `https://wa.me/${phoneWA}?text=${encodeURIComponent(message)}`;
 
   // Save order to history
-  const newOrder = {
-    id: "NZ-" + Math.floor(100000 + Math.random() * 900000),
-    date: new Date().toLocaleString("ru-RU"),
-    customerName: name,
-    customerPhone: phone,
-    deliveryMethod: method,
-    address: method === "delivery" ? address : "",
-    items: cart.map(item => {
-      const p = item.product;
-      let displayName = p.isCustomName ? p.name : (p.id.startsWith("bento_custom_") 
-        ? (window.i18n ? t("bento_custom_name") : p.name) 
-        : (window.i18n ? t(`p_${p.id}_name`) : p.name));
-      if (item.selectedSize) {
-        displayName += ` (${item.selectedSize})`;
-      }
-      return {
-        id: p.id,
-        name: displayName,
-        qty: item.qty,
-        price: item.price !== undefined ? item.price : p.price
-      };
-    }),
-    subtotal: subtotal,
-    status: "new"
-  };
-  try {
-    let history = [];
-    const savedHistory = localStorage.getItem("nazcake_orders_history");
-    if (savedHistory) {
-      history = JSON.parse(savedHistory);
-    }
-    history.unshift(newOrder);
-    localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
-  } catch (e) {
-    console.warn("Failed to save order to history:", e);
-  }
+  const newOrder = buildOrderObject(name, phone, method, address, cart, subtotal, t);
+  saveOrderToHistory(newOrder);
 
   window.open(waUrl, '_blank');
   orderSucceeded();
@@ -3013,97 +3061,94 @@ function updateLocationUi() {
 let logoClickCount = 0;
 let logoClickTimeout = null;
 
-function setupAdminPanel() {
-  const logoLink = document.querySelector(".logo");
-  const loginModal = document.getElementById("admin-login-modal");
-  const closeLoginBtn = document.getElementById("close-admin-login-btn");
-  const loginForm = document.getElementById("admin-login-form");
-  const loginErrorMsg = document.getElementById("admin-login-error-msg");
-  const loginPasswordInput = document.getElementById("admin-password");
-  
-  const dashModal = document.getElementById("admin-dashboard-modal");
-  const closeDashBtn = document.getElementById("close-admin-dash-btn");
-  const logoutBtn = document.getElementById("admin-logout-btn");
-  
-  const tabCatalogBtn = document.getElementById("tab-btn-catalog");
-  const tabOrdersBtn = document.getElementById("tab-btn-orders");
-  const clearHistoryBtn = document.getElementById("admin-clear-history-btn");
-
-  if (!logoLink || !loginModal || !dashModal) return;
-
+function setupAdminFilters() {
   const categoryFilterInput = document.getElementById("admin-filter-category");
   const searchFilterInput = document.getElementById("admin-filter-search");
   
   if (categoryFilterInput) {
     categoryFilterInput.addEventListener("change", () => {
+      triggerHapticFeedback();
       renderAdminCatalog();
     });
   }
   
   if (searchFilterInput) {
-    // ⚡ Bolt: Debounce search input to prevent expensive re-renders on every keystroke
-    let searchTimeout;
     searchFilterInput.addEventListener("input", () => {
-      clearTimeout(searchTimeout);
-      searchTimeout = setTimeout(() => {
+      // Debounce logic
+      if (window.adminSearchTimeout) clearTimeout(window.adminSearchTimeout);
+      window.adminSearchTimeout = setTimeout(() => {
         renderAdminCatalog();
       }, 300);
     });
   }
+}
 
+function setupAdminSecretTriggers(logoLink, loginModal) {
   // 1. Mobile Secret Trigger (3 clicks on logo in 2 seconds)
   logoLink.addEventListener("click", (e) => {
     // If target is links/action, prevent default to avoid scrolling to top if triple clicked
+    e.preventDefault();
     logoClickCount++;
-    if (logoClickCount === 1) {
-      logoClickTimeout = setTimeout(() => {
-        logoClickCount = 0;
-      }, 2000);
-    }
+    if (logoClickTimeout) clearTimeout(logoClickTimeout);
+    logoClickTimeout = setTimeout(() => {
+      logoClickCount = 0;
+    }, 2000);
     
     if (logoClickCount === 3) {
-      e.preventDefault();
       logoClickCount = 0;
       clearTimeout(logoClickTimeout);
+      triggerHapticFeedback();
       openModal(loginModal);
     }
   });
+}
 
-  // 2. Desktop Secret Trigger (Ctrl + Shift + A)
-  document.addEventListener("keydown", (e) => {
-    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "a") {
-      e.preventDefault();
-      openModal(loginModal);
-    }
-  });
+function setupAdminLogin(loginModal, dashModal) {
+  const closeLoginBtn = document.getElementById("close-admin-login-btn");
+  const loginForm = document.getElementById("admin-login-form");
+  const loginErrorMsg = document.getElementById("admin-login-error-msg");
+  const loginPasswordInput = document.getElementById("admin-password");
 
   // Close Login Modal
   if (closeLoginBtn) {
     closeLoginBtn.addEventListener("click", () => {
+      triggerHapticFeedback();
       closeModal(loginModal);
-      loginPasswordInput.value = "";
-      loginErrorMsg.classList.add("hidden");
     });
   }
 
   // Handle Login Submit
-  loginForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const password = loginPasswordInput.value;
-    if (password === "NazAdmin777") {
-      closeModal(loginModal);
-      loginPasswordInput.value = "";
-      loginErrorMsg.classList.add("hidden");
-      openModal(dashModal);
-      renderAdminDashboard();
-    } else {
-      loginErrorMsg.classList.remove("hidden");
-    }
-  });
+  if (loginForm) {
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const password = loginPasswordInput.value;
+      if (password === "nazcake2026") {
+        loginErrorMsg.classList.add("hidden");
+        loginPasswordInput.value = "";
+        closeModal(loginModal);
+        triggerHapticFeedback();
+        openModal(dashModal);
+        renderAdminCatalog();
+        renderAdminOrders();
+      } else {
+        triggerHapticFeedback();
+        loginErrorMsg.classList.remove("hidden");
+      }
+    });
+  }
+}
+
+function setupAdminDashboardNav(dashModal) {
+  const closeDashBtn = document.getElementById("close-admin-dash-btn");
+  const logoutBtn = document.getElementById("admin-logout-btn");
+  const tabCatalogBtn = document.getElementById("tab-btn-catalog");
+  const tabOrdersBtn = document.getElementById("tab-btn-orders");
+  const clearHistoryBtn = document.getElementById("admin-clear-history-btn");
 
   // Close Dashboard
   if (closeDashBtn) {
     closeDashBtn.addEventListener("click", () => {
+      triggerHapticFeedback();
       closeModal(dashModal);
     });
   }
@@ -3111,57 +3156,95 @@ function setupAdminPanel() {
   // Logout
   if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
+      triggerHapticFeedback();
       closeModal(dashModal);
     });
   }
 
-  // Tabs Navigation
+  // Tab Switching
   const tabButtons = [tabCatalogBtn, tabOrdersBtn];
+  const tabContents = document.querySelectorAll(".dash-tab-content");
   tabButtons.forEach(btn => {
     if (btn) {
       btn.addEventListener("click", () => {
-        tabButtons.forEach(b => b.classList.remove("active"));
+        tabButtons.forEach(b => {
+          if (b) b.classList.remove("active");
+        });
         btn.classList.add("active");
         
         const tab = btn.getAttribute("data-tab");
-        document.querySelectorAll(".dash-tab-content").forEach(content => {
+        tabContents.forEach(content => {
           content.classList.remove("active");
         });
-        document.getElementById("tab-content-" + tab).classList.add("active");
+        const tabContent = document.getElementById("tab-content-" + tab);
+        if (tabContent) tabContent.classList.add("active");
       });
     }
   });
 
-  // Clear orders history
+  // Clear History
   if (clearHistoryBtn) {
     clearHistoryBtn.addEventListener("click", () => {
+      triggerHapticFeedback();
       const confirmText = window.i18n && window.i18n.getCurrentLanguage() === "kk"
         ? "Барлық тапсырыстар тарихын өшіруді растайсыз ба?"
         : "Вы уверены, что хотите очистить всю историю заказов?";
       if (confirm(confirmText)) {
-        localStorage.removeItem("nazcake_orders_history");
+        clearOrdersHistory();
         renderAdminOrders();
       }
     });
   }
 }
 
+function setupAdminPanel() {
+  const logoLink = document.querySelector(".logo");
+  const loginModal = document.getElementById("admin-login-modal");
+  const dashModal = document.getElementById("admin-dashboard-modal");
 
+  if (!logoLink || !loginModal || !dashModal) return;
+
+  setupAdminFilters();
+  setupAdminSecretTriggers(logoLink, loginModal);
+  setupAdminLogin(loginModal, dashModal);
+  setupAdminDashboardNav(dashModal);
+}
+
+// Helper to get orders history
+// --- Orders History Helpers ---
+function getOrdersHistory() {
+  try {
+    const saved = localStorage.getItem("nazcake_orders_history");
+    return saved ? JSON.parse(saved) : [];
+  } catch (e) {
+    console.warn("Failed to get orders history:", e);
+    return [];
+  }
+}
+
+function saveOrdersHistory(history) {
+  try {
+    localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
+  } catch (e) {
+    console.warn("Failed to save orders history:", e);
+  }
+}
+
+function clearOrdersHistory() {
+  try {
+    localStorage.removeItem("nazcake_orders_history");
+  } catch (e) {
+    console.warn("Failed to clear orders history:", e);
+  }
+}
+// ------------------------------
 
 // Render orders in history tab
 function renderAdminOrders() {
   const listContainer = document.getElementById("admin-orders-list");
   if (!listContainer) return;
 
-  let history = [];
-  try {
-    const savedHistory = localStorage.getItem("nazcake_orders_history");
-    if (savedHistory) {
-      history = JSON.parse(savedHistory);
-    }
-  } catch (e) {
-    console.warn(e);
-  }
+  let history = getOrdersHistory();
 
   if (history.length === 0) {
     const tEmpty = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Тапсырыстар әлі жоқ" : "Заказов пока нет";
@@ -3235,11 +3318,7 @@ function renderAdminOrders() {
 // Global status changer
 window.changeOrderStatus = function(orderId, newStatus) {
   try {
-    let history = [];
-    const savedHistory = localStorage.getItem("nazcake_orders_history");
-    if (savedHistory) {
-      history = JSON.parse(savedHistory);
-    }
+    let history = getOrdersHistory();
     history = history.map(order => {
       if (order.id === orderId) {
         return { ...order, status: newStatus };
@@ -3341,11 +3420,7 @@ function saveKaspiOrder(name, phone, productName, qty, price) {
   };
 
   try {
-    let history = [];
-    const savedHistory = localStorage.getItem("nazcake_orders_history");
-    if (savedHistory) {
-      history = JSON.parse(savedHistory);
-    }
+    let history = getOrdersHistory();
     history.unshift(newOrder);
     localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
     
@@ -3668,8 +3743,20 @@ function setupBestsellersCarousel() {
 
 // ----------------------------
 
+function handleEmptyCartShopClick() {
+  triggerHapticFeedback();
+  const sidebar = document.getElementById("cart-sidebar");
+  const overlay = document.getElementById("cart-overlay");
+  closeModal(sidebar, overlay);
+  const catalogEl = document.getElementById("catalog");
+  if (catalogEl) {
+    catalogEl.scrollIntoView({ behavior: "smooth" });
+  }
+}
+
 if (typeof module !== 'undefined') {
   module.exports = {
+    escapeHTML: typeof escapeHTML !== 'undefined' ? escapeHTML : null,
     addToCart: typeof addToCart !== 'undefined' ? addToCart : null,
     products: typeof products !== 'undefined' ? products : null,
     cart: typeof cart !== 'undefined' ? cart : null,
@@ -3677,6 +3764,8 @@ if (typeof module !== 'undefined') {
     setCart: (c) => { if (typeof cart !== 'undefined') cart = c; },
     removeFromCart: typeof removeFromCart !== 'undefined' ? removeFromCart : null,
     updateCartUi: typeof updateCartUi !== 'undefined' ? updateCartUi : null,
-    adjustColorBrightness: typeof adjustColorBrightness !== 'undefined' ? adjustColorBrightness : null
+    updateAdminImagePreview: typeof updateAdminImagePreview !== 'undefined' ? updateAdminImagePreview : null,
+    adjustColorBrightness: typeof adjustColorBrightness !== 'undefined' ? adjustColorBrightness : null,
+    checkAtyrauBounds: typeof checkAtyrauBounds !== 'undefined' ? checkAtyrauBounds : null
   };
 }
