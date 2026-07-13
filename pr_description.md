@@ -1,15 +1,10 @@
-🧪 Add edge case tests for escapeHTML function
+🎯 **What:** Extracted inline event listener callbacks from `setupKaspiQrCheckout()` into standalone named functions (`openKaspiQrModal`, `generateKaspiQr`, and `completeKaspiOrder`).
 
-🎯 **What:**
-The `escapeHTML` helper function in `app.js` lacked dedicated tests, leading to a gap in testing coverage. This function sanitizes user input before rendering it in the DOM or placing it in checkout links, making it crucial for security.
+💡 **Why:** `setupKaspiQrCheckout()` was an overly long and complex function. Moving its click logic to distinct functions improves code readability, limits closure scope size, and makes the logic for each step of the flow easier to test and maintain.
 
-📊 **Coverage:**
-New tests were added to the test suite in both `app.test.js` and `tests/app.test.js` covering:
-- **Non-string inputs:** Ensuring `null`, `undefined`, numbers, objects, arrays, and booleans fail safely by returning an empty string instead of causing exceptions.
-- **HTML character escaping:** Verifying the replacement of `&`, `<`, `>`, `"`, and `'` with their respective HTML entities.
-- **Complex inputs:** Handling strings with multiple interspersed HTML characters that need escaping.
-- **Clean inputs:** Confirming strings with no HTML characters are returned unmodified.
-- **Empty strings:** Handling empty string input gracefully.
+✅ **Verification:**
+- Confirmed that the DOM selection previously reliant on the closure correctly handles elements locally in the new standalone functions.
+- Removed unused variables to ensure cleanup.
+- Ran the full test suite (`pnpm test`), ensuring existing tests continue passing.
 
-✨ **Result:**
-The `escapeHTML` function is now fully covered by unit tests, ensuring the safety net catches any regressions to this function in future refactors or optimizations. 30 tests are now executed and pass reliably.
+✨ **Result:** The large function is significantly shorter and more focused on event wiring, while actual step execution logic is properly encapsulated in self-contained helper functions.
