@@ -23,6 +23,7 @@ describe('Nazcake App Unit Tests', () => {
             updateCartUi = jest.fn(); // Mocking updateCartUi
             window.getUpdateCartUiMock = () => updateCartUi;
             window.adjustColorBrightness = adjustColorBrightness;
+            window.escapeHTML = escapeHTML;
             window.setupGeolocation = setupGeolocation;
             window.updateLocationUi = updateLocationUi;
             window.getDetectedCity = () => detectedCity;
@@ -192,7 +193,7 @@ describe('Nazcake App Unit Tests', () => {
     });
 
 
-    describe('Distance Calculator (Haversine)', () => {
+describe('Distance Calculator (Haversine)', () => {
         describe('deg2rad', () => {
             it('should be defined', () => {
                 expect(window.deg2rad).toBeDefined();
@@ -271,5 +272,41 @@ describe('Nazcake App Unit Tests', () => {
         });
     });
 
+describe('escapeHTML', () => {
+      it('should be defined', () => {
+        expect(window.escapeHTML).toBeDefined();
+      });
 
+      it('should return empty string for non-string inputs', () => {
+        expect(window.escapeHTML(null)).toBe('');
+        expect(window.escapeHTML(undefined)).toBe('');
+        expect(window.escapeHTML(123)).toBe('');
+        expect(window.escapeHTML({})).toBe('');
+        expect(window.escapeHTML([])).toBe('');
+        expect(window.escapeHTML(true)).toBe('');
+      });
+
+      it('should escape HTML characters correctly', () => {
+        expect(window.escapeHTML('&')).toBe('&amp;');
+        expect(window.escapeHTML('<')).toBe('&lt;');
+        expect(window.escapeHTML('>')).toBe('&gt;');
+        expect(window.escapeHTML('"')).toBe('&quot;');
+        expect(window.escapeHTML("'")).toBe('&#039;');
+      });
+
+      it('should escape a string with multiple HTML characters', () => {
+        const input = '<script>alert("XSS & test\'s")</script>';
+        const expected = '&lt;script&gt;alert(&quot;XSS &amp; test&#039;s&quot;)&lt;/script&gt;';
+        expect(window.escapeHTML(input)).toBe(expected);
+      });
+
+      it('should return the exact same string if no characters to escape', () => {
+        const input = 'Just a regular string 123.';
+        expect(window.escapeHTML(input)).toBe(input);
+      });
+
+      it('should handle empty string', () => {
+        expect(window.escapeHTML('')).toBe('');
+      });
+    });
 });

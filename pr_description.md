@@ -1,7 +1,15 @@
-🎯 **What:** Tested `getHaversineDistance` and `deg2rad` functions to address the lack of test coverage for the distance calculation logic.
+🧪 Add edge case tests for escapeHTML function
+
+🎯 **What:**
+The `escapeHTML` helper function in `app.js` lacked dedicated tests, leading to a gap in testing coverage. This function sanitizes user input before rendering it in the DOM or placing it in checkout links, making it crucial for security.
 
 📊 **Coverage:**
-- Added test coverage for `deg2rad` (0, 90, 180, 360, and negative angles).
-- Added test coverage for `getHaversineDistance` (zero distance, distance across longitude, real-world distance between New York and London, commutative property, and negative coordinates).
+New tests were added to the test suite in both `app.test.js` and `tests/app.test.js` covering:
+- **Non-string inputs:** Ensuring `null`, `undefined`, numbers, objects, arrays, and booleans fail safely by returning an empty string instead of causing exceptions.
+- **HTML character escaping:** Verifying the replacement of `&`, `<`, `>`, `"`, and `'` with their respective HTML entities.
+- **Complex inputs:** Handling strings with multiple interspersed HTML characters that need escaping.
+- **Clean inputs:** Confirming strings with no HTML characters are returned unmodified.
+- **Empty strings:** Handling empty string input gracefully.
 
-✨ **Result:** Improved test coverage for core pure functions, reducing the chance of regressions if the distance calculation logic is modified in the future.
+✨ **Result:**
+The `escapeHTML` function is now fully covered by unit tests, ensuring the safety net catches any regressions to this function in future refactors or optimizations. 30 tests are now executed and pass reliably.
