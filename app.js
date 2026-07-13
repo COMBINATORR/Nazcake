@@ -1454,24 +1454,42 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Mobile Autoplay Force
+  // Mobile Video Autoplay – robust cross-browser fix
   const heroVideo = document.querySelector('.hero-video-bg');
   if (heroVideo) {
-    const playVideo = () => {
-      heroVideo.play().catch(err => {
-        console.log("Auto-play was prevented, waiting for interaction:", err);
-      });
+    // Ensure muted (required for autoplay on all mobile browsers)
+    heroVideo.muted = true;
+    heroVideo.volume = 0;
+
+    const tryPlay = () => {
+      const p = heroVideo.play();
+      if (p !== undefined) {
+        p.catch(() => {
+          // Browser blocked autoplay - video will start on first interaction
+        });
+      }
     };
-    // Try playing immediately
-    playVideo();
-    // Also try on first touch or click
-    const handleInteraction = () => {
-      heroVideo.play().catch(e => console.log("Play on interaction failed:", e));
-      document.removeEventListener('click', handleInteraction);
-      document.removeEventListener('touchstart', handleInteraction);
+
+    // Attempt 1: immediate
+    tryPlay();
+
+    // Attempt 2: once 'canplay' fires (video data loaded)
+    heroVideo.addEventListener('canplay', tryPlay, { once: true });
+    heroVideo.addEventListener('loadeddata', tryPlay, { once: true });
+
+    // Attempt 3: on first user touch/interaction (iOS Low Power Mode)
+    const unlockVideo = () => {
+      heroVideo.muted = true;
+      tryPlay();
+      window.removeEventListener('touchstart', unlockVideo, true);
+      window.removeEventListener('touchend', unlockVideo, true);
+      window.removeEventListener('click', unlockVideo, true);
+      window.removeEventListener('scroll', unlockVideo, true);
     };
-    document.addEventListener('click', handleInteraction);
-    document.addEventListener('touchstart', handleInteraction);
+    window.addEventListener('touchstart', unlockVideo, { capture: true, once: true });
+    window.addEventListener('touchend', unlockVideo, { capture: true, once: true });
+    window.addEventListener('click', unlockVideo, { capture: true, once: true });
+    window.addEventListener('scroll', unlockVideo, { capture: true, once: true });
   }
 
 });
