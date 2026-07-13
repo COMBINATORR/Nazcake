@@ -1427,6 +1427,20 @@ document.addEventListener("DOMContentLoaded", () => {
   setupKaspiQrCheckout();
   setupThemeToggler();
   setupBestsellersCarousel();
+
+  // Scroll header effect
+  const header = document.querySelector(".main-header");
+  if (header) {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        header.classList.add("scrolled");
+      } else {
+        header.classList.remove("scrolled");
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+  }
   
   if (window.i18n) {
     window.i18n.onLanguageChange(() => {

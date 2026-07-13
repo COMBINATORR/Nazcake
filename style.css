@@ -182,11 +182,22 @@ h1, h2, h3, h4, h5, h6 {
   left: 0;
   width: 100%;
   height: 80px;
+  background-color: transparent;
+  border-bottom: none;
+  box-shadow: none;
+  transition: background-color 0.3s ease, border-bottom 0.3s ease, box-shadow 0.3s ease;
+  z-index: 100;
+}
+
+.main-header.scrolled {
   background-color: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  z-index: 100;
   border-bottom: 1px solid rgba(74, 44, 17, 0.05);
+}
+
+body.dark-theme .main-header.scrolled {
+  background-color: rgba(26, 18, 12, 0.92);
 }
 
 .header-container {
@@ -403,10 +414,37 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Hero Section (Milk Bar Redesign Style) */
 .hero-section {
-  padding: 120px 0 60px 0;
+  padding: 160px 0 100px 0;
   background-color: var(--bg-primary);
   position: relative;
   min-height: auto;
+  overflow: hidden;
+}
+
+.hero-video-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero-video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 254, 252, 0.48);
+  z-index: 1;
+  pointer-events: none;
+}
+
+body.dark-theme .hero-video-overlay {
+  background: rgba(26, 18, 12, 0.7);
 }
 
 .hero-container {
@@ -421,7 +459,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Category Circle Navigation */
 .hero-category-nav {
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
   gap: 50px;
@@ -486,7 +524,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Two-Column Showcase Grid */
 .hero-showcase-grid {
-  display: grid;
+  display: none;
   grid-template-columns: 1fr 1fr;
   gap: 30px;
   width: 100%;
@@ -2148,7 +2186,12 @@ body.dark-theme .bestsellers-arrow {
     white-space: normal;
   }
 
+  .hero-section {
+    padding: 100px 0 40px 0 !important;
+  }
+
   .hero-showcase-grid {
+    display: grid !important;
     gap: 20px;
   }
 
@@ -2472,22 +2515,21 @@ body.dark-theme .bestsellers-arrow {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: var(--bg-tertiary);
-  border: 1px solid rgba(74, 44, 17, 0.12);
+  background: none;
+  border: none;
   border-radius: 20px;
-  padding: 8px 14px;
+  padding: 8px 12px;
   font-family: var(--font-title);
   font-size: 0.78rem;
   font-weight: 700;
   color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: inset 0 2px 4px rgba(74, 44, 17, 0.04);
+  box-shadow: none;
 }
 
 .lang-dropdown-btn:hover {
-  background: rgba(74, 44, 17, 0.04);
-  border-color: rgba(74, 44, 17, 0.2);
+  background: rgba(74, 44, 17, 0.05);
   color: var(--accent-chocolate);
 }
 
@@ -2575,11 +2617,11 @@ body.dark-theme .bestsellers-arrow {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: var(--bg-tertiary);
-  border: 1px solid rgba(74, 44, 17, 0.12);
+  background: none;
+  border: none;
   border-radius: 20px;
-  padding: 6px 14px;
-  box-shadow: inset 0 2px 4px rgba(74, 44, 17, 0.04);
+  padding: 6px 12px;
+  box-shadow: none;
   font-family: var(--font-title);
   font-size: 0.8rem;
   font-weight: 600;
@@ -2593,7 +2635,8 @@ body.dark-theme .bestsellers-arrow {
 }
 
 .location-widget:hover {
-  border-color: var(--accent-gold);
+  background: rgba(74, 44, 17, 0.05);
+  color: var(--accent-gold);
 }
 
 .location-widget:hover .icon-location {
@@ -2926,7 +2969,9 @@ body.dark-theme .bestsellers-arrow {
 
 .dash-tab-btn.active {
   color: var(--accent-gold);
-  background: var(--bg-tertiary);
+  background: none;
+  border-bottom: 2px solid var(--accent-gold);
+  border-radius: 0;
 }
 
 .dash-tab-content {
@@ -3653,8 +3698,13 @@ body.dark-theme {
 
 /* Specific component fixes for dark theme */
 body.dark-theme .main-header {
-  background-color: rgba(4, 20, 13, 0.92);
-  border-bottom: 1px solid rgba(229, 193, 88, 0.15);
+  background-color: transparent;
+  border-bottom: none;
+}
+
+body.dark-theme .main-header.scrolled {
+  background-color: rgba(4, 20, 13, 0.92) !important;
+  border-bottom: 1px solid rgba(229, 193, 88, 0.15) !important;
 }
 
 body.dark-theme .main-footer {
