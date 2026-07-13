@@ -3446,96 +3446,84 @@ function saveKaspiOrder(name, phone, productName, qty, price) {
   }
 }
 
-function setupKaspiQrCheckout() {
-  const quickKaspiBtn = document.getElementById("modal-quick-kaspi-btn");
-  const kaspiModal = document.getElementById("kaspi-qr-modal");
-  const closeKaspiBtn = document.getElementById("close-kaspi-modal-btn");
-  const btnKaspiGenerate = document.getElementById("btn-kaspi-generate");
-  const btnKaspiComplete = document.getElementById("btn-kaspi-complete");
-  const btnKaspiCloseFinal = document.getElementById("btn-kaspi-close-final");
 
+function getKaspiProductDetails() {
+  const p = products.find(prod => prod.id === activePreviewProductId);
+  if (!p) return null;
+
+  let displayName = p.isCustomName ? p.name : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name);
+  const selectedSizeBtn = modalSizeContainer ? modalSizeContainer.querySelector(".size-btn.active") : null;
+  const selectedSize = selectedSizeBtn ? selectedSizeBtn.getAttribute("data-size") : null;
+  if (selectedSize) {
+    displayName += ` (${selectedSize})`;
+  }
+
+  const qtyElement = document.getElementById("modal-qty-val");
+  const qtyVal = qtyElement ? (parseInt(qtyElement.textContent) || 1) : 1;
+
+  let itemPrice = p.price;
+  if (selectedSize && p.sizeOptions) {
+    const opt = p.sizeOptions.find(o => o.size === selectedSize);
+    if (opt) itemPrice = opt.price;
+  }
+
+  const total = itemPrice * qtyVal;
+
+  return { displayName, qtyVal, itemPrice, total, p };
+}
+
+function closeKaspiModal() {
+  const kaspiModal = document.getElementById("kaspi-qr-modal");
+  if (!kaspiModal) return;
+  triggerHapticFeedback();
+  kaspiModal.style.display = "none";
+  kaspiModal.classList.remove("open");
+  document.body.classList.remove("modal-open");
+}
+
+function handleQuickKaspiClick() {
+  const kaspiModal = document.getElementById("kaspi-qr-modal");
+  if (!kaspiModal) return;
+
+  triggerHapticFeedback();
+
+  // Close preview modal
+  const previewModal = document.getElementById("preview-modal");
+  if (previewModal) {
+    previewModal.style.display = "none";
+    previewModal.classList.remove("open");
+  }
+
+  // Open Kaspi QR Modal
+  kaspiModal.style.display = "flex";
+  setTimeout(() => {
+    kaspiModal.classList.add("open");
+  }, 10);
+  document.body.classList.add("modal-open");
+
+  // Reset steps
   const stepForm = document.getElementById("kaspi-form-step");
   const stepQr = document.getElementById("kaspi-qr-step");
   const stepSuccess = document.getElementById("kaspi-success-step");
+  if (stepForm) stepForm.style.display = "block";
+  if (stepQr) stepQr.style.display = "none";
+  if (stepSuccess) stepSuccess.style.display = "none";
 
-  const kaspiProdName = document.getElementById("kaspi-product-name");
-  const kaspiProdQty = document.getElementById("kaspi-product-qty");
-  const kaspiTotalPrice = document.getElementById("kaspi-total-price");
-  const kaspiQrAmount = document.getElementById("kaspi-qr-amount");
-  const kaspiQrPlaceholder = document.getElementById("kaspi-qr-placeholder");
+  // Populate data
+  const details = getKaspiProductDetails();
+  if (details) {
+    const kaspiProdName = document.getElementById("kaspi-product-name");
+    const kaspiProdQty = document.getElementById("kaspi-product-qty");
+    const kaspiTotalPrice = document.getElementById("kaspi-total-price");
+    const kaspiQrAmount = document.getElementById("kaspi-qr-amount");
+    const kaspiQrPlaceholder = document.getElementById("kaspi-qr-placeholder");
 
-  if (!quickKaspiBtn || !kaspiModal) return;
+    if (kaspiProdName) kaspiProdName.textContent = details.displayName;
+    if (kaspiProdQty) kaspiProdQty.textContent = `x${details.qtyVal}`;
+    if (kaspiTotalPrice) kaspiTotalPrice.textContent = `${details.total.toLocaleString()} ₸`;
+    if (kaspiQrAmount) kaspiQrAmount.textContent = `${details.total.toLocaleString()} ₸`;
 
-  // Phone masks
-  const chPhone = document.getElementById("checkout-phone");
-  const kaPhone = document.getElementById("kaspi-phone");
-  if (chPhone) chPhone.addEventListener("input", formatPhoneInput);
-  if (kaPhone) kaPhone.addEventListener("input", formatPhoneInput);
-
-  // Close helper
-  const closeKaspi = () => {
-    triggerHapticFeedback();
-    kaspiModal.style.display = "none";
-    kaspiModal.classList.remove("open");
-    document.body.classList.remove("modal-open");
-  };
-
-  closeKaspiBtn.addEventListener("click", closeKaspi);
-  btnKaspiCloseFinal.addEventListener("click", closeKaspi);
-  kaspiModal.addEventListener("click", (e) => {
-    if (e.target === kaspiModal) closeKaspi();
-  });
-
-  quickKaspiBtn.addEventListener("click", () => {
-    triggerHapticFeedback();
-    
-    // Close preview modal
-    const previewModal = document.getElementById("preview-modal");
-    if (previewModal) {
-      previewModal.style.display = "none";
-      previewModal.classList.remove("open");
-    }
-
-    // Open Kaspi QR Modal
-    kaspiModal.style.display = "flex";
-    setTimeout(() => {
-      kaspiModal.classList.add("open");
-    }, 10);
-    document.body.classList.add("modal-open");
-
-    // Reset steps
-    stepForm.style.display = "block";
-    stepQr.style.display = "none";
-    stepSuccess.style.display = "none";
-
-    // Populate data
-    const p = products.find(prod => prod.id === activePreviewProductId);
-    if (p) {
-      let displayName = p.isCustomName ? p.name : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name);
-      const selectedSizeBtn = modalSizeContainer ? modalSizeContainer.querySelector(".size-btn.active") : null;
-      const selectedSize = selectedSizeBtn ? selectedSizeBtn.getAttribute("data-size") : null;
-      if (selectedSize) {
-        displayName += ` (${selectedSize})`;
-      }
-
-      // Quantity
-      const qtyVal = parseInt(document.getElementById("modal-qty-val").textContent) || 1;
-
-      // Price calculation
-      let itemPrice = p.price;
-      if (selectedSize && p.sizeOptions) {
-        const opt = p.sizeOptions.find(o => o.size === selectedSize);
-        if (opt) itemPrice = opt.price;
-      }
-
-      const total = itemPrice * qtyVal;
-
-      kaspiProdName.textContent = displayName;
-      kaspiProdQty.textContent = `x${qtyVal}`;
-      kaspiTotalPrice.textContent = `${total.toLocaleString()} ₸`;
-      kaspiQrAmount.textContent = `${total.toLocaleString()} ₸`;
-
-      // Draw custom simulated Kaspi QR code inside placeholder using custom SVG
+    if (kaspiQrPlaceholder) {
       kaspiQrPlaceholder.innerHTML = `
         <svg viewBox="0 0 100 100" width="160" height="160" style="display: block;">
           <!-- Corner anchors -->
@@ -3560,82 +3548,107 @@ function setupKaspiQrCheckout() {
           <rect x="40" y="40" width="20" height="20" fill="#e11d48" rx="4"/>
           <rect x="45" y="45" width="10" height="10" fill="white" rx="2"/>
           <circle cx="50" cy="50" r="3" fill="#e11d48"/>
-          
+
           <rect x="70" y="35" width="8" height="15" fill="#4a2c11"/>
           <rect x="85" y="42" width="10" height="8" fill="#4a2c11"/>
-          
+
           <rect x="35" y="70" width="12" height="8" fill="#4a2c11"/>
           <rect x="52" y="78" width="8" height="12" fill="#4a2c11"/>
           <rect x="35" y="85" width="20" height="8" fill="#4a2c11"/>
-          
+
           <rect x="70" y="70" width="25" height="25" fill="#e11d48" rx="2"/>
         </svg>
       `;
-
-      // Load cache
-      loadCachedCustomerData();
     }
+
+    // Load cache
+    loadCachedCustomerData();
+  }
+}
+
+function handleKaspiGenerateClick() {
+  triggerHapticFeedback();
+  const nameInput = document.getElementById("kaspi-name");
+  const phoneInput = document.getElementById("kaspi-phone");
+  const nameVal = nameInput ? nameInput.value.trim() : "";
+  const phoneVal = phoneInput ? phoneInput.value.trim() : "";
+
+  if (!nameVal) {
+    alert(window.i18n ? window.i18n.t("cart_err_empty_cart") : "Пожалуйста, введите ваше имя.");
+    return;
+  }
+  if (phoneVal.length < 17) {
+    alert(window.i18n ? window.i18n.t("cart_err_empty_cart") : "Пожалуйста, введите корректный номер телефона.");
+    return;
+  }
+
+  // Save cache
+  localStorage.setItem("nazcake_customer_name", nameVal);
+  localStorage.setItem("nazcake_customer_phone", phoneVal);
+
+  // Sync checkout form in cart
+  const cName = document.getElementById("checkout-name");
+  const cPhone = document.getElementById("checkout-phone");
+  if (cName) cName.value = nameVal;
+  if (cPhone) cPhone.value = phoneVal;
+
+  // Proceed to QR code step
+  const stepForm = document.getElementById("kaspi-form-step");
+  const stepQr = document.getElementById("kaspi-qr-step");
+  if (stepForm) stepForm.style.display = "none";
+  if (stepQr) stepQr.style.display = "block";
+}
+
+function handleKaspiCompleteClick() {
+  triggerHapticFeedback();
+
+  const nameInput = document.getElementById("kaspi-name");
+  const phoneInput = document.getElementById("kaspi-phone");
+  const nameVal = nameInput ? nameInput.value.trim() : "";
+  const phoneVal = phoneInput ? phoneInput.value.trim() : "";
+
+  const details = getKaspiProductDetails();
+
+  if (details) {
+    // Save order to history
+    saveKaspiOrder(nameVal, phoneVal, details.displayName, details.qtyVal, details.itemPrice);
+  }
+
+  // Success step
+  const stepQr = document.getElementById("kaspi-qr-step");
+  const stepSuccess = document.getElementById("kaspi-success-step");
+  if (stepQr) stepQr.style.display = "none";
+  if (stepSuccess) stepSuccess.style.display = "block";
+}
+
+function setupKaspiQrCheckout() {
+  const quickKaspiBtn = document.getElementById("modal-quick-kaspi-btn");
+  const kaspiModal = document.getElementById("kaspi-qr-modal");
+
+  if (!quickKaspiBtn || !kaspiModal) return;
+
+  // Phone masks
+  const chPhone = document.getElementById("checkout-phone");
+  const kaPhone = document.getElementById("kaspi-phone");
+  if (chPhone) chPhone.addEventListener("input", formatPhoneInput);
+  if (kaPhone) kaPhone.addEventListener("input", formatPhoneInput);
+
+  const closeKaspiBtn = document.getElementById("close-kaspi-modal-btn");
+  const btnKaspiCloseFinal = document.getElementById("btn-kaspi-close-final");
+  if (closeKaspiBtn) closeKaspiBtn.addEventListener("click", closeKaspiModal);
+  if (btnKaspiCloseFinal) btnKaspiCloseFinal.addEventListener("click", closeKaspiModal);
+
+  kaspiModal.addEventListener("click", (e) => {
+    if (e.target === kaspiModal) closeKaspiModal();
   });
 
-  btnKaspiGenerate.addEventListener("click", () => {
-    triggerHapticFeedback();
-    const nameVal = document.getElementById("kaspi-name").value.trim();
-    const phoneVal = document.getElementById("kaspi-phone").value.trim();
+  quickKaspiBtn.addEventListener("click", handleQuickKaspiClick);
 
-    if (!nameVal) {
-      alert(window.i18n ? window.i18n.t("cart_err_empty_cart") : "Пожалуйста, введите ваше имя.");
-      return;
-    }
-    if (phoneVal.length < 17) {
-      alert(window.i18n ? window.i18n.t("cart_err_empty_cart") : "Пожалуйста, введите корректный номер телефона.");
-      return;
-    }
+  const btnKaspiGenerate = document.getElementById("btn-kaspi-generate");
+  if (btnKaspiGenerate) btnKaspiGenerate.addEventListener("click", handleKaspiGenerateClick);
 
-    // Save cache
-    localStorage.setItem("nazcake_customer_name", nameVal);
-    localStorage.setItem("nazcake_customer_phone", phoneVal);
-
-    // Sync checkout form in cart
-    const cName = document.getElementById("checkout-name");
-    const cPhone = document.getElementById("checkout-phone");
-    if (cName) cName.value = nameVal;
-    if (cPhone) cPhone.value = phoneVal;
-
-    // Proceed to QR code step
-    stepForm.style.display = "none";
-    stepQr.style.display = "block";
-  });
-
-  btnKaspiComplete.addEventListener("click", () => {
-    triggerHapticFeedback();
-
-    const nameVal = document.getElementById("kaspi-name").value.trim();
-    const phoneVal = document.getElementById("kaspi-phone").value.trim();
-    const p = products.find(prod => prod.id === activePreviewProductId);
-    
-    if (p) {
-      let displayName = p.isCustomName ? p.name : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name);
-      const selectedSizeBtn = modalSizeContainer ? modalSizeContainer.querySelector(".size-btn.active") : null;
-      const selectedSize = selectedSizeBtn ? selectedSizeBtn.getAttribute("data-size") : null;
-      if (selectedSize) {
-        displayName += ` (${selectedSize})`;
-      }
-
-      const qtyVal = parseInt(document.getElementById("modal-qty-val").textContent) || 1;
-      let itemPrice = p.price;
-      if (selectedSize && p.sizeOptions) {
-        const opt = p.sizeOptions.find(o => o.size === selectedSize);
-        if (opt) itemPrice = opt.price;
-      }
-
-      // Save order to history
-      saveKaspiOrder(nameVal, phoneVal, displayName, qtyVal, itemPrice);
-    }
-
-    // Success step
-    stepQr.style.display = "none";
-    stepSuccess.style.display = "block";
-  });
+  const btnKaspiComplete = document.getElementById("btn-kaspi-complete");
+  if (btnKaspiComplete) btnKaspiComplete.addEventListener("click", handleKaspiCompleteClick);
 }
 
 function setupThemeToggler() {
