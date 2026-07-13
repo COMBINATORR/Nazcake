@@ -414,7 +414,7 @@ body.dark-theme .main-header.scrolled {
 
 /* Hero Section (Milk Bar Redesign Style) */
 .hero-section {
-  min-height: 85vh;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3887,3 +3887,63 @@ body.dark-theme .delivery-section {
   background-color: var(--bg-secondary);
 }
 
+
+/* Light Theme Button Customizations (Brand Dark Brown - #4a2c11) */
+.btn-premium-shop,
+.btn-gradient,
+.btn-primary,
+.btn-card-add {
+  background: var(--accent-chocolate) !important;
+  color: #ffffff !important;
+  border-color: var(--accent-chocolate) !important;
+}
+
+.btn-premium-shop:hover,
+.btn-gradient:hover,
+.btn-primary:hover,
+.btn-card-add:hover {
+  background: #5d3816 !important; /* Slightly lighter warm chocolate brown on hover */
+  color: #ffffff !important;
+  border-color: #5d3816 !important;
+}
+
+/* Dark Theme Button Customizations (Brand Gold - #e5c158) */
+body.dark-theme .btn-premium-shop,
+body.dark-theme .btn-gradient,
+body.dark-theme .btn-primary,
+body.dark-theme .btn-card-add,
+body.dark-theme .sticky-bar-btn {
+  background: var(--accent-gold) !important;
+  color: #04140d !important;
+  border-color: var(--accent-gold) !important;
+  box-shadow: 0 4px 12px rgba(229, 193, 88, 0.25) !important;
+}
+
+body.dark-theme .btn-premium-shop:hover,
+body.dark-theme .btn-gradient:hover,
+body.dark-theme .btn-primary:hover,
+body.dark-theme .btn-card-add:hover,
+body.dark-theme .sticky-bar-btn:hover {
+  background: var(--accent-gold-light) !important;
+  color: #04140d !important;
+  border-color: var(--accent-gold-light) !important;
+}
+
+body.dark-theme .btn-secondary {
+  background-color: transparent !important;
+  color: var(--accent-gold) !important;
+  border: 1.5px solid var(--accent-gold) !important;
+}
+
+body.dark-theme .btn-secondary:hover {
+  background-color: rgba(229, 193, 88, 0.1) !important;
+  color: var(--accent-gold-light) !important;
+}
+
+@media (min-width: 992px) {
+  .hero-section {
+    height: 100vh;
+    min-height: 100vh;
+    padding: 0;
+  }
+}
