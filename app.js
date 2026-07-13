@@ -21,11 +21,6 @@ window.addEventListener("load", () => {
   }
 });
 
-const CONFIG = {
-  TELEGRAM_BOT_TOKEN: "YOUR_TELEGRAM_BOT_TOKEN",
-  TELEGRAM_CHAT_ID: "YOUR_TELEGRAM_CHAT_ID"
-};
-
 // Confectionery Nazcake App Logic
 
 // Product Catalog Data
