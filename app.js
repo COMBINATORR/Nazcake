@@ -3828,6 +3828,7 @@ function handleEmptyCartShopClick() {
 
 if (typeof module !== 'undefined') {
   module.exports = {
+    escapeHTML: typeof escapeHTML !== 'undefined' ? escapeHTML : null,
     addToCart: typeof addToCart !== 'undefined' ? addToCart : null,
     products: typeof products !== 'undefined' ? products : null,
     cart: typeof cart !== 'undefined' ? cart : null,
