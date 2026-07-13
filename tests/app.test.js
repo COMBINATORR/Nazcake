@@ -144,7 +144,33 @@ describe('App Functions', () => {
     expect(dist).toBeLessThan(350);
   });
 
-  describe('escapeHTML', () => {
+it('prevents XSS in cart UI', () => {
+    const codeWithExports = appJsCode + `
+      window.updateCartUi = updateCartUi;
+      window.setCart = (c) => { cart = c; };
+      window.escapeHTML = escapeHTML;
+    `;
+    eval(codeWithExports);
+
+    window.setCart([{
+      product: {
+        id: "test",
+        name: "<script>alert(1)</script>",
+        price: 100,
+        image: "img.jpg",
+        isCustomName: true
+      },
+      qty: 1
+    }]);
+
+    window.updateCartUi();
+
+    const cartHtml = document.getElementById('cart-items-container').innerHTML;
+    expect(cartHtml).not.toContain('<h5 class="cart-item-name"><script>');
+    expect(cartHtml).toContain('&lt;script&gt;');
+  });
+
+describe('escapeHTML', () => {
     beforeEach(() => {
       const codeWithExports = appJsCode + `
         window.escapeHTML = escapeHTML;
