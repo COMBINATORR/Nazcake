@@ -607,43 +607,146 @@ body.dark-theme .main-header.scrolled {
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
 }
 
+/* =========================================
+   PREMIUM HERO CTA BUTTON
+   ========================================= */
 .btn-premium-shop {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: #000000;
-  color: #ffffff !important;
+  gap: 12px;
+  overflow: hidden;
+  /* Base: deep chocolate with warm gradient */
+  background: linear-gradient(135deg, #3a2010 0%, #5a3015 40%, #4a2c11 100%);
+  color: #f5e6c8 !important;
   font-family: var(--font-title);
   font-weight: 800;
-  font-size: 0.9rem;
+  font-size: 0.82rem;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
-  padding: 18px 45px;
-  border-radius: 40px;
-  border: 2px solid #000000;
+  letter-spacing: 0.22em;
+  padding: 0 40px;
+  height: 58px;
+  border-radius: 4px;
+  border: none;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  text-decoration: none;
+  /* Subtle gold top-edge highlight */
+  box-shadow:
+    0 1px 0 0 rgba(229, 193, 88, 0.5) inset,
+    0 -1px 0 0 rgba(0,0,0,0.3) inset,
+    0 8px 32px rgba(74, 44, 17, 0.55),
+    0 2px 8px rgba(0,0,0,0.3);
+  transition:
+    transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.35s ease,
+    background 0.35s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Shimmer sweep animation */
+.btn-premium-shop .cta-shimmer {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent 20%,
+    rgba(255, 235, 170, 0.18) 50%,
+    transparent 80%
+  );
+  animation: cta-shimmer-slide 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes cta-shimmer-slide {
+  0%   { left: -100%; }
+  40%  { left: 130%; }
+  100% { left: 130%; }
+}
+
+/* Label text */
+.btn-premium-shop .cta-label {
+  position: relative;
+  z-index: 1;
+}
+
+/* Arrow icon — slides right on hover */
+.btn-premium-shop .cta-icon {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  /* Thin gold separator on the left */
+  padding-left: 14px;
+  border-left: 1px solid rgba(229, 193, 88, 0.35);
+  color: #e5c158;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.25s ease;
 }
 
 .btn-premium-shop:hover {
-  background-color: transparent;
-  color: #000000 !important;
-  transform: translateY(-3px);
-  box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+  transform: translateY(-4px);
+  background: linear-gradient(135deg, #4a2c11 0%, #6b3a18 40%, #5a3015 100%);
+  box-shadow:
+    0 1px 0 0 rgba(229, 193, 88, 0.6) inset,
+    0 -1px 0 0 rgba(0,0,0,0.3) inset,
+    0 16px 40px rgba(74, 44, 17, 0.5),
+    0 4px 16px rgba(0,0,0,0.2),
+    0 0 0 1px rgba(229, 193, 88, 0.2);
+  color: #fff5e0 !important;
 }
 
+.btn-premium-shop:hover .cta-icon {
+  transform: translateX(5px);
+  color: #f0d070;
+}
+
+.btn-premium-shop:active {
+  transform: translateY(-1px);
+  box-shadow:
+    0 1px 0 0 rgba(229, 193, 88, 0.4) inset,
+    0 4px 12px rgba(74, 44, 17, 0.4);
+}
+
+/* Dark theme — rich gold, deep text */
 body.dark-theme .btn-premium-shop {
-  background-color: var(--accent-gold);
-  color: #0f2314 !important;
-  border-color: var(--accent-gold);
+  background: linear-gradient(135deg, #c9a830 0%, #e5c158 45%, #d4ae42 100%) !important;
+  color: #1a0f00 !important;
+  box-shadow:
+    0 1px 0 0 rgba(255, 245, 180, 0.5) inset,
+    0 -1px 0 0 rgba(0,0,0,0.25) inset,
+    0 8px 32px rgba(229, 193, 88, 0.35),
+    0 2px 8px rgba(0,0,0,0.3) !important;
+  border: none !important;
+}
+
+body.dark-theme .btn-premium-shop .cta-icon {
+  color: rgba(26, 15, 0, 0.6);
+  border-left-color: rgba(26, 15, 0, 0.2);
 }
 
 body.dark-theme .btn-premium-shop:hover {
-  background-color: transparent;
-  color: var(--accent-gold) !important;
+  background: linear-gradient(135deg, #d4ae42 0%, #f0d070 45%, #e5c158 100%) !important;
+  box-shadow:
+    0 1px 0 0 rgba(255, 245, 180, 0.6) inset,
+    0 16px 40px rgba(229, 193, 88, 0.45),
+    0 0 0 1px rgba(255, 235, 150, 0.3) !important;
+  color: #120800 !important;
 }
-  border: 1px solid var(--border-color);
+
+body.dark-theme .btn-premium-shop:hover .cta-icon {
+  color: rgba(26, 15, 0, 0.7);
+}
+
+body.dark-theme .btn-premium-shop .cta-shimmer {
+  background: linear-gradient(
+    105deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.22) 50%,
+    transparent 80%
+  );
 }
 
 /* Wave transitions */
@@ -3915,17 +4018,22 @@ body.dark-theme .delivery-section {
   border-color: var(--accent-chocolate) !important;
 }
 
-.btn-premium-shop:hover,
+/* Override generic btn styles for premium CTA only */
+.btn-premium-shop {
+  background: linear-gradient(135deg, #3a2010 0%, #5a3015 40%, #4a2c11 100%) !important;
+  border: none !important;
+  color: #f5e6c8 !important;
+}
+
 .btn-gradient:hover,
 .btn-primary:hover,
 .btn-card-add:hover {
-  background: #5d3816 !important; /* Slightly lighter warm chocolate brown on hover */
+  background: #5d3816 !important;
   color: #ffffff !important;
   border-color: #5d3816 !important;
 }
 
 /* Dark Theme Button Customizations (Brand Gold - #e5c158) */
-body.dark-theme .btn-premium-shop,
 body.dark-theme .btn-gradient,
 body.dark-theme .btn-primary,
 body.dark-theme .btn-card-add,
@@ -3936,7 +4044,10 @@ body.dark-theme .sticky-bar-btn {
   box-shadow: 0 4px 12px rgba(229, 193, 88, 0.25) !important;
 }
 
-body.dark-theme .btn-premium-shop:hover,
+body.dark-theme .btn-premium-shop:hover {
+  /* handled above in btn-premium-shop dark section */
+}
+
 body.dark-theme .btn-gradient:hover,
 body.dark-theme .btn-primary:hover,
 body.dark-theme .btn-card-add:hover,
