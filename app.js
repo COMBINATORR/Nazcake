@@ -1996,23 +1996,23 @@ function renderCartItemsUi() {
               <polyline points="3 6 5 6 21 6"></polyline>
               <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
             </svg>
-            \${escapeHTML(tRemove)}
+            ${escapeHTML(tRemove)}
           </span>
         </div>
         <div class="cart-item-inner">
-          <img src="\${escapeHTML(p.image)}" alt="\${escapeHTML(tName)}" class="cart-item-img" width="64" height="64">
+          <img src="${escapeHTML(p.image)}" alt="${escapeHTML(tName)}" class="cart-item-img" width="64" height="64">
           <div class="cart-item-details">
-            <h5 class="cart-item-name">\${escapeHTML(tName)}</h5>
+            <h5 class="cart-item-name">${escapeHTML(tName)}</h5>
             <span class="cart-item-price">PLACEHOLDER_ITEM_PRICE ₸</span>
             <div class="cart-item-actions">
               <div class="quantity-stepper">
                 <button class="stepper-btn minus-cart-qty" data-id="PLACEHOLDER_CART_ITEM_ID" aria-label="Уменьшить количество">−</button>
-                <span class="quantity-val">\${escapeHTML(String(item.qty))}</span>
+                <span class="quantity-val">${escapeHTML(String(item.qty))}</span>
                 <button class="stepper-btn plus-cart-qty" data-id="PLACEHOLDER_CART_ITEM_ID" aria-label="Увеличить количество">+</button>
               </div>
             </div>
           </div>
-          <button class="cart-item-remove" data-id="PLACEHOLDER_CART_ITEM_ID" aria-label="\${escapeHTML(tRemove)}">
+          <button class="cart-item-remove" data-id="PLACEHOLDER_CART_ITEM_ID" aria-label="${escapeHTML(tRemove)}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
               <polyline points="3 6 5 6 21 6"></polyline>
               <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
