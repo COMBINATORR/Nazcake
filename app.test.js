@@ -28,7 +28,9 @@ describe('Nazcake App Unit Tests', () => {
             window.updateLocationUi = updateLocationUi;
             window.getDetectedCity = () => detectedCity;
             window.setDetectedCity = (c) => { detectedCity = c; };
-            window.calculateDeliveryCost = calculateDeliveryCost;
+window.calculateDeliveryCost = calculateDeliveryCost;
+
+window.checkAtyrauBounds = checkAtyrauBounds;
         `;
 
         eval(appJsCode);
@@ -209,6 +211,41 @@ describe('calculateDeliveryCost', () => {
             expect(window.calculateDeliveryCost(50)).toBe(3500);
         });
   });
+
+describe('checkAtyrauBounds', () => {
+        const bounds = {
+            minLat: 46.9,
+            maxLat: 47.2,
+            minLon: 51.7,
+            maxLon: 52.1
+        };
+
+        it('should be defined', () => {
+            expect(window.checkAtyrauBounds).toBeDefined();
+        });
+
+        it('should not throw an error when coordinates are within bounds', () => {
+            expect(() => window.checkAtyrauBounds(47.0, 51.9, bounds)).not.toThrow();
+            expect(() => window.checkAtyrauBounds(46.9, 51.7, bounds)).not.toThrow();
+            expect(() => window.checkAtyrauBounds(47.2, 52.1, bounds)).not.toThrow();
+        });
+
+        it('should throw an error when latitude is too small', () => {
+            expect(() => window.checkAtyrauBounds(46.8, 51.9, bounds)).toThrow("delivery_err_outofbounds");
+        });
+
+        it('should throw an error when latitude is too large', () => {
+            expect(() => window.checkAtyrauBounds(47.3, 51.9, bounds)).toThrow("delivery_err_outofbounds");
+        });
+
+        it('should throw an error when longitude is too small', () => {
+            expect(() => window.checkAtyrauBounds(47.0, 51.6, bounds)).toThrow("delivery_err_outofbounds");
+        });
+
+        it('should throw an error when longitude is too large', () => {
+            expect(() => window.checkAtyrauBounds(47.0, 52.2, bounds)).toThrow("delivery_err_outofbounds");
+        });
+    });
 
 describe('escapeHTML', () => {
       it('should be defined', () => {
