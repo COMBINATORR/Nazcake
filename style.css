@@ -3959,7 +3959,47 @@ body.dark-theme .btn-secondary:hover {
 
 /* Base hero-section is 100vh globally */
 
+/* ================================================
+   Responsive visibility helpers
+   ================================================ */
+.desktop-only {
+  display: none !important;
+}
+.mobile-only {
+  display: flex !important;
+}
+
+@media (min-width: 993px) {
+  .desktop-only {
+    display: flex !important;
+  }
+  .mobile-only {
+    display: none !important;
+  }
+}
+
+/* Mobile Category Navigation (after About section) */
+.mobile-category-nav {
+  justify-content: space-around;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 28px 16px 8px;
+  background-color: var(--bg-primary);
+  border-top: 1px solid rgba(74, 44, 17, 0.06);
+}
+
+/* Make hero-category-nav flex for desktop (overriding display:none base) */
+@media (min-width: 993px) {
+  .hero-category-nav.desktop-only {
+    display: flex !important;
+  }
+  .hero-showcase-grid.desktop-only {
+    display: grid !important;
+  }
+}
+
 .footer-logo-wrapper {
+
   display: flex;
   flex-direction: row;
   align-items: center;
