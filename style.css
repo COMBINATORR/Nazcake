@@ -620,8 +620,7 @@ body.dark-theme .btn-premium-shop:hover {
 
 /* Wave transitions */
 .wave-transition {
-  width: 100%;
-  line-height: 0;
+  display: none !important;
 }
 
 .wave-transition svg {
