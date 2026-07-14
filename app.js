@@ -29,7 +29,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 let supabaseClient = null;
 if (typeof window !== 'undefined' && window.supabase && SUPABASE_ANON_KEY !== "YOUR_SUPABASE_ANON_KEY") {
-  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
 
 // Product Catalog Data
@@ -1270,14 +1270,14 @@ const CATEGORY_LABELS = {
 let supabaseOrders = [];
 
 async function loadProducts() {
-  if (!supabase) {
+  if (!supabaseClient) {
     console.log("Supabase is not configured. Using local products fallback.");
     loadCustomProductsLocalFallback();
     return;
   }
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('products')
       .select('*')
       .order('created_at', { ascending: true });
@@ -1348,9 +1348,9 @@ function loadCustomProductsLocalFallback() {
 }
 
 async function loadOrdersFromSupabase() {
-  if (!supabase) return;
+  if (!supabaseClient) return;
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('orders')
       .select('*')
       .order('created_at', { ascending: false });
@@ -1376,9 +1376,9 @@ async function loadOrdersFromSupabase() {
 }
 
 async function saveOrderToSupabase(order) {
-  if (!supabase) return;
+  if (!supabaseClient) return;
   try {
-    const { error } = await supabase
+    const { error } = await supabaseClient
       .from('orders')
       .insert({
         id: order.id,
@@ -2613,7 +2613,7 @@ window.saveAdminProduct = async function(id) {
   saveBtn.textContent = "...";
 
   // 1. Save to Supabase (if active)
-  if (supabase) {
+  if (supabaseClient) {
     try {
       const updateData = {
         name: nameInput,
@@ -2626,7 +2626,7 @@ window.saveAdminProduct = async function(id) {
         updateData.image = newImageVal;
       }
       
-      const { error } = await supabase
+      const { error } = await supabaseClient
         .from('products')
         .update(updateData)
         .eq('id', id);
@@ -3336,7 +3336,7 @@ function setupAdminLogin(loginModal, dashModal) {
 
       let loginSuccessful = false;
 
-      if (supabase) {
+      if (supabaseClient) {
         try {
           const { data, error } = await supabase.auth.signInWithPassword({
             email: email,
@@ -3461,7 +3461,7 @@ function setupAdminPanel() {
 // Helper to get orders history
 // --- Orders History Helpers ---
 function getOrdersHistory() {
-  if (supabase && supabaseOrders.length > 0) {
+  if (supabaseClient && supabaseOrders.length > 0) {
     return supabaseOrders;
   }
   try {
@@ -3484,8 +3484,8 @@ function saveOrdersHistory(history) {
 async function clearOrdersHistory() {
   try {
     localStorage.removeItem("nazcake_orders_history");
-    if (supabase) {
-      const { error } = await supabase
+    if (supabaseClient) {
+      const { error } = await supabaseClient
         .from('orders')
         .delete()
         .neq('id', 'NZ-000000'); // Deletes all orders
@@ -3580,8 +3580,8 @@ function renderAdminOrders() {
 // Global status changer
 window.changeOrderStatus = async function(orderId, newStatus) {
   try {
-    if (supabase) {
-      const { error } = await supabase
+    if (supabaseClient) {
+      const { error } = await supabaseClient
         .from('orders')
         .update({ status: newStatus })
         .eq('id', orderId);
