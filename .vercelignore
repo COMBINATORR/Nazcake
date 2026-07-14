@@ -1,0 +1,26 @@
+# Ignore large PDF catalog
+*.pdf
+Каталог Назкейк 2026.pdf
+
+# Ignore large untracked videos
+Videos/BRoll.mp4
+Videos/Berries_on_cake_cream_1080p_.mp4
+Videos/Broll1.mp4
+Videos/Broll2.mp4
+Videos/Cake_rotating_on_white_background,12.mp4
+Videos/Cake_rotating_on_white_background.mp4
+Videos/Cake_rotating_on_white_background_.mp4
+Videos/Chocolate_ganache_draped_over_cake.mp4
+Videos/Flow_1080p.mp4
+Videos/Golden_pastry_pulled_apart_cheese.mp4
+Videos/Golden_pastry_pulled_apart_cheese_2.mp4
+Videos/Raspberry_coulis_oozing_from_cake.mp4
+Videos/Sieve_shaking_powdered_sugar_pastry.mp4
+Videos/Spoon_pressing_into_cake.mp4
+
+# Cache & node modules
+.vercel
+node_modules
+.env
+.env.*
+.git
