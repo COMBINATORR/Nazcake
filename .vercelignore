@@ -2,11 +2,10 @@
 *.pdf
 Каталог Назкейк 2026.pdf
 
-# Ignore large untracked videos
+# Ignore large video files not used on site (hero uses Broll2.mp4 and Broll2_mobile.mp4)
 Videos/BRoll.mp4
 Videos/Berries_on_cake_cream_1080p_.mp4
 Videos/Broll1.mp4
-Videos/Broll2.mp4
 Videos/Cake_rotating_on_white_background,12.mp4
 Videos/Cake_rotating_on_white_background.mp4
 Videos/Cake_rotating_on_white_background_.mp4
