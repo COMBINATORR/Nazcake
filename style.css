@@ -2278,8 +2278,8 @@ body.dark-theme .bestsellers-arrow {
     box-sizing: border-box;
   }
   
+  /* hero-category-nav visibility controlled by .desktop-only class */
   .hero-category-nav {
-    display: flex;
     justify-content: space-around;
     gap: 12px;
     width: 100%;
@@ -2307,8 +2307,8 @@ body.dark-theme .bestsellers-arrow {
 
   /* Removed hero-section padding for full-screen dvh alignment */
 
+  /* hero-showcase-grid visibility controlled by .desktop-only class */
   .hero-showcase-grid {
-    display: grid !important;
     gap: 20px;
   }
 

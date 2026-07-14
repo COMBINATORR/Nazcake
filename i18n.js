@@ -64,8 +64,8 @@
       catalog_cat_berry_desserts: "Пирожные с ягодами",
       catalog_cat_cakes: "Торты",
       catalog_cat_on_order: "На заказ",
-      catalog_cat_on_order: "На заказ",
       catalog_cat_semi: "Полуфабрикаты",
+      "catalog_cat_semi-finished": "Полуфабрикаты",
 
       // Bento Customizer
       bento_subtitle: "Создайте свой шедевр",
@@ -649,6 +649,10 @@
       p_cake_biscuit_roll_desc: "Мягкий домашний бисквитный рулет с нежным сливочно-ягодным кремом.",
       p_cake_biscuit_roll_ingredients: "Сдобное тесто на яйцах, сливочный крем, ягодный джем.",
 
+      p_cake_custom_celebration_name: "Праздничный торт (на заказ)",
+      p_cake_custom_celebration_desc: "Эксклюзивный праздничный торт для вашего торжества. Дизайн и начинка обсуждаются индивидуально при заказе.",
+      p_cake_custom_celebration_ingredients: "Начинка на выбор (Красный бархат, Сникерс, Эстерхази, Молочная девочка), кондитерский велюр, мастичный или ягодный декор.",
+
       p_semi_meatballs_name: "Фрикадельки (1 кг)",
       p_semi_meatballs_desc: "Домашние фрикадельки для супа. Быстрое и сытное решение для семейного обеда.",
       p_semi_meatballs_ingredients: "Фарш на выбор (куриный или говяжий), лук, соль, специи.",
@@ -761,8 +765,8 @@
       catalog_cat_berry_desserts: "Жидек қосылған пирожныйлар",
       catalog_cat_cakes: "Торттар",
       catalog_cat_on_order: "Тапсырыс бойынша",
-      catalog_cat_on_order: "Тапсырыс бойынша",
       catalog_cat_semi: "Жартылай фабрикаттар",
+      "catalog_cat_semi-finished": "Жартылай фабрикаттар",
 
       // Bento Customizer
       bento_subtitle: "Өз туындыңызды жасаңыз",
@@ -1346,6 +1350,10 @@
       p_cake_biscuit_roll_name: "Бисквит рулеті",
       p_cake_biscuit_roll_desc: "Нәзік кілегейлі-жидек кремі бар жұмсақ үй бисквит рулеті.",
       p_cake_biscuit_roll_ingredients: "Жұмыртқа қосылған сдобты қамыр, кілегейлі крем, жидек джемі.",
+
+      p_cake_custom_celebration_name: "Мерекелік торт (тапсырыс бойынша)",
+      p_cake_custom_celebration_desc: "Сіздің мерекеңізге арналған ерекше мерекелік торт. Дизайн мен салмасы тапсырыс беру кезінде жеке талқыланады.",
+      p_cake_custom_celebration_ingredients: "Таңдау бойынша салмасы (Қызыл барқыт, Сникерс, Эстерхази, Сүтті қыз), кондитерлік велюр, мастика немесе жидек декоры.",
 
       p_semi_meatballs_name: "Фрикаделькалар (1 кг)",
       p_semi_meatballs_desc: "Сорпаға арналған үй фрикаделькалары. Отбасылық түскі ас үшін жылдам және тойымды шешім.",
