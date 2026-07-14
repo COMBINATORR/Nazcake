@@ -3405,28 +3405,7 @@ function setupAdminDashboardNav(dashModal) {
   const tabContents = document.querySelectorAll(".dash-tab-content");
   tabButtons.forEach(btn => {
     if (btn) {
-      btn.addEventListener("click", async () => {
-        tabButtons.forEach(b => {
-          if (b) b.classList.remove("active");
-        });
-        btn.classList.add("active");
-        
-        const tab = btn.getAttribute("data-tab");
-        tabContents.forEach(content => {
-          content.classList.remove("active");
-        });
-        const tabContent = document.getElementById("tab-content-" + tab);
-        if (tabContent) tabContent.classList.add("active");
-
-        if (tab === "orders") {
-          const ordersList = document.getElementById("admin-orders-list");
-          if (ordersList) {
-            ordersList.innerHTML = `<div class="empty-cart-message">${window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Жүктелуде..." : "Загрузка..."}</div>`;
-          }
-          await loadOrdersFromSupabase();
-          renderAdminOrders();
-        }
-      });
+      btn.addEventListener("click", () => handleAdminTabSwitch(btn, tabButtons, tabContents));
     }
   });
 
@@ -3442,6 +3421,30 @@ function setupAdminDashboardNav(dashModal) {
         renderAdminOrders();
       }
     });
+  }
+}
+
+
+async function handleAdminTabSwitch(btn, tabButtons, tabContents) {
+  tabButtons.forEach(b => {
+    if (b) b.classList.remove("active");
+  });
+  btn.classList.add("active");
+
+  const tab = btn.getAttribute("data-tab");
+  tabContents.forEach(content => {
+    content.classList.remove("active");
+  });
+  const tabContent = document.getElementById("tab-content-" + tab);
+  if (tabContent) tabContent.classList.add("active");
+
+  if (tab === "orders") {
+    const ordersList = document.getElementById("admin-orders-list");
+    if (ordersList) {
+      ordersList.innerHTML = `<div class="empty-cart-message">${window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Жүктелуде..." : "Загрузка..."}</div>`;
+    }
+    await loadOrdersFromSupabase();
+    renderAdminOrders();
   }
 }
 
