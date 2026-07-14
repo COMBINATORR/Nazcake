@@ -1662,7 +1662,7 @@ function createProductCardHtml(p) {
   const tBadge = escapeHTML(badge ? (window.i18n ? window.i18n.t(getBadgeTranslationKey(badge)) : badge) : "");
   const tUnit = escapeHTML(window.i18n ? window.i18n.t(getUnitTranslationKey(unit)) : unit);
   
-  const isOutOfStock = inStock === false || (stock !== undefined && stock <= 0);
+  const isOutOfStock = inStock === false || (stock !== null && stock !== undefined && stock <= 0);
   const cardClass = isOutOfStock ? "product-card out-of-stock" : "product-card";
   const tOutOfStock = window.i18n ? window.i18n.t("catalog_out_of_stock") : "Нет в наличии";
   const outOfStockBadge = isOutOfStock ? `<span class="product-badge product-badge-outofstock">${tOutOfStock}</span>` : "";
@@ -1932,7 +1932,7 @@ function addToCart(productOrId, qty, selectedSize, selectedPrice) {
   }
   if (!p) return;
 
-  const isOutOfStock = p.inStock === false || (p.stock !== undefined && p.stock <= 0);
+  const isOutOfStock = p.inStock === false || (p.stock !== null && p.stock !== undefined && p.stock <= 0);
   if (isOutOfStock) return;
 
   const cartItemId = p.id + (selectedSize ? "_" + selectedSize : "");
