@@ -1539,6 +1539,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupKaspiQrCheckout();
   setupThemeToggler();
   setupBestsellersCarousel();
+  setupContactsMap();
 
   // Scroll header effect
   const header = document.querySelector(".main-header");
@@ -3950,6 +3951,9 @@ function setupThemeToggler() {
     const isDark = document.body.classList.toggle("dark-theme");
     localStorage.setItem("nazcake_theme", isDark ? "dark" : "light");
     updateIcons(isDark);
+    if (typeof updateContactsMapTheme === "function") {
+      updateContactsMapTheme(isDark);
+    }
   };
 
   if (headerToggle) headerToggle.addEventListener("click", toggleTheme);
@@ -3966,6 +3970,124 @@ function setupThemeToggler() {
     document.body.classList.remove("dark-theme");
   }
   updateIcons(isDark);
+}
+
+/* ============================================================
+   Contacts map — Leaflet + Carto (SVTL-style custom marker)
+   ============================================================ */
+const NAZCAKE_MAP_LAT = 47.124524;
+const NAZCAKE_MAP_LNG = 51.939947;
+
+let contactsMapInstance = null;
+let contactsMapMarker = null;
+let contactsMapTiles = null;
+
+function setupContactsMap() {
+  const el = document.getElementById("contacts-map");
+  if (!el || typeof L === "undefined") return;
+  if (contactsMapInstance) return;
+
+  try {
+    contactsMapInstance = L.map(el, {
+      center: [NAZCAKE_MAP_LAT, NAZCAKE_MAP_LNG],
+      zoom: 16,
+      zoomControl: false,
+      attributionControl: false,
+      scrollWheelZoom: false,
+    });
+
+    L.control.zoom({ position: "bottomright" }).addTo(contactsMapInstance);
+
+    // Enable wheel zoom only while map is focused/hovered (less page-scroll fight)
+    el.addEventListener("mouseenter", () => contactsMapInstance.scrollWheelZoom.enable());
+    el.addEventListener("mouseleave", () => contactsMapInstance.scrollWheelZoom.disable());
+    el.addEventListener("focusin", () => contactsMapInstance.scrollWheelZoom.enable());
+    el.addEventListener("focusout", () => contactsMapInstance.scrollWheelZoom.disable());
+
+    updateContactsMapTheme(document.body.classList.contains("dark-theme"));
+
+    const icon = L.divIcon({
+      className: "map-custom-marker",
+      html:
+        '<div class="marker-pulse-wrapper">' +
+        '<div class="marker-pulse"></div>' +
+        '<div class="marker-dot"></div>' +
+        "</div>",
+      iconSize: [30, 30],
+      iconAnchor: [15, 15],
+      popupAnchor: [0, -10],
+    });
+
+    contactsMapMarker = L.marker([NAZCAKE_MAP_LAT, NAZCAKE_MAP_LNG], { icon }).addTo(contactsMapInstance);
+    updateContactsMapPopup();
+
+    const refreshSize = () => {
+      if (contactsMapInstance) contactsMapInstance.invalidateSize();
+    };
+    setTimeout(refreshSize, 120);
+    setTimeout(refreshSize, 600);
+    window.addEventListener("resize", refreshSize);
+
+    if ("IntersectionObserver" in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) refreshSize();
+        },
+        { threshold: 0.15 }
+      );
+      io.observe(el);
+    }
+
+    if (window.i18n && typeof window.i18n.onLanguageChange === "function") {
+      window.i18n.onLanguageChange(() => updateContactsMapPopup());
+    }
+  } catch (err) {
+    console.error("Contacts map init failed:", err);
+  }
+}
+
+function updateContactsMapTheme(isDark) {
+  if (!contactsMapInstance || typeof L === "undefined") return;
+
+  if (contactsMapTiles) {
+    contactsMapInstance.removeLayer(contactsMapTiles);
+    contactsMapTiles = null;
+  }
+
+  // Always Voyager: dark_all tiles were nearly black on our dark UI and unreadable.
+  // Dark theme uses a CSS tone on .leaflet-tile-pane (see style.css) instead.
+  const url = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
+
+  contactsMapTiles = L.tileLayer(url, {
+    maxZoom: 20,
+    subdomains: "abcd",
+  }).addTo(contactsMapInstance);
+
+  const mapEl = document.getElementById("contacts-map");
+  if (mapEl) {
+    mapEl.classList.toggle("contacts-map--dark", !!isDark);
+  }
+}
+
+function updateContactsMapPopup() {
+  if (!contactsMapMarker) return;
+  const addr = window.i18n
+    ? window.i18n.t("contacts_val_address")
+    : "г. Атырау, ул. Балхаш 23";
+  const html = `<b>Nazcake</b><br>${escapeHTML(addr)}`;
+  contactsMapMarker
+    .bindPopup(html, {
+      className: "nazcake-map-popup",
+      closeButton: true,
+      autoClose: false,
+      closeOnClick: false,
+    })
+    .openPopup();
+
+  // Re-open after tile/theme swap so label stays visible on mobile dark UI
+  setTimeout(() => {
+    if (contactsMapMarker) contactsMapMarker.openPopup();
+  }, 200);
 }
 
 function setupBestsellersCarousel() {
