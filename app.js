@@ -3976,17 +3976,35 @@ function setupBestsellersCarousel() {
   const prevBtn = wrapper.querySelector(".prev-btn");
   const nextBtn = wrapper.querySelector(".next-btn");
 
+  // Show thin scrollbar + arrows only while the user is scrolling
+  let scrollHideTimer = null;
+  const markScrolling = () => {
+    grid.classList.add("is-scrolling");
+    wrapper.classList.add("is-scrolling");
+    if (scrollHideTimer) clearTimeout(scrollHideTimer);
+    scrollHideTimer = setTimeout(() => {
+      grid.classList.remove("is-scrolling");
+      wrapper.classList.remove("is-scrolling");
+    }, 900);
+  };
+
+  grid.addEventListener("scroll", markScrolling, { passive: true });
+  grid.addEventListener("wheel", markScrolling, { passive: true });
+  grid.addEventListener("touchmove", markScrolling, { passive: true });
+
   // Scroll by buttons
   const cardWidth = 310; // card 280 + gap 30
   if (prevBtn) {
     prevBtn.addEventListener("click", () => {
       triggerHapticFeedback();
+      markScrolling();
       grid.scrollBy({ left: -cardWidth, behavior: "smooth" });
     });
   }
   if (nextBtn) {
     nextBtn.addEventListener("click", () => {
       triggerHapticFeedback();
+      markScrolling();
       grid.scrollBy({ left: cardWidth, behavior: "smooth" });
     });
   }
@@ -4023,6 +4041,7 @@ function setupBestsellersCarousel() {
     const walk = (x - startX) * 1.5; // Scroll speed modifier
     if (Math.abs(x - startX) > 5) {
       hasMoved = true;
+      markScrolling();
     }
     grid.scrollLeft = scrollLeft - walk;
   });
