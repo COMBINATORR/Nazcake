@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @jest-environment jsdom
  */
 
@@ -28,6 +28,7 @@ describe('Nazcake App Unit Tests', () => {
             window.updateLocationUi = updateLocationUi;
             window.getDetectedCity = () => detectedCity;
             window.setDetectedCity = (c) => { detectedCity = c; };
+            window.calculateImageDimensions = calculateImageDimensions;
 window.calculateDeliveryCost = calculateDeliveryCost;
 
 window.getHaversineDistance = getHaversineDistance;
@@ -154,7 +155,7 @@ window.checkAtyrauBounds = checkAtyrauBounds;
             window.setDetectedCity("atyrau");
             window.updateLocationUi();
 
-            expect(document.getElementById("location-text").textContent).toBe("Атырау");
+            expect(document.getElementById("location-text").textContent).toBe("╨Р╤В╤Л╤А╨░╤Г");
             expect(document.getElementById("location-widget").classList.contains("hidden")).toBe(false);
             expect(document.getElementById("drawer-location-widget").classList.contains("hidden")).toBe(false);
             expect(document.getElementById("location-alert-banner").classList.contains("hidden")).toBe(true);
@@ -164,7 +165,7 @@ window.checkAtyrauBounds = checkAtyrauBounds;
             window.setDetectedCity("almaty");
             window.updateLocationUi();
 
-            expect(document.getElementById("location-text").textContent).toBe("Ваш город: Алматы");
+            expect(document.getElementById("location-text").textContent).toBe("╨Т╨░╤И ╨│╨╛╤А╨╛╨┤: ╨Р╨╗╨╝╨░╤В╤Л");
             expect(document.getElementById("location-widget").classList.contains("hidden")).toBe(false);
             expect(document.getElementById("location-alert-banner").classList.contains("hidden")).toBe(false);
         });
@@ -181,7 +182,7 @@ window.checkAtyrauBounds = checkAtyrauBounds;
 
             expect(global.fetch).toHaveBeenCalledWith("https://ipapi.co/json/");
             expect(window.getDetectedCity()).toBe("astana");
-            expect(document.getElementById("location-text").textContent).toBe("Ваш город: Астана");
+            expect(document.getElementById("location-text").textContent).toBe("╨Т╨░╤И ╨│╨╛╤А╨╛╨┤: ╨Р╤Б╤В╨░╨╜╨░");
         });
 
         it('should fallback to Atyrau on failed API response', async () => {
@@ -192,7 +193,7 @@ window.checkAtyrauBounds = checkAtyrauBounds;
             await window.setupGeolocation();
 
             expect(window.getDetectedCity()).toBe("atyrau");
-            expect(document.getElementById("location-text").textContent).toBe("Атырау");
+            expect(document.getElementById("location-text").textContent).toBe("╨Р╤В╤Л╤А╨░╤Г");
         });
     });
 
@@ -281,7 +282,7 @@ describe('Distance Calculator (Haversine)', () => {
             });
 
             it('should handle negative coordinates correctly', () => {
-                // Sydney (33.8688° S, 151.2093° E) to Cape Town (33.9249° S, 18.4241° E)
+                // Sydney (33.8688┬░ S, 151.2093┬░ E) to Cape Town (33.9249┬░ S, 18.4241┬░ E)
                 const sydLat = -33.8688, sydLon = 151.2093;
                 const ctLat = -33.9249, ctLon = 18.4241;
 
@@ -366,4 +367,26 @@ describe('escapeHTML', () => {
         expect(window.escapeHTML('')).toBe('');
       });
     });
+
+  describe('calculateImageDimensions', () => {
+    it('should calculate correct dimensions for wide images exceeding maxDim', () => {
+        const result = window.calculateImageDimensions(1200, 800, 600);
+        expect(result).toEqual({ width: 600, height: 400 });
+    });
+
+    it('should calculate correct dimensions for tall images exceeding maxDim', () => {
+        const result = window.calculateImageDimensions(800, 1200, 600);
+        expect(result).toEqual({ width: 400, height: 600 });
+    });
+
+    it('should calculate correct dimensions for square images exceeding maxDim', () => {
+        const result = window.calculateImageDimensions(1000, 1000, 600);
+        expect(result).toEqual({ width: 600, height: 600 });
+    });
+
+    it('should not scale images smaller than maxDim', () => {
+        const result = window.calculateImageDimensions(400, 300, 600);
+        expect(result).toEqual({ width: 400, height: 300 });
+    });
+  });
 });

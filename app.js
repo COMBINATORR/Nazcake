@@ -2521,6 +2521,21 @@ window.triggerAdminImageUpload = function(id) {
   if (fileInput) fileInput.click();
 };
 
+function calculateImageDimensions(width, height, maxDim) {
+  let newWidth = width;
+  let newHeight = height;
+
+  if (width > height && width > maxDim) {
+    newHeight = Math.round((height * maxDim) / width);
+    newWidth = maxDim;
+  } else if (height >= width && height > maxDim) {
+    newWidth = Math.round((width * maxDim) / height);
+    newHeight = maxDim;
+  }
+
+  return { width: newWidth, height: newHeight };
+}
+
 window.handleAdminImageUpload = function(event, id) {
   const file = event.target.files[0];
   if (!file) return;
@@ -2532,20 +2547,7 @@ window.handleAdminImageUpload = function(event, id) {
       // Resize using canvas to keep it lightweight for localStorage
       const canvas = document.createElement("canvas");
       const maxDim = 600;
-      let width = img.width;
-      let height = img.height;
-
-      if (width > height) {
-        if (width > maxDim) {
-          height = Math.round((height * maxDim) / width);
-          width = maxDim;
-        }
-      } else {
-        if (height > maxDim) {
-          width = Math.round((width * maxDim) / height);
-          height = maxDim;
-        }
-      }
+      const { width, height } = calculateImageDimensions(img.width, img.height, maxDim);
 
       canvas.width = width;
       canvas.height = height;
@@ -4068,6 +4070,7 @@ if (typeof module !== 'undefined') {
     updateCartUi: typeof updateCartUi !== 'undefined' ? updateCartUi : null,
     updateAdminImagePreview: typeof updateAdminImagePreview !== 'undefined' ? updateAdminImagePreview : null,
     adjustColorBrightness: typeof adjustColorBrightness !== 'undefined' ? adjustColorBrightness : null,
-    checkAtyrauBounds: typeof checkAtyrauBounds !== 'undefined' ? checkAtyrauBounds : null
+    checkAtyrauBounds: typeof checkAtyrauBounds !== 'undefined' ? checkAtyrauBounds : null,
+    calculateImageDimensions: typeof calculateImageDimensions !== 'undefined' ? calculateImageDimensions : null
   };
 }
