@@ -2768,7 +2768,7 @@ function setupDeliveryCalculator() {
   const resCost = document.getElementById("result-cost");
   const resTime = document.getElementById("result-time");
 
-  // Bakery coordinates (г. Атырау, Балхаш 23)
+  // Bakery coordinates (г. Атырау, ул. Балхаш 23)
   const bakeryLat = 47.124524;
   const bakeryLon = 51.939947;
 
