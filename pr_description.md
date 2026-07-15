@@ -1,7 +1,11 @@
-🎯 **What:** The overly long `setupKaspiQrCheckout` function in `app.js` was refactored. The inner event listener logic and repeated product parsing steps were extracted into several standalone, well-named functions: `getKaspiProductDetails`, `closeKaspiModal`, `handleQuickKaspiClick`, `handleKaspiGenerateClick`, and `handleKaspiCompleteClick`.
+🎯 **What:** The code health issue addressed
+Extracted the deeply nested, anonymous async function used in the `tabButtons` click listener inside `setupAdminDashboardNav` into a standalone function named `switchAdminTab`.
 
-💡 **Why:** The original `setupKaspiQrCheckout` function contained roughly 150 lines of code doing multiple things: configuring phone masks, calculating order totals, setting up the UI for different steps, and managing local storage. This made it difficult to read and maintain. By extracting this logic, the main setup function is simplified to just attaching event listeners, and the core logic is easier to track.
+💡 **Why:** How this improves maintainability
+The original tab-switching logic was buried inside a `forEach` loop and an event listener within a larger setup function, leading to deep nesting and poor readability. Extracting it to a named function cleanly separates the logic, making `setupAdminDashboardNav` easier to read and maintain.
 
-✅ **Verification:** Verified the logic remains intact by checking variable scoping, resolving outer dependencies properly, checking syntax using Node, and running the complete test suite with `pnpm test`. All 55 tests passed successfully without regressions.
+✅ **Verification:** How you confirmed the change is safe
+Ran the existing Jest test suite for the `app.js` file using `pnpm test`. It passed without any failures, confirming that the extraction correctly maintained the existing behavior.
 
-✨ **Result:** A drastically improved code structure in `app.js` around the Kaspi QR checkout flow that preserves exact functionality while enhancing readability and maintainability.
+✨ **Result:** The improvement achieved
+A cleaner `setupAdminDashboardNav` setup method that simply delegates to a clear and concise `switchAdminTab` logic function.
