@@ -49,7 +49,7 @@
 
       // Why Choose Nazcake
       why_subtitle: "Наши преимущества",
-      why_title: "Почему стоит выбрать <span class=\"why-brand\">Nazcake</span>?",
+      why_title: "Почему стоит выбрать <span class=\"why-brand-wrap\"><span class=\"why-brand why-brand-fill\">Nazcake</span><span class=\"why-brand why-brand-glow\" aria-hidden=\"true\">Nazcake</span></span>?",
       why_1_title: "Единственные в своем роде десерты",
       why_1_lead: "Оригинальные вкусы и крафтовые рецепты",
       why_1_text: "Попробуйте наши фирменные десерты — от нежнейших тортов «Вупи пай» и «Молочная девочка» до эксклюзивных новинок, которые наше кондитерское ателье выпекает вручную специально для ваших особенных моментов.",
@@ -763,7 +763,7 @@
 
       // Why Choose Nazcake
       why_subtitle: "Біздің артықшылықтарымыз",
-      why_title: "Неге дәл <span class=\"why-brand\">Nazcake</span> таңдау керек?",
+      why_title: "Неге дәл <span class=\"why-brand-wrap\"><span class=\"why-brand why-brand-fill\">Nazcake</span><span class=\"why-brand why-brand-glow\" aria-hidden=\"true\">Nazcake</span></span> таңдау керек?",
       why_1_title: "Өзіндік үлгідегі десерттер",
       why_1_lead: "Түпнұсқа дәмдер мен крафт рецепттер",
       why_1_text: "Фирмалық десерттерімізді көріңіз — ең нәзік «Вупи пай» пен «Молочная девочка» торттарынан бастап, ерекше сәттеріңіз үшін кондитерлік ательеміз қолмен пісіретін эксклюзивті жаңалықтарға дейін.",
