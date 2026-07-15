@@ -38,7 +38,7 @@
     "priceRange": "$$",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "ул. Балхашская 23",
+      "streetAddress": "Балхаш 23",
       "addressLocality": "Атырау",
       "postalCode": "060000",
       "addressCountry": "KZ"
@@ -90,7 +90,7 @@
   <div id="page-preloader" class="page-preloader">
     <div class="preloader-content">
       <div class="preloader-logo">
-        <img src="images/Nazcake_logo.png" alt="Nazcake Logo" class="preloader-logo-img" width="70" height="70" style="object-fit: contain;">
+        <img src="images/Nazcake_logo.svg" alt="Nazcake Logo" class="preloader-logo-img" width="70" height="70" style="object-fit: contain;">
         <div class="logo-text-wrapper" style="display: flex; flex-direction: column; align-items: center;">
           <span class="preloader-logo-main">Nazcake</span>
           <span class="preloader-logo-sub">onimderi</span>
@@ -104,7 +104,7 @@
   <header class="main-header">
     <div class="header-container">
       <a href="#" class="logo">
-        <img src="images/Nazcake_logo.png" alt="Nazcake Logo" class="logo-img" width="42" height="42" style="object-fit: contain;">
+        <img src="images/Nazcake_logo.svg" alt="Nazcake Logo" class="logo-img">
         <div class="logo-text-wrapper">
           <span class="logo-main">Nazcake</span>
           <span class="logo-sub">onimderi</span>
@@ -367,6 +367,57 @@
             <span class="feature-label" data-i18n="about_feat_location">Локация</span>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Choose Nazcake -->
+  <section id="why-us" class="why-section">
+    <div class="container">
+      <div class="section-header text-center">
+        <span class="section-subtitle reveal-item" data-i18n="why_subtitle">Наши преимущества</span>
+        <h2 class="section-title why-title reveal-item" data-i18n="why_title">Почему стоит выбрать <span class="why-brand">Nazcake</span>?</h2>
+      </div>
+
+      <div class="why-grid">
+        <article class="why-card reveal-item">
+          <div class="why-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="28" height="28">
+              <path d="M12 3c-1.5 3-4 5-4 8a4 4 0 0 0 8 0c0-3-2.5-5-4-8z"></path>
+              <path d="M8 21h8"></path>
+              <path d="M9 17h6"></path>
+            </svg>
+          </div>
+          <h3 class="why-card-title" data-i18n="why_1_title">Единственные в своем роде десерты</h3>
+          <p class="why-card-lead" data-i18n="why_1_lead">Оригинальные вкусы и крафтовые рецепты</p>
+          <p class="why-card-text" data-i18n="why_1_text">Попробуйте наши фирменные десерты — от нежнейших тортов «Вупи пай» и «Молочная девочка» до эксклюзивных новинок, которые наше кондитерское ателье выпекает вручную специально для ваших особенных моментов.</p>
+        </article>
+
+        <article class="why-card reveal-item">
+          <div class="why-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="28" height="28">
+              <rect x="1" y="3" width="15" height="13" rx="2"></rect>
+              <path d="M16 8h4l3 5v3h-7V8z"></path>
+              <circle cx="5.5" cy="18.5" r="2.5"></circle>
+              <circle cx="18.5" cy="18.5" r="2.5"></circle>
+            </svg>
+          </div>
+          <h3 class="why-card-title" data-i18n="why_2_title">Быстрая и бережная доставка</h3>
+          <p class="why-card-lead" data-i18n="why_2_lead">Привезем вовремя прямо к вашему столу</p>
+          <p class="why-card-text" data-i18n="why_2_text">Вам больше не нужно тратить время на поездки по городу. Мы бережно доставим ваш заказ в любую точку Атырау точно к назначенному часу. Курьер привезет десерт в идеальном виде, чтобы вы сразу могли подать его гостям.</p>
+        </article>
+
+        <article class="why-card reveal-item">
+          <div class="why-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="28" height="28">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              <path d="M9 12l2 2 4-4"></path>
+            </svg>
+          </div>
+          <h3 class="why-card-title" data-i18n="why_3_title">Честный и натуральный состав</h3>
+          <p class="why-card-lead" data-i18n="why_3_lead">Никакого маргарина и растительных жиров</p>
+          <p class="why-card-text" data-i18n="why_3_text">Мы готовим только из натуральных ингредиентов: используем настоящее сливочное масло 82.5%, свежие ягоды, отборные сливки и исключительно Халал-продукты. Качество, в котором вы можете быть уверены на 100%.</p>
+        </article>
       </div>
     </div>
   </section>
@@ -639,7 +690,7 @@
             </div>
             <div class="info-content">
               <h4 data-i18n="contacts_lbl_address">Наш адрес</h4>
-              <p data-i18n="contacts_val_address">г. Атырау, ул. Балхашская 23</p>
+              <p data-i18n="contacts_val_address">г. Атырау, Балхаш 23</p>
               <a href="https://2gis.kz/atyrau/firm/70000001043802585?m=51.939832%2C47.124483%2F16" target="_blank" rel="noopener noreferrer" class="btn-dgis btn-dgis-card">
                 <svg class="dgis-logo-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
@@ -827,7 +878,7 @@
     <div class="footer-container">
       <div class="footer-col brand-col">
         <div class="footer-logo-wrapper">
-          <img src="images/Nazcake_logo.png" alt="Nazcake Logo" class="footer-logo-img" width="45" height="45" style="object-fit: contain;">
+          <img src="images/Nazcake_logo.svg" alt="Nazcake Logo" class="footer-logo-img">
           <div class="logo-text-wrapper">
             <span class="footer-logo-main">Nazcake</span>
             <span class="footer-logo-sub">onimderi</span>
@@ -849,7 +900,7 @@
 
       <div class="footer-col contact-col">
         <h4 data-i18n="nav_contacts">Контакты</h4>
-        <p>📍 <span data-i18n="contacts_val_address">г. Атырау, ул. Балхашская 23</span></p>
+        <p>📍 <span data-i18n="contacts_val_address">г. Атырау, Балхаш 23</span></p>
         <p>📞 <a href="tel:+77783567221" class="footer-contact-link">+7 (778) 356-7221</a></p>
         <p>✉️ <a href="mailto:info@nazcake.kz" class="footer-contact-link">info@nazcake.kz</a></p>
         <p class="dgis-p">

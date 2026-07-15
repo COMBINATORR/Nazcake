@@ -10,3 +10,4 @@ dist/
 .jules/
 scratch/
 node_modules/
+.vercel
