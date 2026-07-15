@@ -3993,19 +3993,25 @@ function setupBestsellersCarousel() {
   grid.addEventListener("touchmove", markScrolling, { passive: true });
 
   // Scroll by buttons
-  const cardWidth = 310; // card 280 + gap 30
+  const scrollByCard = (dir) => {
+    const card = grid.querySelector(".product-card");
+    const gap = parseFloat(getComputedStyle(grid).gap) || 36;
+    const step = card ? card.getBoundingClientRect().width + gap : 440;
+    grid.scrollBy({ left: dir * step, behavior: "smooth" });
+  };
+
   if (prevBtn) {
     prevBtn.addEventListener("click", () => {
       triggerHapticFeedback();
       markScrolling();
-      grid.scrollBy({ left: -cardWidth, behavior: "smooth" });
+      scrollByCard(-1);
     });
   }
   if (nextBtn) {
     nextBtn.addEventListener("click", () => {
       triggerHapticFeedback();
       markScrolling();
-      grid.scrollBy({ left: cardWidth, behavior: "smooth" });
+      scrollByCard(1);
     });
   }
 

@@ -17,8 +17,10 @@
       nav_about: "О нас",
       nav_bestsellers: "Бестселлеры",
       nav_catalog: "Наша продукция",
+      nav_catalog_short: "Продукция",
       nav_customizer: "Конструктор Бенто",
       nav_delivery: "Доставка",
+      nav_community: "Сообщество",
       nav_contacts: "Контакты",
       nav_menu_title: "Меню",
 
@@ -33,10 +35,15 @@
       hero_nav_customizer: "Конструктор Бенто",
       hero_nav_bestsellers: "Бестселлеры",
 
-      // Ticker Section
+      // Ticker Section (after hero)
       ticker_item_1: "От нашей кондитерской — к вашему дому",
       ticker_item_2: "Свежая выпечка каждый день",
       ticker_item_3: "Быстрая доставка по городу",
+      ticker_item_4: "Радуем своих гостей с 2011 года",
+      // Ticker after catalog
+      ticker_mid_1: "Только натуральные ингредиенты",
+      ticker_mid_2: "Халяль · ручная работа каждый день",
+      ticker_mid_3: "Заказ в WhatsApp и Kaspi · Атырау",
 
       // About Section
       about_subtitle: "Наша философия",
@@ -227,6 +234,26 @@
       admin_lbl_stock: "Кол-во в наличии",
       catalog_out_of_stock: "Нет в наличии",
       contacts_val_hours: "Ежедневно с 09:00 до 20:00",
+
+      community_title: "Наше сообщество",
+      community_desc: "Подписывайтесь на нас, чтобы быть в курсе всех новостей NAZCAKE.",
+      community_tags: "Пирожные | Пироги | Торты | Полуфабрикаты | Atyrau",
+      community_posts_num: "301",
+      community_posts_lbl: "публикаций",
+      community_followers_num: "12,6 тыс.",
+      community_followers_lbl: "подписчиков",
+      community_following_num: "2",
+      community_following_lbl: "подписки",
+      community_biz: "Cupcake Shop",
+      community_bio: "Дастархандарыңыз жақсылыққа және NazCake тәттілеріне толы болсын ✨<br>Шұғыл тапсырысты 2 сағатта дайындап береміз 🔥",
+      community_address: "Улица Балхаш, 23. Nazcake, Atyrau",
+      community_follow: "Подписаться",
+      community_message: "Отправить сообщение",
+      community_hl_1: "Отзывы",
+      community_hl_2: "Наша команда",
+      community_hl_3: "В наличии",
+      community_hl_4: "Полуфабрикат",
+      community_hl_5: "Наш адрес",
 
       footer_desc: "Изысканные десерты и авторские торты на любой вкус. Готовим с любовью в городе Атырау.",
       footer_nav_title: "Быстрые ссылки",
@@ -728,8 +755,10 @@
       nav_about: "Біз туралы",
       nav_bestsellers: "Бестселлерлер",
       nav_catalog: "Өнімдеріміз",
+      nav_catalog_short: "Өнімдер",
       nav_customizer: "Бенто конструкторы",
       nav_delivery: "Жеткізу",
+      nav_community: "Қауымдастық",
       nav_contacts: "Байланыс",
       nav_menu_title: "Мәзір",
 
@@ -744,10 +773,15 @@
       hero_nav_customizer: "Бенто конструкторы",
       hero_nav_bestsellers: "Бестселлерлер",
 
-      // Ticker Section
+      // Ticker Section (after hero)
       ticker_item_1: "Кондитерлік өнімдеріміз — үйіңізге дейін",
       ticker_item_2: "Күн сайын балғын пісірілген өнімдер",
       ticker_item_3: "Қала бойынша жылдам жеткізу",
+      ticker_item_4: "Қонақтарымызды 2011 жылдан бері қуантып келеміз",
+      // Ticker after catalog
+      ticker_mid_1: "Тек табиғи ингредиенттер",
+      ticker_mid_2: "Халал · күн сайын қолдан жасалған",
+      ticker_mid_3: "WhatsApp пен Kaspi арқылы тапсырыс · Атырау",
 
       // About Section
       about_subtitle: "Біздің философиямыз",
@@ -939,6 +973,26 @@
       admin_lbl_stock: "Қоймадағы саны",
       catalog_out_of_stock: "Қолжетімсіз",
       contacts_val_hours: "Күн сайын 09:00-ден 20:00-ге дейін",
+
+      community_title: "Біздің қауымдастық",
+      community_desc: "Барлық NAZCAKE жаңалықтарынан хабардар болу үшін бізге жазылыңыз.",
+      community_tags: "Пирожныйлар | Пирогтар | Торттар | Жартылай фабрикаттар | Atyrau",
+      community_posts_num: "301",
+      community_posts_lbl: "жазба",
+      community_followers_num: "12,6 мың",
+      community_followers_lbl: "жазылушы",
+      community_following_num: "2",
+      community_following_lbl: "жазылым",
+      community_biz: "Cupcake Shop",
+      community_bio: "Дастархандарыңыз жақсылыққа және NazCake тәттілеріне толы болсын ✨<br>Шұғыл тапсырысты 2 сағатта дайындап береміз 🔥",
+      community_address: "Балқаш көшесі, 23. Nazcake, Atyrau",
+      community_follow: "Жазылу",
+      community_message: "Хабарлама жіберу",
+      community_hl_1: "Пікірлер",
+      community_hl_2: "Біздің команда",
+      community_hl_3: "Қолда бар",
+      community_hl_4: "Ж/фабрикат",
+      community_hl_5: "Мекенжай",
 
       footer_desc: "Кез келген талғамға сай нәзік десерттер мен авторлық торттар. Атырау қаласында сүйіспеншілікпен дайындаймыз.",
       footer_nav_title: "Жылдам сілтемелер",
