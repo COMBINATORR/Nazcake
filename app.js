@@ -2919,13 +2919,9 @@ function buildOrderObject(name, phone, method, address, cart, subtotal, t) {
 
 function saveOrderToHistory(newOrder) {
   try {
-    let history = [];
-    try {
-      const saved = localStorage.getItem("nazcake_orders_history");
-      history = saved ? JSON.parse(saved) : [];
-    } catch(e) {}
+    let history = getLocalOrdersHistory();
     history.unshift(newOrder);
-    localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
+    saveOrdersHistory(history);
     // Save to Supabase
     saveOrderToSupabase(newOrder);
   } catch (e) {
@@ -3467,17 +3463,21 @@ function setupAdminPanel() {
 
 // Helper to get orders history
 // --- Orders History Helpers ---
-function getOrdersHistory() {
-  if (supabaseClient && supabaseOrders.length > 0) {
-    return supabaseOrders;
-  }
+function getLocalOrdersHistory() {
   try {
     const saved = localStorage.getItem("nazcake_orders_history");
     return saved ? JSON.parse(saved) : [];
   } catch (e) {
-    console.warn("Failed to get orders history:", e);
+    console.warn("Failed to get local orders history:", e);
     return [];
   }
+}
+
+function getOrdersHistory() {
+  if (supabaseClient && supabaseOrders.length > 0) {
+    return supabaseOrders;
+  }
+  return getLocalOrdersHistory();
 }
 
 function saveOrdersHistory(history) {
@@ -3601,15 +3601,11 @@ window.changeOrderStatus = async function(orderId, newStatus) {
       }
     }
 
-    let history = [];
-    try {
-      const saved = localStorage.getItem("nazcake_orders_history");
-      history = saved ? JSON.parse(saved) : [];
-    } catch(e) {}
+    let history = getLocalOrdersHistory();
     history = history.map(order =>
       order.id === orderId ? { ...order, status: newStatus } : order
     );
-    localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
+    saveOrdersHistory(history);
 
     renderAdminOrders();
   } catch (e) {
@@ -3705,13 +3701,9 @@ function saveKaspiOrder(name, phone, productName, qty, price) {
   };
 
   try {
-    let history = [];
-    try {
-      const saved = localStorage.getItem("nazcake_orders_history");
-      history = saved ? JSON.parse(saved) : [];
-    } catch(e) {}
+    let history = getLocalOrdersHistory();
     history.unshift(newOrder);
-    localStorage.setItem("nazcake_orders_history", JSON.stringify(history));
+    saveOrdersHistory(history);
     // Save to Supabase
     saveOrderToSupabase(newOrder);
 
