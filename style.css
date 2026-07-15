@@ -934,15 +934,50 @@ body.dark-theme .ticker-content span {
 
 .why-brand {
   display: inline-block;
-  color: var(--accent-gold);
+  color: var(--accent-gold); /* fallback if clip unsupported */
   font-weight: 900;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  background: linear-gradient(135deg, #f3e5c0 0%, #d4af37 42%, #a67c00 72%, #d4af37 100%);
+  /* Wide metallic ribbon — champagne → bright gold → deep bronze → flash white-gold */
+  background-image: linear-gradient(
+    110deg,
+    #8b6914 0%,
+    #a67c00 8%,
+    #d4af37 18%,
+    #f3e5c0 28%,
+    #fff8e7 34%,
+    #e5c158 42%,
+    #c9a227 52%,
+    #8b6914 62%,
+    #d4af37 72%,
+    #f3e5c0 82%,
+    #fff6d6 88%,
+    #b8860b 94%,
+    #8b6914 100%
+  );
+  background-size: 300% 100%;
+  background-position: 0% 50%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 1px 0 rgba(166, 124, 0, 0.15));
+  filter: drop-shadow(0 1px 1px rgba(166, 124, 0, 0.22));
+  animation: why-gold-shimmer 4.5s linear infinite;
+}
+
+@keyframes why-gold-shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 300% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .why-brand {
+    animation: none;
+    background-position: 40% 50%;
+  }
 }
 
 .why-grid {
