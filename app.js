@@ -1539,7 +1539,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupKaspiQrCheckout();
   setupThemeToggler();
   setupBestsellersCarousel();
-  setupContactsMap();
+  setupLazyHeroVideo();
+  setupContactsMapLazy();
 
   // Scroll header effect
   const header = document.querySelector(".main-header");
@@ -2471,49 +2472,82 @@ function renderAdminCatalog() {
     });
   }
 
-  const tName = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Атауы" : "Название";
-  const tPrice = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Бағасы (₸)" : "Цена (₸)";
-  const tInStock = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Қолжетімді" : "В наличии";
-  const tSave = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Сақтау" : "Сохранить";
-  const tStock = window.i18n ? window.i18n.t("admin_lbl_stock") : "Кол-во";
+  const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
+  const tName = t("admin_lbl_name", "Название");
+  const tPrice = t("admin_lbl_price", "Цена (₸)");
+  const tInStock = t("admin_lbl_instock", "В наличии");
+  const tSave = t("admin_btn_save", "Сохранить");
+  const tStock = t("admin_lbl_stock", "Кол-во");
+  const tChange = t("admin_lbl_change_image", "Изменить");
+  const tEmpty = t("admin_catalog_empty", "Товары не найдены");
+
+  if (!filtered.length) {
+    listContainer.innerHTML = `<div class="empty-cart-message admin-empty-msg">${escapeHTML(tEmpty)}</div>`;
+    return;
+  }
 
   listContainer.innerHTML = filtered.map(p => {
     const isChecked = p.inStock !== false ? "checked" : "";
     const pName = escapeHTML(p.isCustomName ? p.name : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name));
+    // No infinity: always a finite non-negative integer (default 0)
+    const stockRaw = p.stock !== undefined && p.stock !== null ? Number(p.stock) : 0;
+    const stockVal = Number.isFinite(stockRaw) && stockRaw >= 0 ? Math.floor(stockRaw) : 0;
+    const priceRaw = Number(p.price);
+    const priceVal = Number.isFinite(priceRaw) && priceRaw >= 0 ? Math.floor(priceRaw) : 0;
 
     return `
       <div class="admin-product-row" data-id="${p.id}">
-        <div class="admin-prod-img-container" onclick="triggerAdminImageUpload('${p.id}')">
-          ${p.image ? `<img src="${p.image}" alt="${pName}" class="admin-prod-img" width="50" height="50">` : `<div class="admin-prod-img empty-admin-img" style="background-color: var(--bg-tertiary);"></div>`}
+        <div class="admin-prod-img-container" onclick="triggerAdminImageUpload('${p.id}')" role="button" tabindex="0" aria-label="${escapeHTML(tChange)}">
+          ${p.image ? `<img src="${p.image}" alt="${pName}" class="admin-prod-img" width="80" height="80">` : `<div class="admin-prod-img empty-admin-img" style="background-color: var(--bg-tertiary);"></div>`}
           <div class="admin-prod-img-overlay">
-            <span>Изменить</span>
+            <span>${escapeHTML(tChange)}</span>
           </div>
           <input type="file" id="admin-file-input-${p.id}" class="admin-edit-image-file" accept="image/*" style="display: none;" onchange="handleAdminImageUpload(event, '${p.id}')">
         </div>
         <div class="admin-product-details">
-          <div class="admin-prod-form-group">
-            <label>${tName}</label>
+          <div class="admin-prod-form-group admin-field-name">
+            <label>${escapeHTML(tName)}</label>
             <input type="text" class="admin-edit-name" value="${pName}">
           </div>
-          <div class="admin-prod-form-group">
-            <label>${tStock}</label>
-            <input type="number" class="admin-edit-stock" value="${p.stock !== undefined ? p.stock : ""}" placeholder="∞">
+          <div class="admin-prod-form-group admin-field-stock">
+            <label>${escapeHTML(tStock)}</label>
+            <input type="number" class="admin-edit-stock" value="${stockVal}" min="0" step="1" inputmode="numeric">
           </div>
-          <div class="admin-prod-form-group">
-            <label>${tPrice}</label>
-            <input type="number" class="admin-edit-price" value="${p.price}" min="0">
+          <div class="admin-prod-form-group admin-field-price">
+            <label>${escapeHTML(tPrice)}</label>
+            <input type="number" class="admin-edit-price" value="${priceVal}" min="0" step="1" inputmode="numeric">
           </div>
-          <div class="admin-prod-form-group">
+          <div class="admin-prod-form-group admin-field-instock">
             <label class="admin-checkbox-label">
               <input type="checkbox" class="admin-edit-instock" ${isChecked}>
-              ${tInStock}
+              ${escapeHTML(tInStock)}
             </label>
           </div>
-          <button class="btn btn-primary btn-admin-save" onclick="saveAdminProduct('${p.id}')">${tSave}</button>
+          <button type="button" class="btn btn-primary btn-admin-save" onclick="saveAdminProduct('${p.id}')">${escapeHTML(tSave)}</button>
         </div>
       </div>
     `;
   }).join("");
+
+  // Block negative typing / paste in stock & price fields
+  listContainer.querySelectorAll(".admin-edit-stock, .admin-edit-price").forEach((input) => {
+    input.addEventListener("input", () => clampNonNegativeIntInput(input));
+    input.addEventListener("blur", () => clampNonNegativeIntInput(input, true));
+  });
+}
+
+/** Keep admin number fields as integers >= 0 (no infinity, no negatives). */
+function clampNonNegativeIntInput(input, fillEmpty = false) {
+  if (!input) return;
+  let raw = String(input.value ?? "").replace(/[^\d]/g, "");
+  if (raw === "") {
+    if (fillEmpty) input.value = "0";
+    return;
+  }
+  // strip leading zeros but keep single 0
+  raw = String(parseInt(raw, 10));
+  if (!Number.isFinite(Number(raw)) || Number(raw) < 0) raw = "0";
+  input.value = raw;
 }
 
 // Global helper functions for image uploads
@@ -2595,18 +2629,22 @@ window.saveAdminProduct = async function(id) {
   if (!row) return;
 
   const nameInput = row.querySelector(".admin-edit-name").value.trim();
-  const priceInput = parseInt(row.querySelector(".admin-edit-price").value.trim());
+  const priceField = row.querySelector(".admin-edit-price");
+  const stockField = row.querySelector(".admin-edit-stock");
+  clampNonNegativeIntInput(priceField, true);
+  clampNonNegativeIntInput(stockField, true);
+
+  const priceInput = parseInt(priceField.value, 10);
+  const stockInput = parseInt(stockField.value, 10);
   const inStockInput = row.querySelector(".admin-edit-instock").checked;
-  const stockInputVal = row.querySelector(".admin-edit-stock").value.trim();
-  const stockInput = stockInputVal === "" ? null : parseInt(stockInputVal);
   const newImageVal = row.getAttribute("data-new-image") || undefined;
 
-  if (isNaN(priceInput) || priceInput < 0) {
-    alert("Пожалуйста, введите корректную цену!");
+  if (!Number.isFinite(priceInput) || priceInput < 0) {
+    alert(window.i18n ? window.i18n.t("admin_err_price") : "Пожалуйста, введите корректную цену!");
     return;
   }
-  if (stockInput !== null && (isNaN(stockInput) || stockInput < 0)) {
-    alert("Пожалуйста, введите корректное количество!");
+  if (!Number.isFinite(stockInput) || stockInput < 0) {
+    alert(window.i18n ? window.i18n.t("admin_err_stock") : "Пожалуйста, введите корректное количество!");
     return;
   }
 
@@ -2638,7 +2676,9 @@ window.saveAdminProduct = async function(id) {
       console.log("Successfully saved product edit to Supabase:", id);
     } catch (e) {
       console.warn("Failed to save product edit to Supabase:", e.message);
-      alert("Ошибка при сохранении на сервере: " + e.message + "\nДанные будут сохранены только локально.");
+      const serverErr = window.i18n ? window.i18n.t("admin_err_server") : "Ошибка при сохранении на сервере";
+      const localOnly = window.i18n ? window.i18n.t("admin_err_local_only") : "Данные будут сохранены только локально.";
+      alert(serverErr + ": " + e.message + "\n" + localOnly);
     }
   }
 
@@ -2650,7 +2690,7 @@ window.saveAdminProduct = async function(id) {
         name: nameInput,
         price: priceInput,
         inStock: inStockInput,
-        stock: stockInput === null ? undefined : stockInput,
+        stock: stockInput,
         image: newImageVal !== undefined ? newImageVal : p.image,
         isCustomName: true
       };
@@ -3393,7 +3433,8 @@ async function switchAdminTab(btn, tabButtons, tabContents) {
   if (tab === "orders") {
     const ordersList = document.getElementById("admin-orders-list");
     if (ordersList) {
-      ordersList.innerHTML = `<div class="empty-cart-message">${window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Жүктелуде..." : "Загрузка..."}</div>`;
+      const loading = window.i18n ? window.i18n.t("admin_loading") : "Загрузка...";
+      ordersList.innerHTML = `<div class="empty-cart-message admin-empty-msg">${escapeHTML(loading)}</div>`;
     }
     await loadOrdersFromSupabase();
     renderAdminOrders();
@@ -3436,13 +3477,13 @@ function setupAdminDashboardNav(dashModal) {
 
   // Clear History
   if (clearHistoryBtn) {
-    clearHistoryBtn.addEventListener("click", () => {
+    clearHistoryBtn.addEventListener("click", async () => {
       triggerHapticFeedback();
-      const confirmText = window.i18n && window.i18n.getCurrentLanguage() === "kk"
-        ? "Барлық тапсырыстар тарихын өшіруді растайсыз ба?"
+      const confirmText = window.i18n
+        ? window.i18n.t("admin_confirm_clear")
         : "Вы уверены, что хотите очистить всю историю заказов?";
       if (confirm(confirmText)) {
-        clearOrdersHistory();
+        await clearOrdersHistory();
         renderAdminOrders();
       }
     });
@@ -3460,6 +3501,16 @@ function setupAdminPanel() {
   setupAdminSecretTriggers(logoLink, loginModal);
   setupAdminLogin(loginModal, dashModal);
   setupAdminDashboardNav(dashModal);
+
+  // Re-render admin lists when language changes (if dashboard open)
+  if (window.i18n && typeof window.i18n.onLanguageChange === "function") {
+    window.i18n.onLanguageChange(() => {
+      if (dashModal.classList.contains("open")) {
+        renderAdminCatalog();
+        renderAdminOrders();
+      }
+    });
+  }
 }
 
 // Helper to get orders history
@@ -3515,68 +3566,73 @@ function renderAdminOrders() {
   if (!listContainer) return;
 
   let history = getOrdersHistory();
+  const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
 
   if (history.length === 0) {
-    const tEmpty = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Тапсырыстар әлі жоқ" : "Заказов пока нет";
-    listContainer.innerHTML = `<div class="empty-cart-message">${tEmpty}</div>`;
+    const tEmpty = t("admin_order_empty", "Заказов пока нет");
+    listContainer.innerHTML = `<div class="empty-cart-message admin-empty-msg">${escapeHTML(tEmpty)}</div>`;
     return;
   }
 
-  const tMethod = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Алу тәсілі" : "Способ получения";
-  const tPhone = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Телефон" : "Телефон";
-  const tAddress = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Мекенжай" : "Адрес";
-  const tTotal = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Қорытынды" : "Итого";
-  const tStatus = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Мәртебе" : "Статус";
-  const tItems = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Тауарлар" : "Товары";
-
-  const statusNew = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Жаңа" : "Новый";
-  const statusWork = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Жұмыста" : "В работе";
-  const statusDone = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Орындалды" : "Выполнен";
-  const statusCancel = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Бас тартылды" : "Отменен";
+  const tMethod = t("admin_lbl_method", "Способ получения");
+  const tPhone = t("admin_lbl_phone", "Телефон");
+  const tAddress = t("admin_lbl_address", "Адрес");
+  const tTotal = t("admin_lbl_total", "Итого");
+  const tStatus = t("admin_lbl_status", "Статус");
+  const tItems = t("admin_lbl_items", "Товары");
+  const statusNew = t("admin_order_status_new", "Новый");
+  const statusWork = t("admin_order_status_work", "В работе");
+  const statusDone = t("admin_order_status_done", "Выполнен");
+  const statusCancel = t("admin_order_status_cancel", "Отменен");
+  const deliveryYandex = t("admin_delivery_yandex", "Доставка Яндекс");
+  const deliveryPickup = t("admin_delivery_pickup", "Самовывоз");
 
   listContainer.innerHTML = history.map(order => {
-    const methodText = order.deliveryMethod === "delivery"
-      ? (window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Яндекс жеткізу" : "Доставка Яндекс")
-      : (window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "Өзіңіз алып кету" : "Самовывоз");
-
-    const statusClass = "status-badge-" + order.status;
+    const methodText = order.deliveryMethod === "delivery" ? deliveryYandex : deliveryPickup;
+    const statusClass = "status-badge-" + escapeHTML(String(order.status || "new"));
+    const orderId = escapeHTML(String(order.id || ""));
+    const orderDate = escapeHTML(String(order.date || ""));
+    const customerName = escapeHTML(String(order.customerName || ""));
+    const customerPhone = escapeHTML(String(order.customerPhone || ""));
+    const address = escapeHTML(String(order.address || ""));
+    const subtotal = Number(order.subtotal) || 0;
 
     return `
-      <div class="admin-order-card" data-order-id="${order.id}">
+      <div class="admin-order-card" data-order-id="${orderId}">
         <div class="admin-order-title-row">
           <div class="admin-order-id-date">
-            <span class="admin-order-id">${order.id}</span>
-            <span class="admin-order-date">${order.date}</span>
+            <span class="admin-order-id">${orderId}</span>
+            <span class="admin-order-date">${orderDate}</span>
           </div>
           <div class="admin-order-status-control">
-            <label style="font-size: 0.75rem; font-weight:700; color:var(--text-muted); margin-right:8px; text-transform:uppercase;">${tStatus}</label>
-            <select class="admin-status-dropdown ${statusClass}" onchange="changeOrderStatus('${order.id}', this.value)">
-              <option value="new" ${order.status === 'new' ? 'selected' : ''}>${statusNew}</option>
-              <option value="work" ${order.status === 'work' ? 'selected' : ''}>${statusWork}</option>
-              <option value="done" ${order.status === 'done' ? 'selected' : ''}>${statusDone}</option>
-              <option value="cancel" ${order.status === 'cancel' ? 'selected' : ''}>${statusCancel}</option>
+            <label class="admin-status-label">${escapeHTML(tStatus)}</label>
+            <select class="admin-status-dropdown ${statusClass}" onchange="changeOrderStatus('${orderId}', this.value)">
+              <option value="new" ${order.status === "new" ? "selected" : ""}>${escapeHTML(statusNew)}</option>
+              <option value="work" ${order.status === "work" ? "selected" : ""}>${escapeHTML(statusWork)}</option>
+              <option value="done" ${order.status === "done" ? "selected" : ""}>${escapeHTML(statusDone)}</option>
+              <option value="cancel" ${order.status === "cancel" ? "selected" : ""}>${escapeHTML(statusCancel)}</option>
             </select>
           </div>
         </div>
 
         <div class="admin-order-grid">
           <div class="admin-order-details-col">
-            <p>👤 <strong>${order.customerName}</strong></p>
-            <p>📞 <strong>${tPhone}:</strong> <a href="tel:${order.customerPhone}">${order.customerPhone}</a></p>
-            <p>📦 <strong>${tMethod}:</strong> ${methodText}</p>
-            ${order.deliveryMethod === 'delivery' ? `<p>📍 <strong>${tAddress}:</strong> ${order.address}</p>` : ''}
+            <p>👤 <strong>${customerName}</strong></p>
+            <p>📞 <strong>${escapeHTML(tPhone)}:</strong> <a href="tel:${customerPhone}">${customerPhone}</a></p>
+            <p>📦 <strong>${escapeHTML(tMethod)}:</strong> ${escapeHTML(methodText)}</p>
+            ${order.deliveryMethod === "delivery" ? `<p>📍 <strong>${escapeHTML(tAddress)}:</strong> ${address}</p>` : ""}
           </div>
           <div class="admin-order-items-col">
-            <div class="admin-order-items-title">${tItems}</div>
-            ${order.items.map(item => `
+            <div class="admin-order-items-title">${escapeHTML(tItems)}</div>
+            ${(order.items || []).map(item => `
               <div class="admin-order-item-row">
-                <span>${item.name} x ${item.qty}</span>
-                <span>${(item.price * item.qty).toLocaleString()} ₸</span>
+                <span>${escapeHTML(String(item.name || ""))} x ${escapeHTML(String(item.qty ?? ""))}</span>
+                <span>${((Number(item.price) || 0) * (Number(item.qty) || 0)).toLocaleString()} ₸</span>
               </div>
             `).join("")}
             <div class="admin-order-total">
-              <span>${tTotal}:</span>
-              <span>${order.subtotal.toLocaleString()} ₸</span>
+              <span>${escapeHTML(tTotal)}:</span>
+              <span>${subtotal.toLocaleString()} ₸</span>
             </div>
           </div>
         </div>
@@ -3973,6 +4029,132 @@ function setupThemeToggler() {
 }
 
 /* ============================================================
+   P0 performance — lazy hero video + lazy Leaflet map
+   ============================================================ */
+
+/** Defer hero MP4 until after first paint / preloader (poster shows immediately). */
+function setupLazyHeroVideo() {
+  const video = document.querySelector("video.hero-video-bg[data-lazy-video]");
+  if (!video || video.dataset.videoLoaded === "1") return;
+
+  const activateSources = () => {
+    if (video.dataset.videoLoaded === "1") return;
+    video.dataset.videoLoaded = "1";
+    video.classList.add("is-loading");
+
+    video.querySelectorAll("source[data-src]").forEach((source) => {
+      source.setAttribute("src", source.getAttribute("data-src"));
+      source.removeAttribute("data-src");
+    });
+
+    const tryPlay = () => {
+      const p = video.play();
+      if (p && typeof p.catch === "function") p.catch(() => {});
+    };
+
+    video.addEventListener(
+      "canplay",
+      () => {
+        video.classList.remove("is-loading");
+        video.classList.add("is-ready");
+        tryPlay();
+      },
+      { once: true }
+    );
+
+    try {
+      video.load();
+    } catch (_) {
+      /* ignore */
+    }
+    tryPlay();
+  };
+
+  const schedule = () => {
+    if ("requestIdleCallback" in window) {
+      requestIdleCallback(() => activateSources(), { timeout: 2200 });
+    } else {
+      setTimeout(activateSources, 900);
+    }
+  };
+
+  // Wait for preloader to finish so video doesn't compete with first paint
+  if (document.body.classList.contains("preloader-active")) {
+    const mo = new MutationObserver(() => {
+      if (!document.body.classList.contains("preloader-active")) {
+        mo.disconnect();
+        schedule();
+      }
+    });
+    mo.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+    setTimeout(() => {
+      mo.disconnect();
+      schedule();
+    }, 4500);
+  } else {
+    // next frame then idle
+    requestAnimationFrame(() => schedule());
+  }
+}
+
+const LEAFLET_CSS =
+  "https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css";
+const LEAFLET_JS =
+  "https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js";
+
+function loadStylesheetOnce(href) {
+  return new Promise((resolve, reject) => {
+    const existing = document.querySelector(`link[data-lazy-href="${href}"], link[href="${href}"]`);
+    if (existing) {
+      if (existing.sheet || existing.dataset.loaded === "1") resolve();
+      else existing.addEventListener("load", () => resolve(), { once: true });
+      return;
+    }
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = href;
+    link.dataset.lazyHref = href;
+    link.onload = () => {
+      link.dataset.loaded = "1";
+      resolve();
+    };
+    link.onerror = () => reject(new Error("Failed to load CSS: " + href));
+    document.head.appendChild(link);
+  });
+}
+
+function loadScriptOnce(src) {
+  return new Promise((resolve, reject) => {
+    if (typeof L !== "undefined") {
+      resolve();
+      return;
+    }
+    const existing = document.querySelector(`script[data-lazy-src="${src}"]`);
+    if (existing) {
+      existing.addEventListener("load", () => resolve(), { once: true });
+      existing.addEventListener("error", () => reject(new Error("Failed to load JS: " + src)), { once: true });
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = src;
+    script.async = true;
+    script.dataset.lazySrc = src;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("Failed to load JS: " + src));
+    document.body.appendChild(script);
+  });
+}
+
+async function ensureLeafletLoaded() {
+  if (typeof L !== "undefined") return;
+  await loadStylesheetOnce(LEAFLET_CSS);
+  await loadScriptOnce(LEAFLET_JS);
+  if (typeof L === "undefined") {
+    throw new Error("Leaflet global L not available after load");
+  }
+}
+
+/* ============================================================
    Contacts map — Leaflet + Carto (SVTL-style custom marker)
    ============================================================ */
 const NAZCAKE_MAP_LAT = 47.124524;
@@ -3981,9 +4163,50 @@ const NAZCAKE_MAP_LNG = 51.939947;
 let contactsMapInstance = null;
 let contactsMapMarker = null;
 let contactsMapTiles = null;
+let contactsMapLoading = false;
 
-function setupContactsMap() {
+/** Observe #contacts and load Leaflet only when near viewport. */
+function setupContactsMapLazy() {
   const el = document.getElementById("contacts-map");
+  const section = document.getElementById("contacts") || el;
+  if (!el || !section) return;
+
+  const boot = () => {
+    if (contactsMapInstance || contactsMapLoading) return;
+    contactsMapLoading = true;
+    ensureLeafletLoaded()
+      .then(() => {
+        initContactsMap(el);
+      })
+      .catch((err) => {
+        console.error("Contacts map lazy load failed:", err);
+        contactsMapLoading = false;
+      });
+  };
+
+  if (!("IntersectionObserver" in window)) {
+    setTimeout(boot, 2800);
+    return;
+  }
+
+  const io = new IntersectionObserver(
+    (entries) => {
+      if (entries.some((e) => e.isIntersecting)) {
+        io.disconnect();
+        boot();
+      }
+    },
+    { rootMargin: "280px 0px", threshold: 0.01 }
+  );
+  io.observe(section);
+}
+
+/** @deprecated use setupContactsMapLazy — kept name alias for clarity */
+function setupContactsMap() {
+  setupContactsMapLazy();
+}
+
+function initContactsMap(el) {
   if (!el || typeof L === "undefined") return;
   if (contactsMapInstance) return;
 
@@ -4043,6 +4266,7 @@ function setupContactsMap() {
     }
   } catch (err) {
     console.error("Contacts map init failed:", err);
+    contactsMapLoading = false;
   }
 }
 
