@@ -1606,6 +1606,7 @@ function getProductDesc(p) {
 
 // Init App
 document.addEventListener("DOMContentLoaded", async () => {
+  setupSiteDialog();
   await loadProducts();
   renderBestsellers();
   renderCatalog("all");
@@ -2011,7 +2012,7 @@ function openProductPreview(id) {
       const tMaxStockAlert = window.i18n && window.i18n.getCurrentLanguage() === "kk"
         ? `Кешіріңіз, бұл тауардан қоймада тек ${maxS} дана бар.`
         : `Извините, доступно только ${maxS} шт. этого товара.`;
-      alert(tMaxStockAlert);
+      showAlert(tMaxStockAlert);
       return;
     }
     qty++;
@@ -2051,7 +2052,7 @@ function addToCart(productOrId, qty, selectedSize, selectedPrice) {
     const tMaxStockAlert = window.i18n && window.i18n.getCurrentLanguage() === "kk"
       ? `Кешіріңіз, бұл тауардан қоймада тек ${maxS} дана бар.`
       : `Извините, доступно только ${maxS} шт. этого товара.`;
-    alert(tMaxStockAlert);
+    showAlert(tMaxStockAlert);
     return;
   }
 
@@ -2084,7 +2085,7 @@ function changeCartItemQty(cartItemId, newQty) {
       const tMaxStockAlert = window.i18n && window.i18n.getCurrentLanguage() === "kk"
         ? `Кешіріңіз, бұл тауардан қоймада тек ${maxS} дана бар.`
         : `Извините, доступно только ${maxS} шт. этого товара.`;
-      alert(tMaxStockAlert);
+      showAlert(tMaxStockAlert);
       return;
     }
     item.qty = newQty;
@@ -2757,15 +2758,15 @@ window.saveAdminProduct = async function(id) {
   const newImageVal = row.getAttribute("data-new-image") || undefined;
 
   if (!nameInput) {
-    alert(window.i18n ? window.i18n.t("admin_err_name") : "Введите название товара!");
+    await showAlert(window.i18n ? window.i18n.t("admin_err_name") : "Введите название товара!");
     return;
   }
   if (!Number.isFinite(priceInput) || priceInput < 0) {
-    alert(window.i18n ? window.i18n.t("admin_err_price") : "Пожалуйста, введите корректную цену!");
+    await showAlert(window.i18n ? window.i18n.t("admin_err_price") : "Пожалуйста, введите корректную цену!");
     return;
   }
   if (stockRaw !== "" && (!Number.isFinite(stockInput) || stockInput < 0)) {
-    alert(window.i18n ? window.i18n.t("admin_err_stock") : "Пожалуйста, введите корректное количество!");
+    await showAlert(window.i18n ? window.i18n.t("admin_err_stock") : "Пожалуйста, введите корректное количество!");
     return;
   }
 
@@ -2834,7 +2835,7 @@ window.saveAdminProduct = async function(id) {
   if (!localOk && !serverSaved) {
     saveBtn.disabled = false;
     saveBtn.textContent = origText;
-    alert(window.i18n ? window.i18n.t("admin_err_local_storage") : "Не удалось сохранить изменения (память браузера переполнена).");
+    await showAlert(window.i18n ? window.i18n.t("admin_err_local_storage") : "Не удалось сохранить изменения (память браузера переполнена).");
     return;
   }
 
@@ -3019,6 +3020,135 @@ function escapeHTML(str) {
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
+}
+
+/** Custom dialog — replaces native alert() / confirm() everywhere. */
+let siteDialogResolver = null;
+
+function getSiteDialogEls() {
+  return {
+    overlay: document.getElementById("site-dialog-modal"),
+    titleEl: document.getElementById("site-dialog-title"),
+    msgEl: document.getElementById("site-dialog-message"),
+    okBtn: document.getElementById("site-dialog-ok"),
+    cancelBtn: document.getElementById("site-dialog-cancel"),
+    iconWrap: document.getElementById("site-dialog-icon"),
+  };
+}
+
+function closeSiteDialog(result) {
+  const { overlay } = getSiteDialogEls();
+  if (overlay) {
+    overlay.classList.remove("open");
+    // keep body lock count correct if openModal wasn't used
+    if (document.body.classList.contains("modal-open") && typeof unlockBodyScroll === "function") {
+      // only unlock if we locked via openModal for this dialog
+    }
+  }
+  if (typeof unlockBodyScroll === "function" && overlay && overlay.dataset.scrollLocked === "1") {
+    unlockBodyScroll();
+    delete overlay.dataset.scrollLocked;
+  }
+  const resolve = siteDialogResolver;
+  siteDialogResolver = null;
+  if (resolve) resolve(result);
+}
+
+/**
+ * @param {{ message: string, title?: string, confirm?: boolean, danger?: boolean }} opts
+ * @returns {Promise<boolean>}
+ */
+function showSiteDialog(opts = {}) {
+  const message = opts.message || "";
+  const confirmMode = !!opts.confirm;
+  const danger = !!opts.danger;
+  const { overlay, titleEl, msgEl, okBtn, cancelBtn, iconWrap } = getSiteDialogEls();
+
+  if (!overlay || !msgEl || !okBtn) {
+    // Fallback only if markup missing
+    if (confirmMode) return Promise.resolve(window.confirm(message));
+    window.alert(message);
+    return Promise.resolve(true);
+  }
+
+  // Close previous pending dialog
+  if (siteDialogResolver) {
+    siteDialogResolver(false);
+    siteDialogResolver = null;
+  }
+
+  const t = (key, fb) => (window.i18n ? window.i18n.t(key) : fb);
+  const title =
+    opts.title ||
+    (confirmMode
+      ? t("dialog_title_confirm", "Подтверждение")
+      : t("dialog_title_notice", "Внимание"));
+
+  if (titleEl) titleEl.textContent = title;
+  msgEl.textContent = message;
+
+  if (cancelBtn) {
+    cancelBtn.classList.toggle("hidden", !confirmMode);
+    cancelBtn.textContent = t("dialog_btn_cancel", "Отмена");
+  }
+  okBtn.textContent = confirmMode
+    ? t("dialog_btn_confirm", "Подтвердить")
+    : t("dialog_btn_ok", "Понятно");
+
+  if (iconWrap) {
+    iconWrap.classList.toggle("is-warn", danger || confirmMode);
+    const info = iconWrap.querySelector(".site-dialog-icon-info");
+    const warn = iconWrap.querySelector(".site-dialog-icon-warn");
+    if (info) info.classList.toggle("hidden", danger || confirmMode);
+    if (warn) warn.classList.toggle("hidden", !(danger || confirmMode));
+  }
+
+  return new Promise((resolve) => {
+    siteDialogResolver = resolve;
+    if (typeof lockBodyScroll === "function" && !overlay.classList.contains("open")) {
+      lockBodyScroll();
+      overlay.dataset.scrollLocked = "1";
+    }
+    overlay.classList.add("open");
+    // Focus primary action for a11y
+    setTimeout(() => okBtn.focus(), 30);
+  });
+}
+
+function showAlert(message, title) {
+  return showSiteDialog({ message, title, confirm: false });
+}
+
+function showConfirm(message, title) {
+  return showSiteDialog({ message, title, confirm: true, danger: true });
+}
+
+function setupSiteDialog() {
+  const { overlay, okBtn, cancelBtn } = getSiteDialogEls();
+  if (!overlay) return;
+
+  if (okBtn) {
+    okBtn.addEventListener("click", () => {
+      triggerHapticFeedback();
+      closeSiteDialog(true);
+    });
+  }
+  if (cancelBtn) {
+    cancelBtn.addEventListener("click", () => {
+      triggerHapticFeedback();
+      closeSiteDialog(false);
+    });
+  }
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) {
+      closeSiteDialog(false);
+    }
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && overlay.classList.contains("open")) {
+      closeSiteDialog(false);
+    }
+  });
 }
 
 /** Working hours for pickup slots (local time). Last slot 19:30. */
@@ -3237,23 +3367,40 @@ async function handleCheckoutSubmit(e) {
   const t = window.i18n ? window.i18n.t.bind(window.i18n) : (k) => k;
 
   if (cart.length === 0) {
-    alert(window.i18n ? t("cart_err_empty_cart") : "Ваша корзина пуста. Невозможно отправить заказ!");
+    await showAlert(window.i18n ? t("cart_err_empty_cart") : "Ваша корзина пуста. Невозможно отправить заказ!");
     return;
   }
 
   let preferredTime = "";
   if (method === "pickup") {
     if (!pickupDate || !pickupTime) {
-      alert(window.i18n ? t("cart_err_pickup_time") : "Выберите дату и время самовывоза.");
+      await showAlert(window.i18n ? t("cart_err_pickup_time") : "Выберите дату и время самовывоза.");
       return;
     }
     const validSlots = generatePickupTimeSlots(pickupDate);
     if (!validSlots.includes(pickupTime)) {
-      alert(window.i18n ? t("cart_err_pickup_slots") : "На выбранную дату нет свободных слотов. Выберите другой день.");
+      await showAlert(window.i18n ? t("cart_err_pickup_slots") : "На выбранную дату нет свободных слотов. Выберите другой день.");
       refreshPickupTimeSlots(false);
       return;
     }
     preferredTime = formatPickupDisplay(pickupDate, pickupTime);
+  }
+
+  // Custom validation (form has novalidate — no native browser bubbles)
+  if (!name) {
+    await showAlert(window.i18n ? t("cart_err_name") : "Пожалуйста, введите ваше имя.");
+    document.getElementById("checkout-name")?.focus();
+    return;
+  }
+  if (!phone || phone.replace(/\D/g, "").length < 11) {
+    await showAlert(window.i18n ? t("cart_err_phone") : "Пожалуйста, введите корректный номер телефона.");
+    document.getElementById("checkout-phone")?.focus();
+    return;
+  }
+  if (method === "delivery" && !address) {
+    await showAlert(window.i18n ? t("cart_err_address") : "Пожалуйста, укажите адрес доставки.");
+    document.getElementById("checkout-address")?.focus();
+    return;
   }
 
   // Save customer data to localStorage
@@ -3826,7 +3973,8 @@ function setupAdminDashboardNav(dashModal) {
       const confirmText = window.i18n
         ? window.i18n.t("admin_confirm_clear")
         : "Вы уверены, что хотите очистить всю историю заказов?";
-      if (confirm(confirmText)) {
+      const ok = await showConfirm(confirmText);
+      if (ok) {
         await clearOrdersHistory();
         renderAdminOrders();
       }
@@ -4270,7 +4418,7 @@ function handleQuickKaspiClick() {
   }
 }
 
-function handleKaspiGenerateClick() {
+async function handleKaspiGenerateClick() {
   triggerHapticFeedback();
   const nameInput = document.getElementById("kaspi-name");
   const phoneInput = document.getElementById("kaspi-phone");
@@ -4278,11 +4426,13 @@ function handleKaspiGenerateClick() {
   const phoneVal = phoneInput ? phoneInput.value.trim() : "";
 
   if (!nameVal) {
-    alert(window.i18n ? window.i18n.t("cart_err_empty_cart") : "Пожалуйста, введите ваше имя.");
+    await showAlert(window.i18n ? window.i18n.t("kaspi_err_name") : "Пожалуйста, введите ваше имя.");
+    nameInput?.focus();
     return;
   }
   if (phoneVal.length < 17) {
-    alert(window.i18n ? window.i18n.t("cart_err_empty_cart") : "Пожалуйста, введите корректный номер телефона.");
+    await showAlert(window.i18n ? window.i18n.t("kaspi_err_phone") : "Пожалуйста, введите корректный номер телефона.");
+    phoneInput?.focus();
     return;
   }
 

@@ -3642,6 +3642,77 @@ body.dark-theme .modal-accordion {
   margin-bottom: 25px;
 }
 
+/* Custom alert / confirm dialog (no native browser windows) */
+.site-dialog-overlay {
+  z-index: 1200;
+  padding: 20px;
+}
+
+.site-dialog-container {
+  max-width: 400px;
+  width: min(92vw, 400px);
+  padding: 28px 24px 22px;
+  text-align: center;
+  border-radius: 20px;
+}
+
+.site-dialog-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(194, 143, 26, 0.12);
+  color: var(--accent-gold, #c28f1a);
+}
+
+.site-dialog-icon.is-warn {
+  background: rgba(192, 36, 52, 0.1);
+  color: #c02434;
+}
+
+.site-dialog-icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.site-dialog-title {
+  font-family: var(--font-title);
+  font-size: 1.25rem;
+  margin: 0 0 10px;
+  color: var(--text-primary);
+}
+
+.site-dialog-message {
+  margin: 0 0 22px;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.site-dialog-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.site-dialog-actions .btn {
+  min-width: 120px;
+  min-height: 44px;
+}
+
+body.dark-theme .site-dialog-icon {
+  background: rgba(194, 143, 26, 0.18);
+}
+
+body.dark-theme .site-dialog-icon.is-warn {
+  background: rgba(192, 36, 52, 0.2);
+}
+
 /* Cart Sidebar Styling */
 .cart-sidebar {
   position: fixed;
