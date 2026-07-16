@@ -3172,15 +3172,45 @@ function triggerHapticFeedback() {
   }
 }
 
+/** Body scroll lock while any modal/sidebar is open (esp. mobile iOS). */
+let bodyScrollLockCount = 0;
+let bodyScrollLockY = 0;
+
+function lockBodyScroll() {
+  if (bodyScrollLockCount === 0) {
+    bodyScrollLockY = window.scrollY || document.documentElement.scrollTop || 0;
+    document.documentElement.classList.add("modal-open");
+    document.body.classList.add("modal-open");
+    document.body.style.top = `-${bodyScrollLockY}px`;
+  }
+  bodyScrollLockCount += 1;
+}
+
+function unlockBodyScroll() {
+  if (bodyScrollLockCount === 0) return;
+  bodyScrollLockCount -= 1;
+  if (bodyScrollLockCount > 0) return;
+  document.documentElement.classList.remove("modal-open");
+  document.body.classList.remove("modal-open");
+  document.body.style.top = "";
+  window.scrollTo(0, bodyScrollLockY);
+}
+
 function openModal(modal, overlay) {
+  const wasOpen = !!(modal && modal.classList.contains("open"));
   if (modal) modal.classList.add("open");
   if (overlay) overlay.classList.add("open");
+  // Lock once per open call (overlay is usually the same layer or a pair)
+  if (!wasOpen) lockBodyScroll();
   triggerHapticFeedback();
 }
 
 function closeModal(modal, overlay) {
+  const wasOpen = !!(modal && modal.classList.contains("open")) ||
+    !!(overlay && overlay.classList.contains("open"));
   if (modal) modal.classList.remove("open");
   if (overlay) overlay.classList.remove("open");
+  if (wasOpen) unlockBodyScroll();
   triggerHapticFeedback();
 }
 
@@ -3980,9 +4010,10 @@ function closeKaspiModal() {
   const kaspiModal = document.getElementById("kaspi-qr-modal");
   if (!kaspiModal) return;
   triggerHapticFeedback();
+  const wasOpen = kaspiModal.classList.contains("open") || kaspiModal.style.display === "flex";
   kaspiModal.style.display = "none";
   kaspiModal.classList.remove("open");
-  document.body.classList.remove("modal-open");
+  if (wasOpen) unlockBodyScroll();
 }
 
 function handleQuickKaspiClick() {
@@ -3991,11 +4022,13 @@ function handleQuickKaspiClick() {
 
   triggerHapticFeedback();
 
-  // Close preview modal
+  // Close preview modal (also unlocks its scroll lock)
   const previewModal = document.getElementById("preview-modal");
+  if (previewModal && previewModal.classList.contains("open")) {
+    closeModal(previewModal);
+  }
   if (previewModal) {
-    previewModal.style.display = "none";
-    previewModal.classList.remove("open");
+    previewModal.style.display = "";
   }
 
   // Open Kaspi QR Modal
@@ -4003,7 +4036,7 @@ function handleQuickKaspiClick() {
   setTimeout(() => {
     kaspiModal.classList.add("open");
   }, 10);
-  document.body.classList.add("modal-open");
+  lockBodyScroll();
 
   // Reset steps
   const stepForm = document.getElementById("kaspi-form-step");

@@ -3249,6 +3249,32 @@ body.dark-theme .info-link:hover {
   color: var(--accent-gold-light);
 }
 
+/* Lock page scroll while any modal/sidebar is open (mobile iOS friendly) */
+html.modal-open,
+body.modal-open {
+  overflow: hidden !important;
+  overscroll-behavior: none;
+}
+
+body.modal-open {
+  position: fixed;
+  width: 100%;
+  left: 0;
+  right: 0;
+}
+
+/* Nested panels may still scroll their own content */
+body.modal-open .modal-container,
+body.modal-open .cart-sidebar,
+body.modal-open .cart-items-list,
+body.modal-open .admin-dashboard-container,
+body.modal-open .admin-catalog-list,
+body.modal-open .admin-orders-list {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+}
+
 /* Modal Styling */
 .modal-overlay {
   position: fixed;
@@ -3256,6 +3282,7 @@ body.dark-theme .info-link:hover {
   left: 0;
   width: 100%;
   height: 100%;
+  height: 100dvh;
   background-color: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
@@ -3266,11 +3293,18 @@ body.dark-theme .info-link:hover {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .modal-overlay.open {
   opacity: 1;
   pointer-events: auto;
+  touch-action: none; /* dimmed backdrop: no scroll-through to page */
+}
+
+.modal-overlay.open .modal-container {
+  touch-action: pan-y; /* product card content can scroll */
 }
 
 .modal-container {
