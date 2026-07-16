@@ -3055,8 +3055,15 @@ function closeSiteDialog(result) {
 }
 
 /**
- * @param {{ message: string, title?: string, confirm?: boolean, danger?: boolean }} opts
- * @returns {Promise<boolean>}
+ * @param {{
+ *   message: string,
+ *   title?: string,
+ *   confirm?: boolean,
+ *   danger?: boolean,
+ *   okLabel?: string,
+ *   cancelLabel?: string,
+ * }} opts
+ * @returns {Promise<boolean>} true if primary (OK) pressed
  */
 function showSiteDialog(opts = {}) {
   const message = opts.message || "";
@@ -3089,18 +3096,21 @@ function showSiteDialog(opts = {}) {
 
   if (cancelBtn) {
     cancelBtn.classList.toggle("hidden", !confirmMode);
-    cancelBtn.textContent = t("dialog_btn_cancel", "Отмена");
+    cancelBtn.textContent =
+      opts.cancelLabel || t("dialog_btn_cancel", "Отмена");
   }
-  okBtn.textContent = confirmMode
-    ? t("dialog_btn_confirm", "Подтвердить")
-    : t("dialog_btn_ok", "Понятно");
+  okBtn.textContent =
+    opts.okLabel ||
+    (confirmMode
+      ? t("dialog_btn_confirm", "Подтвердить")
+      : t("dialog_btn_ok", "Понятно"));
 
   if (iconWrap) {
-    iconWrap.classList.toggle("is-warn", danger || confirmMode);
+    iconWrap.classList.toggle("is-warn", !!danger);
     const info = iconWrap.querySelector(".site-dialog-icon-info");
     const warn = iconWrap.querySelector(".site-dialog-icon-warn");
-    if (info) info.classList.toggle("hidden", danger || confirmMode);
-    if (warn) warn.classList.toggle("hidden", !(danger || confirmMode));
+    if (info) info.classList.toggle("hidden", !!danger);
+    if (warn) warn.classList.toggle("hidden", !danger);
   }
 
   return new Promise((resolve) => {
@@ -3367,7 +3377,26 @@ async function handleCheckoutSubmit(e) {
   const t = window.i18n ? window.i18n.t.bind(window.i18n) : (k) => k;
 
   if (cart.length === 0) {
-    await showAlert(window.i18n ? t("cart_err_empty_cart") : "Ваша корзина пуста. Невозможно отправить заказ!");
+    const goCatalog = await showSiteDialog({
+      title: window.i18n ? t("dialog_title_notice") : "Внимание",
+      message: window.i18n
+        ? t("cart_err_empty_cart")
+        : "Ваша корзина пуста. Невозможно отправить заказ!",
+      confirm: true,
+      danger: false,
+      okLabel: window.i18n ? t("dialog_btn_to_catalog") : "В каталог",
+      cancelLabel: window.i18n ? t("dialog_btn_close") : "Закрыть",
+    });
+    if (goCatalog) {
+      // Close cart and scroll to product catalog
+      if (typeof cartSidebar !== "undefined" && cartSidebar) {
+        closeModal(cartSidebar, cartOverlay);
+      }
+      const catalogEl = document.getElementById("catalog");
+      if (catalogEl) {
+        catalogEl.scrollIntoView({ behavior: "smooth" });
+      }
+    }
     return;
   }
 
