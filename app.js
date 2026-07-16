@@ -3215,24 +3215,56 @@ function setupModal(modal, openBtn, closeBtn, overlay, extraCloseElements = []) 
 }
 let detectedCity = "atyrau";
 
+/**
+ * Resolve city via free IP geo APIs (CORS-friendly).
+ * ipapi.co is blocked from browsers (CORS + 403) — do not use it.
+ * Failures fall back to Atyrau silently (no red console spam).
+ */
+async function fetchCityFromIpProviders() {
+  const providers = [
+    {
+      url: "https://get.geojs.io/v1/ip/geo.json",
+      city: (data) => data && data.city,
+    },
+    {
+      url: "https://ipwho.is/",
+      city: (data) => (data && data.success !== false ? data.city : null),
+    },
+  ];
+
+  for (const provider of providers) {
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 4500);
+      const response = await fetch(provider.url, {
+        signal: controller.signal,
+        headers: { Accept: "application/json" },
+        mode: "cors",
+        cache: "no-store",
+      });
+      clearTimeout(timer);
+      if (!response.ok) continue;
+      const data = await response.json();
+      const city = provider.city(data);
+      if (city && typeof city === "string" && city.trim()) {
+        return city.toLowerCase().trim();
+      }
+    } catch {
+      // try next provider
+    }
+  }
+  return null;
+}
+
 async function setupGeolocation() {
   const widget = document.getElementById("location-widget");
   const drawerWidget = document.getElementById("drawer-location-widget");
 
   if (!widget || !drawerWidget) return;
 
-  try {
-    const response = await fetch("https://ipapi.co/json/");
-    if (!response.ok) throw new Error("Geolocation failed");
-    const data = await response.json();
-
-    if (data && data.city) {
-      detectedCity = data.city.toLowerCase().trim();
-    }
-  } catch (err) {
-    console.warn("Could not determine user location via IP:", err);
-    detectedCity = "atyrau"; // Default fallback
-  }
+  detectedCity = "atyrau";
+  const city = await fetchCityFromIpProviders();
+  if (city) detectedCity = city;
 
   updateLocationUi();
 }
@@ -4250,6 +4282,13 @@ function initContactsMap(el) {
     setTimeout(refreshSize, 120);
     setTimeout(refreshSize, 600);
     window.addEventListener("resize", refreshSize);
+
+    // Keep tiles sharp when map stretches to match info cards height
+    if (typeof ResizeObserver !== "undefined") {
+      const wrap = el.closest(".contacts-map-wrapper") || el;
+      const ro = new ResizeObserver(() => refreshSize());
+      ro.observe(wrap);
+    }
 
     if ("IntersectionObserver" in window) {
       const io = new IntersectionObserver(

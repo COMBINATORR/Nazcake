@@ -277,6 +277,11 @@
       footer_nav_title: "Быстрые ссылки",
       footer_social_title: "Мы в соцсетях",
       footer_social_desc: "Следите за нашими акциями, новинками и процессом выпечки в реальном времени!",
+      footer_payments_title: "Способы оплаты",
+      footer_pay_card: "Оплата картой",
+      footer_pay_cash: "Наличный расчёт",
+      footer_pay_transfer: "Перевод с карты",
+      footer_pay_qr: "Оплата по QR-коду",
       footer_copyright: "© 2026 Кондитерский дом Nazcake. Все права защищены. Разработано с заботой о вкусе.",
 
       // Dynamic Badges
@@ -1033,6 +1038,11 @@
       footer_nav_title: "Жылдам сілтемелер",
       footer_social_title: "Біз әлеуметтік желілерде",
       footer_social_desc: "Біздің акцияларымызды, жаңалықтарымызды және пісіру барысын тікелей эфирде бақылаңыз!",
+      footer_payments_title: "Төлем тәсілдері",
+      footer_pay_card: "Картамен төлеу",
+      footer_pay_cash: "Қолма-қол есептесу",
+      footer_pay_transfer: "Картадан аудару",
+      footer_pay_qr: "QR-кодпен төлеу",
       footer_copyright: "© 2026 Nazcake кондитерлік үйі. Барлық құқықтар қорғалған. Дәмге деген қамқорлықпен жасалған.",
 
       // Dynamic Badges

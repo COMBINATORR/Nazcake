@@ -1885,14 +1885,14 @@ body.dark-theme .ig-grid {
   display: none !important;
 }
 
-/* While scrolling: thin gold thumb only, transparent track */
+/* While scrolling: light = gold thumb, dark = Rolex green */
 #bestsellers-grid.is-scrolling {
   scrollbar-width: thin !important;
-  scrollbar-color: rgba(194, 143, 26, 0.55) transparent !important;
+  scrollbar-color: var(--accent-gold) transparent !important;
 }
 
 #bestsellers-grid.is-scrolling::-webkit-scrollbar {
-  height: 4px !important;
+  height: 5px !important;
   display: block !important;
   background: transparent !important;
 }
@@ -1904,7 +1904,13 @@ body.dark-theme .ig-grid {
 }
 
 #bestsellers-grid.is-scrolling::-webkit-scrollbar-thumb {
-  background-color: rgba(194, 143, 26, 0.55) !important;
+  background-color: var(--accent-gold) !important;
+  background-image: linear-gradient(
+    90deg,
+    #c28f1a 0%,
+    #e8c45a 45%,
+    #c28f1a 100%
+  ) !important;
   border: none !important;
   border-radius: 999px !important;
 }
@@ -1915,12 +1921,20 @@ body.dark-theme .ig-grid {
   height: 0 !important;
 }
 
+/* Dark theme: same deep green as site base (#004225 family) */
 body.dark-theme #bestsellers-grid.is-scrolling {
-  scrollbar-color: rgba(246, 224, 115, 0.45) transparent !important;
+  scrollbar-color: #004225 transparent !important;
 }
 
 body.dark-theme #bestsellers-grid.is-scrolling::-webkit-scrollbar-thumb {
-  background-color: rgba(246, 224, 115, 0.45) !important;
+  background-color: #004225 !important;
+  background-image: linear-gradient(
+    90deg,
+    #00331c 0%,
+    #004225 40%,
+    #0a4d2e 100%
+  ) !important;
+  box-shadow: 0 0 0 1px rgba(194, 143, 26, 0.15);
 }
 
 #bestsellers-grid .product-card {
@@ -2035,26 +2049,37 @@ body.dark-theme #bestsellers-grid.is-scrolling::-webkit-scrollbar-thumb {
   }
 }
 
-/* Arrows hidden until hover / active scroll */
+/* Large chevrons only — no circles, stay inside the carousel rail */
 .bestsellers-arrow {
   position: absolute;
-  top: 50%;
+  top: 42%;
   transform: translateY(-50%);
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  border: 1px solid var(--border-color);
-  background-color: var(--bg-primary);
-  color: var(--accent-chocolate);
+  width: 52px;
+  height: 72px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--accent-gold);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  z-index: 10;
+  box-shadow: none;
+  z-index: 12;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.2s, color 0.2s, box-shadow 0.2s;
+  transition: opacity 0.22s ease, transform 0.2s ease, color 0.2s ease, filter 0.2s ease;
+  /* Readable over product photos */
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 10px rgba(255, 255, 255, 0.35));
+}
+
+.bestsellers-arrow svg {
+  width: 40px;
+  height: 40px;
+  display: block;
+  overflow: visible;
 }
 
 .bestsellers-carousel-wrapper:hover .bestsellers-arrow,
@@ -2065,24 +2090,30 @@ body.dark-theme #bestsellers-grid.is-scrolling::-webkit-scrollbar-thumb {
 }
 
 body.dark-theme .bestsellers-arrow {
-  background-color: var(--bg-secondary);
-  border-color: var(--border-color);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  color: #f6e073;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 8px rgba(0, 66, 37, 0.5));
 }
 
 .bestsellers-arrow:hover {
-  transform: translateY(-50%) scale(1.1);
-  border-color: var(--accent-gold);
-  color: var(--accent-gold);
-  box-shadow: 0 0 15px rgba(229, 193, 88, 0.2);
+  transform: translateY(-50%) scale(1.12);
+  color: #e8c45a;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4)) drop-shadow(0 0 12px rgba(194, 143, 26, 0.55));
 }
 
+body.dark-theme .bestsellers-arrow:hover {
+  color: #fff0a8;
+}
+
+/* Inset so arrows never spill outside the section rail */
 .bestsellers-arrow.prev-btn {
-  left: -24px;
+  left: 4px;
 }
 
 .bestsellers-arrow.next-btn {
-  right: -24px;
+  right: 4px;
 }
 
 @media (max-width: 768px) {
@@ -2650,6 +2681,8 @@ body.dark-theme .bestsellers-arrow {
   grid-template-columns: 1.1fr 0.9fr;
   gap: 50px;
   margin-top: 40px;
+  /* map and info column share the same bottom edge */
+  align-items: stretch;
 }
 
 .contacts-map-wrapper {
@@ -2657,16 +2690,22 @@ body.dark-theme .bestsellers-arrow {
   overflow: hidden;
   box-shadow: var(--card-shadow);
   border: 1px solid var(--border-color);
-  height: 380px;
+  /* grow to full height of the info cards column */
+  height: 100%;
+  min-height: 380px;
   position: relative;
   background: var(--bg-secondary);
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
 }
 
 .contacts-map,
 #contacts-map {
   width: 100%;
+  flex: 1 1 auto;
   height: 100%;
-  min-height: 380px;
+  min-height: 0;
   z-index: 0;
   font-family: var(--font-body);
   background: var(--bg-secondary);
@@ -2856,46 +2895,105 @@ body.dark-theme .nazcake-map-popup .leaflet-popup-close-button {
   flex-direction: column;
   gap: 20px;
   text-align: left;
+  /* natural height drives the grid row; map stretches to match */
+  align-self: stretch;
 }
 
 .info-card {
   display: flex;
-  gap: 20px;
-  align-items: center;
+  gap: 16px;
+  align-items: flex-start;
   background-color: var(--bg-secondary);
-  padding: 20px;
+  padding: 18px 20px;
   border-radius: 12px;
   border: 1px solid var(--border-color);
+  flex: 0 0 auto;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
+.info-card:hover {
+  border-color: rgba(194, 143, 26, 0.35);
+}
+
+/* Clean icon — no circle, gold stroke */
 .info-icon {
-  background-color: var(--accent-chocolate);
-  color: white;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
+  background: transparent;
+  color: var(--accent-gold);
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  border-radius: 0;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
+  margin-top: 2px;
+  flex-shrink: 0;
 }
 
 .info-icon svg {
   width: 24px;
   height: 24px;
+  stroke: currentColor;
+  stroke-width: 1.85;
+}
+
+.info-content {
+  flex: 1;
+  min-width: 0;
 }
 
 .info-content h4 {
   font-family: var(--font-title);
-  font-size: 1rem;
-  margin-bottom: 4px;
+  font-size: 0.92rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  color: var(--text-primary);
 }
 
 .info-content p {
   color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.info-link {
+  color: var(--text-secondary);
+  transition: color 0.2s ease;
 }
 
 .info-link:hover {
   color: var(--accent-gold);
+}
+
+/* Dark theme: higher contrast cards + brighter gold icons */
+body.dark-theme .info-card {
+  background: rgba(8, 33, 21, 0.85);
+  border-color: rgba(204, 166, 65, 0.18);
+}
+
+body.dark-theme .info-card:hover {
+  border-color: rgba(246, 224, 115, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+body.dark-theme .info-icon {
+  color: var(--accent-gold-light);
+}
+
+body.dark-theme .info-content h4 {
+  color: #f0f7f3;
+}
+
+body.dark-theme .info-content p,
+body.dark-theme .info-link {
+  color: #c5d9cc;
+}
+
+body.dark-theme .info-link:hover {
+  color: var(--accent-gold-light);
 }
 
 /* Modal Styling */
@@ -3447,29 +3545,181 @@ body.dark-theme .nazcake-map-popup .leaflet-popup-close-button {
 
 .social-icons {
   display: flex;
-  gap: 12px;
+  align-items: center;
+  gap: 16px;
 }
 
+/* No circle — just brand glyphs, muted → official color on hover/active */
 .social-link {
-  width: 44px; /* touch friendly size */
-  height: 44px;
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 50%;
-  display: flex;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  transition: all 0.3s ease;
-}
-
-.social-link:hover {
-  background-color: var(--accent-gold);
-  transform: translateY(-2px);
+  color: rgba(255, 255, 255, 0.72);
+  transition: color 0.25s ease, transform 0.25s ease, filter 0.25s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .social-link svg {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.social-link:hover,
+.social-link:focus-visible {
+  background: transparent;
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.social-link:active {
+  transform: translateY(0) scale(0.96);
+}
+
+/* Instagram brand */
+.social-link--ig:hover,
+.social-link--ig:focus-visible,
+.social-link--ig:active {
+  color: #e1306c;
+  filter: drop-shadow(0 0 8px rgba(225, 48, 108, 0.45));
+}
+
+/* WhatsApp official green */
+.social-link--wa:hover,
+.social-link--wa:focus-visible,
+.social-link--wa:active {
+  color: #25d366;
+  filter: drop-shadow(0 0 8px rgba(37, 211, 102, 0.4));
+}
+
+/* Phone — blue handset */
+.social-link--phone:hover,
+.social-link--phone:focus-visible,
+.social-link--phone:active {
+  color: #2196f3;
+  filter: drop-shadow(0 0 8px rgba(33, 150, 243, 0.4));
+}
+
+/* Touch: keep brand color while pressed / for better discoverability */
+@media (hover: none) {
+  .social-link {
+    color: rgba(255, 255, 255, 0.78);
+  }
+}
+
+/* Payment methods strip */
+.footer-payments {
+  max-width: 1920px;
+  margin: 0 auto;
+  padding: 22px 60px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: center;
+}
+
+.footer-payments-title {
+  color: rgba(255, 255, 255, 0.55);
+  font-family: var(--font-title);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 16px;
+}
+
+.footer-payment-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 18px 28px;
+}
+
+.footer-payment-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 88px;
+  max-width: 120px;
+}
+
+.footer-payment-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 40px;
+  /* Official colors underneath, muted gray by default */
+  filter: grayscale(1) brightness(0.95) opacity(0.55);
+  transition: filter 0.28s ease, transform 0.28s ease, opacity 0.28s ease;
+  will-change: filter;
+}
+
+.footer-payment-item:hover .footer-payment-icon,
+.footer-payment-item:focus-within .footer-payment-icon {
+  filter: none;
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+.footer-payment-icon .payment-img {
+  display: block;
+  height: 32px;
+  width: auto;
+  max-width: 56px;
+  object-fit: contain;
+}
+
+.footer-payment-icon.payment-card {
+  gap: 10px;
+}
+
+.footer-payment-icon.payment-card .payment-img-visa {
+  height: 18px;
+  max-width: 56px;
+}
+
+.footer-payment-icon.payment-card .payment-img-mc {
+  height: 28px;
+  max-width: 42px;
+}
+
+.footer-payment-icon.payment-cash .payment-img,
+.footer-payment-icon.payment-transfer .payment-img,
+.footer-payment-icon.payment-qr .payment-img {
+  height: 34px;
+  max-width: 34px;
+}
+
+.footer-payment-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: #908479;
+  transition: color 0.25s ease;
+}
+
+.footer-payment-item:hover .footer-payment-label,
+.footer-payment-item:focus-within .footer-payment-label {
+  color: #e8dccf;
+}
+
+/* Touch: show color when pressed / always slightly stronger on coarse pointer */
+@media (hover: none) {
+  .footer-payment-icon {
+    opacity: 0.7;
+    filter: grayscale(0.85) opacity(0.7);
+  }
 }
 
 .footer-bottom {
@@ -3477,6 +3727,96 @@ body.dark-theme .nazcake-map-popup .leaflet-popup-close-button {
   padding-top: 25px;
   font-size: 0.8rem;
   color: #908479;
+}
+
+@media (max-width: 768px) {
+  .footer-payments {
+    padding: 16px 10px 8px;
+  }
+
+  .footer-payments-title {
+    margin-bottom: 12px;
+    font-size: 0.72rem;
+  }
+
+  /* Force one row of 4 payment methods on phones */
+  .footer-payment-list {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 4px;
+    width: 100%;
+  }
+
+  .footer-payment-item {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: none;
+    gap: 6px;
+  }
+
+  .footer-payment-icon {
+    min-height: 28px;
+    width: 100%;
+  }
+
+  .footer-payment-icon.payment-card {
+    gap: 3px;
+    flex-wrap: wrap;
+  }
+
+  .footer-payment-icon.payment-card .payment-img-visa {
+    height: 12px;
+    max-width: 36px;
+  }
+
+  .footer-payment-icon.payment-card .payment-img-mc {
+    height: 18px;
+    max-width: 26px;
+  }
+
+  .footer-payment-icon.payment-cash .payment-img,
+  .footer-payment-icon.payment-transfer .payment-img,
+  .footer-payment-icon.payment-qr .payment-img {
+    height: 26px;
+    max-width: 26px;
+  }
+
+  .footer-payment-label {
+    font-size: 0.58rem;
+    line-height: 1.2;
+    max-width: 100%;
+    padding: 0 1px;
+    /* allow 2 lines under icon, keep columns aligned */
+    hyphens: auto;
+    word-break: break-word;
+  }
+}
+
+/* Very narrow phones: tighten further so 4 stay on one line */
+@media (max-width: 380px) {
+  .footer-payments {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .footer-payment-list {
+    gap: 2px;
+  }
+
+  .footer-payment-label {
+    font-size: 0.52rem;
+  }
+
+  .footer-payment-icon.payment-card .payment-img-visa {
+    height: 10px;
+    max-width: 30px;
+  }
+
+  .footer-payment-icon.payment-card .payment-img-mc {
+    height: 15px;
+    max-width: 22px;
+  }
 }
 
 /* Animations */
@@ -3741,6 +4081,12 @@ body.dark-theme .nazcake-map-popup .leaflet-popup-close-button {
   .contacts-layout {
     grid-template-columns: 1fr;
     gap: 40px;
+    align-items: start;
+  }
+
+  .contacts-map-wrapper {
+    height: 320px;
+    min-height: 320px;
   }
   
   .preview-modal-layout {
