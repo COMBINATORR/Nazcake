@@ -15,8 +15,10 @@
 
       // Nav Links
       nav_about: "О нас",
+      nav_why: "Преимущества",
+      nav_reviews: "Отзывы",
       nav_bestsellers: "Бестселлеры",
-      nav_catalog: "Наша продукция",
+      nav_catalog: "Продукция",
       nav_catalog_short: "Продукция",
       nav_customizer: "Конструктор Бенто",
       nav_delivery: "Доставка",
@@ -252,6 +254,11 @@
       admin_delivery_pickup: "Самовывоз",
       catalog_out_of_stock: "Нет в наличии",
       contacts_val_hours: "Ежедневно с 09:00 до 20:00",
+
+      reviews_eyebrow: "Реальные отзывы · 2ГИС",
+      reviews_title: "Что говорят гости",
+      reviews_count: "на основе 64 отзывов в 2ГИС",
+      reviews_cta: "Оставить отзыв",
 
       community_title: "Наше сообщество",
       community_desc: "Подписывайтесь на нас, чтобы быть в курсе всех новостей NAZCAKE.",
@@ -776,8 +783,10 @@
 
       // Nav Links
       nav_about: "Біз туралы",
+      nav_why: "Артықшылықтар",
+      nav_reviews: "Пікірлер",
       nav_bestsellers: "Бестселлерлер",
-      nav_catalog: "Өнімдеріміз",
+      nav_catalog: "Өнімдер",
       nav_catalog_short: "Өнімдер",
       nav_customizer: "Бенто конструкторы",
       nav_delivery: "Жеткізу",
@@ -1013,6 +1022,11 @@
       admin_delivery_pickup: "Өзіңіз алып кету",
       catalog_out_of_stock: "Қолжетімсіз",
       contacts_val_hours: "Күн сайын 09:00-ден 20:00-ге дейін",
+
+      reviews_eyebrow: "Нақты пікірлер · 2ГИС",
+      reviews_title: "Қонақтар не дейді",
+      reviews_count: "2ГИС-тегі 64 пікір негізінде",
+      reviews_cta: "Пікір қалдыру",
 
       community_title: "Біздің қауымдастық",
       community_desc: "Барлық NAZCAKE жаңалықтарынан хабардар болу үшін бізге жазылыңыз.",

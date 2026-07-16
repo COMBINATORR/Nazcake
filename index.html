@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
@@ -82,7 +82,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500&display=swap" rel="stylesheet">
 
   <!-- CSS Stylesheet (Leaflet CSS loads lazily when #contacts is near viewport) -->
-  <link rel="stylesheet" href="style.css?v=5.9">
+  <link rel="stylesheet" href="style.css?v=6.0">
 </head>
 <body class="preloader-active">
   <script>
@@ -121,6 +121,8 @@
       
       <nav class="nav-menu" aria-label="Основное меню">
         <a href="#about" class="nav-link" data-i18n="nav_about">О нас</a>
+        <a href="#why-us" class="nav-link" data-i18n="nav_why">Преимущества</a>
+        <a href="#reviews" class="nav-link" data-i18n="nav_reviews">Отзывы</a>
         <a href="#bestsellers" class="nav-link" data-i18n="nav_bestsellers">Бестселлеры</a>
         <a href="#catalog" class="nav-link" data-i18n="nav_catalog_short">Продукция</a>
         <a href="#delivery" class="nav-link" data-i18n="nav_delivery">Доставка</a>
@@ -201,6 +203,8 @@
 
     <nav class="drawer-nav" aria-label="Мобильное меню">
       <a href="#about" class="drawer-link" data-i18n="nav_about">О нас</a>
+      <a href="#why-us" class="drawer-link" data-i18n="nav_why">Преимущества</a>
+      <a href="#reviews" class="drawer-link" data-i18n="nav_reviews">Отзывы</a>
       <a href="#bestsellers" class="drawer-link" data-i18n="nav_bestsellers">Бестселлеры</a>
       <a href="#catalog" class="drawer-link" data-i18n="nav_catalog">Наша продукция</a>
       <a href="#delivery" class="drawer-link" data-i18n="nav_delivery">Доставка</a>
@@ -457,6 +461,445 @@
           <p class="why-card-text" data-i18n="why_3_text">Только натуральные ингредиенты, масло 82.5% и Халал — без маргарина и растительных жиров.</p>
         </article>
       </div>
+    </div>
+  </section>
+
+  <!-- Reviews from 2GIS (real guest feedback) -->
+  <section id="reviews" class="reviews-section">
+    <div class="container">
+      <div class="section-header text-center">
+        <p class="reviews-eyebrow reveal-item" data-i18n="reviews_eyebrow">Реальные отзывы · 2ГИС</p>
+        <h2 class="section-title reveal-item" data-i18n="reviews_title">Что говорят гости</h2>
+        <div class="reviews-rating-bar reveal-item">
+          <span class="reviews-stars" aria-hidden="true">★★★★★</span>
+          <span class="reviews-score">4.8</span>
+          <span class="reviews-count" data-i18n="reviews_count">на основе 64 отзывов в 2ГИС</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="reviews-marquee" aria-label="Отзывы клиентов 2ГИС">
+      <div class="reviews-track">
+        <!-- Set A -->
+        <article class="review-card">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#6b4c9a">ЭМ</span>
+            <div class="review-meta">
+              <strong class="review-name">Эльмира Мукашкереева</strong>
+              <span class="review-stars" aria-label="5 из 5">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">Здесь продукция очень вкусные, покупаю в горячем виде, особенно тошнотики — пирожки с печенью. Прямо возвращаюсь в детство, это 80‑е годы. Супер. Всем советую 👍</p>
+        </article>
+
+        <article class="review-card">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#c45c26">ГА</span>
+            <div class="review-meta">
+              <strong class="review-name">Гульбану Абдрахманова</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">Өте керемет дәмді өнімдер. 👍👍👍</p>
+        </article>
+
+        <article class="review-card">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#2e7d4f">АШ</span>
+            <div class="review-meta">
+              <strong class="review-name">Айзада Шабаева</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">«Назкейк ұжымына үлкен алғыс! Өнімдері өте дәмді, сапалы әрі әрдайым балғын. Жұмыстарыңызға табыс, берекелі клиенттер тілейміз!» — с/п: АО Нурбанк МСБ ұжымы</p>
+        </article>
+
+        <article class="review-card">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#b8860b">АЖ</span>
+            <div class="review-meta">
+              <strong class="review-name">Ақторғын Ж</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">Өнімдеріңіз өте ұнады! Дәмі керемет, сапасы жоғары</p>
+        </article>
+
+        <article class="review-card">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#8e3a59">MS</span>
+            <div class="review-meta">
+              <strong class="review-name">Mallika Sabyr</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">Самые вкусные «тошнотики» 😋. Рахмет! Өте дәмді 🥰</p>
+        </article>
+
+        <article class="review-card">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#3d5a80">ZN</span>
+            <div class="review-meta">
+              <strong class="review-name">Zarina Nurgazina</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">Сделали заказ, забрали — всё было очень вкусно, так что не осталось на следующий день. Написали, заказали на 8 утра уже совсем вечером… очень выручили, в 8 утра весь заказ был готов вовремя. Спасибо большое!</p>
+        </article>
+
+        <article class="review-card">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#7b2d8e">СИ</span>
+            <div class="review-meta">
+              <strong class="review-name">Султанов Исламғали</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">Тема ғо тема 🔥</p>
+        </article>
+
+        <article class="review-card">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#c2185b">UT</span>
+            <div class="review-meta">
+              <strong class="review-name">Ulpan Tlekkabyl</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">Отбасымызбен назкейктын онимдерин туракты алып турамыз, всегда конилимизден шыгады. Сервис на высшем уровне 👍🏻</p>
+        </article>
+
+        <article class="review-card">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#1565c0">BS</span>
+            <div class="review-meta">
+              <strong class="review-name">Baktybekova Sezim</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">вкусно 😍😍</p>
+        </article>
+
+        <article class="review-card">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#00897b">SG</span>
+            <div class="review-meta">
+              <strong class="review-name">Samantha Green</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">В NazCake девочки отличные, сервис на высшем уровне. Часто прихожу покупать тошнотики и замороженные продукты.</p>
+        </article>
+
+        <article class="review-card">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#ef6c00">АА</span>
+            <div class="review-meta">
+              <strong class="review-name">Арай Ануарбековна</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">Пирожки ливерные топ 🔥</p>
+        </article>
+
+        <article class="review-card">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#37474f">DB</span>
+            <div class="review-meta">
+              <strong class="review-name">Don't worry Be happy</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">Заказывали в офис на обед, просто супер, очень очень вкусно, свежее, ребята заморочились и испекли пирог прям к времени доставки. Молодцы!!!</p>
+        </article>
+
+        <article class="review-card">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#5c6bc0">T</span>
+            <div class="review-meta">
+              <strong class="review-name">Tamara</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">Өте керемет. Таза жерде дәмді тағамдар дайындалады. Істеріңіз алға баса берсін</p>
+        </article>
+
+        <article class="review-card">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#7b1fa2">FF</span>
+            <div class="review-meta">
+              <strong class="review-name">Farida Farid</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">Сәлематызбе тамақтарыңыз өте керемет 🔥 торттарыңыз өте дәмді Nazcake — таң күнде аламыз қонаққа, Түлпан күнге, сыздың тамақтарыңыз, торттарыңыз өте дәмді 😍</p>
+        </article>
+
+        <article class="review-card">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#1b5e20">Қ</span>
+            <div class="review-meta">
+              <strong class="review-name">Қайнуллаулы</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">Самая лучшая кондитерская в Atyrau ❤️</p>
+        </article>
+
+        <article class="review-card">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#0277bd">OK</span>
+            <div class="review-meta">
+              <strong class="review-name">Оқжетпес Кемелович</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">Атырауға келгелі пирожный и самсаларды осы жақтан аламыз</p>
+        </article>
+
+        <article class="review-card">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#455a64">AU</span>
+            <div class="review-meta">
+              <strong class="review-name">Apple User</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">Очень вкусные свежие продукты, качество работы сотрудников на высоком уровне, а также они вежливые. Просто супеееер 👍 🔥</p>
+        </article>
+
+        <!-- Set B (duplicate for seamless loop) -->
+        <article class="review-card" aria-hidden="true">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#6b4c9a">ЭМ</span>
+            <div class="review-meta">
+              <strong class="review-name">Эльмира Мукашкереева</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">Здесь продукция очень вкусные, покупаю в горячем виде, особенно тошнотики — пирожки с печенью. Прямо возвращаюсь в детство, это 80‑е годы. Супер. Всем советую 👍</p>
+        </article>
+
+        <article class="review-card" aria-hidden="true">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#c45c26">ГА</span>
+            <div class="review-meta">
+              <strong class="review-name">Гульбану Абдрахманова</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">Өте керемет дәмді өнімдер. 👍👍👍</p>
+        </article>
+
+        <article class="review-card" aria-hidden="true">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#2e7d4f">АШ</span>
+            <div class="review-meta">
+              <strong class="review-name">Айзада Шабаева</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">«Назкейк ұжымына үлкен алғыс! Өнімдері өте дәмді, сапалы әрі әрдайым балғын. Жұмыстарыңызға табыс, берекелі клиенттер тілейміз!» — с/п: АО Нурбанк МСБ ұжымы</p>
+        </article>
+
+        <article class="review-card" aria-hidden="true">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#b8860b">АЖ</span>
+            <div class="review-meta">
+              <strong class="review-name">Ақторғын Ж</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">Өнімдеріңіз өте ұнады! Дәмі керемет, сапасы жоғары</p>
+        </article>
+
+        <article class="review-card" aria-hidden="true">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#8e3a59">MS</span>
+            <div class="review-meta">
+              <strong class="review-name">Mallika Sabyr</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">Самые вкусные «тошнотики» 😋. Рахмет! Өте дәмді 🥰</p>
+        </article>
+
+        <article class="review-card" aria-hidden="true">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#3d5a80">ZN</span>
+            <div class="review-meta">
+              <strong class="review-name">Zarina Nurgazina</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">Сделали заказ, забрали — всё было очень вкусно, так что не осталось на следующий день. Написали, заказали на 8 утра уже совсем вечером… очень выручили, в 8 утра весь заказ был готов вовремя. Спасибо большое!</p>
+        </article>
+
+        <article class="review-card" aria-hidden="true">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#7b2d8e">СИ</span>
+            <div class="review-meta">
+              <strong class="review-name">Султанов Исламғали</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">Тема ғо тема 🔥</p>
+        </article>
+
+        <article class="review-card" aria-hidden="true">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#c2185b">UT</span>
+            <div class="review-meta">
+              <strong class="review-name">Ulpan Tlekkabyl</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">Отбасымызбен назкейктын онимдерин туракты алып турамыз, всегда конилимизден шыгады. Сервис на высшем уровне 👍🏻</p>
+        </article>
+
+        <article class="review-card" aria-hidden="true">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#1565c0">BS</span>
+            <div class="review-meta">
+              <strong class="review-name">Baktybekova Sezim</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">вкусно 😍😍</p>
+        </article>
+
+        <article class="review-card" aria-hidden="true">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#00897b">SG</span>
+            <div class="review-meta">
+              <strong class="review-name">Samantha Green</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">В NazCake девочки отличные, сервис на высшем уровне. Часто прихожу покупать тошнотики и замороженные продукты.</p>
+        </article>
+
+        <article class="review-card" aria-hidden="true">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#ef6c00">АА</span>
+            <div class="review-meta">
+              <strong class="review-name">Арай Ануарбековна</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">Пирожки ливерные топ 🔥</p>
+        </article>
+
+        <article class="review-card" aria-hidden="true">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#37474f">DB</span>
+            <div class="review-meta">
+              <strong class="review-name">Don't worry Be happy</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">Заказывали в офис на обед, просто супер, очень очень вкусно, свежее, ребята заморочились и испекли пирог прям к времени доставки. Молодцы!!!</p>
+        </article>
+
+        <article class="review-card" aria-hidden="true">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#5c6bc0">T</span>
+            <div class="review-meta">
+              <strong class="review-name">Tamara</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">Өте керемет. Таза жерде дәмді тағамдар дайындалады. Істеріңіз алға баса берсін</p>
+        </article>
+
+        <article class="review-card" aria-hidden="true">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#7b1fa2">FF</span>
+            <div class="review-meta">
+              <strong class="review-name">Farida Farid</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">Сәлематызбе тамақтарыңыз өте керемет 🔥 торттарыңыз өте дәмді Nazcake — таң күнде аламыз қонаққа, Түлпан күнге, сыздың тамақтарыңыз, торттарыңыз өте дәмді 😍</p>
+        </article>
+
+        <article class="review-card" aria-hidden="true">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#1b5e20">Қ</span>
+            <div class="review-meta">
+              <strong class="review-name">Қайнуллаулы</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">Самая лучшая кондитерская в Atyrau ❤️</p>
+        </article>
+
+        <article class="review-card" aria-hidden="true">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#0277bd">OK</span>
+            <div class="review-meta">
+              <strong class="review-name">Оқжетпес Кемелович</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">Атырауға келгелі пирожный и самсаларды осы жақтан аламыз</p>
+        </article>
+
+        <article class="review-card" aria-hidden="true">
+          <div class="review-card-top">
+            <span class="review-avatar" style="--av:#455a64">AU</span>
+            <div class="review-meta">
+              <strong class="review-name">Apple User</strong>
+              <span class="review-stars">★★★★★</span>
+            </div>
+            <span class="review-badge">2ГИС</span>
+          </div>
+          <p class="review-text">Очень вкусные свежие продукты, качество работы сотрудников на высоком уровне, а также они вежливые. Просто супеееер 👍 🔥</p>
+        </article>
+      </div>
+    </div>
+
+    <div class="container reviews-cta-wrap">
+      <a href="https://2gis.kz/atyrau/firm/70000001043802585/tab/reviews" target="_blank" rel="noopener noreferrer" class="btn-dgis reviews-cta">
+        <svg class="dgis-logo-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+          <circle cx="12" cy="10" r="3"></circle>
+        </svg>
+        <span data-i18n="reviews_cta">Оставить отзыв</span>
+      </a>
     </div>
   </section>
 
@@ -1070,11 +1513,12 @@
       <div class="footer-col links-col">
         <h4 data-i18n="footer_nav_title">Быстрые ссылки</h4>
         <ul class="footer-links">
-          <li><a href="#about" data-i18n="nav_about">О кондитерской</a></li>
-          <li><a href="#bestsellers" data-i18n="nav_bestsellers">Наши бестселлеры</a></li>
-          <li><a href="#catalog" data-i18n="nav_catalog">Каталог товаров</a></li>
-          <!-- <li><a href="#customizer" data-i18n="nav_customizer">Конструктор Бенто</a></li> -->
-          <li><a href="#delivery" data-i18n="nav_delivery">Расчет доставки</a></li>
+          <li><a href="#about" data-i18n="nav_about">О нас</a></li>
+          <li><a href="#why-us" data-i18n="nav_why">Преимущества</a></li>
+          <li><a href="#reviews" data-i18n="nav_reviews">Отзывы</a></li>
+          <li><a href="#bestsellers" data-i18n="nav_bestsellers">Бестселлеры</a></li>
+          <li><a href="#catalog" data-i18n="nav_catalog">Продукция</a></li>
+          <li><a href="#delivery" data-i18n="nav_delivery">Доставка</a></li>
           <li><a href="#contacts" data-i18n="nav_contacts">Контакты</a></li>
           <li><a href="#community" data-i18n="nav_community">Сообщество</a></li>
         </ul>
@@ -1319,7 +1763,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <!-- Leaflet loaded lazily from app.js when contacts section approaches -->
   <!-- JavaScript Application -->
-  <script src="i18n.js?v=4.4"></script>
+  <script src="i18n.js?v=4.8"></script>
   <script src="app.js?v=4.7"></script>
 </body>
 </html>
