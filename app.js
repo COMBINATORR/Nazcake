@@ -1433,6 +1433,7 @@ async function loadOrdersFromSupabase() {
           customerPhone: dbOrder.customer_phone,
           deliveryMethod: dbOrder.delivery_method,
           address: dbOrder.address || "",
+          preferredTime: dbOrder.preferred_time || "",
           items: dbOrder.items,
           subtotal: Number(dbOrder.subtotal),
           status: dbOrder.status || 'new'
@@ -1454,18 +1455,24 @@ async function loadOrdersFromSupabase() {
 async function saveOrderToSupabase(order) {
   if (!supabaseClient) return;
   try {
-    const { error } = await supabaseClient
-      .from('orders')
-      .insert({
-        id: order.id,
-        customer_name: order.customerName,
-        customer_phone: order.customerPhone,
-        delivery_method: order.deliveryMethod,
-        address: order.address || "",
-        items: order.items,
-        subtotal: order.subtotal,
-        status: order.status || 'new'
-      });
+    const payload = {
+      id: order.id,
+      customer_name: order.customerName,
+      customer_phone: order.customerPhone,
+      delivery_method: order.deliveryMethod,
+      // For pickup, keep time visible even if preferred_time column is missing
+      address: order.address || (order.preferredTime ? `Самовывоз: ${order.preferredTime}` : ""),
+      items: order.items,
+      subtotal: order.subtotal,
+      status: order.status || 'new',
+      preferred_time: order.preferredTime || null
+    };
+    let { error } = await supabaseClient.from('orders').insert(payload);
+    // Retry without preferred_time if column does not exist
+    if (error && /preferred_time/i.test(error.message || "")) {
+      delete payload.preferred_time;
+      ({ error } = await supabaseClient.from('orders').insert(payload));
+    }
     if (error) throw error;
     console.log("Successfully saved order to Supabase:", order.id);
   } catch (e) {
@@ -1878,18 +1885,20 @@ function setupEventListeners() {
   // Success modal
   setupModal(successModal, null, closeSuccessBtn, null);
 
-  // Shipping Method Switcher inside Cart
+  // Shipping Method Switcher inside Cart (+ pickup time)
   deliveryMethodRadios.forEach(radio => {
     radio.addEventListener("change", (e) => {
-      if (e.target.value === "delivery") {
-        checkoutAddressGroup.classList.remove("hidden");
-        document.getElementById("checkout-address").setAttribute("required", "required");
-      } else {
-        checkoutAddressGroup.classList.add("hidden");
-        document.getElementById("checkout-address").removeAttribute("required");
-      }
+      updateCheckoutMethodUi(e.target.value);
     });
   });
+  // Initial state (pickup default)
+  const checkedMethod = document.querySelector('input[name="delivery-method"]:checked');
+  updateCheckoutMethodUi(checkedMethod ? checkedMethod.value : "pickup");
+
+  const pickupDateInput = document.getElementById("checkout-pickup-date");
+  if (pickupDateInput) {
+    pickupDateInput.addEventListener("change", () => refreshPickupTimeSlots(false));
+  }
 
   // Submit Order Form
     // Sticky Bottom Bar click to open cart
@@ -3012,8 +3021,126 @@ function escapeHTML(str) {
             .replace(/'/g, "&#039;");
 }
 
+/** Working hours for pickup slots (local time). Last slot 19:30. */
+const PICKUP_HOUR_OPEN = 9;
+const PICKUP_HOUR_CLOSE = 20;
+const PICKUP_SLOT_STEP_MIN = 30;
+const PICKUP_PREP_BUFFER_MIN = 45;
+const PICKUP_MAX_DAYS_AHEAD = 14;
+
+function toInputDateValue(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+function parseLocalDate(dateStr) {
+  const [y, m, d] = String(dateStr || "").split("-").map(Number);
+  if (!y || !m || !d) return null;
+  return new Date(y, m - 1, d, 0, 0, 0, 0);
+}
+
+/** Returns HH:MM slots for a given YYYY-MM-DD, skipping past times for today. */
+function generatePickupTimeSlots(dateStr) {
+  const day = parseLocalDate(dateStr);
+  if (!day) return [];
+  const now = new Date();
+  const isToday = day.toDateString() === now.toDateString();
+  const minTime = new Date(now.getTime() + PICKUP_PREP_BUFFER_MIN * 60 * 1000);
+  const slots = [];
+
+  for (let mins = PICKUP_HOUR_OPEN * 60; mins < PICKUP_HOUR_CLOSE * 60; mins += PICKUP_SLOT_STEP_MIN) {
+    const h = Math.floor(mins / 60);
+    const m = mins % 60;
+    const slotDate = new Date(day.getFullYear(), day.getMonth(), day.getDate(), h, m, 0, 0);
+    if (isToday && slotDate < minTime) continue;
+    slots.push(`${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`);
+  }
+  return slots;
+}
+
+function formatPickupDisplay(dateStr, timeStr) {
+  if (!dateStr || !timeStr) return "";
+  const day = parseLocalDate(dateStr);
+  if (!day) return `${dateStr} ${timeStr}`;
+  try {
+    const dateLabel = day.toLocaleDateString("ru-RU", {
+      weekday: "short",
+      day: "numeric",
+      month: "long"
+    });
+    return `${dateLabel}, ${timeStr}`;
+  } catch (_) {
+    return `${dateStr} ${timeStr}`;
+  }
+}
+
+function refreshPickupTimeSlots(preserveValue = true) {
+  const dateInput = document.getElementById("checkout-pickup-date");
+  const timeSelect = document.getElementById("checkout-pickup-time");
+  if (!dateInput || !timeSelect) return;
+
+  const prev = preserveValue ? timeSelect.value : "";
+  const slots = generatePickupTimeSlots(dateInput.value);
+  const ph = window.i18n ? window.i18n.t("cart_pickup_time_ph") : "Выберите время";
+
+  timeSelect.innerHTML = `<option value="">${escapeHTML(ph)}</option>` +
+    slots.map((s) => `<option value="${s}">${s}</option>`).join("");
+
+  if (prev && slots.includes(prev)) {
+    timeSelect.value = prev;
+  } else {
+    timeSelect.value = "";
+  }
+}
+
+function setupPickupDateLimits() {
+  const dateInput = document.getElementById("checkout-pickup-date");
+  if (!dateInput) return;
+  const today = new Date();
+  const max = new Date();
+  max.setDate(max.getDate() + PICKUP_MAX_DAYS_AHEAD);
+  dateInput.min = toInputDateValue(today);
+  dateInput.max = toInputDateValue(max);
+  if (!dateInput.value) {
+    dateInput.value = toInputDateValue(today);
+  }
+  // If today has no slots left, jump to tomorrow
+  let slots = generatePickupTimeSlots(dateInput.value);
+  if (!slots.length) {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    dateInput.value = toInputDateValue(tomorrow);
+  }
+  refreshPickupTimeSlots(false);
+}
+
+function updateCheckoutMethodUi(method) {
+  const addressGroup = document.getElementById("checkout-address-group");
+  const addressInput = document.getElementById("checkout-address");
+  const timeGroup = document.getElementById("checkout-time-group");
+  const dateInput = document.getElementById("checkout-pickup-date");
+  const timeSelect = document.getElementById("checkout-pickup-time");
+
+  if (method === "delivery") {
+    if (addressGroup) addressGroup.classList.remove("hidden");
+    if (addressInput) addressInput.setAttribute("required", "required");
+    if (timeGroup) timeGroup.classList.add("hidden");
+    if (dateInput) dateInput.removeAttribute("required");
+    if (timeSelect) timeSelect.removeAttribute("required");
+  } else {
+    if (addressGroup) addressGroup.classList.add("hidden");
+    if (addressInput) addressInput.removeAttribute("required");
+    if (timeGroup) timeGroup.classList.remove("hidden");
+    if (dateInput) dateInput.setAttribute("required", "required");
+    if (timeSelect) timeSelect.setAttribute("required", "required");
+    setupPickupDateLimits();
+  }
+}
+
 // Handle Order Checkout Submission & Send to Telegram
-function formatCheckoutMessage(name, phone, method, address, cart, subtotal, t) {
+function formatCheckoutMessage(name, phone, method, address, cart, subtotal, t, preferredTime) {
   let message = `*🍰 ${window.i18n ? t("tg_order_title") : "Новый заказ от Nazcake!"}*\n\n`;
   message += `👤 *${window.i18n ? t("tg_client") : "Клиент"}:* ${name}\n`;
   message += `📞 *${window.i18n ? t("tg_phone") : "Телефон"}:* ${phone}\n`;
@@ -3025,6 +3152,8 @@ function formatCheckoutMessage(name, phone, method, address, cart, subtotal, t) 
 
   if (method === "delivery") {
     message += `📍 *${window.i18n ? t("tg_address") : "Адрес"}:* ${address}\n`;
+  } else if (preferredTime) {
+    message += `🕐 *${window.i18n ? t("tg_pickup_time") : "Время самовывоза"}:* ${preferredTime}\n`;
   }
 
   message += `\n🛒 *${window.i18n ? t("tg_items") : "Товары"}:*\n`;
@@ -3053,7 +3182,7 @@ function formatCheckoutMessage(name, phone, method, address, cart, subtotal, t) 
   return message;
 }
 
-function buildOrderObject(name, phone, method, address, cart, subtotal, t) {
+function buildOrderObject(name, phone, method, address, cart, subtotal, t, preferredTime) {
   return {
     id: "NZ-" + Math.floor(100000 + Math.random() * 900000),
     date: new Date().toLocaleString("ru-RU"),
@@ -3061,6 +3190,7 @@ function buildOrderObject(name, phone, method, address, cart, subtotal, t) {
     customerPhone: phone,
     deliveryMethod: method,
     address: method === "delivery" ? address : "",
+    preferredTime: method === "pickup" ? (preferredTime || "") : "",
     items: cart.map(item => {
       const p = item.product;
       let displayName = p.isCustomName ? p.name : (p.id.startsWith("bento_custom_")
@@ -3101,18 +3231,39 @@ async function handleCheckoutSubmit(e) {
   const phone = document.getElementById("checkout-phone").value.trim();
   const method = document.querySelector('input[name="delivery-method"]:checked').value;
   const address = document.getElementById("checkout-address").value.trim();
-
-  // Save customer data to localStorage
-  localStorage.setItem("nazcake_customer_name", name);
-  localStorage.setItem("nazcake_customer_phone", phone);
-  localStorage.setItem("nazcake_customer_address", address);
-  localStorage.setItem("nazcake_customer_method", method);
+  const pickupDate = document.getElementById("checkout-pickup-date")?.value || "";
+  const pickupTime = document.getElementById("checkout-pickup-time")?.value || "";
 
   const t = window.i18n ? window.i18n.t.bind(window.i18n) : (k) => k;
 
   if (cart.length === 0) {
     alert(window.i18n ? t("cart_err_empty_cart") : "Ваша корзина пуста. Невозможно отправить заказ!");
     return;
+  }
+
+  let preferredTime = "";
+  if (method === "pickup") {
+    if (!pickupDate || !pickupTime) {
+      alert(window.i18n ? t("cart_err_pickup_time") : "Выберите дату и время самовывоза.");
+      return;
+    }
+    const validSlots = generatePickupTimeSlots(pickupDate);
+    if (!validSlots.includes(pickupTime)) {
+      alert(window.i18n ? t("cart_err_pickup_slots") : "На выбранную дату нет свободных слотов. Выберите другой день.");
+      refreshPickupTimeSlots(false);
+      return;
+    }
+    preferredTime = formatPickupDisplay(pickupDate, pickupTime);
+  }
+
+  // Save customer data to localStorage
+  localStorage.setItem("nazcake_customer_name", name);
+  localStorage.setItem("nazcake_customer_phone", phone);
+  localStorage.setItem("nazcake_customer_address", address);
+  localStorage.setItem("nazcake_customer_method", method);
+  if (method === "pickup") {
+    localStorage.setItem("nazcake_customer_pickup_date", pickupDate);
+    localStorage.setItem("nazcake_customer_pickup_time", pickupTime);
   }
 
   const submitBtn = document.getElementById("checkout-submit-btn");
@@ -3122,15 +3273,15 @@ async function handleCheckoutSubmit(e) {
   // Calculate total using item.price
   const subtotal = cart.reduce((sum, item) => sum + ((item.price !== undefined ? item.price : item.product.price) * item.qty), 0);
 
-  // Format message for WhatsApp (Telegram)
-  const message = formatCheckoutMessage(name, phone, method, address, cart, subtotal, t);
+  // Format message for WhatsApp
+  const message = formatCheckoutMessage(name, phone, method, address, cart, subtotal, t, preferredTime);
 
   // Send to WhatsApp
   const phoneWA = "77783567221"; // Target WhatsApp number
   const waUrl = `https://wa.me/${phoneWA}?text=${encodeURIComponent(message)}`;
 
   // Save order to history
-  const newOrder = buildOrderObject(name, phone, method, address, cart, subtotal, t);
+  const newOrder = buildOrderObject(name, phone, method, address, cart, subtotal, t, preferredTime);
   saveOrderToHistory(newOrder);
 
   window.open(waUrl, '_blank');
@@ -3779,6 +3930,7 @@ function renderAdminOrders() {
   const statusCancel = t("admin_order_status_cancel", "Отменен");
   const deliveryYandex = t("admin_delivery_yandex", "Доставка Яндекс");
   const deliveryPickup = t("admin_delivery_pickup", "Самовывоз");
+  const tPickupTime = t("admin_lbl_pickup_time", "Время самовывоза");
 
   listContainer.innerHTML = history.map(order => {
     const methodText = order.deliveryMethod === "delivery" ? deliveryYandex : deliveryPickup;
@@ -3788,6 +3940,7 @@ function renderAdminOrders() {
     const customerName = escapeHTML(String(order.customerName || ""));
     const customerPhone = escapeHTML(String(order.customerPhone || ""));
     const address = escapeHTML(String(order.address || ""));
+    const preferredTime = escapeHTML(String(order.preferredTime || ""));
     const subtotal = Number(order.subtotal) || 0;
 
     return `
@@ -3814,6 +3967,7 @@ function renderAdminOrders() {
             <p>📞 <strong>${escapeHTML(tPhone)}:</strong> <a href="tel:${customerPhone}">${customerPhone}</a></p>
             <p>📦 <strong>${escapeHTML(tMethod)}:</strong> ${escapeHTML(methodText)}</p>
             ${order.deliveryMethod === "delivery" ? `<p>📍 <strong>${escapeHTML(tAddress)}:</strong> ${address}</p>` : ""}
+            ${order.deliveryMethod !== "delivery" && preferredTime ? `<p>🕐 <strong>${escapeHTML(tPickupTime)}:</strong> ${preferredTime}</p>` : ""}
           </div>
           <div class="admin-order-items-col">
             <div class="admin-order-items-title">${escapeHTML(tItems)}</div>
@@ -3938,9 +4092,22 @@ function loadCachedCustomerData() {
     const radio = document.querySelector(`input[name="delivery-method"][value="${cachedMethod}"]`);
     if (radio) {
       radio.checked = true;
-      // Trigger change event to show/hide address group
+      // Trigger change event to show/hide address / time groups
       const event = new Event('change');
       radio.dispatchEvent(event);
+    }
+  }
+
+  const cachedPickupDate = localStorage.getItem("nazcake_customer_pickup_date");
+  const cachedPickupTime = localStorage.getItem("nazcake_customer_pickup_time");
+  const dateInput = document.getElementById("checkout-pickup-date");
+  const timeSelect = document.getElementById("checkout-pickup-time");
+  if (dateInput && cachedPickupDate) {
+    dateInput.value = cachedPickupDate;
+    refreshPickupTimeSlots(false);
+    if (timeSelect && cachedPickupTime) {
+      const opts = Array.from(timeSelect.options).map((o) => o.value);
+      if (opts.includes(cachedPickupTime)) timeSelect.value = cachedPickupTime;
     }
   }
 }

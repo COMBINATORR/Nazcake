@@ -3884,6 +3884,28 @@ body.dark-theme .modal-accordion {
   margin-top: 4px;
 }
 
+.checkout-time-row {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 10px;
+}
+
+.checkout-time-row .custom-input {
+  width: 100%;
+  min-height: 44px;
+}
+
+.checkout-time-row select.custom-input {
+  cursor: pointer;
+  appearance: auto;
+}
+
+@media (max-width: 420px) {
+  .checkout-time-row {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Footer (Dark Contrast) */
 .main-footer {
   background-color: #120b08; /* Deep chocolate dark background */
