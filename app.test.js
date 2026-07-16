@@ -35,6 +35,13 @@ window.getHaversineDistance = getHaversineDistance;
             window.deg2rad = deg2rad;
 
 window.checkAtyrauBounds = checkAtyrauBounds;
+            window.normalizeStockValue = normalizeStockValue;
+            window.isProductOutOfStock = isProductOutOfStock;
+            window.exceedsProductStock = exceedsProductStock;
+            window.applyLocalProductOverrides = applyLocalProductOverrides;
+            window.persistLocalProductOverrides = persistLocalProductOverrides;
+            window.getProducts = () => products;
+            window.setProducts = (p) => { products = p; };
         `;
 
         eval(appJsCode);
@@ -387,6 +394,87 @@ describe('escapeHTML', () => {
     it('should not scale images smaller than maxDim', () => {
         const result = window.calculateImageDimensions(400, 300, 600);
         expect(result).toEqual({ width: 400, height: 300 });
+    });
+  });
+
+  describe('Admin product stock & local overrides', () => {
+    beforeEach(() => {
+      localStorage.clear();
+    });
+
+    it('normalizeStockValue: null/empty = no limit, never coerce null to 0', () => {
+      expect(window.normalizeStockValue(null)).toBeNull();
+      expect(window.normalizeStockValue(undefined)).toBeNull();
+      expect(window.normalizeStockValue('')).toBeNull();
+      expect(window.normalizeStockValue(0)).toBe(0);
+      expect(window.normalizeStockValue('5')).toBe(5);
+      expect(window.normalizeStockValue(-1)).toBeNull();
+    });
+
+    it('isProductOutOfStock: inStock false OR stock 0', () => {
+      expect(window.isProductOutOfStock({ inStock: false, stock: null })).toBe(true);
+      expect(window.isProductOutOfStock({ inStock: true, stock: null })).toBe(false);
+      expect(window.isProductOutOfStock({ inStock: true, stock: 0 })).toBe(true);
+      expect(window.isProductOutOfStock({ inStock: true, stock: 3 })).toBe(false);
+      expect(window.isProductOutOfStock({ inStock: undefined, stock: null })).toBe(false);
+    });
+
+    it('exceedsProductStock: null stock has no cap; finite stock enforces limit', () => {
+      expect(window.exceedsProductStock({ stock: null }, 99)).toBe(false);
+      expect(window.exceedsProductStock({ stock: undefined }, 99)).toBe(false);
+      expect(window.exceedsProductStock({ stock: 2 }, 2)).toBe(false);
+      expect(window.exceedsProductStock({ stock: 2 }, 3)).toBe(true);
+    });
+
+    it('applyLocalProductOverrides restores unchecked inStock after "server reload"', () => {
+      const fromServer = [
+        { id: 'bread_burger', name: 'Булочка', price: 120, category: 'bakery', inStock: true, stock: null },
+        { id: 'bread_baursaki', name: 'Бауырсаки', price: 70, category: 'bakery', inStock: true, stock: null }
+      ];
+      // Simulate admin save: product marked unavailable in localStorage
+      localStorage.setItem('nazcake_custom_products', JSON.stringify([
+        { id: 'bread_burger', name: 'Булочка', price: 120, inStock: false, stock: 0, isCustomName: true },
+        { id: 'bread_baursaki', name: 'Бауырсаки', price: 70, inStock: true, stock: null, isCustomName: false }
+      ]));
+
+      const merged = window.applyLocalProductOverrides(fromServer);
+      const burger = merged.find((p) => p.id === 'bread_burger');
+      const baursaki = merged.find((p) => p.id === 'bread_baursaki');
+
+      expect(burger.inStock).toBe(false);
+      expect(window.isProductOutOfStock(burger)).toBe(true);
+      expect(baursaki.inStock).toBe(true);
+      expect(window.isProductOutOfStock(baursaki)).toBe(false);
+    });
+
+    it('persistLocalProductOverrides survives round-trip like page refresh', () => {
+      const list = [
+        { id: 'x1', name: 'Test', price: 100, inStock: false, stock: 0, image: '', isCustomName: true, category: 'bakery' }
+      ];
+      expect(window.persistLocalProductOverrides(list)).toBe(true);
+
+      const serverAgain = [
+        { id: 'x1', name: 'Old server name', price: 999, category: 'bakery', inStock: true, stock: null }
+      ];
+      const afterReload = window.applyLocalProductOverrides(serverAgain);
+      expect(afterReload[0].inStock).toBe(false);
+      expect(afterReload[0].name).toBe('Test');
+      expect(afterReload[0].price).toBe(100);
+      expect(afterReload[0].stock).toBe(0);
+    });
+
+    it('addToCart rejects out-of-stock product after local unavailability', () => {
+      window.setCart([]);
+      const products = window.getProducts();
+      const p = products.find((x) => x.id === 'bread_burger');
+      expect(p).toBeTruthy();
+      const prev = { ...p };
+      p.inStock = false;
+      p.stock = 0;
+      window.addToCart('bread_burger', 1);
+      expect(window.getCart().length).toBe(0);
+      // restore
+      Object.assign(p, prev);
     });
   });
 });

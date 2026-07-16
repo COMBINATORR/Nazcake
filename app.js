@@ -1256,6 +1256,20 @@ let products = [
     badge: "тесто"
   },
 ];
+
+/** Fixed catalog order from the static list (Supabase created_at is identical for all rows → unstable). */
+const DEFAULT_PRODUCT_ORDER = products.map((p) => p.id);
+const DEFAULT_PRODUCT_RANK = new Map(DEFAULT_PRODUCT_ORDER.map((id, i) => [id, i]));
+
+function sortProductsStable(list) {
+  return [...(list || [])].sort((a, b) => {
+    const ra = DEFAULT_PRODUCT_RANK.has(a.id) ? DEFAULT_PRODUCT_RANK.get(a.id) : 100000;
+    const rb = DEFAULT_PRODUCT_RANK.has(b.id) ? DEFAULT_PRODUCT_RANK.get(b.id) : 100000;
+    if (ra !== rb) return ra - rb;
+    return String(a.id).localeCompare(String(b.id), "en");
+  });
+}
+
 const CATEGORY_LABELS = {
   bakery: "Хлебобулочные изделия",
   pastries: "Выпечка",
@@ -1269,6 +1283,84 @@ const CATEGORY_LABELS = {
 
 let supabaseOrders = [];
 
+/** Finite stock qty, or null = no limit. Never treat null as 0. */
+function normalizeStockValue(value) {
+  if (value === null || value === undefined || value === "") return null;
+  const n = typeof value === "number" ? value : parseInt(String(value).trim(), 10);
+  if (!Number.isFinite(n) || n < 0) return null;
+  return Math.floor(n);
+}
+
+function isProductOutOfStock(p) {
+  if (!p) return true;
+  if (p.inStock === false) return true;
+  const s = normalizeStockValue(p.stock);
+  return s !== null && s <= 0;
+}
+
+/** true if requested qty exceeds finite stock limit */
+function exceedsProductStock(p, qty) {
+  const s = normalizeStockValue(p?.stock);
+  if (s === null) return false;
+  return Number(qty) > s;
+}
+
+function applyLocalProductOverrides(baseProducts) {
+  const withLabels = (baseProducts || []).map((p) => ({
+    ...p,
+    inStock: p.inStock !== false,
+    stock: normalizeStockValue(p.stock),
+    categoryLabel: p.categoryLabel || CATEGORY_LABELS[p.category]
+  }));
+
+  try {
+    const customProducts = localStorage.getItem("nazcake_custom_products");
+    if (!customProducts) return withLabels;
+
+    const parsed = JSON.parse(customProducts);
+    if (!Array.isArray(parsed) || !parsed.length) return withLabels;
+
+    const customMap = new Map(parsed.map((cp) => [cp.id, cp]));
+    return withLabels.map((p) => {
+      const custom = customMap.get(p.id);
+      if (!custom) return p;
+      return {
+        ...p,
+        name: custom.name !== undefined ? custom.name : p.name,
+        price: custom.price !== undefined ? Number(custom.price) : p.price,
+        // Explicit false must win (was lost when only server data reloaded)
+        inStock: custom.inStock !== undefined ? custom.inStock !== false : p.inStock !== false,
+        stock: custom.stock !== undefined ? normalizeStockValue(custom.stock) : p.stock,
+        image: custom.image !== undefined ? custom.image : p.image,
+        sizeOptions: custom.sizeOptions !== undefined ? custom.sizeOptions : p.sizeOptions,
+        isCustomName: custom.isCustomName === true || p.isCustomName === true
+      };
+    });
+  } catch (e) {
+    console.warn("Failed to load custom products:", e);
+    return withLabels;
+  }
+}
+
+function persistLocalProductOverrides(list) {
+  try {
+    const customList = (list || []).map((p) => ({
+      id: p.id,
+      name: p.name,
+      price: p.price,
+      inStock: p.inStock !== false,
+      stock: normalizeStockValue(p.stock),
+      image: p.image,
+      isCustomName: p.isCustomName || false
+    }));
+    localStorage.setItem("nazcake_custom_products", JSON.stringify(customList));
+    return true;
+  } catch (e) {
+    console.warn("Failed to save custom products to localStorage:", e);
+    return false;
+  }
+}
+
 async function loadProducts() {
   if (!supabaseClient) {
     console.log("Supabase is not configured. Using local products fallback.");
@@ -1280,12 +1372,13 @@ async function loadProducts() {
     const { data, error } = await supabaseClient
       .from('products')
       .select('*')
-      .order('created_at', { ascending: true });
+      // All rows share the same created_at → order was random after UPDATE; id is only a stable secondary key
+      .order('id', { ascending: true });
 
     if (error) throw error;
 
     if (data && data.length > 0) {
-      products = data.map(dbProd => ({
+      const fromServer = data.map(dbProd => ({
         id: dbProd.id,
         name: dbProd.name,
         category: dbProd.category,
@@ -1296,11 +1389,13 @@ async function loadProducts() {
         ingredients: dbProd.ingredients || "",
         badge: dbProd.badge || "",
         inStock: dbProd.in_stock !== false,
-        stock: dbProd.stock !== undefined ? dbProd.stock : null,
+        stock: normalizeStockValue(dbProd.stock),
         sizeOptions: dbProd.size_options || null,
         isCustomName: dbProd.is_custom_name === true,
         categoryLabel: CATEGORY_LABELS[dbProd.category]
       }));
+      // Local overrides + restore intended catalog positions (static list order)
+      products = sortProductsStable(applyLocalProductOverrides(fromServer));
       console.log("Successfully loaded products from Supabase:", products.length);
     } else {
       console.log("Supabase products table is empty. Using local products fallback.");
@@ -1316,35 +1411,7 @@ function loadCustomProductsLocalFallback() {
   products.forEach(p => {
     p.categoryLabel = CATEGORY_LABELS[p.category];
   });
-
-  try {
-    const customProducts = localStorage.getItem("nazcake_custom_products");
-    if (customProducts) {
-      const parsed = JSON.parse(customProducts);
-      const customMap = new Map(parsed.map(cp => [cp.id, cp]));
-      products = products.map(p => {
-        const custom = customMap.get(p.id);
-        if (custom) {
-          return {
-            ...p,
-            name: custom.name !== undefined ? custom.name : p.name,
-            price: custom.price !== undefined ? custom.price : p.price,
-            inStock: custom.inStock !== false,
-            stock: custom.stock !== undefined ? custom.stock : p.stock,
-            image: custom.image !== undefined ? custom.image : p.image,
-            sizeOptions: custom.sizeOptions !== undefined ? custom.sizeOptions : p.sizeOptions,
-            isCustomName: custom.isCustomName === true
-          };
-        }
-        return { ...p, inStock: p.inStock !== false };
-      });
-    } else {
-      products = products.map(p => ({ ...p, inStock: p.inStock !== false }));
-    }
-  } catch (e) {
-    console.warn("Failed to load custom products:", e);
-    products = products.map(p => ({ ...p, inStock: p.inStock !== false }));
-  }
+  products = sortProductsStable(applyLocalProductOverrides(products));
 }
 
 async function loadOrdersFromSupabase() {
@@ -1357,17 +1424,26 @@ async function loadOrdersFromSupabase() {
     if (error) throw error;
 
     if (data) {
-      supabaseOrders = data.map(dbOrder => ({
-        id: dbOrder.id,
-        date: new Date(dbOrder.created_at).toLocaleString("ru-RU"),
-        customerName: dbOrder.customer_name,
-        customerPhone: dbOrder.customer_phone,
-        deliveryMethod: dbOrder.delivery_method,
-        address: dbOrder.address || "",
-        items: dbOrder.items,
-        subtotal: Number(dbOrder.subtotal),
-        status: dbOrder.status || 'new'
-      }));
+      const localById = new Map(getLocalOrdersHistory().map((o) => [o.id, o]));
+      supabaseOrders = data.map(dbOrder => {
+        const base = {
+          id: dbOrder.id,
+          date: new Date(dbOrder.created_at).toLocaleString("ru-RU"),
+          customerName: dbOrder.customer_name,
+          customerPhone: dbOrder.customer_phone,
+          deliveryMethod: dbOrder.delivery_method,
+          address: dbOrder.address || "",
+          items: dbOrder.items,
+          subtotal: Number(dbOrder.subtotal),
+          status: dbOrder.status || 'new'
+        };
+        // If RLS blocks status UPDATE, keep local status override after refresh
+        const local = localById.get(base.id);
+        if (local && local.status && local.status !== base.status) {
+          base.status = local.status;
+        }
+        return base;
+      });
       console.log("Successfully loaded orders from Supabase:", supabaseOrders.length);
     }
   } catch (e) {
@@ -1664,7 +1740,7 @@ function createProductCardHtml(p) {
   const tBadge = escapeHTML(badge ? (window.i18n ? window.i18n.t(getBadgeTranslationKey(badge)) : badge) : "");
   const tUnit = escapeHTML(window.i18n ? window.i18n.t(getUnitTranslationKey(unit)) : unit);
 
-  const isOutOfStock = inStock === false || (stock !== null && stock !== undefined && stock <= 0);
+  const isOutOfStock = isProductOutOfStock({ inStock, stock });
   const cardClass = isOutOfStock ? "product-card out-of-stock" : "product-card";
   const tOutOfStock = window.i18n ? window.i18n.t("catalog_out_of_stock") : "Нет в наличии";
   const outOfStockBadge = isOutOfStock ? `<span class="product-badge product-badge-outofstock">${tOutOfStock}</span>` : "";
@@ -1921,10 +1997,11 @@ function openProductPreview(id) {
   modalPlusBtn.onclick = () => {
     triggerHapticFeedback();
     let qty = parseInt(modalQtyVal.textContent);
-    if (p.stock !== undefined && qty >= p.stock) {
+    if (exceedsProductStock(p, qty + 1) || (normalizeStockValue(p.stock) !== null && qty >= normalizeStockValue(p.stock))) {
+      const maxS = normalizeStockValue(p.stock);
       const tMaxStockAlert = window.i18n && window.i18n.getCurrentLanguage() === "kk"
-        ? `Кешіріңіз, бұл тауардан қоймада тек ${p.stock} дана бар.`
-        : `Извините, доступно только ${p.stock} шт. этого товара.`;
+        ? `Кешіріңіз, бұл тауардан қоймада тек ${maxS} дана бар.`
+        : `Извините, доступно только ${maxS} шт. этого товара.`;
       alert(tMaxStockAlert);
       return;
     }
@@ -1955,16 +2032,16 @@ function addToCart(productOrId, qty, selectedSize, selectedPrice) {
   }
   if (!p) return;
 
-  const isOutOfStock = p.inStock === false || (p.stock !== null && p.stock !== undefined && p.stock <= 0);
-  if (isOutOfStock) return;
+  if (isProductOutOfStock(p)) return;
 
   const cartItemId = p.id + (selectedSize ? "_" + selectedSize : "");
   const existing = cart.find(item => item.cartItemId === cartItemId);
   const currentQtyInCart = existing ? existing.qty : 0;
-  if (p.stock !== undefined && currentQtyInCart + qty > p.stock) {
+  if (exceedsProductStock(p, currentQtyInCart + qty)) {
+    const maxS = normalizeStockValue(p.stock);
     const tMaxStockAlert = window.i18n && window.i18n.getCurrentLanguage() === "kk"
-      ? `Кешіріңіз, бұл тауардан қоймада тек ${p.stock} дана бар.`
-      : `Извините, доступно только ${p.stock} шт. этого товара.`;
+      ? `Кешіріңіз, бұл тауардан қоймада тек ${maxS} дана бар.`
+      : `Извините, доступно только ${maxS} шт. этого товара.`;
     alert(tMaxStockAlert);
     return;
   }
@@ -1993,10 +2070,11 @@ function removeFromCart(cartItemId) {
 function changeCartItemQty(cartItemId, newQty) {
   const item = cart.find(i => (i.cartItemId || i.product.id) === cartItemId);
   if (item) {
-    if (item.product.stock !== undefined && newQty > item.product.stock) {
+    if (exceedsProductStock(item.product, newQty)) {
+      const maxS = normalizeStockValue(item.product.stock);
       const tMaxStockAlert = window.i18n && window.i18n.getCurrentLanguage() === "kk"
-        ? `Кешіріңіз, бұл тауардан қоймада тек ${item.product.stock} дана бар.`
-        : `Извините, доступно только ${item.product.stock} шт. этого товара.`;
+        ? `Кешіріңіз, бұл тауардан қоймада тек ${maxS} дана бар.`
+        : `Извините, доступно только ${maxS} шт. этого товара.`;
       alert(tMaxStockAlert);
       return;
     }
@@ -2507,12 +2585,14 @@ function renderAdminCatalog() {
     return;
   }
 
+  const tStockPh = t("admin_stock_ph", "пусто = без лимита");
+
   listContainer.innerHTML = filtered.map(p => {
     const isChecked = p.inStock !== false ? "checked" : "";
     const pName = escapeHTML(p.isCustomName ? p.name : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name));
-    // No infinity: always a finite non-negative integer (default 0)
-    const stockRaw = p.stock !== undefined && p.stock !== null ? Number(p.stock) : 0;
-    const stockVal = Number.isFinite(stockRaw) && stockRaw >= 0 ? Math.floor(stockRaw) : 0;
+    // Empty input = no stock limit (null). 0 = none left.
+    const stockNorm = normalizeStockValue(p.stock);
+    const stockVal = stockNorm === null ? "" : String(stockNorm);
     const priceRaw = Number(p.price);
     const priceVal = Number.isFinite(priceRaw) && priceRaw >= 0 ? Math.floor(priceRaw) : 0;
 
@@ -2532,7 +2612,7 @@ function renderAdminCatalog() {
           </div>
           <div class="admin-prod-form-group admin-field-stock">
             <label>${escapeHTML(tStock)}</label>
-            <input type="number" class="admin-edit-stock" value="${stockVal}" min="0" step="1" inputmode="numeric">
+            <input type="number" class="admin-edit-stock" value="${stockVal}" min="0" step="1" inputmode="numeric" placeholder="${escapeHTML(tStockPh)}">
           </div>
           <div class="admin-prod-form-group admin-field-price">
             <label>${escapeHTML(tPrice)}</label>
@@ -2550,19 +2630,24 @@ function renderAdminCatalog() {
     `;
   }).join("");
 
-  // Block negative typing / paste in stock & price fields
-  listContainer.querySelectorAll(".admin-edit-stock, .admin-edit-price").forEach((input) => {
+  // Block negatives; stock may stay empty (= no limit)
+  listContainer.querySelectorAll(".admin-edit-price").forEach((input) => {
     input.addEventListener("input", () => clampNonNegativeIntInput(input));
     input.addEventListener("blur", () => clampNonNegativeIntInput(input, true));
   });
+  listContainer.querySelectorAll(".admin-edit-stock").forEach((input) => {
+    input.addEventListener("input", () => clampNonNegativeIntInput(input, false));
+    input.addEventListener("blur", () => clampNonNegativeIntInput(input, false));
+  });
 }
 
-/** Keep admin number fields as integers >= 0 (no infinity, no negatives). */
+/** Keep admin number fields as integers >= 0. Empty allowed when fillEmpty=false (stock limit). */
 function clampNonNegativeIntInput(input, fillEmpty = false) {
   if (!input) return;
   let raw = String(input.value ?? "").replace(/[^\d]/g, "");
   if (raw === "") {
     if (fillEmpty) input.value = "0";
+    else input.value = "";
     return;
   }
   // strip leading zeros but keep single 0
@@ -2653,18 +2738,24 @@ window.saveAdminProduct = async function(id) {
   const priceField = row.querySelector(".admin-edit-price");
   const stockField = row.querySelector(".admin-edit-stock");
   clampNonNegativeIntInput(priceField, true);
-  clampNonNegativeIntInput(stockField, true);
+  clampNonNegativeIntInput(stockField, false);
 
   const priceInput = parseInt(priceField.value, 10);
-  const stockInput = parseInt(stockField.value, 10);
+  // Empty stock field = no quantity limit (null)
+  const stockRaw = String(stockField.value ?? "").trim();
+  const stockInput = stockRaw === "" ? null : parseInt(stockRaw, 10);
   const inStockInput = row.querySelector(".admin-edit-instock").checked;
   const newImageVal = row.getAttribute("data-new-image") || undefined;
 
+  if (!nameInput) {
+    alert(window.i18n ? window.i18n.t("admin_err_name") : "Введите название товара!");
+    return;
+  }
   if (!Number.isFinite(priceInput) || priceInput < 0) {
     alert(window.i18n ? window.i18n.t("admin_err_price") : "Пожалуйста, введите корректную цену!");
     return;
   }
-  if (!Number.isFinite(stockInput) || stockInput < 0) {
+  if (stockRaw !== "" && (!Number.isFinite(stockInput) || stockInput < 0)) {
     alert(window.i18n ? window.i18n.t("admin_err_stock") : "Пожалуйста, введите корректное количество!");
     return;
   }
@@ -2674,7 +2765,10 @@ window.saveAdminProduct = async function(id) {
   saveBtn.disabled = true;
   saveBtn.textContent = "...";
 
-  // 1. Save to Supabase (if active)
+  let serverSaved = false;
+  let serverErrorMsg = "";
+
+  // 1. Save to Supabase (if active) — require returned rows (RLS can return 200 + [])
   if (supabaseClient) {
     try {
       const updateData = {
@@ -2688,22 +2782,29 @@ window.saveAdminProduct = async function(id) {
         updateData.image = newImageVal;
       }
 
-      const { error } = await supabaseClient
+      const { data, error } = await supabaseClient
         .from('products')
         .update(updateData)
-        .eq('id', id);
+        .eq('id', id)
+        .select('id');
 
       if (error) throw error;
+      if (!data || data.length === 0) {
+        throw new Error(
+          window.i18n
+            ? window.i18n.t("admin_err_rls")
+            : "Сервер не обновил товар (нет прав UPDATE / RLS). Сохранено локально."
+        );
+      }
+      serverSaved = true;
       console.log("Successfully saved product edit to Supabase:", id);
     } catch (e) {
-      console.warn("Failed to save product edit to Supabase:", e.message);
-      const serverErr = window.i18n ? window.i18n.t("admin_err_server") : "Ошибка при сохранении на сервере";
-      const localOnly = window.i18n ? window.i18n.t("admin_err_local_only") : "Данные будут сохранены только локально.";
-      alert(serverErr + ": " + e.message + "\n" + localOnly);
+      serverErrorMsg = e.message || String(e);
+      console.warn("Failed to save product edit to Supabase:", serverErrorMsg);
     }
   }
 
-  // 2. Update in local memory array
+  // 2. Update in local memory array (always — so UI stays consistent)
   products = products.map(p => {
     if (p.id === id) {
       return {
@@ -2719,26 +2820,26 @@ window.saveAdminProduct = async function(id) {
     return p;
   });
 
-  // 3. Save to localStorage fallback
-  try {
-    const customList = products.map(p => ({
-      id: p.id,
-      name: p.name,
-      price: p.price,
-      inStock: p.inStock,
-      stock: p.stock,
-      image: p.image,
-      isCustomName: p.isCustomName || false
-    }));
-    localStorage.setItem("nazcake_custom_products", JSON.stringify(customList));
-  } catch(e) {
-    console.warn("Failed to save custom products to localStorage:", e);
+  // 3. Persist local overrides (survives refresh even when Supabase RLS blocks UPDATE)
+  const localOk = persistLocalProductOverrides(products);
+  if (!localOk && !serverSaved) {
+    saveBtn.disabled = false;
+    saveBtn.textContent = origText;
+    alert(window.i18n ? window.i18n.t("admin_err_local_storage") : "Не удалось сохранить изменения (память браузера переполнена).");
+    return;
+  }
+
+  if (!serverSaved && supabaseClient && serverErrorMsg) {
+    const serverErr = window.i18n ? window.i18n.t("admin_err_server") : "Ошибка при сохранении на сервере";
+    const localOnly = window.i18n ? window.i18n.t("admin_err_local_only") : "Данные сохранены локально в этом браузере.";
+    // Non-blocking: still show success on button, but inform once
+    console.warn(serverErr + ": " + serverErrorMsg + " — " + localOnly);
   }
 
   // Visual feedback on save
   saveBtn.disabled = false;
   saveBtn.textContent = "✓";
-  saveBtn.style.background = "#27ae60";
+  saveBtn.style.background = serverSaved ? "#27ae60" : "#e67e22";
   setTimeout(() => {
     saveBtn.textContent = origText;
     saveBtn.style.background = "";
@@ -2749,6 +2850,7 @@ window.saveAdminProduct = async function(id) {
   const activeTab = document.querySelector(".tab-btn.active");
   const category = activeTab ? activeTab.getAttribute("data-category") : "all";
   renderCatalog(category);
+  renderAdminCatalog();
 
   // Sync cart items with updated product data
   const updatedProduct = products.find(p => p.id === id);
@@ -3430,7 +3532,8 @@ function setupAdminLogin(loginModal, dashModal) {
 
       if (supabaseClient) {
         try {
-          const { data, error } = await supabase.auth.signInWithPassword({
+          // Must use client instance (not window.supabase library)
+          const { data, error } = await supabaseClient.auth.signInWithPassword({
             email: email,
             password: password
           });
@@ -3511,8 +3614,15 @@ function setupAdminDashboardNav(dashModal) {
 
   // Logout
   if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
+    logoutBtn.addEventListener("click", async () => {
       triggerHapticFeedback();
+      if (supabaseClient) {
+        try {
+          await supabaseClient.auth.signOut();
+        } catch (e) {
+          console.warn("Supabase signOut:", e);
+        }
+      }
       closeModal(dashModal);
     });
   }
@@ -3697,25 +3807,40 @@ function renderAdminOrders() {
 // Global status changer
 window.changeOrderStatus = async function(orderId, newStatus) {
   try {
+    let serverOk = false;
     if (supabaseClient) {
-      const { error } = await supabaseClient
+      const { data, error } = await supabaseClient
         .from('orders')
         .update({ status: newStatus })
-        .eq('id', orderId);
+        .eq('id', orderId)
+        .select('id');
       if (error) {
         console.warn("Failed to update order status in Supabase:", error.message);
+      } else if (!data || data.length === 0) {
+        console.warn("Order status not updated on server (RLS or missing row):", orderId);
       } else {
-        supabaseOrders = supabaseOrders.map(order =>
-          order.id === orderId ? { ...order, status: newStatus } : order
-        );
+        serverOk = true;
       }
     }
 
-    let history = getLocalOrdersHistory();
-    history = history.map(order =>
+    // Always update in-memory + local history so admin UI stays correct
+    supabaseOrders = supabaseOrders.map(order =>
       order.id === orderId ? { ...order, status: newStatus } : order
     );
+
+    let history = getLocalOrdersHistory();
+    const idx = history.findIndex(order => order.id === orderId);
+    if (idx >= 0) {
+      history[idx] = { ...history[idx], status: newStatus };
+    } else {
+      const fromSb = supabaseOrders.find(o => o.id === orderId);
+      if (fromSb) history.unshift({ ...fromSb, status: newStatus });
+    }
     saveOrdersHistory(history);
+
+    if (!serverOk && supabaseClient) {
+      console.warn("Order status saved locally only (server update blocked).");
+    }
 
     renderAdminOrders();
   } catch (e) {
@@ -4494,6 +4619,11 @@ if (typeof module !== 'undefined') {
     updateAdminImagePreview: typeof updateAdminImagePreview !== 'undefined' ? updateAdminImagePreview : null,
     adjustColorBrightness: typeof adjustColorBrightness !== 'undefined' ? adjustColorBrightness : null,
     checkAtyrauBounds: typeof checkAtyrauBounds !== 'undefined' ? checkAtyrauBounds : null,
-    calculateImageDimensions: typeof calculateImageDimensions !== 'undefined' ? calculateImageDimensions : null
+    calculateImageDimensions: typeof calculateImageDimensions !== 'undefined' ? calculateImageDimensions : null,
+    normalizeStockValue: typeof normalizeStockValue !== 'undefined' ? normalizeStockValue : null,
+    isProductOutOfStock: typeof isProductOutOfStock !== 'undefined' ? isProductOutOfStock : null,
+    exceedsProductStock: typeof exceedsProductStock !== 'undefined' ? exceedsProductStock : null,
+    applyLocalProductOverrides: typeof applyLocalProductOverrides !== 'undefined' ? applyLocalProductOverrides : null,
+    persistLocalProductOverrides: typeof persistLocalProductOverrides !== 'undefined' ? persistLocalProductOverrides : null
   };
 }
