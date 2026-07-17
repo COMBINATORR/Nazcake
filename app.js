@@ -43,7 +43,7 @@ let products = [
     image: "images/bread_burger.webp",
     desc: "Свежая, невероятно мягкая и воздушная пшеничная булочка, посыпанная кунжутом. Отлично подходит для домашних бургеров.",
     ingredients: "Масло сливочное, молоко, сахар, соль, дрожжи, мука, масло растительное, кунжут белый. Аллергены: глютен, молоко, кунжут.",
-    badge: "свежее"
+    badge: ""
   },
   {
     id: "bread_baursaki",
@@ -76,7 +76,7 @@ let products = [
     image: "images/bread_garlic.webp",
     desc: "Ароматный мини-батон с начинкой из чесночного масла и зелени. Отлично подходит к супам и основным блюдам.",
     ingredients: "Мука, спайси для хлеба, дрожжи, масло растительное, соль. Аллергены: глютен.",
-    badge: "свежее"
+    badge: ""
   },
   {
     id: "bread_sayka",
@@ -142,7 +142,7 @@ let products = [
     image: "images/bread_tandoor_flatbread.webp",
     desc: "Классическая пышная тандырная лепешка с хрустящей корочкой и мягким центром. Выпекается по старинным рецептам.",
     ingredients: "Масло сливочное, молоко, сахар, соль, дрожжи, мука, масло растительное, мак. Аллергены: глютен, молоко.",
-    badge: "свежее"
+    badge: ""
   },
   {
     id: "pastry_samsa_meat",
@@ -153,7 +153,7 @@ let products = [
     image: "images/pastry_samsa_meat.webp",
     desc: "Хрустящая слоеная самса с начинкой из сочного фарша с луком и специями.",
     ingredients: "Мука, яйцо, соль, масло слоеное, лук, фарш говяжий, перец черный молотый, кунжут белый. Аллергены: глютен, молоко, яйца, кунжут.",
-    badge: "свежее"
+    badge: ""
   },
   {
     id: "pastry_samsa_liver",
@@ -1387,7 +1387,7 @@ async function loadProducts() {
         image: dbProd.image || "",
         desc: dbProd.desc || "",
         ingredients: dbProd.ingredients || "",
-        badge: dbProd.badge || "",
+        badge: normalizeProductBadge(dbProd.badge),
         inStock: dbProd.in_stock !== false,
         stock: normalizeStockValue(dbProd.stock),
         sizeOptions: dbProd.size_options || null,
@@ -1559,16 +1559,25 @@ const sprinkleKeys = {
   "stars": "bento_opt_sprinkles_stars"
 };
 
+/** Strip redundant "fresh" badges — all bakery is daily-fresh. */
+function normalizeProductBadge(badge) {
+  if (badge === null || badge === undefined || badge === "") return "";
+  const b = String(badge).trim().toLowerCase();
+  if (b === "свежее" || b === "балғын" || b === "свежий" || b === "fresh") return "";
+  return String(badge).trim();
+}
+
 function getBadgeTranslationKey(badge) {
-  if (!badge) return "";
-  switch(badge) {
-    case "свежее": return "badge_fresh";
+  const b = normalizeProductBadge(badge);
+  if (!b) return "";
+  switch (b) {
     case "бестселлер": return "badge_bestseller";
     case "горячее": return "badge_hot";
     case "новое": return "badge_new";
     case "хит": return "badge_hit";
     case "премиум": return "badge_premium";
-    case "заказной": return "badge_custom";
+    case "заказной":
+    case "custom": return "badge_custom";
     case "vip": return "badge_vip";
     case "ручная лепка": return "badge_hand";
     default: return "";
@@ -1745,7 +1754,13 @@ function createProductCardHtml(p) {
   const { id, name, category, categoryLabel, badge, unit, price, sizeOptions, inStock, stock, image, isCustomName } = p;
   const tName = escapeHTML(isCustomName ? name : (window.i18n ? window.i18n.t(`p_${id}_name`) : name));
   const tCategoryLabel = escapeHTML(window.i18n ? window.i18n.t(`catalog_cat_${category}`) : categoryLabel);
-  const tBadge = escapeHTML(badge ? (window.i18n ? window.i18n.t(getBadgeTranslationKey(badge)) : badge) : "");
+  const displayBadge = normalizeProductBadge(badge);
+  const badgeKey = displayBadge ? getBadgeTranslationKey(displayBadge) : "";
+  const tBadge = escapeHTML(
+    displayBadge
+      ? (window.i18n && badgeKey ? window.i18n.t(badgeKey) : displayBadge)
+      : ""
+  );
   const tUnit = escapeHTML(window.i18n ? window.i18n.t(getUnitTranslationKey(unit)) : unit);
 
   const isOutOfStock = isProductOutOfStock({ inStock, stock });
@@ -1755,7 +1770,7 @@ function createProductCardHtml(p) {
     ? `<span class="product-badge product-badge-outofstock"><span class="product-badge-text">${tOutOfStock}</span></span>`
     : "";
   const activeBadge = outOfStockBadge
-    || (badge ? `<span class="product-badge"><span class="product-badge-text">${tBadge}</span></span>` : "");
+    || (displayBadge ? `<span class="product-badge"><span class="product-badge-text">${tBadge}</span></span>` : "");
 
   return `
     <div class="${cardClass} reveal-item" data-id="${id}">
