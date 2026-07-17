@@ -1893,7 +1893,21 @@ function setupEventListeners() {
   setupModal(cartSidebar, openCartBtn, closeCartBtn, cartOverlay);
 
   // Preview Modal
-  setupModal(previewModal, null, closePreviewBtn, previewModal);
+  // Product preview: dedicated close handlers (overlay, X, Escape)
+  if (previewModal) {
+    if (closePreviewBtn) {
+      closePreviewBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closeProductPreview();
+      });
+    }
+    previewModal.addEventListener("click", (e) => {
+      // Click on dimmed backdrop only (not card content)
+      if (e.target === previewModal) closeProductPreview();
+    });
+  }
+  // Note: cart/drawer still use setupModal below
 
   // Success modal
   setupModal(successModal, null, closeSuccessBtn, null);
@@ -2031,17 +2045,60 @@ function openProductPreview(id) {
     modalQtyVal.textContent = qty;
   };
 
-  modalAddBtn.onclick = () => {
-    triggerHapticFeedback();
-    const qty = parseInt(modalQtyVal.textContent);
-    addToCart(activePreviewProductId, qty, selectedSize, selectedPrice);
-    closeModal(previewModal);
+  if (modalAddBtn) {
+    modalAddBtn.onclick = () => {
+      triggerHapticFeedback();
+      const qty = parseInt(modalQtyVal.textContent);
+      addToCart(activePreviewProductId, qty, selectedSize, selectedPrice);
+      closeProductPreview();
+      // Open cart automatically to show it
+      openModal(cartSidebar, cartOverlay);
+    };
+  }
 
-    // Open cart automatically to show it
-    openModal(cartSidebar, cartOverlay);
-  };
+  openProductPreviewModal();
+}
 
-  openModal(previewModal);
+/** Open product preview overlay and lock page scroll. */
+function openProductPreviewModal() {
+  if (!previewModal) return;
+  const wasOpen = previewModal.classList.contains("open");
+  previewModal.style.display = "";
+  previewModal.classList.add("open");
+  if (!wasOpen) lockBodyScroll();
+  triggerHapticFeedback();
+  // Ensure sticky actions / add button are in view after paint
+  requestAnimationFrame(() => {
+    const actions = previewModal.querySelector(".modal-sticky-actions");
+    if (actions) actions.scrollIntoView({ block: "nearest", behavior: "instant" });
+  });
+}
+
+/** Fully close product preview and release scroll lock. */
+function closeProductPreview() {
+  if (!previewModal) return;
+  const wasOpen = previewModal.classList.contains("open");
+  previewModal.classList.remove("open");
+  previewModal.style.display = "";
+  const container = previewModal.querySelector(".modal-container");
+  if (container) {
+    container.style.transform = "";
+    container.style.transition = "";
+  }
+  if (wasOpen) unlockBodyScroll();
+  // Safety: if no other overlays hold the lock, force-clear stuck body lock
+  const anyOpen =
+    document.querySelector(".modal-overlay.open") ||
+    document.querySelector(".cart-sidebar.open") ||
+    document.querySelector(".mobile-drawer.open");
+  if (!anyOpen && bodyScrollLockCount > 0) {
+    bodyScrollLockCount = 0;
+    document.documentElement.classList.remove("modal-open");
+    document.body.classList.remove("modal-open");
+    document.body.style.top = "";
+    window.scrollTo(0, bodyScrollLockY);
+  }
+  activePreviewProductId = null;
 }
 
 // Add Item to Cart
@@ -3611,6 +3668,8 @@ function setupModalSwipeClose() {
   let isDragging = false;
 
   modalContainer.addEventListener("touchstart", (e) => {
+    const scrollable = modalContainer.querySelector(".preview-details-scrollable");
+    if (scrollable && scrollable.scrollTop > 0) return;
     if (modalContainer.scrollTop > 0) return;
     if (e.touches.length !== 1) return;
 
@@ -3640,12 +3699,7 @@ function setupModalSwipeClose() {
 
     const deltaY = currentY - startY;
     if (deltaY > 120) {
-      const closeBtn = document.getElementById("close-preview-btn");
-      if (closeBtn) {
-        closeBtn.click();
-      } else {
-        closeModal(previewModal, previewModal);
-      }
+      closeProductPreview();
       setTimeout(() => {
         modalContainer.style.transform = "";
       }, 400);
@@ -3654,6 +3708,20 @@ function setupModalSwipeClose() {
     }
   });
 }
+
+// Escape: preview first, then cart sidebar
+document.addEventListener("keydown", (e) => {
+  if (e.key !== "Escape") return;
+  if (previewModal && previewModal.classList.contains("open")) {
+    e.preventDefault();
+    closeProductPreview();
+    return;
+  }
+  if (cartSidebar && cartSidebar.classList.contains("open")) {
+    e.preventDefault();
+    closeModal(cartSidebar, cartOverlay);
+  }
+});
 
 let scrollObserver;
 
@@ -4381,12 +4449,14 @@ function handleQuickKaspiClick() {
   triggerHapticFeedback();
 
   // Close preview modal (also unlocks its scroll lock)
-  const previewModal = document.getElementById("preview-modal");
-  if (previewModal && previewModal.classList.contains("open")) {
-    closeModal(previewModal);
-  }
-  if (previewModal) {
-    previewModal.style.display = "";
+  if (typeof closeProductPreview === "function") {
+    closeProductPreview();
+  } else {
+    const pm = document.getElementById("preview-modal");
+    if (pm) {
+      pm.classList.remove("open");
+      pm.style.display = "";
+    }
   }
 
   // Open Kaspi QR Modal

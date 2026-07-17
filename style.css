@@ -2964,7 +2964,7 @@ body.dark-theme .bestsellers-scroll-thumb {
   }
 }
 
-/* Large chevrons only — no circles, stay inside the carousel rail */
+/* Large chevrons — always clickable on desktop, inside carousel rail */
 .bestsellers-arrow {
   position: absolute;
   top: 42%;
@@ -2975,6 +2975,7 @@ body.dark-theme .bestsellers-scroll-thumb {
   padding: 0;
   border: none;
   border-radius: 0;
+  z-index: 12;
   background: transparent;
   color: var(--accent-gold);
   display: flex;
@@ -2982,9 +2983,8 @@ body.dark-theme .bestsellers-scroll-thumb {
   justify-content: center;
   cursor: pointer;
   box-shadow: none;
-  z-index: 12;
-  opacity: 0;
-  pointer-events: none;
+  opacity: 0.85;
+  pointer-events: auto;
   transition: opacity 0.22s ease, transform 0.2s ease, color 0.2s ease, filter 0.2s ease;
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 10px rgba(255, 255, 255, 0.35));
 }
@@ -3000,7 +3000,6 @@ body.dark-theme .bestsellers-scroll-thumb {
 .bestsellers-carousel-wrapper.is-scrolling .bestsellers-arrow,
 .bestsellers-carousel-wrapper:focus-within .bestsellers-arrow {
   opacity: 1;
-  pointer-events: auto;
 }
 
 body.dark-theme .bestsellers-arrow {
@@ -3055,6 +3054,15 @@ body.dark-theme .bestsellers-arrow:hover {
     height: 6px;
   }
 
+  /* Keep arrows usable on tablet; hide only on very narrow phones */
+  .bestsellers-arrow {
+    width: 40px;
+    height: 56px;
+    opacity: 0.85;
+  }
+}
+
+@media (max-width: 480px) {
   .bestsellers-arrow {
     display: none !important;
   }
@@ -4069,14 +4077,19 @@ body.modal-open .admin-orders-list {
 .preview-modal-container {
   max-width: 920px;
   width: min(94vw, 920px);
+  max-height: min(92vh, 720px);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .preview-modal-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
   min-height: 0;
+  flex: 1 1 auto;
   align-items: stretch;
+  overflow: hidden;
 }
 
 .preview-image-side {
@@ -4103,13 +4116,44 @@ body.modal-open .admin-orders-list {
 }
 
 .preview-details-side {
-  padding: 32px 28px 28px;
+  padding: 0;
   text-align: left;
   display: flex;
   flex-direction: column;
   gap: 0;
-  max-height: min(85vh, 640px);
+  min-height: 0;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.preview-details-scrollable {
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 28px 24px 12px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.modal-sticky-actions {
+  flex-shrink: 0;
+  z-index: 5;
+  margin-top: auto;
+  padding: 12px 24px 20px;
+  background: var(--bg-primary);
+  border-top: 1px solid color-mix(in srgb, var(--border-color) 70%, transparent);
+  box-shadow: 0 -8px 20px rgba(0, 0, 0, 0.04);
+}
+
+.modal-sticky-actions .modal-action-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.modal-sticky-actions .modal-kaspi-btn {
+  width: 100%;
 }
 
 .modal-product-title {
@@ -5308,8 +5352,19 @@ body.dark-theme .site-dialog-icon.is-warn {
   }
 
   .preview-details-side {
-    padding: 16px 18px 20px;
     max-height: none;
+  }
+
+  .preview-details-scrollable {
+    padding: 16px 18px 10px;
+  }
+
+  .modal-sticky-actions {
+    padding: 10px 18px 16px;
+  }
+
+  .preview-modal-container {
+    max-height: min(94vh, 100dvh);
   }
   
   .footer-container {
@@ -6696,10 +6751,9 @@ body.dark-theme .admin-status-dropdown {
   margin-top: 10px;
 }
 
-/* Hide Customizer Section completely */
-#customizer,
+/* Customizer is visible again (was hard-hidden) */
 .wave-customizer {
-  display: none !important;
+  display: block;
 }
 
 /* Page Preloader Styles */
@@ -7335,21 +7389,8 @@ body.dark-theme .btn-secondary:hover {
   }
 }
 
-/* Mobile Category Navigation (after About section) */
-.mobile-category-nav {
-  justify-content: space-around;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 28px 16px 8px;
-  background-color: var(--bg-primary);
-  border-top: 1px solid rgba(74, 44, 17, 0.06);
-}
-
-/* Hide hero-category-nav and showcase-grid on desktop to show only video and USP */
+/* Hide showcase-grid on desktop to show only video and USP */
 @media (min-width: 993px) {
-  .hero-category-nav.desktop-only {
-    display: none !important;
-  }
   .hero-showcase-grid.desktop-only {
     display: none !important;
   }
@@ -7608,15 +7649,6 @@ body.dark-theme .btn-secondary:hover {
     right: max(12px, env(safe-area-inset-right));
     bottom: max(8px, env(safe-area-inset-bottom));
     padding: 8px 12px;
-  }
-
-  .mobile-category-nav {
-    padding: 16px 12px 4px;
-  }
-
-  .category-nav-circle {
-    width: 56px !important;
-    height: 56px !important;
   }
 
   .page-preloader {
