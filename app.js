@@ -1752,6 +1752,7 @@ function renderCatalog(category) {
     catalogGrid.innerHTML = filtered.map(p => createProductCardHtml(p)).join("");
     attachCardEvents(catalogGrid);
     refreshScrollReveal();
+    applyCatalogSectionTheme(category);
   }, 250);
 }
 
@@ -1763,8 +1764,8 @@ function isNewArrivalProduct(p) {
   return b === "новое" || b === "жаңа" || b === "new" || b === "новинка" || b === "новинки";
 }
 
-/** Soft card gradients — same family as category-stage accents */
-const CATEGORY_CARD_PALETTE = {
+/** Same accent family as category-stage — used for catalog SECTION background */
+const CATEGORY_SCENE_PALETTE = {
   cakes: { a: "#5c2a18", b: "#1a100c", c: "#c48a3a" },
   pastries: { a: "#c48a28", b: "#3d2410", c: "#e8b85a" },
   pies: { a: "#7a2f55", b: "#1a1020", c: "#c46a8a" },
@@ -1775,10 +1776,26 @@ const CATEGORY_CARD_PALETTE = {
   on_order: { a: "#8b6b2e", b: "#241c0c", c: "#f0d070" }
 };
 
-function categoryCardAccentStyle(category) {
-  const p = CATEGORY_CARD_PALETTE[category];
-  if (!p) return "";
-  return ` style="--card-accent:${p.a};--card-accent-2:${p.b};--card-accent-3:${p.c}"`;
+/** Paint catalog section with stage-style gradient for active category tab. */
+function applyCatalogSectionTheme(category) {
+  const section = document.querySelector(".catalog-section") || document.getElementById("catalog");
+  if (!section) return;
+  const palette = category && category !== "all" && category !== "new"
+    ? CATEGORY_SCENE_PALETTE[category]
+    : null;
+  if (palette) {
+    section.classList.add("is-cat-themed");
+    section.dataset.catTheme = category;
+    section.style.setProperty("--cat-accent", palette.a);
+    section.style.setProperty("--cat-accent-2", palette.b);
+    section.style.setProperty("--cat-accent-3", palette.c);
+  } else {
+    section.classList.remove("is-cat-themed");
+    section.removeAttribute("data-cat-theme");
+    section.style.removeProperty("--cat-accent");
+    section.style.removeProperty("--cat-accent-2");
+    section.style.removeProperty("--cat-accent-3");
+  }
 }
 
 function createProductCardHtml(p) {
@@ -1803,10 +1820,9 @@ function createProductCardHtml(p) {
   const activeBadge = outOfStockBadge
     || (displayBadge ? `<span class="product-badge"><span class="product-badge-text">${tBadge}</span></span>` : "");
   const catAttr = category ? ` data-category="${escapeHTML(category)}"` : "";
-  const accentStyle = categoryCardAccentStyle(category);
 
   return `
-    <div class="${cardClass} reveal-item" data-id="${id}"${catAttr}${accentStyle}>
+    <div class="${cardClass} reveal-item" data-id="${id}"${catAttr}>
       <div class="product-img-wrapper btn-preview">
         ${activeBadge}
         <img src="${image}" alt="${tName}" class="lazy-image loading" loading="lazy" width="360" height="360" onload="this.classList.remove('loading')">

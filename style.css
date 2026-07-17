@@ -3088,35 +3088,12 @@ body.dark-theme .bestsellers-arrow:hover {
 .product-img-wrapper {
   position: relative;
   padding-bottom: 100%; /* 1:1 Aspect Ratio */
-  /* Soft multi-stop wash from category palette (same family as category-stage) */
   background-color: var(--bg-tertiary);
-  background-image:
-    radial-gradient(
-      ellipse 100% 75% at 50% 105%,
-      color-mix(in srgb, var(--card-accent, #c4b8a8) 28%, transparent) 0%,
-      transparent 68%
-    ),
-    radial-gradient(
-      ellipse 55% 45% at 12% 18%,
-      color-mix(in srgb, var(--card-accent-3, #d8cfc4) 16%, transparent) 0%,
-      transparent 58%
-    ),
-    radial-gradient(
-      ellipse 50% 40% at 90% 12%,
-      color-mix(in srgb, var(--card-accent-2, #a89888) 14%, transparent) 0%,
-      transparent 55%
-    ),
-    linear-gradient(
-      165deg,
-      color-mix(in srgb, var(--card-accent-2, var(--bg-tertiary)) 10%, var(--bg-tertiary)) 0%,
-      var(--bg-tertiary) 55%,
-      color-mix(in srgb, var(--card-accent, var(--bg-tertiary)) 8%, var(--bg-tertiary)) 100%
-    );
   overflow: hidden;
   cursor: pointer;
   border-radius: 22px;
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.07);
-  transition: box-shadow 0.3s ease, background-image 0.35s ease;
+  transition: box-shadow 0.3s ease, background 0.35s ease;
 }
 
 .product-img-wrapper img {
@@ -3139,9 +3116,7 @@ body.dark-theme .bestsellers-arrow:hover {
 }
 
 .product-card:hover .product-img-wrapper {
-  box-shadow:
-    0 12px 28px rgba(0, 0, 0, 0.1),
-    0 0 0 1px color-mix(in srgb, var(--card-accent, transparent) 22%, transparent);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
 }
 
 /* Product card chips — clean cream fill, gold outline, solid type (no dirty shadow) */
@@ -3293,6 +3268,102 @@ body.dark-theme .bestsellers-arrow:hover {
 .catalog-section {
   padding: 40px 0;
   background-color: var(--bg-secondary);
+  transition: background 0.55s cubic-bezier(0.4, 0, 0.2, 1), color 0.35s ease;
+}
+
+/* Active category tab → full scene gradient (same language as category-stage) */
+.catalog-section.is-cat-themed {
+  color: #fff;
+  background:
+    radial-gradient(
+      ellipse 95% 75% at 50% 90%,
+      color-mix(in srgb, var(--cat-accent, #5c2a18) 70%, transparent) 0%,
+      transparent 58%
+    ),
+    radial-gradient(
+      ellipse 70% 55% at 12% 30%,
+      color-mix(in srgb, var(--cat-accent-2, #1a100c) 55%, transparent) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 65% 50% at 90% 22%,
+      color-mix(in srgb, var(--cat-accent-3, #c48a3a) 40%, transparent) 0%,
+      transparent 52%
+    ),
+    radial-gradient(
+      ellipse 50% 40% at 50% 8%,
+      color-mix(in srgb, var(--cat-accent, #5c2a18) 22%, transparent) 0%,
+      transparent 60%
+    ),
+    linear-gradient(
+      165deg,
+      color-mix(in srgb, var(--cat-accent-2, #120b0a) 85%, #0a0908) 0%,
+      #0c0a09 55%,
+      color-mix(in srgb, var(--cat-accent, #1a1010) 40%, #080706) 100%
+    );
+}
+
+.catalog-section.is-cat-themed .section-title {
+  color: #ffffff !important;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
+}
+
+.catalog-section.is-cat-themed .section-desc {
+  color: rgba(255, 255, 255, 0.82) !important;
+}
+
+.catalog-section.is-cat-themed .product-name {
+  color: #faf6f1;
+}
+
+.catalog-section.is-cat-themed .product-category {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.catalog-section.is-cat-themed .product-price {
+  color: #f0d9a0;
+}
+
+.catalog-section.is-cat-themed .product-img-wrapper {
+  background-color: rgba(255, 255, 255, 0.06);
+  background-image: none;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+}
+
+.catalog-section.is-cat-themed .product-card:hover .product-img-wrapper {
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.38);
+}
+
+.catalog-section.is-cat-themed .tab-btn {
+  background: rgba(12, 10, 9, 0.35);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.catalog-section.is-cat-themed .tab-btn:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #fff;
+}
+
+.catalog-section.is-cat-themed .tab-btn.active {
+  background: rgba(255, 255, 255, 0.95);
+  color: #1c1511;
+  border-color: transparent;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.catalog-section.is-cat-themed .tab-btn.tab-btn--new:not(.active) {
+  border-color: rgba(246, 224, 115, 0.55);
+  color: #f6e073;
+  background: rgba(12, 10, 9, 0.4);
+}
+
+.catalog-section.is-cat-themed .btn-card-add {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .catalog-tabs {
@@ -7168,32 +7239,6 @@ body.dark-theme .product-card {
 
 body.dark-theme .product-img-wrapper {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-  background-image:
-    radial-gradient(
-      ellipse 100% 75% at 50% 105%,
-      color-mix(in srgb, var(--card-accent, #5a4030) 38%, transparent) 0%,
-      transparent 70%
-    ),
-    radial-gradient(
-      ellipse 55% 45% at 12% 18%,
-      color-mix(in srgb, var(--card-accent-3, #6a5040) 22%, transparent) 0%,
-      transparent 58%
-    ),
-    radial-gradient(
-      ellipse 50% 40% at 90% 12%,
-      color-mix(in srgb, var(--card-accent-2, #3a2818) 28%, transparent) 0%,
-      transparent 55%
-    ),
-    linear-gradient(
-      165deg,
-      color-mix(in srgb, var(--card-accent-2, #1a1410) 45%, #12100e) 0%,
-      #161210 100%
-    );
-}
-
-/* Touch: keep gradients, no extra glow cost */
-html.is-touch-device .product-card:hover .product-img-wrapper {
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
 }
 
 body.dark-theme .product-badge {
