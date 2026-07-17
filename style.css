@@ -966,7 +966,7 @@ body.dark-theme .main-header.scrolled {
   transition: opacity 300ms ease, transform 200ms ease;
 }
 
-/* Product stage lives only in the middle band — never over footer controls or top pill */
+/* Middle band only; overflow clips parked side items so they don't sit on screen */
 .category-stage-viewport {
   position: absolute;
   left: 0;
@@ -981,28 +981,32 @@ body.dark-theme .main-header.scrolled {
 .category-stage {
   position: absolute;
   inset: 0;
-  perspective: 1200px;
-  perspective-origin: 50% 40%;
+  perspective: 1400px;
+  perspective-origin: 50% 45%;
 }
 
-/* Single hero product only (no left/right/back neighbors in DOM) */
-.category-stage-item,
-.category-stage-item.is-center {
+/* Base item — carousel roles animate position/opacity/scale */
+.category-stage-item {
   position: absolute;
-  left: 50%;
   top: 50%;
+  left: 50%;
   aspect-ratio: 1 / 1;
-  height: 82%;
+  height: 78%;
   max-height: 100%;
-  max-width: min(92%, 520px);
   width: auto;
+  max-width: min(70%, 520px);
   transform: translate(-50%, -50%);
-  z-index: 30;
-  opacity: 1;
-  filter: none;
-  isolation: isolate;
-  pointer-events: auto;
-  cursor: pointer;
+  transform-style: preserve-3d;
+  will-change: transform, opacity, left, filter;
+  transition:
+    transform var(--stage-ms) var(--stage-ease),
+    opacity var(--stage-ms) var(--stage-ease),
+    left var(--stage-ms) var(--stage-ease),
+    height var(--stage-ms) var(--stage-ease),
+    filter var(--stage-ms) var(--stage-ease),
+    max-width var(--stage-ms) var(--stage-ease);
+  pointer-events: none;
+  z-index: 5;
 }
 
 .category-stage-item img {
@@ -1016,16 +1020,23 @@ body.dark-theme .main-header.scrolled {
   user-select: none;
   filter:
     drop-shadow(0 4px 8px rgba(0, 0, 0, 0.22))
-    drop-shadow(0 16px 28px rgba(0, 0, 0, 0.4))
-    drop-shadow(0 0 36px color-mix(in srgb, var(--stage-accent, #6b2438) 28%, transparent));
-  transition: opacity 220ms ease, filter 220ms ease;
+    drop-shadow(0 16px 28px rgba(0, 0, 0, 0.4));
 }
 
-.category-stage-item img.is-swapping {
-  opacity: 0.35;
+/* CENTER — only role visible at rest */
+.category-stage-item.is-center {
+  left: 50%;
+  z-index: 30;
+  opacity: 1;
+  filter: none;
+  max-width: min(72%, 560px);
+  transform: translate(-50%, -50%) scale(1) rotateY(0deg);
+  pointer-events: auto;
+  cursor: pointer;
+  isolation: isolate;
 }
 
-.category-stage-item::after {
+.category-stage-item.is-center::after {
   content: "";
   position: absolute;
   left: 50%;
@@ -1045,11 +1056,43 @@ body.dark-theme .main-header.scrolled {
   filter: blur(5px);
 }
 
-/* Legacy classes — force hide if any leftover markup */
-.category-stage-item.is-left,
-.category-stage-item.is-right,
+.category-stage-item.is-center img {
+  filter:
+    drop-shadow(0 4px 8px rgba(0, 0, 0, 0.22))
+    drop-shadow(0 16px 28px rgba(0, 0, 0, 0.4))
+    drop-shadow(0 0 36px color-mix(in srgb, var(--stage-accent, #6b2438) 28%, transparent));
+}
+
+/* Parked OFF-SCREEN — animate through on spin, not visible at rest */
+.category-stage-item.is-left {
+  left: -28%;
+  z-index: 10;
+  opacity: 0;
+  max-width: min(40%, 280px);
+  height: 50%;
+  filter: blur(2px) brightness(0.7);
+  transform: translate(-50%, -50%) scale(0.72) rotateY(38deg);
+}
+
+.category-stage-item.is-right {
+  left: 128%;
+  z-index: 10;
+  opacity: 0;
+  max-width: min(40%, 280px);
+  height: 50%;
+  filter: blur(2px) brightness(0.7);
+  transform: translate(-50%, -50%) scale(0.72) rotateY(-38deg);
+}
+
 .category-stage-item.is-back {
-  display: none !important;
+  left: 50%;
+  z-index: 1;
+  opacity: 0;
+  visibility: hidden;
+  height: 40%;
+  max-width: 30%;
+  transform: translate(-50%, -50%) scale(0.45);
+  pointer-events: none;
 }
 
 .category-stage-ui {
@@ -1214,10 +1257,9 @@ body.dark-theme .main-header.scrolled {
     bottom: 24%;
   }
 
-  .category-stage-item,
   .category-stage-item.is-center {
-    height: 88%;
-    max-width: min(70%, 560px);
+    height: 86%;
+    max-width: min(68%, 560px);
   }
 }
 
@@ -1230,14 +1272,19 @@ body.dark-theme .main-header.scrolled {
   .category-stage-viewport {
     top: 15%;
     bottom: 22%;
-    left: 12%;
-    right: 12%;
   }
 
-  .category-stage-item,
   .category-stage-item.is-center {
-    height: 92%;
-    max-width: min(55%, 580px);
+    height: 90%;
+    max-width: min(52%, 580px);
+  }
+
+  .category-stage-item.is-left {
+    left: -22%;
+  }
+
+  .category-stage-item.is-right {
+    left: 122%;
   }
 }
 
@@ -1258,10 +1305,17 @@ body.dark-theme .main-header.scrolled {
     bottom: 30%;
   }
 
-  .category-stage-item,
   .category-stage-item.is-center {
-    height: 92%;
+    height: 90%;
     max-width: 88%;
+  }
+
+  .category-stage-item.is-left {
+    left: -40%;
+  }
+
+  .category-stage-item.is-right {
+    left: 140%;
   }
 
   .category-stage-footer {
