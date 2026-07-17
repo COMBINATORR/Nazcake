@@ -1751,8 +1751,11 @@ function createProductCardHtml(p) {
   const isOutOfStock = isProductOutOfStock({ inStock, stock });
   const cardClass = isOutOfStock ? "product-card out-of-stock" : "product-card";
   const tOutOfStock = window.i18n ? window.i18n.t("catalog_out_of_stock") : "Нет в наличии";
-  const outOfStockBadge = isOutOfStock ? `<span class="product-badge product-badge-outofstock">${tOutOfStock}</span>` : "";
-  const activeBadge = outOfStockBadge || (badge ? `<span class="product-badge">${tBadge}</span>` : "");
+  const outOfStockBadge = isOutOfStock
+    ? `<span class="product-badge product-badge-outofstock"><span class="product-badge-text">${tOutOfStock}</span></span>`
+    : "";
+  const activeBadge = outOfStockBadge
+    || (badge ? `<span class="product-badge"><span class="product-badge-text">${tBadge}</span></span>` : "");
 
   return `
     <div class="${cardClass} reveal-item" data-id="${id}">

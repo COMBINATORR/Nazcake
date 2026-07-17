@@ -2552,20 +2552,51 @@ body.dark-theme .bestsellers-arrow:hover {
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
 }
 
+/* Product card chips — MotionSites-style glass pill + gradient label */
 .product-badge {
   position: absolute;
-  top: 15px;
-  left: 15px;
-  background-color: var(--accent-gold);
-  color: white;
-  font-family: var(--font-title);
-  font-weight: 700;
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  padding: 4px 10px;
-  border-radius: 30px;
-  letter-spacing: 0.5px;
+  top: 12px;
+  left: 12px;
   z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: calc(100% - 24px);
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(12, 10, 9, 0.42);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  box-shadow:
+    0 0 0 1px rgba(194, 143, 26, 0.14) inset,
+    0 6px 16px rgba(0, 0, 0, 0.22);
+  pointer-events: none;
+}
+
+.product-badge-text {
+  font-family: var(--font-nav);
+  font-weight: 800;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  background-image: linear-gradient(
+    100deg,
+    #f6e073 0%,
+    #f0d9a0 28%,
+    #e8b88a 55%,
+    #f2c4d8 78%,
+    #e8d4ff 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
 }
 
 .product-info {
