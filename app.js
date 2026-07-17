@@ -4948,7 +4948,7 @@ const CATEGORY_STAGE_ITEMS = [
   {
     category: "semi-finished",
     src: "images/stage/semi_pelmeni-cut.webp",
-    ghost: "ПОЛУФАБРИКАТЫ",
+    ghost: "ПЕЛЬМЕНИ",
     // cool kitchen steel / dough cream
     bg: "#3a5a6a",
     bg2: "#101820",
@@ -5002,13 +5002,15 @@ function setupCategoryStage() {
 
   const fitGhost = () => {
     if (!ghostEl) return;
-    ghostEl.style.transform = "scale(1)";
+    // Always center first (absolute left:50% + translateX -50%)
+    ghostEl.style.transform = "translate(-50%, -50%) scale(1)";
     const parent = ghostEl.parentElement;
     if (!parent) return;
-    const maxW = parent.clientWidth;
+    const maxW = parent.clientWidth * 0.94;
     const w = ghostEl.scrollWidth;
     if (w > maxW && w > 0) {
-      ghostEl.style.transform = `scale(${(maxW / w).toFixed(4)})`;
+      const s = Math.max(0.35, maxW / w);
+      ghostEl.style.transform = `translate(-50%, -50%) scale(${s.toFixed(4)})`;
     }
   };
 
@@ -5060,8 +5062,9 @@ function setupCategoryStage() {
       copyEl.removeAttribute("data-i18n");
     }
     if (ghostEl) {
-      const label = categoryLabel(current.category);
-      ghostEl.textContent = (label || current.ghost || "").toUpperCase();
+      // Short display ghost (not the long catalog title) so text stays centered
+      const ghostText = (current.ghost || categoryLabel(current.category) || "").toUpperCase();
+      ghostEl.textContent = ghostText;
       requestAnimationFrame(fitGhost);
     }
   };
