@@ -5000,18 +5000,49 @@ function setupCategoryStage() {
     return "";
   };
 
-  const fitGhost = () => {
-    if (!ghostEl) return;
-    // Always center first (absolute left:50% + translateX -50%)
-    ghostEl.style.transform = "translate(-50%, -50%) scale(1)";
+  /**
+   * One font size for ALL ghost titles, sized so the longest label
+   * («Пирожные с ягодами» / KK equivalent) fits the screen — desktop & mobile.
+   */
+  const syncGhostFontSize = () => {
+    if (!ghostEl || !section) return;
     const parent = ghostEl.parentElement;
     if (!parent) return;
-    const maxW = parent.clientWidth * 0.94;
-    const w = ghostEl.scrollWidth;
-    if (w > maxW && w > 0) {
-      const s = Math.max(0.35, maxW / w);
-      ghostEl.style.transform = `translate(-50%, -50%) scale(${s.toFixed(4)})`;
+
+    let longest = "ПИРОЖНЫЕ С ЯГОДАМИ";
+    CATEGORY_STAGE_ITEMS.forEach((item) => {
+      const t = (categoryLabel(item.category) || item.ghost || "").toUpperCase();
+      if (t.length > longest.length) longest = t;
+    });
+
+    const maxW = Math.max(80, parent.clientWidth - 8);
+    const prevText = ghostEl.textContent;
+    const prevSize = ghostEl.style.fontSize;
+
+    ghostEl.style.transform = "translate(-50%, -50%)";
+    ghostEl.style.fontSize = "200px";
+    ghostEl.textContent = longest;
+
+    let lo = 14;
+    let hi = Math.min(200, Math.floor(parent.clientWidth * 0.28));
+    let best = lo;
+    while (lo <= hi) {
+      const mid = (lo + hi) >> 1;
+      ghostEl.style.fontSize = `${mid}px`;
+      if (ghostEl.scrollWidth <= maxW) {
+        best = mid;
+        lo = mid + 1;
+      } else {
+        hi = mid - 1;
+      }
     }
+
+    const sizePx = `${best}px`;
+    section.style.setProperty("--ghost-font-size", sizePx);
+    ghostEl.style.fontSize = sizePx;
+    ghostEl.style.transform = "translate(-50%, -50%)";
+    ghostEl.textContent = prevText || longest;
+    if (prevSize && !prevText) ghostEl.style.fontSize = sizePx;
   };
 
   const openCategoryInCatalog = (category) => {
@@ -5062,14 +5093,20 @@ function setupCategoryStage() {
       copyEl.removeAttribute("data-i18n");
     }
     if (ghostEl) {
-      // Short display ghost (not the long catalog title) so text stays centered
-      const ghostText = (current.ghost || categoryLabel(current.category) || "").toUpperCase();
-      ghostEl.textContent = ghostText;
-      requestAnimationFrame(fitGhost);
+      // Full category title for every slide — same font size as the longest one
+      ghostEl.textContent = (categoryLabel(current.category) || current.ghost || "").toUpperCase();
+      ghostEl.style.transform = "translate(-50%, -50%)";
     }
   };
 
-  window.addEventListener("resize", () => requestAnimationFrame(fitGhost));
+  let ghostResizeTimer = null;
+  window.addEventListener("resize", () => {
+    clearTimeout(ghostResizeTimer);
+    ghostResizeTimer = setTimeout(() => {
+      syncGhostFontSize();
+      applyRoles();
+    }, 80);
+  });
 
   const navigate = (dir) => {
     if (isAnimating) return;
@@ -5114,10 +5151,17 @@ function setupCategoryStage() {
   });
 
   if (window.i18n && typeof window.i18n.onLanguageChange === "function") {
-    window.i18n.onLanguageChange(applyRoles);
+    window.i18n.onLanguageChange(() => {
+      syncGhostFontSize();
+      applyRoles();
+    });
   }
 
-  applyRoles();
+  // Size once to longest label, then show active category
+  requestAnimationFrame(() => {
+    syncGhostFontSize();
+    applyRoles();
+  });
 }
 
 function setupBestsellersCarousel() {
