@@ -1297,7 +1297,7 @@ body.dark-theme .main-header.scrolled {
 
 @media (max-width: 639px) {
   .category-stage-ghost {
-    top: 14%;
+    top: calc(14% + 10px);
     padding-inline: 4%;
   }
 
