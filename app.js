@@ -1632,6 +1632,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupKaspiQrCheckout();
   setupThemeToggler();
   setupBestsellersCarousel();
+  setupHeroStage();
   setupLazyHeroVideo();
   setupContactsMapLazy();
 

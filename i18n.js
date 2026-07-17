@@ -29,6 +29,10 @@
 
       // Hero Section
       hero_subtitle: "ВЫПЕЧКА • ТОРТЫ • АТЫРАУ",
+      hero_eyebrow: "Свежая выпечка каждый день",
+      hero_stage_kicker: "Nazcake desserts",
+      hero_stage_copy: "Авторские торты и выпечка — свежая витрина каждый день. Выбирайте и заказывайте в WhatsApp.",
+      hero_discover: "Смотреть",
       hero_title: "АВТОРСКИЕ ДЕСЕРТЫ",
       hero_desc: "Изысканный вкус и натуральные ингредиенты в каждом кусочке.",
       hero_btn_catalog: "НАША ПРОДУКЦИЯ",
@@ -817,9 +821,11 @@
       nav_community: "Қауымдастық",
       nav_contacts: "Байланыс",
       nav_menu_title: "Мәзір",
+      nav_badge_new: "жаңа",
 
       // Hero Section
       hero_subtitle: "ӨНІМДЕР • ТОРТТАР • АТЫРАУ",
+      hero_eyebrow: "Күн сайын балғын пісірмелер",
       hero_title: "АВТОРЛЫҚ ДЕСЕРТТЕР",
       hero_desc: "Әрбір тілімдегі талғампаз дәм мен табиғи ингредиенттер.",
       hero_btn_catalog: "БІЗДІҢ ӨНІМДЕРІМІЗ",

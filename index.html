@@ -79,10 +79,10 @@
   <!-- Google Fonts: Inter body · Montserrat Black (NAZCAKE) · SN Pro (titles / menu / subtitles) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500&family=Montserrat:wght@900&family=SN+Pro:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500&family=Montserrat:wght@900&family=SN+Pro:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
 
   <!-- CSS Stylesheet (Leaflet CSS loads lazily when #contacts is near viewport) -->
-  <link rel="stylesheet" href="style.css?v=8.2">
+  <link rel="stylesheet" href="style.css?v=8.3">
 </head>
 <body class="preloader-active">
   <script>
@@ -263,8 +263,8 @@
   </div>
   <div class="drawer-overlay" id="drawer-overlay"></div>
 
-  <!-- Hero Section (Milk Bar Redesign Style) -->
-  <section class="hero-section">
+  <!-- Hero: Nazcake + TOONHUB-inspired stage (ghost text, figure carousel, circular nav) -->
+  <section class="hero-section" id="hero-section" data-hero-stage>
     <!-- Background Video: deferred load (poster first) — P0 performance -->
     <video
       class="hero-video-bg"
@@ -281,49 +281,23 @@
       <source data-src="Videos/Broll2_mobile.mp4" type="video/mp4; codecs=avc1.42E01E,mp4a.40.2">
       <source data-src="Videos/Broll2.mp4" type="video/mp4">
     </video>
+    <div class="hero-video-scrim" aria-hidden="true"></div>
 
+    <!-- Film grain (TOONHUB-style) -->
+    <div class="hero-grain" aria-hidden="true"></div>
+
+    <!-- Giant ghost display type -->
+    <div class="hero-ghost-text" aria-hidden="true">
+      <span class="hero-ghost-text-inner">NAZCAKE</span>
+    </div>
 
     <div class="hero-container">
-      
-      <!-- Category Circle Navigation (desktop only) -->
-      <div class="hero-category-nav desktop-only">
-        <a href="#catalog" class="category-nav-item" data-category="cakes">
-          <div class="category-nav-circle">
-            <img src="images/dessert_chocolate_design.webp" alt="Торты" width="120" height="120" class="lazy-image" loading="lazy">
-          </div>
-          <span class="category-nav-label" data-i18n="hero_nav_cakes">Торты на заказ</span>
-        </a>
-        <a href="#catalog" class="category-nav-item" data-category="pastries">
-          <div class="category-nav-circle">
-            <img src="images/pastry_tea_set.webp" alt="Выпечка" width="120" height="120" class="lazy-image" loading="lazy">
-          </div>
-          <span class="category-nav-label" data-i18n="hero_nav_pastries">Свежая выпечка</span>
-        </a>
-        <a href="#customizer" class="category-nav-item">
-          <div class="category-nav-circle">
-            <img src="images/dessert_caramel_design.webp" alt="Конструктор" width="120" height="120" class="lazy-image" loading="lazy">
-          </div>
-          <span class="category-nav-label" data-i18n="hero_nav_customizer">Конструктор Бенто</span>
-        </a>
-        <a href="#bestsellers" class="category-nav-item">
-          <div class="category-nav-circle">
-            <img src="images/pie_snickers.webp" alt="Бестселлеры" width="120" height="120" class="lazy-image" loading="lazy">
-          </div>
-          <span class="category-nav-label" data-i18n="hero_nav_bestsellers">Бестселлеры</span>
-        </a>
+      <!-- 4-slot product stage carousel -->
+      <div class="hero-stage" id="hero-stage" aria-hidden="true">
+        <!-- filled by JS -->
       </div>
 
-      <!-- Two-Column Showcase Banner (desktop only) -->
-      <div class="hero-showcase-grid desktop-only">
-        <div class="showcase-column">
-          <img src="images/pastry_tea_set.webp" alt="Выпечка Nazcake" class="showcase-img lazy-image" loading="lazy" width="600" height="600">
-        </div>
-        <div class="showcase-column">
-          <img src="images/dessert_chocolate_design.webp" alt="Торты Nazcake" class="showcase-img lazy-image" loading="lazy" width="600" height="600">
-        </div>
-      </div>
-
-      <!-- Introducing Text Block (Centered Below) -->
+      <!-- Introducing Text Block -->
       <div class="hero-introducing-block">
         <div id="location-alert-banner" class="location-alert-banner hidden">
           <svg class="warning-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
@@ -334,7 +308,6 @@
           <span class="warning-text" id="location-alert-text" data-i18n="location_only_atyrau">Обратите внимание: мы осуществляем доставку только по г. Атырау!</span>
         </div>
         
-        <!-- MotionSites-style eyebrow pill (gradient text + soft glass border) -->
         <span class="hero-eyebrow-pill">
           <span class="hero-eyebrow-pill-text" data-i18n="hero_eyebrow">Свежая выпечка каждый день</span>
         </span>
@@ -343,7 +316,7 @@
         <div class="hero-actions">
           <a href="#catalog" class="btn btn-premium-shop" id="hero-cta-btn">
             <span class="cta-shimmer"></span>
-            <span class="cta-label" data-i18n="hero_btn_catalog">НАША ПРОДУКЦИЯ</span>
+            <span class="cta-label" data-i18n="hero_btn_catalog">ПРОДУКЦИЯ</span>
             <span class="cta-icon">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -354,6 +327,34 @@
         </div>
       </div>
 
+      <!-- Bottom-left: caption + circular arrows -->
+      <div class="hero-stage-controls">
+        <p class="hero-stage-kicker" data-i18n="hero_stage_kicker">Nazcake desserts</p>
+        <p class="hero-stage-copy" data-i18n="hero_stage_copy">Авторские торты и выпечка — свежая витрина каждый день. Выбирайте и заказывайте в WhatsApp.</p>
+        <div class="hero-stage-nav">
+          <button type="button" class="hero-circle-btn" id="hero-stage-prev" aria-label="Предыдущий">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" width="26" height="26" aria-hidden="true">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </button>
+          <button type="button" class="hero-circle-btn" id="hero-stage-next" aria-label="Следующий">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" width="26" height="26" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Bottom-right discover CTA (TOONHUB-style) -->
+      <a href="#catalog" class="hero-discover" data-i18n="hero_discover">
+        Смотреть
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </a>
     </div>
   </section>
 
@@ -1998,7 +1999,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <!-- Leaflet loaded lazily from app.js when contacts section approaches -->
   <!-- JavaScript Application -->
-  <script src="i18n.js?v=5.9"></script>
-  <script src="app.js?v=6.2"></script>
+  <script src="i18n.js?v=6.0"></script>
+  <script src="app.js?v=6.3"></script>
 </body>
 </html>
