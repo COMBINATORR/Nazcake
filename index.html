@@ -82,7 +82,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500&family=Montserrat:wght@900&family=SN+Pro:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
 
   <!-- CSS Stylesheet (Leaflet CSS loads lazily when #contacts is near viewport) -->
-  <link rel="stylesheet" href="style.css?v=10.9">
+  <link rel="stylesheet" href="style.css?v=11.0">
 </head>
 <body class="preloader-active">
   <script>
@@ -1168,6 +1168,7 @@
       <!-- Catalog Tabs -->
       <div class="catalog-tabs reveal-item">
         <button class="tab-btn active" data-category="all" data-i18n="catalog_cat_all">Все товары</button>
+        <button class="tab-btn tab-btn--new" data-category="new" data-i18n="catalog_cat_new">Новинки</button>
         <button class="tab-btn" data-category="bakery" data-i18n="catalog_cat_bakery">Хлебобулочные изделия</button>
         <button class="tab-btn" data-category="pastries" data-i18n="catalog_cat_pastries">Выпечка</button>
         <button class="tab-btn" data-category="pies" data-i18n="catalog_cat_pies">Пироги</button>
@@ -1895,6 +1896,7 @@
             <label for="admin-filter-category" data-i18n="admin_filter_category_lbl">Категория:</label>
             <select id="admin-filter-category" class="admin-select-filter">
               <option value="all" data-i18n="catalog_cat_all">Все товары</option>
+              <option value="new" data-i18n="catalog_cat_new">Новинки</option>
               <option value="bakery" data-i18n="catalog_cat_bakery">Хлебобулочные изделия</option>
               <option value="pastries" data-i18n="catalog_cat_pastries">Выпечка</option>
               <option value="pies" data-i18n="catalog_cat_pies">Пироги</option>

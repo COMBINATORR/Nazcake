@@ -3320,6 +3320,24 @@ body.dark-theme .bestsellers-arrow:hover {
   box-shadow: 0 4px 12px rgba(74, 44, 17, 0.15);
 }
 
+/* «Новинки» tab — slight gold accent so it stands out in the row */
+.tab-btn.tab-btn--new:not(.active) {
+  border-color: rgba(194, 143, 26, 0.55);
+  color: var(--accent-chocolate);
+  background: linear-gradient(180deg, rgba(246, 224, 115, 0.12) 0%, rgba(255, 255, 255, 0.6) 100%);
+}
+
+.tab-btn.tab-btn--new:not(.active):hover {
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+}
+
+body.dark-theme .tab-btn.tab-btn--new:not(.active) {
+  background: linear-gradient(180deg, rgba(194, 143, 26, 0.14) 0%, rgba(4, 20, 13, 0.4) 100%);
+  color: #f0d9a0;
+  border-color: rgba(194, 143, 26, 0.45);
+}
+
 /* Bento Customizer Section */
 .customizer-section {
   padding: 50px 0;

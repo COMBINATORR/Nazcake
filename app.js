@@ -1741,7 +1741,10 @@ function renderCatalog(category) {
 
   catalogTimeout = setTimeout(() => {
     let filtered = products;
-    if (category !== "all") {
+    if (category === "new") {
+      // Products marked as new (badge «новое» / isNew) — ready for bulk new arrivals
+      filtered = products.filter(isNewArrivalProduct);
+    } else if (category !== "all") {
       filtered = products.filter(p => p.category === category);
     }
 
@@ -1749,6 +1752,14 @@ function renderCatalog(category) {
     attachCardEvents(catalogGrid);
     refreshScrollReveal();
   }, 250);
+}
+
+/** True if product should appear under «Новинки» tab. */
+function isNewArrivalProduct(p) {
+  if (!p) return false;
+  if (p.isNew === true || p.is_new === true) return true;
+  const b = normalizeProductBadge(p.badge).toLowerCase();
+  return b === "новое" || b === "жаңа" || b === "new" || b === "новинка" || b === "новинки";
 }
 
 function createProductCardHtml(p) {
@@ -2590,7 +2601,9 @@ function renderAdminCatalog() {
   const searchQuery = document.getElementById("admin-filter-search")?.value.toLowerCase() || "";
 
   let filtered = products;
-  if (categoryFilter !== "all") {
+  if (categoryFilter === "new") {
+    filtered = filtered.filter(isNewArrivalProduct);
+  } else if (categoryFilter !== "all") {
     filtered = filtered.filter(p => p.category === categoryFilter);
   }
   if (searchQuery) {
