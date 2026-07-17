@@ -865,6 +865,10 @@ body.dark-theme .main-header.scrolled {
   min-height: 90svh;
   min-height: 90dvh;
   overflow: hidden;
+  /* Allow vertical page scroll; horizontal swipe handled in JS */
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
   /* Multi-stop palette: main glow + side wash + top accent (set per category in JS) */
   background:
     radial-gradient(

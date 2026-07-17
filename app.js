@@ -5142,8 +5142,50 @@ function setupCategoryStage() {
     });
   }
 
+  // Swipes (Pointer Events cover touch + mouse; no double-fire with touch*)
+  // finger/drag left → next, right → prev; vertical scroll still works (touch-action: pan-y)
+  let swipeStartX = 0;
+  let swipeStartY = 0;
+  let swipeTracking = false;
+  let swipePointerId = null;
+  let swipeIgnoreClick = false;
+  const SWIPE_MIN_PX = 46;
+  const SWIPE_RATIO = 1.15; // horizontal must beat vertical
+
+  section.addEventListener("pointerdown", (e) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    if (e.target.closest("button, a, input, textarea, select")) return;
+    swipeTracking = true;
+    swipePointerId = e.pointerId;
+    swipeStartX = e.clientX;
+    swipeStartY = e.clientY;
+  });
+
+  const endSwipe = (e) => {
+    if (!swipeTracking) return;
+    if (swipePointerId !== null && e.pointerId !== swipePointerId) return;
+    swipeTracking = false;
+    swipePointerId = null;
+    const dx = e.clientX - swipeStartX;
+    const dy = e.clientY - swipeStartY;
+    if (Math.abs(dx) < SWIPE_MIN_PX) return;
+    if (Math.abs(dx) < Math.abs(dy) * SWIPE_RATIO) return;
+    swipeIgnoreClick = true;
+    setTimeout(() => {
+      swipeIgnoreClick = false;
+    }, 450);
+    navigate(dx < 0 ? "next" : "prev");
+  };
+
+  section.addEventListener("pointerup", endSwipe);
+  section.addEventListener("pointercancel", () => {
+    swipeTracking = false;
+    swipePointerId = null;
+  });
+
   items.forEach((el, i) => {
     el.addEventListener("click", () => {
+      if (swipeIgnoreClick) return;
       if (!el.classList.contains("is-center")) return;
       openCategoryInCatalog(CATEGORY_STAGE_ITEMS[i].category);
     });
