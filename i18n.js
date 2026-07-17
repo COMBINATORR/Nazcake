@@ -20,7 +20,6 @@
       nav_bestsellers: "Бестселлеры",
       nav_catalog: "Продукция",
       nav_catalog_short: "Продукция",
-      nav_customizer: "Конструктор Бенто",
       nav_delivery: "Доставка",
       nav_community: "Сообщество",
       nav_contacts: "Контакты",
@@ -45,10 +44,8 @@
       category_stage_desc_desserts: "Пирожные и десерты для особого настроения",
       category_stage_desc_berry_desserts: "Пирожные с ягодами: орео, павлова и другие",
       "category_stage_desc_semi-finished": "Домашние пельмени, манты и заготовки к столу",
-      hero_btn_customizer: "Создать свой бенто-торт",
       hero_nav_cakes: "Торты на заказ",
       hero_nav_pastries: "Свежая выпечка",
-      hero_nav_customizer: "Конструктор Бенто",
       hero_nav_bestsellers: "Бестселлеры",
 
       // Ticker Section (after hero)
@@ -101,39 +98,9 @@
       catalog_cat_semi: "Полуфабрикаты",
       "catalog_cat_semi-finished": "Полуфабрикаты",
 
-      // Bento Customizer
-      bento_subtitle: "Создайте свой шедевр",
-      bento_title: "Конструктор Bento-Тортов",
-      bento_desc: "Соберите уникальный мини-торт (диаметр 10-12 см) для себя или в подарок. Настройте цвет покрытия, выберите крем для надписи и добавьте теплые слова!",
-      bento_lbl_base_color: "Цвет покрытия торта:",
-      bento_lbl_text_color: "Цвет крема для надписи:",
-      bento_lbl_sprinkles: "Декоративная посыпка:",
-      bento_lbl_text: "Надпись на торте (до 20 символов):",
-      bento_placeholder_text: "Happy Birthday!",
-      bento_lbl_price: "Цена bento-торта:",
-      bento_btn_add: "Добавить в корзину",
-      bento_badge_preview: "Предпросмотр 2D",
-      bento_btn_added: "Шедевр в корзине! ✓",
       
-      bento_opt_sprinkles_none: "Без посыпки",
-      bento_opt_sprinkles_pearls: "Жемчужные шарики",
-      bento_opt_sprinkles_hearts: "Маленькие сердечки",
-      bento_opt_sprinkles_gold: "Золотая пыльца",
-      bento_opt_sprinkles_stars: "Звездочки",
 
-      bento_color_pink: "Нежно-розовый",
-      bento_color_blue: "Нежно-голубой",
-      bento_color_vanilla: "Ванильный крем",
-      bento_color_pistachio: "Фисташковый",
-      bento_color_white: "Белоснежный",
-      bento_color_caramel: "Карамельный",
-      bento_color_raspberry: "Малиновый",
-      bento_color_chocolate: "Шоколадный",
-      bento_color_darkblue: "Синий",
 
-      bento_custom_name: "Бенто-торт Индивидуальный",
-      bento_custom_desc: "Ваш собственный собранный дизайн! Покрытие: {base}, Крем: {text_color}, Посыпка: {sprinkles}, Надпись: \"{text}\"",
-      bento_custom_ingredients: "Классический ванильный бисквит, клубничный конфитюр, нежный сырно-сливочный крем.",
 
       // Delivery Calculator
       delivery_subtitle: "Быстро и аккуратно",
@@ -826,7 +793,6 @@
       nav_bestsellers: "Бестселлерлер",
       nav_catalog: "Өнімдер",
       nav_catalog_short: "Өнімдер",
-      nav_customizer: "Бенто конструкторы",
       nav_delivery: "Жеткізу",
       nav_community: "Қауымдастық",
       nav_contacts: "Байланыс",
@@ -851,10 +817,8 @@
       category_stage_desc_desserts: "Ерекше сәтке арналған пирожныйлар мен десерттер",
       category_stage_desc_berry_desserts: "Жидек қосылған пирожныйлар: орео, павлова және басқалары",
       "category_stage_desc_semi-finished": "Үй пельмені, манты және дайын жартылай фабрикаттар",
-      hero_btn_customizer: "Бенто-тортты құрастыру",
       hero_nav_cakes: "Тапсырыс торттар",
       hero_nav_pastries: "Балғын пісірмелер",
-      hero_nav_customizer: "Бенто конструкторы",
       hero_nav_bestsellers: "Бестселлерлер",
 
       // Ticker Section (after hero)
@@ -907,39 +871,9 @@
       catalog_cat_semi: "Жартылай фабрикаттар",
       "catalog_cat_semi-finished": "Жартылай фабрикаттар",
 
-      // Bento Customizer
-      bento_subtitle: "Өз туындыңызды жасаңыз",
-      bento_title: "Бенто-Торт Конструкторы",
-      bento_desc: "Өзіңізге немесе сыйлыққа бірегей мини-торт (диаметрі 10-12 см) құрастырыңыз. Қаптама түсін реттеңіз, жазуға арналған кремді таңдаңыз және жылы лебізіңізді қосыңыз!",
-      bento_lbl_base_color: "Торт қаптамасының түсі:",
-      bento_lbl_text_color: "Жазу кремінің түсі:",
-      bento_lbl_sprinkles: "Сәндік сеппе:",
-      bento_lbl_text: "Торттағы жазу (20 таңбаға дейін):",
-      bento_placeholder_text: "Happy Birthday!",
-      bento_lbl_price: "Бенто-торт бағасы:",
-      bento_btn_add: "Себетке қосу",
-      bento_badge_preview: "2D Алдын ала қарау",
-      bento_btn_added: "Шедевр себетте! ✓",
 
-      bento_opt_sprinkles_none: "Сеппесіз",
-      bento_opt_sprinkles_pearls: "Інжу моншақтар",
-      bento_opt_sprinkles_hearts: "Кішкентай жүрекшелер",
-      bento_opt_sprinkles_gold: "Алтын тозаң",
-      bento_opt_sprinkles_stars: "Жұлдызшалар",
 
-      bento_color_pink: "Нәзік қызғылт",
-      bento_color_blue: "Нәзік көгілдір",
-      bento_color_vanilla: "Ванильді крем",
-      bento_color_pistachio: "Фисташкалы",
-      bento_color_white: "Ақшақар",
-      bento_color_caramel: "Карамельді",
-      bento_color_raspberry: "Таңқурай",
-      bento_color_chocolate: "Шоколадты",
-      bento_color_darkblue: "Көк",
 
-      bento_custom_name: "Бенто-торт Жеке дизайн",
-      bento_custom_desc: "Өз бетіңізше жасаған дизайн! Қаптамасы: {base}, Крем: {text_color}, Сеппе: {sprinkles}, Жазу: \"{text}\"",
-      bento_custom_ingredients: "Классикалық ванильді бисквит, құлпынай конфитүрі, нәзік ірімшік-кілегейлі крем.",
 
       // Delivery Calculator
       delivery_subtitle: "Жылдам әрі ұқыпты",

@@ -1538,26 +1538,6 @@ const deliveryMethodRadios = document.getElementsByName("delivery-method");
 const successModal = document.getElementById("success-modal");
 const closeSuccessBtn = document.getElementById("close-success-btn");
 
-// Localization helpers
-const colorNameKeys = {
-  "#ffd1dc": "bento_color_pink",
-  "#d4f0fc": "bento_color_blue",
-  "#fdfae7": "bento_color_vanilla",
-  "#e2f4c5": "bento_color_pistachio",
-  "#ffffff": "bento_color_white",
-  "#b08d57": "bento_color_caramel",
-  "#e73895": "bento_color_raspberry",
-  "#4a2c11": "bento_color_chocolate",
-  "#2b5c8f": "bento_color_darkblue"
-};
-
-const sprinkleKeys = {
-  "none": "bento_opt_sprinkles_none",
-  "pearls": "bento_opt_sprinkles_pearls",
-  "hearts": "bento_opt_sprinkles_hearts",
-  "gold": "bento_opt_sprinkles_gold",
-  "stars": "bento_opt_sprinkles_stars"
-};
 
 /** Strip redundant "fresh" badges — all bakery is daily-fresh. */
 function normalizeProductBadge(badge) {
@@ -1596,21 +1576,8 @@ function getUnitTranslationKey(unit) {
 }
 
 function getProductDesc(p) {
-  const { id, bentoConfig, desc } = p;
-  if (id.startsWith("bento_custom_") && bentoConfig) {
-    if (!window.i18n) return desc;
-    const baseColorName = window.i18n.t(colorNameKeys[bentoConfig.baseColor] || "bento_color_pink");
-    const textColorName = window.i18n.t(colorNameKeys[bentoConfig.textColor] || "bento_color_chocolate");
-    const sprinklesName = window.i18n.t(sprinkleKeys[bentoConfig.sprinkles] || "bento_opt_sprinkles_none");
-    const textVal = bentoConfig.text || (window.i18n.getCurrentLanguage() === "ru" ? "нет" : "жоқ");
-
-    return window.i18n.t("bento_custom_desc")
-      .replace("{base}", baseColorName)
-      .replace("{text_color}", textColorName)
-      .replace("{sprinkles}", sprinklesName)
-      .replace("{text}", textVal);
-  }
-  return window.i18n ? window.i18n.t(`p_${id}_desc`) : desc;
+  const { id, desc } = p;
+  return window.i18n ? window.i18n.t(p__desc) : desc;
 }
 
 // Init App
@@ -1620,7 +1587,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   renderBestsellers();
   renderCatalog("all");
   setupEventListeners();
-  setupBentoCustomizer();
   setupDeliveryCalculator();
   setupGeolocation();
   updateCartUi();
@@ -2266,9 +2232,7 @@ function renderEmptyCartUi() {
 function renderCartItemsUi() {
   return cart.map(item => {
     const p = item.product;
-    let tName = p.isCustomName ? p.name : (p.id.startsWith("bento_custom_")
-      ? (window.i18n ? window.i18n.t("bento_custom_name") : p.name)
-      : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name));
+    let tName = p.isCustomName ? p.name : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name);
 
     if (item.selectedSize) {
       tName += ` (${item.selectedSize})`;
@@ -2453,186 +2417,6 @@ function updateCartUi() {
   attachSwipeToDelete();
 }
 
-// Setup Interactive Bento Customizer
-function setupBentoCustomizer() {
-  const cakeTextElement = document.getElementById("cake-text-element");
-  const bentoTextInput = document.getElementById("bento-text");
-  const baseColorOptions = document.getElementById("base-color-options");
-  const textColorOptions = document.getElementById("text-color-options");
-  const sprinklesSelect = document.getElementById("sprinkles-select");
-  const addBentoBtn = document.getElementById("add-bento-btn");
-
-  const cakeTop = document.getElementById("cake-top");
-  const cakeSide = document.getElementById("cake-side");
-  const sprinklesGroup = document.getElementById("sprinkles-group");
-
-  let bentoConfig = {
-    baseColor: "#ffd1dc", // default pastel pink
-    textColor: "#4a2c11", // default chocolate
-    sprinkles: "none",
-    text: "Happy Birthday!"
-  };
-
-  setupBaseColorOptions(bentoConfig, baseColorOptions, cakeTop, cakeSide);
-  setupTextColorOptions(bentoConfig, textColorOptions, cakeTextElement);
-  setupTextInput(bentoConfig, bentoTextInput, cakeTextElement);
-  setupSprinklesOptions(bentoConfig, sprinklesSelect, sprinklesGroup);
-  setupAddBentoBtn(bentoConfig, addBentoBtn);
-}
-
-function setupBaseColorOptions(bentoConfig, baseColorOptions, cakeTop, cakeSide) {
-  baseColorOptions.querySelectorAll(".color-dot").forEach(dot => {
-    dot.addEventListener("click", () => {
-      baseColorOptions.querySelectorAll(".color-dot").forEach(d => d.classList.remove("active"));
-      dot.classList.add("active");
-      const color = dot.getAttribute("data-color");
-      bentoConfig.baseColor = color;
-
-      // Update SVG Cake colors
-      cakeTop.setAttribute("fill", color);
-      // Generate slightly darker color for the side shade
-      const darkerColor = adjustColorBrightness(color, -15);
-      cakeSide.setAttribute("fill", darkerColor);
-    });
-  });
-}
-
-function setupTextColorOptions(bentoConfig, textColorOptions, cakeTextElement) {
-  textColorOptions.querySelectorAll(".color-dot").forEach(dot => {
-    dot.addEventListener("click", () => {
-      textColorOptions.querySelectorAll(".color-dot").forEach(d => d.classList.remove("active"));
-      dot.classList.add("active");
-      const color = dot.getAttribute("data-color");
-      bentoConfig.textColor = color;
-      cakeTextElement.setAttribute("fill", color);
-    });
-  });
-}
-
-function setupTextInput(bentoConfig, bentoTextInput, cakeTextElement) {
-  bentoTextInput.addEventListener("input", (e) => {
-    let txt = e.target.value;
-    if (txt.length === 0) {
-      cakeTextElement.textContent = "";
-      bentoConfig.text = "";
-    } else {
-      cakeTextElement.textContent = txt;
-      bentoConfig.text = txt;
-    }
-  });
-}
-
-function setupSprinklesOptions(bentoConfig, sprinklesSelect, sprinklesGroup) {
-  sprinklesSelect.addEventListener("change", (e) => {
-    const type = e.target.value;
-    bentoConfig.sprinkles = type;
-    drawSprinkles(type, sprinklesGroup);
-  });
-}
-
-// Helper: Draw sprinkles inside cake top ellipse (cx=150, cy=150, rx=90, ry=20)
-function drawSprinkles(type, sprinklesGroup) {
-  sprinklesGroup.innerHTML = "";
-  if (type === "none") return;
-
-  // Generate static spread of sprinkles inside ellipse boundaries using modern ES6 Array.from()
-  // x = 150 + cos(t) * rx * scale, y = 150 + sin(t) * ry * scale
-  const count = type === "pearls" ? 30 : 20;
-  const points = Array.from({ length: count }, () => {
-    const angle = Math.random() * Math.PI * 2;
-    const rScale = Math.random() * 0.75 + 0.1; // keep away from edges
-    const x = 150 + Math.cos(angle) * 90 * rScale;
-    const y = 150 + Math.sin(angle) * 20 * rScale;
-    return { x, y };
-  });
-
-  points.forEach((pt, idx) => {
-    if (type === "pearls") {
-      // Simple white shiny pearls
-      const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-      circle.setAttribute("cx", pt.x);
-      circle.setAttribute("cy", pt.y);
-      circle.setAttribute("r", 2.5);
-      circle.setAttribute("fill", "#ffffff");
-      circle.setAttribute("stroke", "#e5d0ba");
-      circle.setAttribute("stroke-width", "0.5");
-      sprinklesGroup.appendChild(circle);
-    } else if (type === "hearts") {
-      // Red heart path
-      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      const scale = 0.5;
-      path.setAttribute("d", `M ${pt.x} ${pt.y} c -2 -3, -5 -1, -5 2 c 0 2, 2 4, 5 6 c 3 -2, 5 -4, 5 -6 c 0 -3, -3 -5, -5 -2 Z`);
-      path.setAttribute("fill", "#ff4f5e");
-      sprinklesGroup.appendChild(path);
-    } else if (type === "gold") {
-      // Gold dust
-      const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-      circle.setAttribute("cx", pt.x);
-      circle.setAttribute("cy", pt.y);
-      circle.setAttribute("r", 1.5);
-      circle.setAttribute("fill", "#ffd700");
-      sprinklesGroup.appendChild(circle);
-    } else if (type === "stars") {
-      // Little yellow stars
-      const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-      polygon.setAttribute("points", `${pt.x},${pt.y-3} ${pt.x+1},${pt.y-1} ${pt.x+3},${pt.y-1} ${pt.x+1.5},${pt.y} ${pt.x+2},${pt.y+2} ${pt.x},${pt.y+1} ${pt.x-2},${pt.y+2} ${pt.x-1.5},${pt.y} ${pt.x-3},${pt.y-1} ${pt.x-1},${pt.y-1}`);
-      polygon.setAttribute("fill", "#ffe272");
-      sprinklesGroup.appendChild(polygon);
-    }
-  });
-}
-
-function setupAddBentoBtn(bentoConfig, addBentoBtn) {
-  // Add Bento Cake to Cart
-  addBentoBtn.addEventListener("click", () => {
-    const bentoId = `bento_custom_${Date.now()}`;
-    const descText = `Покрытие: ${bentoConfig.baseColor}, Крем: ${bentoConfig.textColor}, Посыпка: ${bentoConfig.sprinkles}, Надпись: "${bentoConfig.text || 'нет'}"`;
-
-    const customizedBentoProduct = {
-      id: bentoId,
-      name: `Бенто-торт Индивидуальный`,
-      category: "cakes",
-      price: 3500,
-      unit: "шт.",
-      image: "images/bento_cake.webp", // default bento image
-      desc: `Ваш собственный собранный дизайн! ${descText}`,
-      ingredients: "Классический ванильный бисквит, клубничный конфитюр, нежный сырно-сливочный крем.",
-      bentoConfig: { ...bentoConfig } // store configuration for dynamic translation
-    };
-
-    addToCart(customizedBentoProduct, 1);
-
-    // Show feedback
-    const originalText = addBentoBtn.textContent;
-    addBentoBtn.textContent = window.i18n ? window.i18n.t("bento_btn_added") : "Шедевр в корзине! ✓";
-    addBentoBtn.style.transform = "scale(0.95)";
-    setTimeout(() => {
-      addBentoBtn.textContent = originalText;
-      addBentoBtn.style.transform = "";
-    }, 1200);
-
-    // Open cart sidebar
-    setTimeout(() => {
-      openModal(cartSidebar, cartOverlay);
-    }, 800);
-  });
-}
-// Adjust Hex Color brightness
-function adjustColorBrightness(hex, percent) {
-  let R = parseInt(hex.substring(1, 3), 16);
-  let G = parseInt(hex.substring(3, 5), 16);
-  let B = parseInt(hex.substring(5, 7), 16);
-
-  R = parseInt((R * (100 + percent)) / 100);
-  G = parseInt((G * (100 + percent)) / 100);
-  B = parseInt((B * (100 + percent)) / 100);
-
-  R = Math.max(0, Math.min(255, R));
-  G = Math.max(0, Math.min(255, G));
-  B = Math.max(0, Math.min(255, B));
-
-  return `#${[R, G, B].map(x => x.toString(16).padStart(2, '0')).join('')}`;
-}
 
 // Setup Yandex.Delivery Address Price Calculator
 // --- Delivery Calculator Helpers ---
@@ -3407,9 +3191,7 @@ function formatCheckoutMessage(name, phone, method, address, cart, subtotal, t, 
 
   cart.forEach((item, idx) => {
     const p = item.product;
-    let displayName = p.isCustomName ? p.name : (p.id.startsWith("bento_custom_")
-      ? (window.i18n ? t("bento_custom_name") : p.name)
-      : (window.i18n ? t(`p_${p.id}_name`) : p.name));
+    let displayName = p.isCustomName ? p.name : (window.i18n ? t(`p_${p.id}_name`) : p.name);
 
     if (item.selectedSize) {
       displayName += ` (${item.selectedSize})`;
@@ -3418,11 +3200,6 @@ function formatCheckoutMessage(name, phone, method, address, cart, subtotal, t, 
     const itemPrice = item.price !== undefined ? item.price : p.price;
 
     message += `${idx + 1}. *${displayName}* — ${item.qty} ${tUnit} (${(itemPrice * item.qty).toLocaleString()} ₸)\n`;
-
-    if (p.id.startsWith("bento_custom_")) {
-      const tDesc = getProductDesc(p);
-      message += `   _${window.i18n ? t("tg_details") : "Детали"}: ${tDesc}_\n`;
-    }
   });
 
   message += `\n💵 *${window.i18n ? t("tg_total") : "Итоговая сумма"}:* ${subtotal.toLocaleString()} ₸`;
@@ -3440,9 +3217,7 @@ function buildOrderObject(name, phone, method, address, cart, subtotal, t, prefe
     preferredTime: method === "pickup" ? (preferredTime || "") : "",
     items: cart.map(item => {
       const p = item.product;
-      let displayName = p.isCustomName ? p.name : (p.id.startsWith("bento_custom_")
-        ? (window.i18n ? t("bento_custom_name") : p.name)
-        : (window.i18n ? t(`p_${p.id}_name`) : p.name));
+      let displayName = p.isCustomName ? p.name : (window.i18n ? t(`p_${p.id}_name`) : p.name);
       if (item.selectedSize) {
         displayName += ` (${item.selectedSize})`;
       }

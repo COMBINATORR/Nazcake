@@ -49,16 +49,6 @@ describe('App Functions', () => {
       <div id="success-modal"></div>
       <button id="close-success-btn"></button>
 
-      <text id="cake-text-element"></text>
-      <input id="bento-text" />
-      <div id="base-color-options"></div>
-      <div id="text-color-options"></div>
-      <select id="sprinkles-select"></select>
-      <button id="add-bento-btn"></button>
-      <div id="cake-top"></div>
-      <div id="cake-side"></div>
-      <g id="sprinkles-group"></g>
-
       <button id="calc-delivery-btn"></button>
       <input id="delivery-address" />
       <div id="calc-results-box"></div>
@@ -67,17 +57,6 @@ describe('App Functions', () => {
       <span id="result-cost"></span>
       <span id="result-time"></span>
     `;
-  });
-
-  it('tests adjustColorBrightness', () => {
-    const codeWithExports = appJsCode + `
-      window.adjustColorBrightness = adjustColorBrightness;
-      window.escapeHTML = escapeHTML;
-    `;
-    eval(codeWithExports);
-
-    expect(window.adjustColorBrightness('#ff0000', 10)).toBe('#ff0000');
-    expect(window.adjustColorBrightness('#646464', 10)).toBe('#6e6e6e');
   });
 
   it('tests cart operations', () => {
