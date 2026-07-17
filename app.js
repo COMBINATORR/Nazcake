@@ -1763,6 +1763,24 @@ function isNewArrivalProduct(p) {
   return b === "новое" || b === "жаңа" || b === "new" || b === "новинка" || b === "новинки";
 }
 
+/** Soft card gradients — same family as category-stage accents */
+const CATEGORY_CARD_PALETTE = {
+  cakes: { a: "#5c2a18", b: "#1a100c", c: "#c48a3a" },
+  pastries: { a: "#c48a28", b: "#3d2410", c: "#e8b85a" },
+  pies: { a: "#7a2f55", b: "#1a1020", c: "#c46a8a" },
+  desserts: { a: "#3d8a5a", b: "#102018", c: "#7ec8a0" },
+  berry_desserts: { a: "#8a2a4a", b: "#1a0812", c: "#d46a8a" },
+  "semi-finished": { a: "#3a5a6a", b: "#101820", c: "#8ab0c0" },
+  bakery: { a: "#9a6b3c", b: "#2c1c10", c: "#e0b878" },
+  on_order: { a: "#8b6b2e", b: "#241c0c", c: "#f0d070" }
+};
+
+function categoryCardAccentStyle(category) {
+  const p = CATEGORY_CARD_PALETTE[category];
+  if (!p) return "";
+  return ` style="--card-accent:${p.a};--card-accent-2:${p.b};--card-accent-3:${p.c}"`;
+}
+
 function createProductCardHtml(p) {
   const { id, name, category, categoryLabel, badge, unit, price, sizeOptions, inStock, stock, image, isCustomName } = p;
   const tName = escapeHTML(isCustomName ? name : (window.i18n ? window.i18n.t(`p_${id}_name`) : name));
@@ -1784,9 +1802,11 @@ function createProductCardHtml(p) {
     : "";
   const activeBadge = outOfStockBadge
     || (displayBadge ? `<span class="product-badge"><span class="product-badge-text">${tBadge}</span></span>` : "");
+  const catAttr = category ? ` data-category="${escapeHTML(category)}"` : "";
+  const accentStyle = categoryCardAccentStyle(category);
 
   return `
-    <div class="${cardClass} reveal-item" data-id="${id}">
+    <div class="${cardClass} reveal-item" data-id="${id}"${catAttr}${accentStyle}>
       <div class="product-img-wrapper btn-preview">
         ${activeBadge}
         <img src="${image}" alt="${tName}" class="lazy-image loading" loading="lazy" width="360" height="360" onload="this.classList.remove('loading')">
