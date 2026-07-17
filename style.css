@@ -1793,6 +1793,19 @@ body.dark-theme .btn-premium-shop .cta-shimmer {
   will-change: transform;
 }
 
+/* Pause infinite marquees when off-screen (JS toggles .is-marquee-paused) */
+.ticker-tape-wrapper.is-marquee-paused .ticker-content,
+.reviews-marquee.is-marquee-paused .reviews-track {
+  animation-play-state: paused;
+}
+
+html.prefers-reduced-motion .ticker-content,
+html.prefers-reduced-motion .reviews-track,
+html.prefers-reduced-motion .btn-premium-shop .cta-shimmer,
+html.prefers-reduced-motion .why-brand {
+  animation: none !important;
+}
+
 .ticker-content span {
   font-family: var(--font-body);
   font-weight: 500;

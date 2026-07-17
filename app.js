@@ -1635,8 +1635,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupCategoryStage();
   setupLazyHeroVideo();
   setupContactsMapLazy();
+  setupRuntimePerformance();
 
-  // Scroll header effect
+  // Scroll header effect (passive — less main-thread work on iOS)
   const header = document.querySelector(".main-header");
   if (header) {
     const handleScroll = () => {
@@ -1646,7 +1647,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         header.classList.remove("scrolled");
       }
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
   }
 
