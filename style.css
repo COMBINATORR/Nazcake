@@ -1030,14 +1030,14 @@ body.dark-theme .main-header.scrolled {
     drop-shadow(0 16px 28px rgba(0, 0, 0, 0.4));
 }
 
-/* CENTER — only role visible at rest */
+/* CENTER — only role visible at rest (15px below vertical center) */
 .category-stage-item.is-center {
   left: 50%;
   z-index: 30;
   opacity: 1;
   filter: none;
   max-width: min(72%, 560px);
-  transform: translate(-50%, -50%) scale(1) rotateY(0deg);
+  transform: translate(-50%, calc(-50% + 15px)) scale(1) rotateY(0deg);
   pointer-events: auto;
   cursor: pointer;
   isolation: isolate;
