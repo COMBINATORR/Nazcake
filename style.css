@@ -1269,7 +1269,7 @@ html.is-touch-device .reviews-track {
 
 @media (min-width: 640px) {
   .category-stage-ui {
-    padding: 22px 40px 40px;
+    padding: 48px 40px 40px;
   }
 
   .category-stage-controls {
@@ -1296,10 +1296,14 @@ html.is-touch-device .reviews-track {
   }
 }
 
-/* Desktop: same horizontal rail as .container / footer (60px) */
+/* Desktop: pill near top of stage (+20px lower than previous 14px) */
 @media (min-width: 992px) {
   .category-stage-ui {
-    padding: 20px 60px 44px;
+    padding: 34px 60px 44px;
+  }
+
+  .category-stage-head {
+    margin-top: 0;
   }
 
   .category-stage-viewport {
@@ -1322,6 +1326,11 @@ html.is-touch-device .reviews-track {
 }
 
 @media (max-width: 639px) {
+  /* Mobile: keep original top spacing for the pill */
+  .category-stage-ui {
+    padding: 48px 24px 28px;
+  }
+
   .category-stage-ghost {
     top: calc(14% + 10px);
     padding-inline: 4%;
