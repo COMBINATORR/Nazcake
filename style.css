@@ -1134,7 +1134,8 @@ html.is-touch-device .reviews-track {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 48px 24px 28px;
+  /* Pill higher — less top padding so «Выберите категорию» sits near the top */
+  padding: 18px 24px 28px;
   pointer-events: none;
   box-sizing: border-box;
 }
@@ -1144,10 +1145,12 @@ html.is-touch-device .reviews-track {
   max-width: 640px;
   margin: 0 auto;
   pointer-events: none;
+  transform: translateY(0);
 }
 
 .category-stage-eyebrow {
   margin-bottom: 0;
+  margin-top: 0;
   background: rgba(12, 10, 9, 0.45);
 }
 
@@ -5449,14 +5452,16 @@ body.dark-theme .site-dialog-icon.is-warn {
   .preview-image-side {
     min-height: 0;
     height: auto;
-    max-height: none;
-    padding: 12px 14px 8px;
+    max-height: min(42vh, 300px);
+    padding: 0;
   }
 
   .preview-image-side img {
     width: 100%;
     height: auto;
-    max-height: min(36vh, 260px);
+    min-height: 180px;
+    max-height: min(42vh, 300px);
+    object-fit: cover;
   }
 
   .preview-details-side {
