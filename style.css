@@ -2130,37 +2130,29 @@ body.dark-theme .ig-grid {
   overflow-y: hidden !important;
   scroll-snap-type: x mandatory !important;
   gap: 30px !important;
-  padding: 10px 5px 16px 5px !important;
-  /* Hidden by default — no track line, no permanent bar */
-  scrollbar-width: none !important; /* Firefox */
-  -ms-overflow-style: none !important;
+  /* Extra bottom padding so rail acts as a soft section divider */
+  padding: 10px 5px 18px 5px !important;
+  -ms-overflow-style: auto !important;
   -webkit-overflow-scrolling: touch !important;
-}
-
-#bestsellers-grid::-webkit-scrollbar {
-  height: 0 !important;
-  display: none !important;
-}
-
-/* While scrolling: light = gold thumb, dark = Rolex green */
-#bestsellers-grid.is-scrolling {
+  /* Always-visible rail + thumb (Firefox) */
   scrollbar-width: thin !important;
-  scrollbar-color: var(--accent-gold) transparent !important;
+  scrollbar-color: var(--accent-gold) rgba(74, 44, 17, 0.1) !important;
 }
 
-#bestsellers-grid.is-scrolling::-webkit-scrollbar {
-  height: 5px !important;
+/* Always-visible rail + thumb (WebKit / Chromium) */
+#bestsellers-grid::-webkit-scrollbar {
+  height: 8px !important;
   display: block !important;
-  background: transparent !important;
 }
 
-#bestsellers-grid.is-scrolling::-webkit-scrollbar-track {
-  background: transparent !important;
-  border: none !important;
+#bestsellers-grid::-webkit-scrollbar-track {
+  background: rgba(74, 44, 17, 0.1) !important;
+  border-radius: 999px !important;
+  margin: 0 8px !important;
   box-shadow: none !important;
 }
 
-#bestsellers-grid.is-scrolling::-webkit-scrollbar-thumb {
+#bestsellers-grid::-webkit-scrollbar-thumb {
   background-color: var(--accent-gold) !important;
   background-image: linear-gradient(
     90deg,
@@ -2172,26 +2164,40 @@ body.dark-theme .ig-grid {
   border-radius: 999px !important;
 }
 
-#bestsellers-grid.is-scrolling::-webkit-scrollbar-button {
+#bestsellers-grid::-webkit-scrollbar-thumb:hover {
+  background-image: linear-gradient(
+    90deg,
+    #b07f14 0%,
+    #f0d06a 50%,
+    #b07f14 100%
+  ) !important;
+}
+
+#bestsellers-grid::-webkit-scrollbar-button {
   display: none !important;
   width: 0 !important;
   height: 0 !important;
 }
 
-/* Dark theme: same deep green as site base (#004225 family) */
-body.dark-theme #bestsellers-grid.is-scrolling {
-  scrollbar-color: #004225 transparent !important;
+/* Dark theme: soft emerald rail + gold-tinted thumb */
+body.dark-theme #bestsellers-grid {
+  scrollbar-color: #cca641 rgba(16, 51, 34, 0.85) !important;
 }
 
-body.dark-theme #bestsellers-grid.is-scrolling::-webkit-scrollbar-thumb {
-  background-color: #004225 !important;
+body.dark-theme #bestsellers-grid::-webkit-scrollbar-track {
+  background: rgba(16, 51, 34, 0.9) !important;
+  box-shadow: inset 0 0 0 1px rgba(204, 166, 65, 0.12) !important;
+}
+
+body.dark-theme #bestsellers-grid::-webkit-scrollbar-thumb {
+  background-color: #cca641 !important;
   background-image: linear-gradient(
     90deg,
-    #00331c 0%,
-    #004225 40%,
-    #0a4d2e 100%
+    #9a7a28 0%,
+    #cca641 45%,
+    #e0c06a 100%
   ) !important;
-  box-shadow: 0 0 0 1px rgba(194, 143, 26, 0.15);
+  box-shadow: 0 0 0 1px rgba(4, 20, 13, 0.35);
 }
 
 #bestsellers-grid .product-card {
@@ -2378,23 +2384,18 @@ body.dark-theme .bestsellers-arrow:hover {
     gap: 6px !important;
     /* Side inset comes from .container (6px); avoid double padding */
     padding-top: 10px !important;
-    padding-bottom: 16px !important;
+    padding-bottom: 14px !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
     margin: 0 !important;
     box-sizing: border-box !important;
+    /* Keep rail visible as section divider on mobile too */
+    scrollbar-width: thin !important;
   }
 
-  /* Touch: no permanent scrollbar chrome */
-  #bestsellers-grid,
-  #bestsellers-grid.is-scrolling {
-    scrollbar-width: none !important;
-  }
-
-  #bestsellers-grid::-webkit-scrollbar,
-  #bestsellers-grid.is-scrolling::-webkit-scrollbar {
-    display: none !important;
-    height: 0 !important;
+  #bestsellers-grid::-webkit-scrollbar {
+    height: 6px !important;
+    display: block !important;
   }
 
   #bestsellers-grid .product-card {
