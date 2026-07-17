@@ -1390,71 +1390,6 @@ html.is-touch-device .reviews-track {
   }
 }
 
-/* Category Circle Navigation */
-.hero-category-nav {
-  display: none;
-  justify-content: center;
-  align-items: center;
-  gap: 50px;
-  width: 100%;
-  padding-bottom: 25px;
-  border-bottom: 1px solid rgba(220, 166, 116, 0.1);
-}
-
-.category-nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  text-decoration: none;
-  gap: 12px;
-  flex-shrink: 0;
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.category-nav-item:hover {
-  transform: translateY(-5px);
-}
-
-.category-nav-circle {
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  overflow: hidden;
-  box-shadow: 0 6px 15px rgba(74, 44, 17, 0.08);
-  transition: box-shadow 0.3s ease;
-  position: relative;
-}
-
-.category-nav-item:hover .category-nav-circle {
-  box-shadow: 0 10px 20px rgba(74, 44, 17, 0.15);
-}
-
-.category-nav-circle img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
-
-.category-nav-item:hover .category-nav-circle img {
-  transform: scale(1.1);
-}
-
-.category-nav-label {
-  font-family: var(--font-title);
-  font-weight: 700;
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-primary);
-  transition: color 0.3s ease;
-}
-
-.category-nav-item:hover .category-nav-label {
-  color: var(--accent-gold);
-}
-
 /* Two-Column Showcase Grid */
 .hero-showcase-grid {
   display: none;
@@ -5290,33 +5225,6 @@ body.dark-theme .site-dialog-icon.is-warn {
     box-sizing: border-box;
   }
   
-  /* hero-category-nav visibility controlled by .desktop-only class */
-  .hero-category-nav {
-    justify-content: space-around;
-    gap: 12px;
-    width: 100%;
-    padding-bottom: 20px;
-    box-sizing: border-box;
-  }
-
-  .category-nav-item {
-    flex: 0 1 auto;
-    min-width: 0;
-    gap: 8px;
-  }
-
-  .category-nav-circle {
-    width: 64px;
-    height: 64px;
-  }
-
-  .category-nav-label {
-    font-size: 0.68rem !important;
-    line-height: 1.2;
-    max-width: 80px;
-    white-space: normal;
-  }
-
   /* Removed hero-section padding for full-screen dvh alignment */
 
   /* hero-showcase-grid visibility controlled by .desktop-only class */
