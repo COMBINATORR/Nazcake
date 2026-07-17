@@ -4885,6 +4885,8 @@ function setupBestsellersCarousel() {
 
   const prevBtn = wrapper.querySelector(".prev-btn");
   const nextBtn = wrapper.querySelector(".next-btn");
+  const rail = document.getElementById("bestsellers-scroll-rail");
+  const thumb = document.getElementById("bestsellers-scroll-thumb");
 
   // Brief highlight while scrolling (for side chevrons visibility)
   let scrollHideTimer = null;
@@ -4898,9 +4900,87 @@ function setupBestsellersCarousel() {
     }, 900);
   };
 
-  grid.addEventListener("scroll", markScrolling, { passive: true });
+  // --- Custom rounded rail (no OS scrollbar arrows) ---
+  let railDragging = false;
+  let railDragOffsetX = 0;
+
+  const updateCustomRail = () => {
+    if (!rail || !thumb) return;
+    const maxScroll = grid.scrollWidth - grid.clientWidth;
+    if (maxScroll <= 2) {
+      rail.classList.add("is-disabled");
+      thumb.style.width = "100%";
+      thumb.style.transform = "translateX(0)";
+      return;
+    }
+    rail.classList.remove("is-disabled");
+    const railW = rail.clientWidth;
+    const thumbW = Math.max(36, (grid.clientWidth / grid.scrollWidth) * railW);
+    const maxThumbLeft = Math.max(0, railW - thumbW);
+    const left = maxScroll > 0 ? (grid.scrollLeft / maxScroll) * maxThumbLeft : 0;
+    thumb.style.width = `${thumbW}px`;
+    thumb.style.transform = `translateX(${left}px)`;
+  };
+
+  const scrollFromRailClientX = (clientX) => {
+    if (!rail) return;
+    const maxScroll = grid.scrollWidth - grid.clientWidth;
+    if (maxScroll <= 0) return;
+    const rect = rail.getBoundingClientRect();
+    const railW = rect.width;
+    const thumbW = thumb ? thumb.offsetWidth : 40;
+    const maxThumbLeft = Math.max(0, railW - thumbW);
+    let left = clientX - rect.left - railDragOffsetX;
+    left = Math.max(0, Math.min(maxThumbLeft, left));
+    grid.scrollLeft = maxThumbLeft > 0 ? (left / maxThumbLeft) * maxScroll : 0;
+  };
+
+  if (rail && thumb) {
+    rail.addEventListener("pointerdown", (e) => {
+      // Click on track jumps; drag on thumb moves
+      const thumbRect = thumb.getBoundingClientRect();
+      const onThumb = e.clientX >= thumbRect.left && e.clientX <= thumbRect.right;
+      railDragging = true;
+      railDragOffsetX = onThumb ? e.clientX - thumbRect.left : thumb.offsetWidth / 2;
+      rail.setPointerCapture?.(e.pointerId);
+      scrollFromRailClientX(e.clientX);
+      markScrolling();
+      e.preventDefault();
+    });
+    rail.addEventListener("pointermove", (e) => {
+      if (!railDragging) return;
+      scrollFromRailClientX(e.clientX);
+      markScrolling();
+    });
+    const endRailDrag = (e) => {
+      if (!railDragging) return;
+      railDragging = false;
+      try {
+        rail.releasePointerCapture?.(e.pointerId);
+      } catch (_) { /* ignore */ }
+    };
+    rail.addEventListener("pointerup", endRailDrag);
+    rail.addEventListener("pointercancel", endRailDrag);
+  }
+
+  grid.addEventListener("scroll", () => {
+    markScrolling();
+    updateCustomRail();
+  }, { passive: true });
   grid.addEventListener("wheel", markScrolling, { passive: true });
   grid.addEventListener("touchmove", markScrolling, { passive: true });
+
+  window.addEventListener("resize", updateCustomRail, { passive: true });
+  // After products render, layout may change
+  if (typeof ResizeObserver !== "undefined") {
+    const ro = new ResizeObserver(() => updateCustomRail());
+    ro.observe(grid);
+  }
+  // Initial + delayed (images/cards may load later)
+  updateCustomRail();
+  setTimeout(updateCustomRail, 100);
+  setTimeout(updateCustomRail, 500);
+  setTimeout(updateCustomRail, 1500);
 
   const scrollByCard = (dir) => {
     const card = grid.querySelector(".product-card");
