@@ -1078,20 +1078,20 @@ body.dark-theme .btn-premium-shop .cta-shimmer {
   display: block;
 }
 
-/* Ticker Tape (Marquee) */
+/* Ticker Tape (Marquee) — dark brown strip in light theme (title chocolate) */
 .ticker-tape-wrapper {
   width: 100%;
   overflow: hidden;
-  background-color: var(--bg-secondary);
-  padding: 5px 0;
+  background-color: var(--accent-chocolate);
+  padding: 0;
 }
 
 .ticker-tape {
   width: 100%;
   overflow: hidden;
-  background: var(--bg-primary);
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  background: var(--accent-chocolate);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   padding: 14px 0;
   display: flex;
   align-items: center;
@@ -1118,12 +1118,12 @@ body.dark-theme .btn-premium-shop .cta-shimmer {
   font-size: 1.05rem;
   letter-spacing: 0.01em;
   text-transform: none;
-  color: var(--accent-chocolate);
+  color: #f6efe6; /* cream on chocolate */
   white-space: nowrap;
 }
 
 .ticker-separator {
-  color: rgba(220, 166, 116, 0.5) !important; /* Soft, subtle gold dot */
+  color: rgba(246, 224, 115, 0.55) !important; /* soft gold dots on dark strip */
   font-size: 1.4rem;
   line-height: 1;
   display: inline-block;
@@ -1152,15 +1152,23 @@ body.dark-theme .btn-premium-shop .cta-shimmer {
   animation-name: ticker-scrolling-reverse;
 }
 
-/* Dark Theme overrides for Ticker Tape */
+/* Dark Theme: deep emerald strip (same family as block bg-secondary) */
+body.dark-theme .ticker-tape-wrapper {
+  background-color: var(--bg-secondary) !important;
+}
+
 body.dark-theme .ticker-tape {
-  background: rgba(15, 35, 20, 0.4) !important;
-  border-top-color: rgba(220, 166, 116, 0.15) !important;
-  border-bottom-color: rgba(220, 166, 116, 0.15) !important;
+  background: var(--bg-secondary) !important;
+  border-top-color: rgba(204, 166, 65, 0.18) !important;
+  border-bottom-color: rgba(0, 0, 0, 0.35) !important;
 }
 
 body.dark-theme .ticker-content span {
-  color: var(--text-primary) !important;
+  color: var(--text-primary) !important; /* mint cream */
+}
+
+body.dark-theme .ticker-separator {
+  color: rgba(204, 166, 65, 0.55) !important;
 }
 
 /* About Us Section */
