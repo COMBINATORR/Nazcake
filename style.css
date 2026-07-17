@@ -2552,7 +2552,7 @@ body.dark-theme .bestsellers-arrow:hover {
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
 }
 
-/* Product card chips — MotionSites-style glass pill + gradient label */
+/* Product card chips — outline only + bold gradient label */
 .product-badge {
   position: absolute;
   top: 12px;
@@ -2564,20 +2564,18 @@ body.dark-theme .bestsellers-arrow:hover {
   max-width: calc(100% - 24px);
   padding: 5px 11px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  background: rgba(12, 10, 9, 0.42);
-  backdrop-filter: blur(10px) saturate(140%);
-  -webkit-backdrop-filter: blur(10px) saturate(140%);
-  box-shadow:
-    0 0 0 1px rgba(194, 143, 26, 0.14) inset,
-    0 6px 16px rgba(0, 0, 0, 0.22);
+  border: 1.5px solid rgba(246, 224, 115, 0.85);
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
   pointer-events: none;
 }
 
 .product-badge-text {
   font-family: var(--font-nav);
-  font-weight: 800;
-  font-size: 0.62rem;
+  font-weight: 900;
+  font-size: 0.64rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   line-height: 1.2;
@@ -2597,6 +2595,8 @@ body.dark-theme .bestsellers-arrow:hover {
   background-clip: text;
   color: transparent;
   -webkit-text-fill-color: transparent;
+  /* Slight stroke so text stays readable on light photos */
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35));
 }
 
 .product-info {
@@ -5746,10 +5746,22 @@ body.dark-theme .site-dialog-icon.is-warn {
   gap: 6px;
 }
 
-/* Out of stock label style in catalog */
+/* Out of stock — same pill shape, muted glass + gray gradient */
 .product-badge-outofstock {
-  background-color: #7f8c8d !important;
-  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  background: rgba(40, 40, 40, 0.55) !important;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+    0 6px 16px rgba(0, 0, 0, 0.25) !important;
+}
+
+.product-badge-outofstock .product-badge-text {
+  background-image: linear-gradient(
+    100deg,
+    #e8e8e8 0%,
+    #c0c0c0 45%,
+    #a8a8a8 100%
+  ) !important;
 }
 
 .product-card.out-of-stock {
@@ -6538,13 +6550,25 @@ body.dark-theme .product-img-wrapper {
 }
 
 body.dark-theme .product-badge {
-  background-color: var(--accent-gold);
-  color: #04140d;
+  border-color: rgba(204, 166, 65, 0.35);
+  background: rgba(4, 20, 13, 0.55);
+  box-shadow:
+    0 0 0 1px rgba(204, 166, 65, 0.12) inset,
+    0 6px 16px rgba(0, 0, 0, 0.35);
 }
 
 body.dark-theme .product-badge-outofstock {
-  background-color: #3f1515;
-  color: #ff8585;
+  border-color: rgba(255, 130, 130, 0.35) !important;
+  background: rgba(40, 12, 12, 0.65) !important;
+}
+
+body.dark-theme .product-badge-outofstock .product-badge-text {
+  background-image: linear-gradient(
+    100deg,
+    #ffc0c0 0%,
+    #ff8585 50%,
+    #e07070 100%
+  ) !important;
 }
 
 body.dark-theme .quantity-stepper {
