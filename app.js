@@ -4935,6 +4935,24 @@ const CATEGORY_STAGE_ITEMS = [
     bg: "#3d8a5a",
     bg2: "#102018",
     bg3: "#7ec8a0"
+  },
+  {
+    category: "berry_desserts",
+    src: "images/stage/berry_oreo-cut.webp",
+    ghost: "ЯГОДЫ",
+    // berry / forest fruit
+    bg: "#8a2a4a",
+    bg2: "#1a0812",
+    bg3: "#d46a8a"
+  },
+  {
+    category: "semi-finished",
+    src: "images/stage/semi_pelmeni-cut.webp",
+    ghost: "ПОЛУФАБРИКАТЫ",
+    // cool kitchen steel / dough cream
+    bg: "#3a5a6a",
+    bg2: "#101820",
+    bg3: "#8ab0c0"
   }
 ];
 
