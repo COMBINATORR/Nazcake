@@ -1330,23 +1330,26 @@ body.dark-theme .main-header.scrolled {
   }
 
   .category-stage-controls {
-    max-width: min(62%, 240px);
+    max-width: min(72%, 280px);
   }
 
+  /* Mobile stage title + subtitle — ~50% larger for readability */
   .category-stage-kicker {
-    margin-bottom: 4px;
-    font-size: 0.85rem;
-    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+    font-size: 1.28rem; /* was 0.85rem */
+    letter-spacing: 0.08em;
+    line-height: 1.2;
   }
 
   .category-stage-copy {
-    margin-bottom: 12px;
-    font-size: 0.72rem;
+    margin-bottom: 14px;
+    font-size: 1.08rem; /* was 0.72rem */
     line-height: 1.4;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    color: rgba(255, 255, 255, 0.88);
   }
 
   .category-stage-nav {
