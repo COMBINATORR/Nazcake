@@ -933,6 +933,19 @@ body.dark-theme .main-header.scrolled {
   user-select: none;
 }
 
+/* Desktop: lift ghost above product cluster so images don't cover the type */
+@media (min-width: 640px) {
+  .category-stage-ghost {
+    top: 10%;
+  }
+}
+
+@media (min-width: 992px) {
+  .category-stage-ghost {
+    top: 8%;
+  }
+}
+
 .category-stage-ghost-text {
   font-family: var(--font-display);
   font-size: clamp(40px, 14vw, 240px);
