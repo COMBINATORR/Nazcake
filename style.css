@@ -920,6 +920,27 @@ body.dark-theme .main-header.scrolled {
   background-repeat: repeat;
 }
 
+/* Touch / save-data: drop expensive grain + multi drop-shadows (iOS GPU heat) */
+html.is-touch-device .category-stage-grain,
+html.save-data .category-stage-grain,
+.category-stage-section.is-stage-idle .category-stage-grain {
+  display: none;
+}
+
+html.is-touch-device .category-stage-item img,
+html.is-touch-device .category-stage-item.is-center img {
+  filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.35));
+}
+
+html.is-touch-device .category-stage-item {
+  will-change: auto;
+}
+
+html.is-touch-device .ticker-content,
+html.is-touch-device .reviews-track {
+  will-change: auto;
+}
+
 .category-stage-ghost {
   position: absolute;
   inset-inline: 0;

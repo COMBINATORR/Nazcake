@@ -4622,6 +4622,82 @@ function setupThemeToggler() {
    P0 performance — lazy hero video + lazy Leaflet map
    ============================================================ */
 
+/**
+ * Mobile heat / jank guards:
+ * - pause hero video when off-screen (video decode is the main phone heater)
+ * - pause infinite marquees (ticker, reviews) when not visible
+ * - mark reduced-motion / save-data / coarse pointer for CSS
+ */
+function setupRuntimePerformance() {
+  const root = document.documentElement;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    root.classList.add("prefers-reduced-motion");
+  }
+  if (navigator.connection && navigator.connection.saveData) {
+    root.classList.add("save-data");
+  }
+  // Phones: lighter GPU effects via CSS
+  if (window.matchMedia("(hover: none) and (pointer: coarse)").matches) {
+    root.classList.add("is-touch-device");
+  }
+
+  if (!("IntersectionObserver" in window)) return;
+
+  // 1) Hero video — pause off-screen, resume when visible
+  const heroVideo = document.querySelector("video.hero-video-bg");
+  if (heroVideo) {
+    const heroIo = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio > 0.2) {
+            if (heroVideo.paused && heroVideo.dataset.videoLoaded === "1") {
+              const p = heroVideo.play();
+              if (p && typeof p.catch === "function") p.catch(() => {});
+            }
+            heroVideo.classList.remove("is-offscreen");
+          } else {
+            if (!heroVideo.paused) heroVideo.pause();
+            heroVideo.classList.add("is-offscreen");
+          }
+        });
+      },
+      { threshold: [0, 0.2, 0.5], rootMargin: "40px 0px" }
+    );
+    heroIo.observe(heroVideo);
+  }
+
+  // 2) Infinite CSS marquees — animation-play-state: paused when off-screen
+  const marqueeTargets = [
+    ...document.querySelectorAll(".ticker-tape-wrapper"),
+    ...document.querySelectorAll(".reviews-marquee")
+  ];
+  if (marqueeTargets.length) {
+    const marqueeIo = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          entry.target.classList.toggle("is-marquee-paused", !entry.isIntersecting);
+        });
+      },
+      { rootMargin: "80px 0px", threshold: 0 }
+    );
+    marqueeTargets.forEach((el) => marqueeIo.observe(el));
+  }
+
+  // 3) Category stage grain off-screen (SVG noise is expensive if always painted)
+  const stageSection = document.getElementById("category-stage");
+  if (stageSection) {
+    const stageIo = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          stageSection.classList.toggle("is-stage-idle", !entry.isIntersecting);
+        });
+      },
+      { rootMargin: "60px 0px", threshold: 0 }
+    );
+    stageIo.observe(stageSection);
+  }
+}
+
 /** Defer hero MP4 until after first paint / preloader (poster shows immediately). */
 function setupLazyHeroVideo() {
   const video = document.querySelector("video.hero-video-bg[data-lazy-video]");
