@@ -4897,12 +4897,45 @@ function updateContactsMapPopup() {
   }, 200);
 }
 
-/** TOONHUB-style category stage: 4 roles → open matching catalog tab. */
+/** TOONHUB-style category stage: 4 roles → open matching catalog tab.
+ *  Each category has a distinct multi-stop gradient palette (no repeating browns). */
 const CATEGORY_STAGE_ITEMS = [
-  { category: "cakes", src: "images/dessert_chocolate_design.webp", bg: "#3d2418", ghost: "ТОРТЫ" },
-  { category: "pastries", src: "images/pastry_tea_set.webp", bg: "#5c3a22", ghost: "ВЫПЕЧКА" },
-  { category: "pies", src: "images/pie_smetannik.webp", bg: "#4a2c11", ghost: "ПИРОГИ" },
-  { category: "desserts", src: "images/dessert_pistachio.webp", bg: "#2f3d28", ghost: "ПИРОЖНЫЕ" }
+  {
+    category: "cakes",
+    src: "images/dessert_chocolate_design.webp",
+    ghost: "ТОРТЫ",
+    // deep cocoa + burgundy rose
+    bg: "#6b2438",
+    bg2: "#2a1410",
+    bg3: "#a84a3a"
+  },
+  {
+    category: "pastries",
+    src: "images/pastry_tea_set.webp",
+    ghost: "ВЫПЕЧКА",
+    // warm amber / honey gold
+    bg: "#c48a28",
+    bg2: "#3d2410",
+    bg3: "#e8b85a"
+  },
+  {
+    category: "pies",
+    src: "images/pie_smetannik.webp",
+    ghost: "ПИРОГИ",
+    // berry / plum cream
+    bg: "#7a2f55",
+    bg2: "#1a1020",
+    bg3: "#c46a8a"
+  },
+  {
+    category: "desserts",
+    src: "images/dessert_pistachio.webp",
+    ghost: "ПИРОЖНЫЕ",
+    // pistachio mint + soft teal
+    bg: "#3d8a5a",
+    bg2: "#102018",
+    bg3: "#7ec8a0"
+  }
 ];
 
 function setupCategoryStage() {
@@ -4980,6 +5013,8 @@ function setupCategoryStage() {
       el.setAttribute("aria-label", categoryLabel(CATEGORY_STAGE_ITEMS[i].category));
     });
     section.style.setProperty("--stage-accent", current.bg);
+    section.style.setProperty("--stage-accent-2", current.bg2 || current.bg);
+    section.style.setProperty("--stage-accent-3", current.bg3 || current.bg);
     if (titleEl) {
       titleEl.textContent = categoryLabel(current.category);
       titleEl.removeAttribute("data-i18n");

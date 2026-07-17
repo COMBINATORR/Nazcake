@@ -879,9 +879,34 @@ body.dark-theme .main-header.scrolled {
   min-height: 90svh;
   min-height: 90dvh;
   overflow: hidden;
+  /* Multi-stop palette: main glow + side wash + top accent (set per category in JS) */
   background:
-    radial-gradient(ellipse 90% 70% at 50% 80%, color-mix(in srgb, var(--stage-accent, #4a2c11) 55%, #1a120c) 0%, #0c0a09 72%),
-    #0c0a09;
+    radial-gradient(
+      ellipse 95% 75% at 50% 88%,
+      color-mix(in srgb, var(--stage-accent, #6b2438) 72%, transparent) 0%,
+      transparent 58%
+    ),
+    radial-gradient(
+      ellipse 70% 55% at 12% 35%,
+      color-mix(in srgb, var(--stage-accent-2, #2a1410) 55%, transparent) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 65% 50% at 88% 28%,
+      color-mix(in srgb, var(--stage-accent-3, #a84a3a) 42%, transparent) 0%,
+      transparent 52%
+    ),
+    radial-gradient(
+      ellipse 50% 40% at 50% 15%,
+      color-mix(in srgb, var(--stage-accent, #6b2438) 22%, transparent) 0%,
+      transparent 60%
+    ),
+    linear-gradient(
+      165deg,
+      color-mix(in srgb, var(--stage-accent-2, #120b0a) 80%, #0a0908) 0%,
+      #0c0a09 55%,
+      color-mix(in srgb, var(--stage-accent, #1a1010) 35%, #080706) 100%
+    );
   color: #fff;
   transition: background var(--stage-ms) var(--stage-ease);
 }
