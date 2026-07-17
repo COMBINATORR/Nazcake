@@ -919,7 +919,7 @@ body.dark-theme .main-header.scrolled {
 .category-stage-ghost {
   position: absolute;
   inset-inline: 0;
-  top: 18%; /* below eyebrow pill so ghost type doesn't collide */
+  top: calc(18% + 10px); /* +10px down */
   z-index: 2;
   display: block;
   width: 100%;
@@ -935,7 +935,7 @@ body.dark-theme .main-header.scrolled {
 /* Ghost sits in the free band above the product viewport */
 @media (min-width: 640px) {
   .category-stage-ghost {
-    top: 9%;
+    top: calc(9% + 10px);
     z-index: 4;
     padding-inline: 4%;
   }
@@ -947,7 +947,7 @@ body.dark-theme .main-header.scrolled {
 
 @media (min-width: 992px) {
   .category-stage-ghost {
-    top: 7%;
+    top: calc(7% + 10px);
     padding-inline: 5%;
   }
 }
@@ -1037,7 +1037,7 @@ body.dark-theme .main-header.scrolled {
   opacity: 1;
   filter: none;
   max-width: min(72%, 560px);
-  transform: translate(-50%, calc(-50% + 15px)) scale(1) rotateY(0deg);
+  transform: translate(-50%, calc(-50% + 30px)) scale(1) rotateY(0deg);
   pointer-events: auto;
   cursor: pointer;
   isolation: isolate;
