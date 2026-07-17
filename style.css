@@ -792,27 +792,13 @@ body.dark-theme .main-header.scrolled {
   opacity: 1;
 }
 
-/* Soft scrim so hero text stays readable over video */
+/* No darkening film over hero video — full brightness */
 .hero-video-scrim {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background:
-    linear-gradient(180deg, rgba(12, 10, 9, 0.35) 0%, rgba(12, 10, 9, 0.2) 40%, rgba(12, 10, 9, 0.55) 100%),
-    radial-gradient(ellipse 80% 55% at 50% 75%, rgba(74, 44, 17, 0.28) 0%, transparent 70%);
+  display: none;
 }
 
-/* Subtle grain over video */
 .hero-grain {
-  position: absolute;
-  inset: 0;
-  z-index: 50;
-  pointer-events: none;
-  opacity: 0.35;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
-  background-size: 200px 200px;
-  background-repeat: repeat;
+  display: none;
 }
 
 /* Giant ghost brand type behind hero copy */
