@@ -4902,12 +4902,12 @@ function updateContactsMapPopup() {
 const CATEGORY_STAGE_ITEMS = [
   {
     category: "cakes",
-    src: "images/stage/dessert_chocolate_design-cut.webp",
+    src: "images/stage/cake_kitkat-cut.webp",
     ghost: "ТОРТЫ",
-    // deep cocoa + burgundy rose
-    bg: "#6b2438",
-    bg2: "#2a1410",
-    bg3: "#a84a3a"
+    // KitKat chocolate + warm caramel
+    bg: "#5c2a18",
+    bg2: "#1a100c",
+    bg3: "#c48a3a"
   },
   {
     category: "pastries",
