@@ -332,7 +332,7 @@ body.dark-theme .main-header.scrolled {
 .nav-link {
   position: relative;
   font-family: var(--font-nav);
-  font-weight: 600;
+  font-weight: 900;
   font-size: 0.82rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
