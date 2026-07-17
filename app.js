@@ -4912,6 +4912,7 @@ function setupCategoryStage() {
   const nextBtn = document.getElementById("category-stage-next");
   const openBtn = document.getElementById("category-stage-open");
   const titleEl = document.getElementById("category-stage-title");
+  const copyEl = document.getElementById("category-stage-copy");
   const ghostEl = document.getElementById("category-stage-ghost-text");
   if (!section || !stage) return;
 
@@ -4936,6 +4937,13 @@ function setupCategoryStage() {
       return window.i18n.t(`catalog_cat_${category}`);
     }
     return category;
+  };
+
+  const categoryDesc = (category) => {
+    if (window.i18n && typeof window.i18n.t === "function") {
+      return window.i18n.t(`category_stage_desc_${category}`);
+    }
+    return "";
   };
 
   const openCategoryInCatalog = (category) => {
@@ -4975,6 +4983,10 @@ function setupCategoryStage() {
     if (titleEl) {
       titleEl.textContent = categoryLabel(current.category);
       titleEl.removeAttribute("data-i18n");
+    }
+    if (copyEl) {
+      copyEl.textContent = categoryDesc(current.category);
+      copyEl.removeAttribute("data-i18n");
     }
     if (ghostEl) {
       const label = categoryLabel(current.category);
