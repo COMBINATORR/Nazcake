@@ -991,6 +991,8 @@ body.dark-theme .main-header.scrolled {
 }
 
 .category-stage-item img {
+  position: relative;
+  z-index: 1;
   width: 100%;
   height: 100%;
   object-fit: contain;
@@ -1004,40 +1006,66 @@ body.dark-theme .main-header.scrolled {
   left: 50%;
   top: 46%;
   height: 52%;
-  z-index: 20;
+  z-index: 30;
   opacity: 1;
   filter: none;
   transform: translate(-50%, -50%) scale(1.32);
+  /* Own stacking context so nothing from lower roles bleeds through transparent webp edges */
+  isolation: isolate;
+}
+
+/* Opaque matte behind the product — blocks left/right/back through transparent PNG/WebP areas */
+.category-stage-item.is-center::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  width: 78%;
+  height: 78%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 60% 68% at 50% 52%,
+    color-mix(in srgb, var(--stage-accent-2, #0c0a09) 92%, #0c0a09) 0%,
+    color-mix(in srgb, var(--stage-accent-2, #0c0a09) 70%, #0c0a09) 38%,
+    color-mix(in srgb, var(--stage-accent-2, #0c0a09) 35%, transparent) 62%,
+    transparent 78%
+  );
 }
 
 .category-stage-item.is-left {
-  left: 26%;
+  left: 24%;
   top: 48%;
   height: 26%;
   z-index: 10;
-  opacity: 0.85;
-  filter: blur(2px);
+  opacity: 0.78;
+  filter: blur(2.5px);
   transform: translate(-50%, -50%) scale(1);
 }
 
 .category-stage-item.is-right {
-  left: 74%;
+  left: 76%;
   top: 48%;
   height: 26%;
   z-index: 10;
-  opacity: 0.85;
-  filter: blur(2px);
+  opacity: 0.78;
+  filter: blur(2.5px);
   transform: translate(-50%, -50%) scale(1);
 }
 
+/* Parked off the stack — never sit under the center product (was showing through transparent edges) */
 .category-stage-item.is-back {
   left: 50%;
-  top: 44%;
-  height: 20%;
-  z-index: 5;
-  opacity: 0.9;
-  filter: blur(4px);
-  transform: translate(-50%, -50%) scale(1);
+  top: 42%;
+  height: 16%;
+  z-index: 1;
+  opacity: 0;
+  visibility: hidden;
+  filter: none;
+  transform: translate(-50%, -50%) scale(0.55);
+  pointer-events: none;
 }
 
 .category-stage-ui {
@@ -1204,20 +1232,15 @@ body.dark-theme .main-header.scrolled {
   }
 
   .category-stage-item.is-left {
-    left: 28%;
+    left: 26%;
     top: 48%;
     height: 30%;
   }
 
   .category-stage-item.is-right {
-    left: 72%;
+    left: 74%;
     top: 48%;
     height: 30%;
-  }
-
-  .category-stage-item.is-back {
-    top: 43%;
-    height: 22%;
   }
 }
 
@@ -1233,20 +1256,15 @@ body.dark-theme .main-header.scrolled {
   }
 
   .category-stage-item.is-left {
-    left: 16%;
+    left: 14%;
     top: 48%;
     height: 18%;
   }
 
   .category-stage-item.is-right {
-    left: 84%;
+    left: 86%;
     top: 48%;
     height: 18%;
-  }
-
-  .category-stage-item.is-back {
-    top: 44%;
-    height: 14%;
   }
 
   .category-stage-footer {
