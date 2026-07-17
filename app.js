@@ -5026,8 +5026,33 @@ function setupCategoryStage() {
     if (ghostEl) {
       const label = categoryLabel(current.category);
       ghostEl.textContent = (label || current.ghost || "").toUpperCase();
+      // Scale down long labels (e.g. «ПИРОЖНЫЕ») so they never clip past phone edges
+      requestAnimationFrame(() => {
+        ghostEl.style.transform = "scale(1)";
+        const parent = ghostEl.parentElement;
+        if (!parent) return;
+        const maxW = parent.clientWidth;
+        const w = ghostEl.scrollWidth;
+        if (w > maxW && w > 0) {
+          ghostEl.style.transform = `scale(${(maxW / w).toFixed(4)})`;
+        }
+      });
     }
   };
+
+  window.addEventListener("resize", () => {
+    if (!ghostEl) return;
+    requestAnimationFrame(() => {
+      ghostEl.style.transform = "scale(1)";
+      const parent = ghostEl.parentElement;
+      if (!parent) return;
+      const maxW = parent.clientWidth;
+      const w = ghostEl.scrollWidth;
+      if (w > maxW && w > 0) {
+        ghostEl.style.transform = `scale(${(maxW / w).toFixed(4)})`;
+      }
+    });
+  });
 
   const navigate = (dir) => {
     if (isAnimating) return;
