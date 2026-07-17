@@ -164,6 +164,29 @@ h1, h2, h3, h4, h5, h6 {
   text-align: center;
 }
 
+/* Brand word in light subtitles / body — Montserrat Black, heavier than surrounding text */
+.brand-word,
+.section-desc strong,
+.section-desc .brand-word,
+.section-subtitle .brand-word,
+.about-text strong,
+.about-text .brand-word,
+.footer-brand-desc .brand-word,
+.category-stage-copy .brand-word {
+  font-family: var(--font-brand);
+  font-weight: 900;
+  font-style: normal;
+  letter-spacing: 0.02em;
+  color: inherit;
+  -webkit-text-fill-color: currentColor;
+}
+
+.section-title .brand-word {
+  font-family: var(--font-brand);
+  font-weight: 900;
+  letter-spacing: 0.03em;
+}
+
 @media (min-width: 640px) {
   .section-title {
     font-size: var(--title-size-tablet);
