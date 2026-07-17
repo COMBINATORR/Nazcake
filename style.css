@@ -933,16 +933,21 @@ body.dark-theme .main-header.scrolled {
   user-select: none;
 }
 
-/* Desktop: lift ghost above product cluster so images don't cover the type */
+/* Ghost sits in the free band above the product viewport */
 @media (min-width: 640px) {
   .category-stage-ghost {
-    top: 10%;
+    top: 9%;
+    z-index: 4;
+  }
+
+  .category-stage-ghost-text {
+    opacity: 0.1;
   }
 }
 
 @media (min-width: 992px) {
   .category-stage-ghost {
-    top: 8%;
+    top: 7%;
   }
 }
 
@@ -961,9 +966,13 @@ body.dark-theme .main-header.scrolled {
   transition: opacity 300ms ease, transform 200ms ease;
 }
 
+/* Product stage lives only in the middle band — never over footer controls or top pill */
 .category-stage-viewport {
   position: absolute;
-  inset: 0;
+  left: 0;
+  right: 0;
+  top: 14%;
+  bottom: 26%;
   z-index: 3;
   overflow: hidden;
   pointer-events: none;
@@ -973,14 +982,14 @@ body.dark-theme .main-header.scrolled {
   position: absolute;
   inset: 0;
   perspective: 1200px;
-  perspective-origin: 50% 45%;
+  perspective-origin: 50% 40%;
 }
 
-/* Transparent cutouts + layered 3D depth (no studio plate behind products) */
+/* Ordered stage: one hero + two quiet side previews */
 .category-stage-item {
   position: absolute;
   aspect-ratio: 1 / 1;
-  top: 46%;
+  top: 52%;
   bottom: auto;
   transform: translate(-50%, -50%);
   transform-style: preserve-3d;
@@ -1006,105 +1015,100 @@ body.dark-theme .main-header.scrolled {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  object-position: center bottom;
+  object-position: center center;
   pointer-events: none;
   user-select: none;
-  /* Multi-layer drop-shadow = floating 3D cutout */
   filter:
-    drop-shadow(0 4px 6px rgba(0, 0, 0, 0.25))
-    drop-shadow(0 18px 28px rgba(0, 0, 0, 0.45))
-    drop-shadow(0 40px 50px rgba(0, 0, 0, 0.35));
+    drop-shadow(0 6px 12px rgba(0, 0, 0, 0.28))
+    drop-shadow(0 18px 32px rgba(0, 0, 0, 0.35));
   transition: filter var(--stage-ms) var(--stage-ease);
 }
 
+/* HERO — clear, centered, not oversized */
 .category-stage-item.is-center {
   left: 50%;
-  top: 46%;
-  height: 54%;
+  top: 50%;
+  height: 78%;
   z-index: 30;
   opacity: 1;
   filter: none;
-  transform: translate(-50%, -50%) scale(1.28) perspective(900px) rotateX(4deg);
+  transform: translate(-50%, -50%) scale(1);
   isolation: isolate;
 }
 
-/* Soft ground shadow under hero product (not a flat matte plate) */
 .category-stage-item.is-center::after {
   content: "";
   position: absolute;
   left: 50%;
-  bottom: 2%;
-  width: 62%;
-  height: 12%;
+  bottom: 4%;
+  width: 55%;
+  height: 10%;
   transform: translateX(-50%);
   z-index: 0;
   pointer-events: none;
   border-radius: 50%;
   background: radial-gradient(
     ellipse at center,
-    rgba(0, 0, 0, 0.55) 0%,
-    rgba(0, 0, 0, 0.22) 42%,
+    rgba(0, 0, 0, 0.5) 0%,
+    rgba(0, 0, 0, 0.18) 45%,
     transparent 72%
   );
-  filter: blur(6px);
+  filter: blur(5px);
 }
 
 .category-stage-item.is-center img {
   filter:
-    drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2))
-    drop-shadow(0 14px 22px rgba(0, 0, 0, 0.4))
-    drop-shadow(0 36px 48px rgba(0, 0, 0, 0.38))
-    drop-shadow(0 0 40px color-mix(in srgb, var(--stage-accent, #6b2438) 35%, transparent));
+    drop-shadow(0 4px 8px rgba(0, 0, 0, 0.22))
+    drop-shadow(0 16px 28px rgba(0, 0, 0, 0.4))
+    drop-shadow(0 0 36px color-mix(in srgb, var(--stage-accent, #6b2438) 28%, transparent));
 }
 
+/* Side previews — small, far, soft (no clutter over UI) */
 .category-stage-item.is-left {
-  left: 22%;
-  top: 50%;
-  height: 28%;
+  left: 12%;
+  top: 52%;
+  height: 38%;
   z-index: 10;
-  opacity: 0.72;
-  filter: blur(1.5px) brightness(0.88);
-  transform: translate(-50%, -50%) scale(0.92) perspective(800px) rotateY(18deg) rotateX(2deg);
+  opacity: 0.42;
+  filter: blur(3px) brightness(0.75) saturate(0.85);
+  transform: translate(-50%, -50%) scale(0.88) perspective(900px) rotateY(22deg);
 }
 
 .category-stage-item.is-right {
-  left: 78%;
-  top: 50%;
-  height: 28%;
+  left: 88%;
+  top: 52%;
+  height: 38%;
   z-index: 10;
-  opacity: 0.72;
-  filter: blur(1.5px) brightness(0.88);
-  transform: translate(-50%, -50%) scale(0.92) perspective(800px) rotateY(-18deg) rotateX(2deg);
+  opacity: 0.42;
+  filter: blur(3px) brightness(0.75) saturate(0.85);
+  transform: translate(-50%, -50%) scale(0.88) perspective(900px) rotateY(-22deg);
 }
 
 .category-stage-item.is-left img,
 .category-stage-item.is-right img {
-  filter:
-    drop-shadow(0 10px 18px rgba(0, 0, 0, 0.4))
-    drop-shadow(0 22px 30px rgba(0, 0, 0, 0.28));
+  filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.35));
 }
 
 /* Parked — never under the center product */
 .category-stage-item.is-back {
   left: 50%;
-  top: 42%;
-  height: 16%;
+  top: 50%;
+  height: 20%;
   z-index: 1;
   opacity: 0;
   visibility: hidden;
   filter: none;
-  transform: translate(-50%, -50%) scale(0.55);
+  transform: translate(-50%, -50%) scale(0.4);
   pointer-events: none;
 }
 
 .category-stage-ui {
   position: absolute;
   inset: 0;
-  z-index: 40;
+  z-index: 50;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  /* Match site rail: .container / footer use 60px horizontal inset */
   padding: 48px 24px 28px;
   pointer-events: none;
   box-sizing: border-box;
@@ -1255,22 +1259,23 @@ body.dark-theme .main-header.scrolled {
     height: 64px;
   }
 
+  .category-stage-viewport {
+    top: 16%;
+    bottom: 24%;
+  }
+
   .category-stage-item.is-center {
-    top: 45%;
-    height: 60%;
-    transform: translate(-50%, -50%) scale(1.38) perspective(1000px) rotateX(5deg);
+    height: 82%;
   }
 
   .category-stage-item.is-left {
-    left: 24%;
-    top: 50%;
-    height: 32%;
+    left: 11%;
+    height: 36%;
   }
 
   .category-stage-item.is-right {
-    left: 76%;
-    top: 50%;
-    height: 32%;
+    left: 89%;
+    height: 36%;
   }
 }
 
@@ -1279,11 +1284,30 @@ body.dark-theme .main-header.scrolled {
   .category-stage-ui {
     padding: 56px 60px 44px;
   }
+
+  .category-stage-viewport {
+    top: 15%;
+    bottom: 22%;
+    left: 4%;
+    right: 4%;
+  }
+
+  .category-stage-item.is-left {
+    left: 8%;
+    height: 34%;
+    opacity: 0.38;
+  }
+
+  .category-stage-item.is-right {
+    left: 92%;
+    height: 34%;
+    opacity: 0.38;
+  }
 }
 
 @media (max-width: 639px) {
   .category-stage-ghost {
-    top: 16%;
+    top: 14%;
     padding-inline: 5%;
   }
 
@@ -1293,22 +1317,20 @@ body.dark-theme .main-header.scrolled {
     letter-spacing: -0.03em;
   }
 
+  .category-stage-viewport {
+    top: 18%;
+    bottom: 30%;
+  }
+
   .category-stage-item.is-center {
-    top: 46%;
-    height: 48%;
-    transform: translate(-50%, -50%) scale(1.18) perspective(700px) rotateX(3deg);
+    height: 88%;
   }
 
-  .category-stage-item.is-left {
-    left: 12%;
-    top: 52%;
-    height: 20%;
-  }
-
+  /* Hide side clutter on phone — only the hero */
+  .category-stage-item.is-left,
   .category-stage-item.is-right {
-    left: 88%;
-    top: 52%;
-    height: 20%;
+    opacity: 0;
+    visibility: hidden;
   }
 
   .category-stage-footer {
