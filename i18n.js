@@ -25,6 +25,7 @@
       nav_community: "Сообщество",
       nav_contacts: "Контакты",
       nav_menu_title: "Меню",
+      nav_badge_new: "новое",
 
       // Hero Section
       hero_subtitle: "ВЫПЕЧКА • ТОРТЫ • АТЫРАУ",

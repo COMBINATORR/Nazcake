@@ -890,16 +890,98 @@ body.dark-theme .main-header.scrolled {
   margin-top: 10px;
 }
 
+/* Legacy class kept for safety */
 .hero-subtitle-intro {
-  display: block;
-  font-family: var(--font-title);
-  font-size: 0.9rem;
-  font-weight: 800;
+  display: none;
+}
+
+/* MotionSites-style hero eyebrow: glass pill + gold→peach gradient text */
+.hero-eyebrow-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 18px;
+  padding: 7px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(12, 10, 9, 0.38);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  box-shadow:
+    0 0 0 1px rgba(194, 143, 26, 0.12) inset,
+    0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.hero-eyebrow-pill-text {
+  font-family: var(--font-nav);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  letter-spacing: 0.25em;
-  color: var(--accent-gold-light) !important;
-  margin-bottom: 15px;
-  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.45);
+  line-height: 1.2;
+  white-space: nowrap;
+  background-image: linear-gradient(
+    100deg,
+    #f6e073 0%,
+    #f0d9a0 28%,
+    #e8b88a 55%,
+    #f2c4d8 78%,
+    #e8d4ff 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Nav "новое" chip — MotionSites Apps/New style */
+.nav-link--with-badge,
+.drawer-link--with-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-new-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(232, 160, 120, 0.9);
+  background: rgba(232, 160, 120, 0.08);
+  font-family: var(--font-nav);
+  font-size: 0.55rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.25;
+  color: #e8a078;
+  text-shadow: none;
+}
+
+.main-header:not(.scrolled) .nav-new-badge {
+  border-color: rgba(246, 200, 160, 0.95);
+  color: #f6c8a0;
+  background: rgba(246, 200, 160, 0.1);
+  text-shadow: none !important;
+}
+
+.drawer-link--with-badge .nav-new-badge {
+  font-size: 0.6rem;
+  padding: 3px 9px;
+}
+
+body.dark-theme .nav-new-badge {
+  border-color: rgba(232, 170, 130, 0.75);
+  color: #f0b890;
+  background: rgba(232, 170, 130, 0.1);
+}
+
+body.dark-theme .hero-eyebrow-pill {
+  border-color: rgba(204, 166, 65, 0.28);
+  background: rgba(4, 20, 13, 0.55);
 }
 
 .hero-introducing-block .hero-title {
