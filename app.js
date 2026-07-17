@@ -1632,7 +1632,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupKaspiQrCheckout();
   setupThemeToggler();
   setupBestsellersCarousel();
-  setupHeroStage();
+  setupCategoryStage();
   setupLazyHeroVideo();
   setupContactsMapLazy();
 
@@ -4897,63 +4897,95 @@ function updateContactsMapPopup() {
   }, 200);
 }
 
-/** TOONHUB-inspired hero product stage (center / left / right / back). */
-const HERO_STAGE_ITEMS = [
-  { src: "images/pie_snickers.webp", bg: "#4a2c11" },
-  { src: "images/dessert_chocolate_design.webp", bg: "#3d2418" },
-  { src: "images/pastry_tea_set.webp", bg: "#5c3a22" },
-  { src: "images/dessert_pistachio.webp", bg: "#2f3d28" }
+/** TOONHUB-style category stage: 4 roles → open matching catalog tab. */
+const CATEGORY_STAGE_ITEMS = [
+  { category: "cakes", src: "images/dessert_chocolate_design.webp", bg: "#3d2418", ghost: "ТОРТЫ" },
+  { category: "pastries", src: "images/pastry_tea_set.webp", bg: "#5c3a22", ghost: "ВЫПЕЧКА" },
+  { category: "pies", src: "images/pie_smetannik.webp", bg: "#4a2c11", ghost: "ПИРОГИ" },
+  { category: "desserts", src: "images/dessert_pistachio.webp", bg: "#2f3d28", ghost: "ПИРОЖНЫЕ" }
 ];
 
-function setupHeroStage() {
-  const section = document.getElementById("hero-section");
-  const stage = document.getElementById("hero-stage");
-  const prevBtn = document.getElementById("hero-stage-prev");
-  const nextBtn = document.getElementById("hero-stage-next");
+function setupCategoryStage() {
+  const section = document.getElementById("category-stage");
+  const stage = document.getElementById("category-stage-track");
+  const prevBtn = document.getElementById("category-stage-prev");
+  const nextBtn = document.getElementById("category-stage-next");
+  const openBtn = document.getElementById("category-stage-open");
+  const titleEl = document.getElementById("category-stage-title");
+  const ghostEl = document.getElementById("category-stage-ghost-text");
   if (!section || !stage) return;
 
-  // Prefer local product images if files exist; fallback stays as listed
   let activeIndex = 0;
   let isAnimating = false;
 
-  // Preload
-  HERO_STAGE_ITEMS.forEach((item) => {
+  CATEGORY_STAGE_ITEMS.forEach((item) => {
     const img = new Image();
     img.src = item.src;
   });
 
-  // Build DOM once
-  stage.innerHTML = HERO_STAGE_ITEMS.map((item, i) => `
-    <div class="hero-stage-item" data-stage-index="${i}">
+  stage.innerHTML = CATEGORY_STAGE_ITEMS.map((item, i) => `
+    <div class="category-stage-item" data-stage-index="${i}" data-category="${item.category}" role="button" tabindex="-1" aria-label="">
       <img src="${item.src}" alt="" draggable="false" width="480" height="640" decoding="async">
     </div>
   `).join("");
 
-  const items = Array.from(stage.querySelectorAll(".hero-stage-item"));
+  const items = Array.from(stage.querySelectorAll(".category-stage-item"));
+
+  const categoryLabel = (category) => {
+    if (window.i18n && typeof window.i18n.t === "function") {
+      return window.i18n.t(`catalog_cat_${category}`);
+    }
+    return category;
+  };
+
+  const openCategoryInCatalog = (category) => {
+    if (!category) return;
+    const targetTab = Array.from(document.querySelectorAll(".tab-btn")).find(
+      (btn) => btn.getAttribute("data-category") === category
+    );
+    if (targetTab) {
+      if (typeof triggerHapticFeedback === "function") triggerHapticFeedback();
+      targetTab.click();
+    } else if (typeof renderCatalog === "function") {
+      renderCatalog(category);
+    }
+    const catalog = document.getElementById("catalog");
+    if (catalog) catalog.scrollIntoView({ behavior: "smooth" });
+  };
 
   const applyRoles = () => {
-    const n = HERO_STAGE_ITEMS.length;
+    const n = CATEGORY_STAGE_ITEMS.length;
     const roles = {
       center: activeIndex,
       left: (activeIndex + n - 1) % n,
       right: (activeIndex + 1) % n,
       back: (activeIndex + 2) % n
     };
+    const current = CATEGORY_STAGE_ITEMS[activeIndex];
     items.forEach((el, i) => {
       el.classList.remove("is-center", "is-left", "is-right", "is-back");
       if (i === roles.center) el.classList.add("is-center");
       else if (i === roles.left) el.classList.add("is-left");
       else if (i === roles.right) el.classList.add("is-right");
       else if (i === roles.back) el.classList.add("is-back");
+      el.setAttribute("tabindex", i === roles.center ? "0" : "-1");
+      el.setAttribute("aria-label", categoryLabel(CATEGORY_STAGE_ITEMS[i].category));
     });
-    // Soft accent on scrim via CSS variable (video stays)
-    section.style.setProperty("--hero-accent", HERO_STAGE_ITEMS[activeIndex].bg);
+    section.style.setProperty("--stage-accent", current.bg);
+    if (titleEl) {
+      titleEl.textContent = categoryLabel(current.category);
+      titleEl.removeAttribute("data-i18n");
+    }
+    if (ghostEl) {
+      const label = categoryLabel(current.category);
+      ghostEl.textContent = (label || current.ghost || "").toUpperCase();
+    }
   };
 
   const navigate = (dir) => {
     if (isAnimating) return;
     isAnimating = true;
-    const n = HERO_STAGE_ITEMS.length;
+    const n = CATEGORY_STAGE_ITEMS.length;
     activeIndex = dir === "next" ? (activeIndex + 1) % n : (activeIndex + n - 1) % n;
     applyRoles();
     if (typeof triggerHapticFeedback === "function") triggerHapticFeedback();
@@ -4965,13 +4997,37 @@ function setupHeroStage() {
   if (prevBtn) prevBtn.addEventListener("click", () => navigate("prev"));
   if (nextBtn) nextBtn.addEventListener("click", () => navigate("next"));
 
-  // Keyboard support when hero in view
+  if (openBtn) {
+    openBtn.addEventListener("click", () => {
+      openCategoryInCatalog(CATEGORY_STAGE_ITEMS[activeIndex].category);
+    });
+  }
+
+  items.forEach((el, i) => {
+    el.addEventListener("click", () => {
+      if (!el.classList.contains("is-center")) return;
+      openCategoryInCatalog(CATEGORY_STAGE_ITEMS[i].category);
+    });
+    el.addEventListener("keydown", (e) => {
+      if (!el.classList.contains("is-center")) return;
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        openCategoryInCatalog(CATEGORY_STAGE_ITEMS[i].category);
+      }
+    });
+  });
+
   document.addEventListener("keydown", (e) => {
     if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
     const rect = section.getBoundingClientRect();
-    if (rect.bottom < 80 || rect.top > window.innerHeight * 0.6) return;
+    if (rect.bottom < 80 || rect.top > window.innerHeight * 0.65) return;
     navigate(e.key === "ArrowRight" ? "next" : "prev");
   });
+
+  // Keep title/ghost in sync when language changes
+  if (window.i18n && typeof window.i18n.onLanguageChange === "function") {
+    window.i18n.onLanguageChange(applyRoles);
+  }
 
   applyRoles();
 }

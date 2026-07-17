@@ -82,7 +82,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500&family=Montserrat:wght@900&family=SN+Pro:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
 
   <!-- CSS Stylesheet (Leaflet CSS loads lazily when #contacts is near viewport) -->
-  <link rel="stylesheet" href="style.css?v=8.3">
+  <link rel="stylesheet" href="style.css?v=8.4">
 </head>
 <body class="preloader-active">
   <script>
@@ -263,9 +263,8 @@
   </div>
   <div class="drawer-overlay" id="drawer-overlay"></div>
 
-  <!-- Hero: Nazcake + TOONHUB-inspired stage (ghost text, figure carousel, circular nav) -->
-  <section class="hero-section" id="hero-section" data-hero-stage>
-    <!-- Background Video: deferred load (poster first) — P0 performance -->
+  <!-- Hero (video + USP, no category carousel) -->
+  <section class="hero-section" id="hero-section">
     <video
       class="hero-video-bg"
       muted
@@ -282,22 +281,12 @@
       <source data-src="Videos/Broll2.mp4" type="video/mp4">
     </video>
     <div class="hero-video-scrim" aria-hidden="true"></div>
-
-    <!-- Film grain (TOONHUB-style) -->
     <div class="hero-grain" aria-hidden="true"></div>
-
-    <!-- Giant ghost display type -->
     <div class="hero-ghost-text" aria-hidden="true">
       <span class="hero-ghost-text-inner">NAZCAKE</span>
     </div>
 
-    <div class="hero-container">
-      <!-- 4-slot product stage carousel -->
-      <div class="hero-stage" id="hero-stage" aria-hidden="true">
-        <!-- filled by JS -->
-      </div>
-
-      <!-- Introducing Text Block -->
+    <div class="hero-container hero-container--simple">
       <div class="hero-introducing-block">
         <div id="location-alert-banner" class="location-alert-banner hidden">
           <svg class="warning-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
@@ -314,7 +303,7 @@
         <h1 class="hero-title" data-i18n="hero_title">АВТОРСКИЕ ДЕСЕРТЫ</h1>
         <p class="hero-desc" data-i18n="hero_desc">Изысканный вкус и натуральные ингредиенты в каждом кусочке.</p>
         <div class="hero-actions">
-          <a href="#catalog" class="btn btn-premium-shop" id="hero-cta-btn">
+          <a href="#category-stage" class="btn btn-premium-shop" id="hero-cta-btn">
             <span class="cta-shimmer"></span>
             <span class="cta-label" data-i18n="hero_btn_catalog">ПРОДУКЦИЯ</span>
             <span class="cta-icon">
@@ -326,39 +315,60 @@
           </a>
         </div>
       </div>
+    </div>
+  </section>
 
-      <!-- Bottom-left: caption + circular arrows -->
-      <div class="hero-stage-controls">
-        <p class="hero-stage-kicker" data-i18n="hero_stage_kicker">Nazcake desserts</p>
-        <p class="hero-stage-copy" data-i18n="hero_stage_copy">Авторские торты и выпечка — свежая витрина каждый день. Выбирайте и заказывайте в WhatsApp.</p>
-        <div class="hero-stage-nav">
-          <button type="button" class="hero-circle-btn" id="hero-stage-prev" aria-label="Предыдущий">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" width="26" height="26" aria-hidden="true">
-              <line x1="19" y1="12" x2="5" y2="12"></line>
-              <polyline points="12 19 5 12 12 5"></polyline>
-            </svg>
-          </button>
-          <button type="button" class="hero-circle-btn" id="hero-stage-next" aria-label="Следующий">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" width="26" height="26" aria-hidden="true">
+
+
+  <!-- Category stage carousel (TOONHUB layout → choose catalog category) -->
+  <section class="category-stage-section" id="category-stage" aria-label="Выбор категории">
+    <div class="category-stage-inner" id="category-stage-inner">
+      <div class="category-stage-grain" aria-hidden="true"></div>
+      <div class="category-stage-ghost" aria-hidden="true">
+        <span class="category-stage-ghost-text" id="category-stage-ghost-text">ТОРТЫ</span>
+      </div>
+
+      <div class="category-stage-viewport">
+        <div class="category-stage" id="category-stage-track">
+          <!-- filled by JS -->
+        </div>
+      </div>
+
+      <div class="category-stage-ui">
+        <div class="category-stage-head">
+          <span class="hero-eyebrow-pill category-stage-eyebrow">
+            <span class="hero-eyebrow-pill-text" data-i18n="category_stage_eyebrow">Выберите категорию</span>
+          </span>
+          <h2 class="category-stage-title" id="category-stage-title">Торты</h2>
+          <p class="category-stage-desc" id="category-stage-desc" data-i18n="category_stage_hint">Крутите витрину и откройте каталог в нужном разделе</p>
+        </div>
+
+        <div class="category-stage-footer">
+          <div class="category-stage-nav">
+            <button type="button" class="hero-circle-btn category-stage-btn" id="category-stage-prev" aria-label="Предыдущая категория">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" width="26" height="26" aria-hidden="true">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+            </button>
+            <button type="button" class="hero-circle-btn category-stage-btn" id="category-stage-next" aria-label="Следующая категория">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" width="26" height="26" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+          </div>
+          <button type="button" class="category-stage-cta" id="category-stage-open">
+            <span data-i18n="category_stage_cta">Открыть в каталоге</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" aria-hidden="true">
               <line x1="5" y1="12" x2="19" y2="12"></line>
               <polyline points="12 5 19 12 12 19"></polyline>
             </svg>
           </button>
         </div>
       </div>
-
-      <!-- Bottom-right discover CTA (TOONHUB-style) -->
-      <a href="#catalog" class="hero-discover" data-i18n="hero_discover">
-        Смотреть
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-          <polyline points="12 5 19 12 12 19"></polyline>
-        </svg>
-      </a>
     </div>
   </section>
-
-
 
   <!-- Premium Ticker Tape -->
   <div class="ticker-tape-wrapper">
@@ -1999,7 +2009,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <!-- Leaflet loaded lazily from app.js when contacts section approaches -->
   <!-- JavaScript Application -->
-  <script src="i18n.js?v=6.0"></script>
-  <script src="app.js?v=6.3"></script>
+  <script src="i18n.js?v=6.1"></script>
+  <script src="app.js?v=6.4"></script>
 </body>
 </html>
