@@ -845,11 +845,16 @@ body.dark-theme .main-header.scrolled {
 }
 
 /* ── Category stage (TOONHUB 4-role carousel → open catalog tab) ── */
+/* Full viewport height so the next block (ticker) is not visible in the frame */
 .category-stage-section {
   position: relative;
   width: 100%;
-  min-height: min(92vh, 900px);
-  height: min(92vh, 900px);
+  height: 100vh;
+  height: 100svh;
+  height: 100dvh;
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
   overflow: hidden;
   background:
     radial-gradient(ellipse 90% 70% at 50% 80%, color-mix(in srgb, var(--stage-accent, #4a2c11) 55%, #1a120c) 0%, #0c0a09 72%),
@@ -1168,11 +1173,6 @@ body.dark-theme .main-header.scrolled {
 }
 
 @media (max-width: 639px) {
-  .category-stage-section {
-    min-height: 78vh;
-    height: 78vh;
-  }
-
   .category-stage-ghost {
     top: 6%;
   }
