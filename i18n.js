@@ -48,7 +48,7 @@
       ticker_mid_3: "Заказ в WhatsApp и Kaspi · Атырау",
 
       // About Section
-      about_subtitle: "Наша философия",
+      about_subtitle: "Философия",
       about_title: "О кондитерской Nazcake",
       about_text_1: "Кондитерский дом <strong>Nazcake</strong> уже более 15 лет радует жителей Атырау изысканными вкусами и теплой домашней атмосферой. Каждый день мы создаем свежую выпечку и десерты, приносящие радость в каждый дом.",
       about_text_2: "Мы гордимся тем, что не используем искусственные красители, консерванты или растительные сливки. Только натуральное сливочное масло, отборные бельгийские шоколадные дропсы, свежие ягоды и домашний творог. Для нас выпечка — это не просто ремесло, это искусство дарить радость.",
@@ -57,7 +57,7 @@
       about_feat_location: "Локация",
 
       // Why Choose Nazcake
-      why_subtitle: "Наши преимущества",
+      why_subtitle: "Преимущества",
       why_title: "Почему выбирают <span class=\"why-brand-wrap\"><span class=\"why-brand why-brand-fill\">Nazcake</span><span class=\"why-brand why-brand-glow\" aria-hidden=\"true\">Nazcake</span></span>?",
       why_1_title: "Единственные в своём роде десерты",
       why_1_text: "Фирменные торты и крафтовые десерты ручной работы для ваших особенных моментов.",
@@ -68,12 +68,12 @@
 
       // Bestsellers
       bestsellers_subtitle: "Популярный выбор",
-      bestsellers_title: "Хиты наших гостей",
+      bestsellers_title: "Хиты гостей",
       bestsellers_desc: "Десерты и блюда, которые заслужили любовь жителей Атырау и чаще всего заказываются к столу.",
 
       // Catalog
       catalog_subtitle: "Ассортимент Nazcake",
-      catalog_title: "Наша Продукция",
+      catalog_title: "Продукция",
       catalog_desc: "От домашней свежей выпечки и изысканных десертов до роскошных праздничных тортов и сытных полуфабрикатов ручной лепки.",
       catalog_cat_all: "Все товары",
       catalog_cat_bakery: "Хлебобулочные изделия",
@@ -298,7 +298,7 @@
       community_follow: "Подписаться",
       community_message: "Отправить сообщение",
       community_hl_1: "Отзывы",
-      community_hl_2: "Наша команда",
+      community_hl_2: "Команда",
       community_hl_3: "В наличии",
       community_hl_4: "Полуфабрикат",
       community_hl_5: "Наш адрес",
@@ -839,7 +839,7 @@
       ticker_mid_3: "WhatsApp пен Kaspi арқылы тапсырыс · Атырау",
 
       // About Section
-      about_subtitle: "Біздің философиямыз",
+      about_subtitle: "Философия",
       about_title: "Nazcake кондитерлік үйі туралы",
       about_text_1: "<strong>Nazcake</strong> кондитерлік үйі 15 жылдан астам уақыт бойы Атырау тұрғындарын талғампаз дәмдерімен және жылы үй атмосферасымен қуантып келеді. Күн сайын біз әр үйге қуаныш сыйлайтын жаңа пісірілген өнімдер мен десерттерді дайындаймыз.",
       about_text_2: "Біз жасанды бояғыштарды, консерванттарды немесе өсімдік кілегейін қолданбайтынымызды мақтан тұтамыз. Тек табиғи сары май, таңдаулы бельгиялық шоколад тамшылары, балғын жидектер және үй сүзбесі. Біз үшін пісіру — бұл жай ғана қолөнер емес, бұл қуаныш сыйлау өнері.",
@@ -848,7 +848,7 @@
       about_feat_location: "Мекенжай",
 
       // Why Choose Nazcake
-      why_subtitle: "Біздің артықшылықтарымыз",
+      why_subtitle: "Артықшылықтар",
       why_title: "Неге таңдайды <span class=\"why-brand-wrap\"><span class=\"why-brand why-brand-fill\">Nazcake</span><span class=\"why-brand why-brand-glow\" aria-hidden=\"true\">Nazcake</span></span>?",
       why_1_title: "Өзіндік үлгідегі десерттер",
       why_1_text: "Ерекше сәттеріңізге арналған фирмалық торттар мен қолмен жасалған крафт десерттер.",
@@ -864,7 +864,7 @@
 
       // Catalog
       catalog_subtitle: "Nazcake ассортименті",
-      catalog_title: "Өнімдеріміз",
+      catalog_title: "Өнімдер",
       catalog_desc: "Үйде пісірілген балғын пісірмелер мен талғампаз десерттерден бастап сәнді мерекелік торттар мен қолмен түйілген тойымды жартылай фабрикаттарға дейін.",
       catalog_cat_all: "Барлық тауарлар",
       catalog_cat_bakery: "Нан-тоқаш өнімдері",
@@ -1089,7 +1089,7 @@
       community_follow: "Жазылу",
       community_message: "Хабарлама жіберу",
       community_hl_1: "Пікірлер",
-      community_hl_2: "Біздің команда",
+      community_hl_2: "Команда",
       community_hl_3: "Қолда бар",
       community_hl_4: "Ж/фабрикат",
       community_hl_5: "Мекенжай",
