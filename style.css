@@ -985,26 +985,22 @@ body.dark-theme .main-header.scrolled {
   perspective-origin: 50% 40%;
 }
 
-/* Ordered stage: one hero + two quiet side previews */
-.category-stage-item {
-  position: absolute;
-  aspect-ratio: 1 / 1;
-  top: 52%;
-  bottom: auto;
-  transform: translate(-50%, -50%);
-  transform-style: preserve-3d;
-  will-change: transform, filter, opacity, left, height;
-  transition:
-    transform var(--stage-ms) var(--stage-ease),
-    filter var(--stage-ms) var(--stage-ease),
-    opacity var(--stage-ms) var(--stage-ease),
-    left var(--stage-ms) var(--stage-ease),
-    height var(--stage-ms) var(--stage-ease),
-    top var(--stage-ms) var(--stage-ease);
-  pointer-events: none;
-}
-
+/* Single hero product only (no left/right/back neighbors in DOM) */
+.category-stage-item,
 .category-stage-item.is-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  aspect-ratio: 1 / 1;
+  height: 82%;
+  max-height: 100%;
+  max-width: min(92%, 520px);
+  width: auto;
+  transform: translate(-50%, -50%);
+  z-index: 30;
+  opacity: 1;
+  filter: none;
+  isolation: isolate;
   pointer-events: auto;
   cursor: pointer;
 }
@@ -1019,24 +1015,17 @@ body.dark-theme .main-header.scrolled {
   pointer-events: none;
   user-select: none;
   filter:
-    drop-shadow(0 6px 12px rgba(0, 0, 0, 0.28))
-    drop-shadow(0 18px 32px rgba(0, 0, 0, 0.35));
-  transition: filter var(--stage-ms) var(--stage-ease);
+    drop-shadow(0 4px 8px rgba(0, 0, 0, 0.22))
+    drop-shadow(0 16px 28px rgba(0, 0, 0, 0.4))
+    drop-shadow(0 0 36px color-mix(in srgb, var(--stage-accent, #6b2438) 28%, transparent));
+  transition: opacity 220ms ease, filter 220ms ease;
 }
 
-/* HERO — clear, centered, not oversized */
-.category-stage-item.is-center {
-  left: 50%;
-  top: 50%;
-  height: 78%;
-  z-index: 30;
-  opacity: 1;
-  filter: none;
-  transform: translate(-50%, -50%) scale(1);
-  isolation: isolate;
+.category-stage-item img.is-swapping {
+  opacity: 0.35;
 }
 
-.category-stage-item.is-center::after {
+.category-stage-item::after {
   content: "";
   position: absolute;
   left: 50%;
@@ -1056,26 +1045,11 @@ body.dark-theme .main-header.scrolled {
   filter: blur(5px);
 }
 
-.category-stage-item.is-center img {
-  filter:
-    drop-shadow(0 4px 8px rgba(0, 0, 0, 0.22))
-    drop-shadow(0 16px 28px rgba(0, 0, 0, 0.4))
-    drop-shadow(0 0 36px color-mix(in srgb, var(--stage-accent, #6b2438) 28%, transparent));
-}
-
-/* No side / back previews — only the active center product (user request) */
+/* Legacy classes — force hide if any leftover markup */
 .category-stage-item.is-left,
 .category-stage-item.is-right,
 .category-stage-item.is-back {
-  left: 50%;
-  top: 50%;
-  height: 20%;
-  z-index: 1;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  filter: none;
-  transform: translate(-50%, -50%) scale(0.4);
-  pointer-events: none;
+  display: none !important;
 }
 
 .category-stage-ui {
@@ -1240,18 +1214,10 @@ body.dark-theme .main-header.scrolled {
     bottom: 24%;
   }
 
+  .category-stage-item,
   .category-stage-item.is-center {
-    height: 82%;
-  }
-
-  .category-stage-item.is-left {
-    left: 11%;
-    height: 36%;
-  }
-
-  .category-stage-item.is-right {
-    left: 89%;
-    height: 36%;
+    height: 88%;
+    max-width: min(70%, 560px);
   }
 }
 
@@ -1264,20 +1230,14 @@ body.dark-theme .main-header.scrolled {
   .category-stage-viewport {
     top: 15%;
     bottom: 22%;
-    left: 4%;
-    right: 4%;
+    left: 12%;
+    right: 12%;
   }
 
-  .category-stage-item.is-left {
-    left: 8%;
-    height: 34%;
-    opacity: 0.38;
-  }
-
-  .category-stage-item.is-right {
-    left: 92%;
-    height: 34%;
-    opacity: 0.38;
+  .category-stage-item,
+  .category-stage-item.is-center {
+    height: 92%;
+    max-width: min(55%, 580px);
   }
 }
 
@@ -1298,15 +1258,10 @@ body.dark-theme .main-header.scrolled {
     bottom: 30%;
   }
 
+  .category-stage-item,
   .category-stage-item.is-center {
-    height: 88%;
-  }
-
-  /* Hide side clutter on phone — only the hero */
-  .category-stage-item.is-left,
-  .category-stage-item.is-right {
-    opacity: 0;
-    visibility: hidden;
+    height: 92%;
+    max-width: 88%;
   }
 
   .category-stage-footer {

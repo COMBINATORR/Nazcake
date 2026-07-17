@@ -4970,18 +4970,20 @@ function setupCategoryStage() {
   let activeIndex = 0;
   let isAnimating = false;
 
+  // Preload all stage images
   CATEGORY_STAGE_ITEMS.forEach((item) => {
     const img = new Image();
     img.src = item.src;
   });
 
-  stage.innerHTML = CATEGORY_STAGE_ITEMS.map((item, i) => `
-    <div class="category-stage-item" data-stage-index="${i}" data-category="${item.category}" role="button" tabindex="-1" aria-label="">
-      <img src="${item.src}" alt="" draggable="false" width="480" height="640" decoding="async">
+  // Only ONE product in the DOM — no side/back previews
+  stage.innerHTML = `
+    <div class="category-stage-item is-center" id="category-stage-hero" role="button" tabindex="0" aria-label="">
+      <img src="${CATEGORY_STAGE_ITEMS[0].src}" alt="" draggable="false" width="480" height="640" decoding="async">
     </div>
-  `).join("");
-
-  const items = Array.from(stage.querySelectorAll(".category-stage-item"));
+  `;
+  const heroEl = document.getElementById("category-stage-hero");
+  const heroImg = heroEl ? heroEl.querySelector("img") : null;
 
   const categoryLabel = (category) => {
     if (window.i18n && typeof window.i18n.t === "function") {
@@ -4995,6 +4997,18 @@ function setupCategoryStage() {
       return window.i18n.t(`category_stage_desc_${category}`);
     }
     return "";
+  };
+
+  const fitGhost = () => {
+    if (!ghostEl) return;
+    ghostEl.style.transform = "scale(1)";
+    const parent = ghostEl.parentElement;
+    if (!parent) return;
+    const maxW = parent.clientWidth;
+    const w = ghostEl.scrollWidth;
+    if (w > maxW && w > 0) {
+      ghostEl.style.transform = `scale(${(maxW / w).toFixed(4)})`;
+    }
   };
 
   const openCategoryInCatalog = (category) => {
@@ -5012,27 +5026,37 @@ function setupCategoryStage() {
     if (catalog) catalog.scrollIntoView({ behavior: "smooth" });
   };
 
-  const applyRoles = () => {
-    const n = CATEGORY_STAGE_ITEMS.length;
-    const roles = {
-      center: activeIndex,
-      left: (activeIndex + n - 1) % n,
-      right: (activeIndex + 1) % n,
-      back: (activeIndex + 2) % n
-    };
+  const applyActive = () => {
     const current = CATEGORY_STAGE_ITEMS[activeIndex];
-    items.forEach((el, i) => {
-      el.classList.remove("is-center", "is-left", "is-right", "is-back");
-      if (i === roles.center) el.classList.add("is-center");
-      else if (i === roles.left) el.classList.add("is-left");
-      else if (i === roles.right) el.classList.add("is-right");
-      else if (i === roles.back) el.classList.add("is-back");
-      el.setAttribute("tabindex", i === roles.center ? "0" : "-1");
-      el.setAttribute("aria-label", categoryLabel(CATEGORY_STAGE_ITEMS[i].category));
-    });
+    if (!current) return;
+
+    if (heroEl) {
+      heroEl.dataset.category = current.category;
+      heroEl.setAttribute("aria-label", categoryLabel(current.category));
+    }
+    if (heroImg) {
+      const nextSrc = current.src;
+      const currentPath = heroImg.getAttribute("src") || "";
+      if (currentPath !== nextSrc) {
+        heroImg.classList.add("is-swapping");
+        const preload = new Image();
+        preload.onload = () => {
+          heroImg.src = nextSrc;
+          heroImg.setAttribute("src", nextSrc);
+          requestAnimationFrame(() => heroImg.classList.remove("is-swapping"));
+        };
+        preload.onerror = () => {
+          heroImg.src = nextSrc;
+          heroImg.classList.remove("is-swapping");
+        };
+        preload.src = nextSrc;
+      }
+    }
+
     section.style.setProperty("--stage-accent", current.bg);
     section.style.setProperty("--stage-accent-2", current.bg2 || current.bg);
     section.style.setProperty("--stage-accent-3", current.bg3 || current.bg);
+
     if (titleEl) {
       titleEl.textContent = categoryLabel(current.category);
       titleEl.removeAttribute("data-i18n");
@@ -5044,44 +5068,22 @@ function setupCategoryStage() {
     if (ghostEl) {
       const label = categoryLabel(current.category);
       ghostEl.textContent = (label || current.ghost || "").toUpperCase();
-      // Scale down long labels (e.g. «ПИРОЖНЫЕ») so they never clip past phone edges
-      requestAnimationFrame(() => {
-        ghostEl.style.transform = "scale(1)";
-        const parent = ghostEl.parentElement;
-        if (!parent) return;
-        const maxW = parent.clientWidth;
-        const w = ghostEl.scrollWidth;
-        if (w > maxW && w > 0) {
-          ghostEl.style.transform = `scale(${(maxW / w).toFixed(4)})`;
-        }
-      });
+      requestAnimationFrame(fitGhost);
     }
   };
 
-  window.addEventListener("resize", () => {
-    if (!ghostEl) return;
-    requestAnimationFrame(() => {
-      ghostEl.style.transform = "scale(1)";
-      const parent = ghostEl.parentElement;
-      if (!parent) return;
-      const maxW = parent.clientWidth;
-      const w = ghostEl.scrollWidth;
-      if (w > maxW && w > 0) {
-        ghostEl.style.transform = `scale(${(maxW / w).toFixed(4)})`;
-      }
-    });
-  });
+  window.addEventListener("resize", () => requestAnimationFrame(fitGhost));
 
   const navigate = (dir) => {
     if (isAnimating) return;
     isAnimating = true;
     const n = CATEGORY_STAGE_ITEMS.length;
     activeIndex = dir === "next" ? (activeIndex + 1) % n : (activeIndex + n - 1) % n;
-    applyRoles();
+    applyActive();
     if (typeof triggerHapticFeedback === "function") triggerHapticFeedback();
     setTimeout(() => {
       isAnimating = false;
-    }, 650);
+    }, 320);
   };
 
   if (prevBtn) prevBtn.addEventListener("click", () => navigate("prev"));
@@ -5093,19 +5095,17 @@ function setupCategoryStage() {
     });
   }
 
-  items.forEach((el, i) => {
-    el.addEventListener("click", () => {
-      if (!el.classList.contains("is-center")) return;
-      openCategoryInCatalog(CATEGORY_STAGE_ITEMS[i].category);
+  if (heroEl) {
+    heroEl.addEventListener("click", () => {
+      openCategoryInCatalog(CATEGORY_STAGE_ITEMS[activeIndex].category);
     });
-    el.addEventListener("keydown", (e) => {
-      if (!el.classList.contains("is-center")) return;
+    heroEl.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        openCategoryInCatalog(CATEGORY_STAGE_ITEMS[i].category);
+        openCategoryInCatalog(CATEGORY_STAGE_ITEMS[activeIndex].category);
       }
     });
-  });
+  }
 
   document.addEventListener("keydown", (e) => {
     if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
@@ -5114,12 +5114,11 @@ function setupCategoryStage() {
     navigate(e.key === "ArrowRight" ? "next" : "prev");
   });
 
-  // Keep title/ghost in sync when language changes
   if (window.i18n && typeof window.i18n.onLanguageChange === "function") {
-    window.i18n.onLanguageChange(applyRoles);
+    window.i18n.onLanguageChange(applyActive);
   }
 
-  applyRoles();
+  applyActive();
 }
 
 function setupBestsellersCarousel() {
