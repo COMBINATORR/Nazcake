@@ -4902,7 +4902,7 @@ function updateContactsMapPopup() {
 const CATEGORY_STAGE_ITEMS = [
   {
     category: "cakes",
-    src: "images/dessert_chocolate_design.webp",
+    src: "images/stage/dessert_chocolate_design-cut.webp",
     ghost: "ТОРТЫ",
     // deep cocoa + burgundy rose
     bg: "#6b2438",
@@ -4911,7 +4911,7 @@ const CATEGORY_STAGE_ITEMS = [
   },
   {
     category: "pastries",
-    src: "images/pastry_tea_set.webp",
+    src: "images/stage/pastry_tea_set-cut.webp",
     ghost: "ВЫПЕЧКА",
     // warm amber / honey gold
     bg: "#c48a28",
@@ -4920,7 +4920,7 @@ const CATEGORY_STAGE_ITEMS = [
   },
   {
     category: "pies",
-    src: "images/pie_smetannik.webp",
+    src: "images/stage/pie_smetannik-cut.webp",
     ghost: "ПИРОГИ",
     // berry / plum cream
     bg: "#7a2f55",
@@ -4929,7 +4929,7 @@ const CATEGORY_STAGE_ITEMS = [
   },
   {
     category: "desserts",
-    src: "images/dessert_pistachio.webp",
+    src: "images/stage/dessert_pistachio-cut.webp",
     ghost: "ПИРОЖНЫЕ",
     // pistachio mint + soft teal
     bg: "#3d8a5a",
