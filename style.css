@@ -1098,6 +1098,7 @@ body.dark-theme .main-header.scrolled {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  /* Match site rail: .container / footer use 60px horizontal inset */
   padding: 48px 24px 28px;
   pointer-events: none;
   box-sizing: border-box;
@@ -1115,7 +1116,7 @@ body.dark-theme .main-header.scrolled {
   background: rgba(12, 10, 9, 0.45);
 }
 
-/* Bottom bar: left text+arrows · right Смотреть */
+/* Bottom bar: left text+arrows · right Смотреть — full content width like other blocks */
 .category-stage-footer {
   display: flex;
   flex-direction: row;
@@ -1124,7 +1125,7 @@ body.dark-theme .main-header.scrolled {
   justify-content: space-between;
   gap: 16px 28px;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1920px;
   margin: 0 auto;
   pointer-events: auto;
 }
@@ -1232,7 +1233,7 @@ body.dark-theme .main-header.scrolled {
 
 @media (min-width: 640px) {
   .category-stage-ui {
-    padding: 56px 6vw 40px;
+    padding: 56px 40px 40px;
   }
 
   .category-stage-controls {
@@ -1264,6 +1265,13 @@ body.dark-theme .main-header.scrolled {
     left: 76%;
     top: 50%;
     height: 32%;
+  }
+}
+
+/* Desktop: same horizontal rail as .container / footer (60px) */
+@media (min-width: 992px) {
+  .category-stage-ui {
+    padding: 56px 60px 44px;
   }
 }
 
