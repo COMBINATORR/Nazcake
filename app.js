@@ -4897,6 +4897,85 @@ function updateContactsMapPopup() {
   }, 200);
 }
 
+/** TOONHUB-inspired hero product stage (center / left / right / back). */
+const HERO_STAGE_ITEMS = [
+  { src: "images/pie_snickers.webp", bg: "#4a2c11" },
+  { src: "images/dessert_chocolate_design.webp", bg: "#3d2418" },
+  { src: "images/pastry_tea_set.webp", bg: "#5c3a22" },
+  { src: "images/dessert_pistachio.webp", bg: "#2f3d28" }
+];
+
+function setupHeroStage() {
+  const section = document.getElementById("hero-section");
+  const stage = document.getElementById("hero-stage");
+  const prevBtn = document.getElementById("hero-stage-prev");
+  const nextBtn = document.getElementById("hero-stage-next");
+  if (!section || !stage) return;
+
+  // Prefer local product images if files exist; fallback stays as listed
+  let activeIndex = 0;
+  let isAnimating = false;
+
+  // Preload
+  HERO_STAGE_ITEMS.forEach((item) => {
+    const img = new Image();
+    img.src = item.src;
+  });
+
+  // Build DOM once
+  stage.innerHTML = HERO_STAGE_ITEMS.map((item, i) => `
+    <div class="hero-stage-item" data-stage-index="${i}">
+      <img src="${item.src}" alt="" draggable="false" width="480" height="640" decoding="async">
+    </div>
+  `).join("");
+
+  const items = Array.from(stage.querySelectorAll(".hero-stage-item"));
+
+  const applyRoles = () => {
+    const n = HERO_STAGE_ITEMS.length;
+    const roles = {
+      center: activeIndex,
+      left: (activeIndex + n - 1) % n,
+      right: (activeIndex + 1) % n,
+      back: (activeIndex + 2) % n
+    };
+    items.forEach((el, i) => {
+      el.classList.remove("is-center", "is-left", "is-right", "is-back");
+      if (i === roles.center) el.classList.add("is-center");
+      else if (i === roles.left) el.classList.add("is-left");
+      else if (i === roles.right) el.classList.add("is-right");
+      else if (i === roles.back) el.classList.add("is-back");
+    });
+    // Soft accent on scrim via CSS variable (video stays)
+    section.style.setProperty("--hero-accent", HERO_STAGE_ITEMS[activeIndex].bg);
+  };
+
+  const navigate = (dir) => {
+    if (isAnimating) return;
+    isAnimating = true;
+    const n = HERO_STAGE_ITEMS.length;
+    activeIndex = dir === "next" ? (activeIndex + 1) % n : (activeIndex + n - 1) % n;
+    applyRoles();
+    if (typeof triggerHapticFeedback === "function") triggerHapticFeedback();
+    setTimeout(() => {
+      isAnimating = false;
+    }, 650);
+  };
+
+  if (prevBtn) prevBtn.addEventListener("click", () => navigate("prev"));
+  if (nextBtn) nextBtn.addEventListener("click", () => navigate("next"));
+
+  // Keyboard support when hero in view
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+    const rect = section.getBoundingClientRect();
+    if (rect.bottom < 80 || rect.top > window.innerHeight * 0.6) return;
+    navigate(e.key === "ArrowRight" ? "next" : "prev");
+  });
+
+  applyRoles();
+}
+
 function setupBestsellersCarousel() {
   const grid = document.getElementById("bestsellers-grid");
   const wrapper = document.querySelector(".bestsellers-carousel-wrapper");
