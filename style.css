@@ -1063,40 +1063,16 @@ body.dark-theme .main-header.scrolled {
     drop-shadow(0 0 36px color-mix(in srgb, var(--stage-accent, #6b2438) 28%, transparent));
 }
 
-/* Side previews — small, far, soft (no clutter over UI) */
-.category-stage-item.is-left {
-  left: 12%;
-  top: 52%;
-  height: 38%;
-  z-index: 10;
-  opacity: 0.42;
-  filter: blur(3px) brightness(0.75) saturate(0.85);
-  transform: translate(-50%, -50%) scale(0.88) perspective(900px) rotateY(22deg);
-}
-
-.category-stage-item.is-right {
-  left: 88%;
-  top: 52%;
-  height: 38%;
-  z-index: 10;
-  opacity: 0.42;
-  filter: blur(3px) brightness(0.75) saturate(0.85);
-  transform: translate(-50%, -50%) scale(0.88) perspective(900px) rotateY(-22deg);
-}
-
-.category-stage-item.is-left img,
-.category-stage-item.is-right img {
-  filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.35));
-}
-
-/* Parked — never under the center product */
+/* No side / back previews — only the active center product (user request) */
+.category-stage-item.is-left,
+.category-stage-item.is-right,
 .category-stage-item.is-back {
   left: 50%;
   top: 50%;
   height: 20%;
   z-index: 1;
-  opacity: 0;
-  visibility: hidden;
+  opacity: 0 !important;
+  visibility: hidden !important;
   filter: none;
   transform: translate(-50%, -50%) scale(0.4);
   pointer-events: none;
