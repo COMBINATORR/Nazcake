@@ -4883,6 +4883,47 @@ function setupBestsellersCarousel() {
   const wrapper = document.querySelector(".bestsellers-carousel-wrapper");
   if (!grid || !wrapper) return;
 
+  const prevBtn = wrapper.querySelector(".prev-btn");
+  const nextBtn = wrapper.querySelector(".next-btn");
+
+  // Brief highlight while scrolling (for side chevrons visibility)
+  let scrollHideTimer = null;
+  const markScrolling = () => {
+    grid.classList.add("is-scrolling");
+    wrapper.classList.add("is-scrolling");
+    if (scrollHideTimer) clearTimeout(scrollHideTimer);
+    scrollHideTimer = setTimeout(() => {
+      grid.classList.remove("is-scrolling");
+      wrapper.classList.remove("is-scrolling");
+    }, 900);
+  };
+
+  grid.addEventListener("scroll", markScrolling, { passive: true });
+  grid.addEventListener("wheel", markScrolling, { passive: true });
+  grid.addEventListener("touchmove", markScrolling, { passive: true });
+
+  const scrollByCard = (dir) => {
+    const card = grid.querySelector(".product-card");
+    const gap = parseFloat(getComputedStyle(grid).gap) || 36;
+    const step = card ? card.getBoundingClientRect().width + gap : 440;
+    grid.scrollBy({ left: dir * step, behavior: "smooth" });
+  };
+
+  if (prevBtn) {
+    prevBtn.addEventListener("click", () => {
+      triggerHapticFeedback();
+      markScrolling();
+      scrollByCard(-1);
+    });
+  }
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => {
+      triggerHapticFeedback();
+      markScrolling();
+      scrollByCard(1);
+    });
+  }
+
   // Mouse Drag-to-Scroll (LKM drag)
   let isDown = false;
   let hasMoved = false;

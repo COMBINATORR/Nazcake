@@ -2175,10 +2175,26 @@ body.dark-theme .ig-grid {
   ) !important;
 }
 
-#bestsellers-grid::-webkit-scrollbar-button {
+/* Hide native scrollbar end-arrows (rail chevrons), not the carousel buttons */
+#bestsellers-grid::-webkit-scrollbar-button,
+#bestsellers-grid::-webkit-scrollbar-button:single-button,
+#bestsellers-grid::-webkit-scrollbar-button:horizontal:start:decrement,
+#bestsellers-grid::-webkit-scrollbar-button:horizontal:start:increment,
+#bestsellers-grid::-webkit-scrollbar-button:horizontal:end:decrement,
+#bestsellers-grid::-webkit-scrollbar-button:horizontal:end:increment,
+#bestsellers-grid::-webkit-scrollbar-button:start:decrement,
+#bestsellers-grid::-webkit-scrollbar-button:end:increment {
   display: none !important;
   width: 0 !important;
   height: 0 !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+#bestsellers-grid::-webkit-scrollbar-corner {
+  background: transparent !important;
 }
 
 /* Dark theme: soft emerald rail + gold-tinted thumb */
@@ -2345,8 +2361,8 @@ body.dark-theme #bestsellers-grid::-webkit-scrollbar-thumb {
     box-sizing: border-box !important;
   }
 
-  .bestsellers-arrow {
-    display: none !important;
+  #bestsellers-grid::-webkit-scrollbar-track {
+    margin-inline: 10px !important;
   }
 }
 
