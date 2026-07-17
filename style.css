@@ -2552,7 +2552,7 @@ body.dark-theme .bestsellers-arrow:hover {
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
 }
 
-/* Product card chips — outline only + bold gradient label */
+/* Product card chips — clean cream fill, gold outline, solid type (no dirty shadow) */
 .product-badge {
   position: absolute;
   top: 12px;
@@ -2562,10 +2562,10 @@ body.dark-theme .bestsellers-arrow:hover {
   align-items: center;
   justify-content: center;
   max-width: calc(100% - 24px);
-  padding: 5px 11px;
+  padding: 5px 12px;
   border-radius: 999px;
-  border: 1.5px solid rgba(246, 224, 115, 0.85);
-  background: transparent;
+  border: 1.5px solid var(--accent-gold);
+  background: rgba(255, 252, 248, 0.95);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   box-shadow: none;
@@ -2583,20 +2583,12 @@ body.dark-theme .bestsellers-arrow:hover {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
-  background-image: linear-gradient(
-    100deg,
-    #f6e073 0%,
-    #f0d9a0 28%,
-    #e8b88a 55%,
-    #f2c4d8 78%,
-    #e8d4ff 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  /* Slight stroke so text stays readable on light photos */
-  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35));
+  color: var(--accent-chocolate);
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  -webkit-text-fill-color: var(--accent-chocolate);
+  filter: none;
 }
 
 .product-info {
@@ -5748,19 +5740,18 @@ body.dark-theme .site-dialog-icon.is-warn {
 
 /* Out of stock — outline only, muted */
 .product-badge-outofstock {
-  border-color: rgba(180, 180, 180, 0.85) !important;
-  background: transparent !important;
+  border-color: #a8a29e !important;
+  background: rgba(255, 252, 248, 0.95) !important;
   box-shadow: none !important;
 }
 
 .product-badge-outofstock .product-badge-text {
-  background-image: linear-gradient(
-    100deg,
-    #f0f0f0 0%,
-    #d0d0d0 45%,
-    #b8b8b8 100%
-  ) !important;
+  color: #78716c !important;
+  -webkit-text-fill-color: #78716c !important;
+  background: none !important;
+  background-image: none !important;
   font-weight: 900 !important;
+  filter: none !important;
 }
 
 .product-card.out-of-stock {
