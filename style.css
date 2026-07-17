@@ -1,11 +1,17 @@
 /* Design System & Premium Aesthetics for Nazcake */
 
 :root {
-  /* Fonts — Inter + system fallbacks; SN Pro for nav menu trial */
-  --font-title: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --font-accent: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  /* Fonts
+     — NAZCAKE brand word: Montserrat Black
+     — headings / menu / logo companion: SN Pro 900
+     — subtitles: SN Pro 300
+     — body: Inter */
+  --font-brand: 'Montserrat', 'SN Pro', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-title: 'SN Pro', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-accent: 'SN Pro', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-nav: 'SN Pro', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-subtitle: 'SN Pro', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
   /* Colors (Light Theme — maximum white canvas) */
   --bg-primary: #ffffff;
@@ -24,7 +30,7 @@
   --title-tracking: -0.03em;
   --title-leading: 1.1;
   --subcopy-size: 1rem;           /* 16px */
-  --subcopy-weight: 500;
+  --subcopy-weight: 300;          /* SN Pro light for subtitles */
   --subcopy-leading: 1.55;
   --subcopy-max: 36rem;
   
@@ -106,24 +112,25 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .accent-text {
-  font-family: var(--font-accent);
-  font-weight: 600;
-  font-style: italic;
+  font-family: var(--font-subtitle);
+  font-weight: 300;
+  font-style: normal;
   color: var(--accent-gold);
 }
 
 .section-subtitle {
   display: block;
-  font-family: var(--font-accent);
+  font-family: var(--font-subtitle);
   font-size: 1.5rem;
-  font-style: italic;
+  font-style: normal;
   color: var(--accent-gold);
   margin-bottom: 8px;
-  font-weight: 500;
+  font-weight: 300;
 }
 
-/* Section H2 — centered on all blocks */
+/* Section H2 — SN Pro 900; brand word NAZCAKE uses Montserrat Black via .why-brand / spans */
 .section-title {
+  font-family: var(--font-title);
   font-size: var(--title-size-mobile);
   font-weight: 900;
   letter-spacing: var(--title-tracking);
@@ -142,10 +149,11 @@ h1, h2, h3, h4, h5, h6 {
   text-align: center;
 }
 
-/* Section subcopy — readable medium 16px, not thin/faint */
+/* Section subcopy — SN Pro 300 */
 .section-desc {
+  font-family: var(--font-subtitle);
   font-size: var(--subcopy-size);
-  font-weight: var(--subcopy-weight);
+  font-weight: 300;
   line-height: var(--subcopy-leading);
   color: var(--text-secondary);
   max-width: var(--subcopy-max);
@@ -291,7 +299,7 @@ body.dark-theme .main-header.scrolled {
 }
 
 .logo-main {
-  font-family: var(--font-title);
+  font-family: var(--font-brand);
   font-weight: 900;
   font-size: var(--logo-main-size);
   line-height: 1;
@@ -301,10 +309,11 @@ body.dark-theme .main-header.scrolled {
 }
 
 .logo-sub {
-  font-family: var(--font-accent);
+  font-family: var(--font-nav);
   font-size: var(--logo-sub-size);
   line-height: 1;
-  font-style: italic;
+  font-style: normal;
+  font-weight: 900;
   color: var(--accent-gold);
   margin-top: 0;
 }
@@ -532,7 +541,7 @@ body.dark-theme .main-header.scrolled {
 }
 
 .drawer-brand-name {
-  font-family: var(--font-title);
+  font-family: var(--font-brand);
   font-weight: 900;
   font-size: 1rem;
   text-transform: uppercase;
@@ -541,10 +550,11 @@ body.dark-theme .main-header.scrolled {
 }
 
 .drawer-brand-sub {
+  font-family: var(--font-nav);
   font-size: 0.78rem;
-  font-style: italic;
+  font-style: normal;
   color: var(--accent-gold);
-  font-weight: 500;
+  font-weight: 900;
 }
 
 .drawer-title {
@@ -604,7 +614,7 @@ body.dark-theme .main-header.scrolled {
 
 .drawer-link {
   font-family: var(--font-nav);
-  font-weight: 600;
+  font-weight: 900;
   font-size: 1.08rem;
   letter-spacing: 0.01em;
   color: var(--text-primary);
@@ -1546,6 +1556,7 @@ body.dark-theme .review-text {
 
 .why-brand {
   display: inline-block;
+  font-family: var(--font-brand);
   font-weight: 900;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -4008,8 +4019,8 @@ body.dark-theme .site-dialog-icon.is-warn {
 }
 
 .footer-logo-main {
-  font-family: var(--font-title);
-  font-weight: 800;
+  font-family: var(--font-brand);
+  font-weight: 900;
   font-size: var(--footer-logo-main-size, 1.45rem);
   line-height: 1;
   letter-spacing: -0.03em;
@@ -4018,10 +4029,11 @@ body.dark-theme .site-dialog-icon.is-warn {
 }
 
 .footer-logo-sub {
-  font-family: var(--font-accent);
+  font-family: var(--font-nav);
   font-size: var(--footer-logo-sub-size, 0.88rem);
   line-height: 1;
-  font-style: italic;
+  font-style: normal;
+  font-weight: 900;
   color: var(--accent-gold-light);
   display: block;
   margin-top: 0;
@@ -6063,9 +6075,9 @@ body.preloader-active {
 }
 
 .preloader-logo-main {
-  font-family: var(--font-title);
+  font-family: var(--font-brand);
   font-size: 2.2rem;
-  font-weight: 800;
+  font-weight: 900;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--accent-chocolate);
@@ -6075,10 +6087,10 @@ body.preloader-active {
 }
 
 .preloader-logo-sub {
-  font-family: var(--font-accent);
+  font-family: var(--font-nav);
   font-size: 1.1rem;
-  font-style: italic;
-  font-weight: 500;
+  font-style: normal;
+  font-weight: 900;
   letter-spacing: 0.35em;
   color: var(--accent-gold);
   margin-top: 5px;
@@ -6701,11 +6713,18 @@ body.dark-theme .btn-secondary:hover {
   filter: drop-shadow(0 1px 2px rgba(166, 124, 0, 0.18));
 }
 
-/* Transparent Header State Contrast Optimization (White text over video) */
+/* Transparent Header State Contrast Optimization (White text over video)
+   Keep SN Pro 900 — do not fall back to a lighter “old” weight */
 .main-header:not(.scrolled) .nav-link {
+  font-family: var(--font-nav) !important;
+  font-weight: 900 !important;
   color: #ffffff !important;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
-  font-weight: 700;
+}
+
+.main-header.scrolled .nav-link {
+  font-family: var(--font-nav) !important;
+  font-weight: 900 !important;
 }
 
 .main-header:not(.scrolled) .logo-main {
