@@ -1622,7 +1622,7 @@
       const translation = t(key);
       if (translation !== null && translation !== undefined) {
         // If element has inner HTML formatting like <span> or <br>, use innerHTML, otherwise textContent
-        if (translation.includes("<br>") || translation.includes("<span") || translation.includes("<strong>")) {
+        if (translation.includes("<")) {
           el.innerHTML = translation;
         } else {
           el.textContent = translation;
