@@ -156,6 +156,14 @@
       cart_lbl_method: "Способ получения:",
       cart_opt_pickup: "Самовывоз",
       cart_opt_delivery: "Доставка Яндекс",
+
+      // Product size / variant option labels
+      size_half: "Половина",
+      size_whole: "Целый",
+      opt_chicken: "Курица",
+      opt_beef: "Говядина",
+      opt_chicken_cheese: "Курица с сыром",
+      opt_meat_cheese: "Мясо с сыром",
       cart_lbl_pickup_time: "Когда заберёте:",
       cart_pickup_time_ph: "Выберите время",
       cart_pickup_time_hint: "Работаем ежедневно 09:00–20:00. На подготовку нужно около 45 минут.",
@@ -954,6 +962,14 @@
       cart_lbl_method: "Алу тәсілі:",
       cart_opt_pickup: "Өзіңіз алып кету",
       cart_opt_delivery: "Яндекс жеткізу",
+
+      // Product size / variant option labels
+      size_half: "Жартысы",
+      size_whole: "Толық",
+      opt_chicken: "Тауық",
+      opt_beef: "Сиыр еті",
+      opt_chicken_cheese: "Тауық + ірімшік",
+      opt_meat_cheese: "Ет + ірімшік",
       cart_lbl_pickup_time: "Қашан аласыз:",
       cart_pickup_time_ph: "Уақытты таңдаңыз",
       cart_pickup_time_hint: "Күн сайын 09:00–20:00. Дайындауға шамамен 45 минут керек.",

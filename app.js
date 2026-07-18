@@ -1651,6 +1651,24 @@ function getProductDesc(p) {
   return desc;
 }
 
+/** Translate size/option keys (opt_chicken, size_half…); plain labels like "20 см" stay as-is. */
+function getSizeOptionLabel(sizeKey) {
+  if (!sizeKey) return "";
+  if (window.i18n) {
+    const tr = window.i18n.t(sizeKey);
+    if (tr && tr !== sizeKey) return tr;
+  }
+  const fallback = {
+    opt_chicken: "Курица",
+    opt_beef: "Говядина",
+    opt_chicken_cheese: "Курица с сыром",
+    opt_meat_cheese: "Мясо с сыром",
+    size_half: "Половина",
+    size_whole: "Целый",
+  };
+  return fallback[sizeKey] || sizeKey;
+}
+
 // Init App
 document.addEventListener("DOMContentLoaded", async () => {
   setupSiteDialog();
@@ -2065,8 +2083,8 @@ function openProductPreview(id) {
 
       modalSizeContainer.innerHTML = sizeOptions.map((opt, index) => {
         const isActive = index === 0 ? "active" : "";
-        const sizeLabel = opt.size;
-        return `<button type="button" class="size-option-btn ${isActive}" data-index="${index}" data-price="${opt.price}">${sizeLabel}</button>`;
+        const sizeLabel = escapeHTML(getSizeOptionLabel(opt.size));
+        return `<button type="button" class="size-option-btn ${isActive}" data-index="${index}" data-price="${opt.price}" data-size="${escapeHTML(opt.size)}">${sizeLabel}</button>`;
       }).join("");
 
       selectedSize = sizeOptions[0].size;
@@ -2306,7 +2324,7 @@ function renderCartItemsUi() {
     let tName = p.isCustomName ? p.name : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name);
 
     if (item.selectedSize) {
-      tName += ` (${item.selectedSize})`;
+      tName += ` (${getSizeOptionLabel(item.selectedSize)})`;
     }
     const tRemove = window.i18n ? window.i18n.t("cart_lbl_remove") : "Удалить";
     const itemPrice = item.price !== undefined ? item.price : p.price;
@@ -3265,7 +3283,7 @@ function formatCheckoutMessage(name, phone, method, address, cart, subtotal, t, 
     let displayName = p.isCustomName ? p.name : (window.i18n ? t(`p_${p.id}_name`) : p.name);
 
     if (item.selectedSize) {
-      displayName += ` (${item.selectedSize})`;
+      displayName += ` (${getSizeOptionLabel(item.selectedSize)})`;
     }
     const tUnit = window.i18n ? t(getUnitTranslationKey(p.unit)) : p.unit;
     const itemPrice = item.price !== undefined ? item.price : p.price;
@@ -3290,7 +3308,7 @@ function buildOrderObject(name, phone, method, address, cart, subtotal, t, prefe
       const p = item.product;
       let displayName = p.isCustomName ? p.name : (window.i18n ? t(`p_${p.id}_name`) : p.name);
       if (item.selectedSize) {
-        displayName += ` (${item.selectedSize})`;
+      displayName += ` (${getSizeOptionLabel(item.selectedSize)})`;
       }
       return {
         id: p.id,
@@ -4294,10 +4312,12 @@ function getKaspiProductDetails() {
   if (!p) return null;
 
   let displayName = p.isCustomName ? p.name : (window.i18n ? window.i18n.t(`p_${p.id}_name`) : p.name);
-  const selectedSizeBtn = modalSizeContainer ? modalSizeContainer.querySelector(".size-btn.active") : null;
+  const selectedSizeBtn = modalSizeContainer
+    ? (modalSizeContainer.querySelector(".size-option-btn.active") || modalSizeContainer.querySelector(".size-btn.active"))
+    : null;
   const selectedSize = selectedSizeBtn ? selectedSizeBtn.getAttribute("data-size") : null;
   if (selectedSize) {
-    displayName += ` (${selectedSize})`;
+    displayName += ` (${getSizeOptionLabel(selectedSize)})`;
   }
 
   const qtyElement = document.getElementById("modal-qty-val");
