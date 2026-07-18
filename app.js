@@ -394,7 +394,7 @@ let products = [
   {
     id: "pie_curd_large",
     name: "Пирог с творогом",
-    category: "on_order",
+    category: "pies",
     price: 7500,
     unit: "шт.",
     image: "images/pie_curd.webp",
@@ -405,7 +405,7 @@ let products = [
   {
     id: "pie_fruits_large",
     name: "Пирог с сухофруктами",
-    category: "on_order",
+    category: "pies",
     price: 7500,
     unit: "шт.",
     image: "images/pie_dryfruit.webp",
