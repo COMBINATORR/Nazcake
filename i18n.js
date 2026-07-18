@@ -777,6 +777,27 @@
       p_semi_dough_puff_name: "Слоеное тесто",
       p_semi_dough_puff_desc: "Универсальное домашнее слоеное тесто для выпечки на сливочном масле.",
       p_semi_dough_puff_ingredients: "Мука, сливочное масло 82%, вода, лимонный сок, соль.",
+      
+      p_cake_mishka_na_severe_name: "Торт Мишка на севере",
+      p_cake_mishka_na_severe_desc: "Торт Мишка на севере",
+      
+      p_dessert_cream_horns_name: "Трубочки с кремом",
+      p_dessert_cream_horns_desc: "Трубочки с кремом (250гр)",
+
+      p_dessert_meringue_caramel_name: "Безе с карамелью",
+      p_dessert_meringue_caramel_desc: "Безе с карамелью",
+
+      p_dessert_choux_name: "Пирожное Шу",
+      p_dessert_choux_desc: "Пирожное Шу",
+
+      p_pastry_samsa_chicken_mushroom_name: "Самса с курицей и грибами",
+      p_pastry_samsa_chicken_mushroom_desc: "Самса с курицей и грибами",
+
+      p_pastry_pirozhki_potato_name: "Пирожки с картошкой",
+      p_pastry_pirozhki_potato_desc: "Пирожки с картошкой",
+
+      p_pastry_pirozhki_meat_cabbage_name: "Пирожски с мясом и капустой",
+      p_pastry_pirozhki_meat_cabbage_desc: "Пирожски с мясом и капустой",
     },
     kk: {
       // Meta
@@ -1547,6 +1568,27 @@
       p_semi_dough_puff_name: "Қатпарлы қамыр",
       p_semi_dough_puff_desc: "Универсальное домашнее слоеное тесто для выпечки на сливочном масле.",
       p_semi_dough_puff_ingredients: "Мука, сливочное масло 82%, вода, лимонный сок, соль.",
+      
+      p_cake_mishka_na_severe_name: "Торт Мишка на севере",
+      p_cake_mishka_na_severe_desc: "Торт Мишка на севере",
+      
+      p_dessert_cream_horns_name: "Трубочки с кремом",
+      p_dessert_cream_horns_desc: "Трубочки с кремом (250гр)",
+
+      p_dessert_meringue_caramel_name: "Безе с карамелью",
+      p_dessert_meringue_caramel_desc: "Безе с карамелью",
+
+      p_dessert_choux_name: "Пирожное Шу",
+      p_dessert_choux_desc: "Пирожное Шу",
+
+      p_pastry_samsa_chicken_mushroom_name: "Самса с курицей и грибами",
+      p_pastry_samsa_chicken_mushroom_desc: "Самса с курицей и грибами",
+
+      p_pastry_pirozhki_potato_name: "Пирожки с картошкой",
+      p_pastry_pirozhki_potato_desc: "Пирожки с картошкой",
+
+      p_pastry_pirozhki_meat_cabbage_name: "Пирожски с мясом и капустой",
+      p_pastry_pirozhki_meat_cabbage_desc: "Пирожски с мясом и капустой",
     }
   };
 

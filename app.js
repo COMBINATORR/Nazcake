@@ -1244,6 +1244,84 @@ let products = [
     ingredients: "Мука, сливочное масло 82%, вода, лимонный сок, соль.",
     badge: "тесто"
   },
+  {
+    id: 'cake_mishka_na_severe',
+    name: 'Торт Мишка на севере',
+    category: 'cakes',
+    price: 6500,
+    unit: 'шт.',
+    image: 'images/Торт Мишка на севере.webp',
+    desc: 'Торт Мишка на севере',
+    ingredients: '',
+    badge: 'новинка',
+    sizeOptions: [{"size":"20 см","price":6500},{"size":"24 см","price":8500}]
+  },
+  {
+    id: 'dessert_cream_horns',
+    name: 'Трубочки с кремом',
+    category: 'desserts',
+    price: 1600,
+    unit: 'уп',
+    image: 'images/Трубочки с кремом.webp',
+    desc: 'Трубочки с кремом (250гр)',
+    ingredients: '',
+    badge: 'новинка'
+  },
+  {
+    id: 'dessert_meringue_caramel',
+    name: 'Безе с карамелью',
+    category: 'desserts',
+    price: 2100,
+    unit: 'уп',
+    image: 'images/Безе с карамелью.webp',
+    desc: 'Безе с карамелью',
+    ingredients: '',
+    badge: 'новинка'
+  },
+  {
+    id: 'dessert_choux',
+    name: 'Пирожное Шу',
+    category: 'desserts',
+    price: 400,
+    unit: 'шт.',
+    image: 'images/Пирожное Шу.webp',
+    desc: 'Пирожное Шу',
+    ingredients: '',
+    badge: 'новинка'
+  },
+  {
+    id: 'pastry_samsa_chicken_mushroom',
+    name: 'Самса с курицей и грибами',
+    category: 'pastries',
+    price: 350,
+    unit: 'шт.',
+    image: 'images/Самса с курицей и грибами.webp',
+    desc: 'Самса с курицей и грибами',
+    ingredients: '',
+    badge: 'новинка'
+  },
+  {
+    id: 'pastry_pirozhki_potato',
+    name: 'Пирожки с картошкой',
+    category: 'pastries',
+    price: 140,
+    unit: 'шт.',
+    image: 'images/Пирожки с картошкой.webp',
+    desc: 'Пирожки с картошкой',
+    ingredients: '',
+    badge: 'новинка'
+  },
+  {
+    id: 'pastry_pirozhki_meat_cabbage',
+    name: 'Пирожски с мясом и капустой',
+    category: 'pastries',
+    price: 210,
+    unit: 'шт.',
+    image: 'images/Пирожки с мясом и капустой.webp',
+    desc: 'Пирожски с мясом и капустой',
+    ingredients: '',
+    badge: 'новинка'
+  }
 ];
 
 /** Fixed catalog order from the static list (Supabase created_at is identical for all rows → unstable). */
