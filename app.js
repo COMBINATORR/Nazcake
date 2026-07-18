@@ -1566,7 +1566,11 @@ function getUnitTranslationKey(unit) {
 
 function getProductDesc(p) {
   const { id, desc } = p;
-  return window.i18n ? window.i18n.t(p__desc) : desc;
+  if (window.i18n) {
+    const tr = window.i18n.t(`p_${id}_desc`);
+    if (tr && tr !== `p_${id}_desc`) return tr;
+  }
+  return desc;
 }
 
 // Init App
