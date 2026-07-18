@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @jest-environment jsdom
  */
 
@@ -162,7 +162,7 @@ window.checkAtyrauBounds = checkAtyrauBounds;
             window.setDetectedCity("atyrau");
             window.updateLocationUi();
 
-            expect(document.getElementById("location-text").textContent).toBe("╨Р╤В╤Л╤А╨░╤Г");
+            expect(document.getElementById("location-text").textContent).toBe("Атырау");
             expect(document.getElementById("location-widget").classList.contains("hidden")).toBe(false);
             expect(document.getElementById("drawer-location-widget").classList.contains("hidden")).toBe(false);
             expect(document.getElementById("location-alert-banner").classList.contains("hidden")).toBe(true);
@@ -172,7 +172,7 @@ window.checkAtyrauBounds = checkAtyrauBounds;
             window.setDetectedCity("almaty");
             window.updateLocationUi();
 
-            expect(document.getElementById("location-text").textContent).toBe("╨Т╨░╤И ╨│╨╛╤А╨╛╨┤: ╨Р╨╗╨╝╨░╤В╤Л");
+            expect(document.getElementById("location-text").textContent).toBe("Ваш город: Алматы");
             expect(document.getElementById("location-widget").classList.contains("hidden")).toBe(false);
             expect(document.getElementById("location-alert-banner").classList.contains("hidden")).toBe(false);
         });
@@ -187,9 +187,12 @@ window.checkAtyrauBounds = checkAtyrauBounds;
 
             await window.setupGeolocation();
 
-            expect(global.fetch).toHaveBeenCalledWith("https://ipapi.co/json/");
+            expect(global.fetch).toHaveBeenCalledWith(
+                expect.stringContaining("https://get.geojs.io/v1/ip/geo.json"),
+                expect.any(Object)
+            );
             expect(window.getDetectedCity()).toBe("astana");
-            expect(document.getElementById("location-text").textContent).toBe("╨Т╨░╤И ╨│╨╛╤А╨╛╨┤: ╨Р╤Б╤В╨░╨╜╨░");
+            expect(document.getElementById("location-text").textContent).toBe("Ваш город: Астана");
         });
 
         it('should fallback to Atyrau on failed API response', async () => {
@@ -200,7 +203,7 @@ window.checkAtyrauBounds = checkAtyrauBounds;
             await window.setupGeolocation();
 
             expect(window.getDetectedCity()).toBe("atyrau");
-            expect(document.getElementById("location-text").textContent).toBe("╨Р╤В╤Л╤А╨░╤Г");
+            expect(document.getElementById("location-text").textContent).toBe("Атырау");
         });
     });
 

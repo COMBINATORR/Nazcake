@@ -397,7 +397,7 @@ let products = [
     category: "on_order",
     price: 7500,
     unit: "шт.",
-    image: "images/pie_smetannik.webp",
+    image: "images/pie_curd.webp",
     desc: "Большой прямоугольный пирог с нежной и сладкой творожной начинкой.",
     ingredients: "Мука, дрожжи, сливочное масло, сахар, соль, разрыхлитель, ванилин, яйцо, молоко, творог. Аллергены: глютен, молоко, яйца.",
     badge: "custom"
@@ -408,7 +408,7 @@ let products = [
     category: "on_order",
     price: 7500,
     unit: "шт.",
-    image: "images/pie_poppy.webp",
+    image: "images/pie_dryfruit.webp",
     desc: "Большой прямоугольный пирог, обильно наполненный отборным изюмом и курагой.",
     ingredients: "Мука, дрожжи, сливочное масло, сахар, соль, разрыхлитель, ванилин, яйцо, молоко, сухофрукты, джем. Аллергены: глютен, молоко, яйца.",
     badge: "custom"
@@ -5342,6 +5342,22 @@ function handleEmptyCartShopClick() {
   if (catalogEl) {
     catalogEl.scrollIntoView({ behavior: "smooth" });
   }
+}
+// Adjust Hex Color brightness
+function adjustColorBrightness(hex, percent) {
+  let R = parseInt(hex.substring(1, 3), 16);
+  let G = parseInt(hex.substring(3, 5), 16);
+  let B = parseInt(hex.substring(5, 7), 16);
+
+  R = parseInt((R * (100 + percent)) / 100);
+  G = parseInt((G * (100 + percent)) / 100);
+  B = parseInt((B * (100 + percent)) / 100);
+
+  R = R < 255 ? (R > 0 ? R : 0) : 255;
+  G = G < 255 ? (G > 0 ? G : 0) : 255;
+  B = B < 255 ? (B > 0 ? B : 0) : 255;
+
+  return `#${[R, G, B].map(x => x.toString(16).padStart(2, '0')).join('')}`;
 }
 
 if (typeof module !== 'undefined') {
