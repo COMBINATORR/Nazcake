@@ -414,17 +414,6 @@ let products = [
     badge: "custom"
   },
   {
-    id: "cake_custom_celebration",
-    name: "Праздничный торт (на заказ)",
-    category: "on_order",
-    price: 8500,
-    unit: "кг",
-    image: "",
-    desc: "Эксклюзивный праздничный торт для вашего торжества. Дизайн и начинка обсуждаются индивидуально при заказе.",
-    ingredients: "Начинка на выбор (Красный бархат, Сникерс, Эстерхази, Молочная девочка), кондитерский велюр, мастичный или ягодный декор.",
-    badge: "custom"
-  },
-  {
     id: "dessert_napoleon",
     name: "Наполеон",
     category: "desserts",
