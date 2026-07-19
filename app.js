@@ -1324,6 +1324,11 @@ let products = [
   }
 ];
 
+// Snapshot of static catalog badges (source of truth for storefront labels)
+const LOCAL_CATALOG_BADGES = new Map(
+  (typeof products !== "undefined" ? products : []).map((p) => [p.id, p.badge || ""])
+);
+
 /** Fixed catalog order from the static list (Supabase created_at is identical for all rows → unstable). */
 const DEFAULT_PRODUCT_ORDER = products.map((p) => p.id);
 const DEFAULT_PRODUCT_RANK = new Map(DEFAULT_PRODUCT_ORDER.map((id, i) => [id, i]));
@@ -1454,7 +1459,12 @@ async function loadProducts() {
         image: dbProd.image || "",
         desc: dbProd.desc || "",
         ingredients: dbProd.ingredients || "",
-        badge: normalizeProductBadge(dbProd.badge),
+        badge: (() => {
+          if (LOCAL_CATALOG_BADGES.has(dbProd.id)) {
+            return normalizeProductBadge(LOCAL_CATALOG_BADGES.get(dbProd.id));
+          }
+          return normalizeProductBadge(dbProd.badge);
+        })(),
         inStock: dbProd.in_stock !== false,
         stock: normalizeStockValue(dbProd.stock),
         sizeOptions: dbProd.size_options || null,
