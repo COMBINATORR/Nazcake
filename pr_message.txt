@@ -1,10 +1,1 @@
-🧹 Refactor deeply nested tab logic in admin dashboard
-
-This commit extracts the deeply nested logic for tab switching inside
-`setupAdminDashboardNav` into a separate top-level function named
-`switchAdminTab`.
-
-🎯 What: Extracted the nested anonymous async function inside the tab click listener in `setupAdminDashboardNav` into its own named async function.
-💡 Why: To improve code readability and maintainability by reducing nesting and isolating the tab-switching concern.
-✅ Verification: Ran the existing test suite via `pnpm test`, ensuring everything continued to pass.
-✨ Result: `setupAdminDashboardNav` is cleaner, and the tab switching logic is neatly encapsulated in `switchAdminTab`.
+🔒 Fix insecure RLS policy for products and orders

@@ -25,7 +25,7 @@ CREATE POLICY "nazcake_products_select"
 
 CREATE POLICY "nazcake_products_update"
   ON public.products FOR UPDATE
-  TO anon, authenticated
+  TO authenticated
   USING (true)
   WITH CHECK (true);
 
@@ -49,13 +49,13 @@ CREATE POLICY "nazcake_orders_insert"
 
 CREATE POLICY "nazcake_orders_update"
   ON public.orders FOR UPDATE
-  TO anon, authenticated
+  TO authenticated
   USING (true)
   WITH CHECK (true);
 
 CREATE POLICY "nazcake_orders_delete"
   ON public.orders FOR DELETE
-  TO anon, authenticated
+  TO authenticated
   USING (true);
 
 -- Option B (safer): only authenticated users may write.
