@@ -40,11 +40,41 @@ window.checkAtyrauBounds = checkAtyrauBounds;
             window.exceedsProductStock = exceedsProductStock;
             window.applyLocalProductOverrides = applyLocalProductOverrides;
             window.persistLocalProductOverrides = persistLocalProductOverrides;
+            window.parseLocalDate = parseLocalDate;
             window.getProducts = () => products;
             window.setProducts = (p) => { products = p; };
         `;
 
         eval(appJsCode);
+    });
+
+
+    describe('parseLocalDate', () => {
+        it('should correctly parse a valid YYYY-MM-DD date string', () => {
+            const date = window.parseLocalDate('2023-10-15');
+            expect(date).not.toBeNull();
+            expect(date.getFullYear()).toBe(2023);
+            expect(date.getMonth()).toBe(9); // Months are 0-indexed
+            expect(date.getDate()).toBe(15);
+            expect(date.getHours()).toBe(0);
+        });
+
+        it('should return null for empty or falsy inputs', () => {
+            expect(window.parseLocalDate(null)).toBeNull();
+            expect(window.parseLocalDate(undefined)).toBeNull();
+            expect(window.parseLocalDate('')).toBeNull();
+        });
+
+        it('should return null for invalid formats', () => {
+            expect(window.parseLocalDate('2023/10/15')).toBeNull();
+            expect(window.parseLocalDate('abc-10-15')).toBeNull();
+            expect(window.parseLocalDate('2023-10')).toBeNull(); // Missing day
+        });
+
+        it('should return null when parsing results in NaN or zeros', () => {
+             expect(window.parseLocalDate('0-0-0')).toBeNull();
+             expect(window.parseLocalDate('0000-00-00')).toBeNull();
+        });
     });
 
     describe('adjustColorBrightness', () => {
