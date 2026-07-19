@@ -4954,7 +4954,7 @@ const CATEGORY_STAGE_ITEMS = [
   },
   {
     category: "pastries",
-    src: "images/stage/pastry_vypechka.webp",
+    src: "images/vypechka.webp",
     ghost: "ВЫПЕЧКА",
     // warm amber / honey gold
     bg: "#c48a28",
