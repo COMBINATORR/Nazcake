@@ -1,1 +1,0 @@
-🔒 Fix insecure RLS policy for products and orders
