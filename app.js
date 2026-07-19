@@ -3887,18 +3887,16 @@ function setupAdminLogin(loginModal, dashModal) {
             password: password
           });
           if (error) {
-            console.warn("Supabase Auth failed, trying local fallback:", error.message);
-            loginSuccessful = (password === "nazcake2026");
+            console.warn("Supabase Auth failed:", error.message);
           } else {
             console.log("Successfully logged in with Supabase Auth:", data.user.email);
             loginSuccessful = true;
           }
         } catch (err) {
-          console.warn("Supabase login error, trying local fallback:", err);
-          loginSuccessful = (password === "nazcake2026");
+          console.warn("Supabase login error:", err);
         }
       } else {
-        loginSuccessful = (password === "nazcake2026");
+        console.warn("Supabase client not initialized.");
       }
 
       if (submitBtn) {
