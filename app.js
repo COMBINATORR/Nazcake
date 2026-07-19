@@ -3854,14 +3854,9 @@ function updateLocationUi() {
   widget.classList.remove("hidden");
   drawerWidget.classList.remove("hidden");
 
-  // Show/hide zone warning (delivery section + cart) if not in Atyrau
-  const alertBannerCart = document.getElementById("location-alert-banner-cart");
-  const showOutOfZone = detectedCity !== "atyrau";
+  // Zone warning only in cart (near delivery address), never on landing/hero
   if (alertBanner) {
-    alertBanner.classList.toggle("hidden", !showOutOfZone);
-  }
-  if (alertBannerCart) {
-    alertBannerCart.classList.toggle("hidden", !showOutOfZone);
+    alertBanner.classList.toggle("hidden", detectedCity === "atyrau");
   }
 }
 
