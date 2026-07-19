@@ -30,6 +30,7 @@ describe('Nazcake App Unit Tests', () => {
             window.setDetectedCity = (c) => { detectedCity = c; };
             window.calculateImageDimensions = calculateImageDimensions;
 window.calculateDeliveryCost = calculateDeliveryCost;
+window.generatePickupTimeSlots = generatePickupTimeSlots;
 
 window.getHaversineDistance = getHaversineDistance;
             window.deg2rad = deg2rad;
@@ -510,4 +511,62 @@ describe('escapeHTML', () => {
       Object.assign(p, prev);
     });
   });
+
+    describe('generatePickupTimeSlots', () => {
+        beforeAll(() => {
+            jest.useFakeTimers();
+        });
+
+        afterAll(() => {
+            jest.useRealTimers();
+        });
+
+        it('returns all slots for a future date', () => {
+            // Set current time to today 10:00 AM
+            jest.setSystemTime(new Date('2023-10-10T10:00:00'));
+            // Query for tomorrow
+            const slots = window.generatePickupTimeSlots('2023-10-11');
+            expect(slots.length).toBeGreaterThan(0);
+            expect(slots[0]).toBe('09:00');
+            expect(slots[slots.length - 1]).toBe('19:30');
+        });
+
+        it('returns all slots for today if current time is early morning', () => {
+            // Set current time to today 07:00 AM
+            jest.setSystemTime(new Date('2023-10-10T07:00:00'));
+            const slots = window.generatePickupTimeSlots('2023-10-10');
+            expect(slots.length).toBeGreaterThan(0);
+            expect(slots[0]).toBe('09:00');
+            expect(slots[slots.length - 1]).toBe('19:30');
+        });
+
+        it('filters out past slots for today based on current time + buffer', () => {
+            // Set current time to today 10:00 AM.
+            // Buffer is 45 mins, so min time is 10:45 AM.
+            // Slots are 09:00, 09:30, 10:00, 10:30, 11:00...
+            // So 11:00 should be the first slot.
+            jest.setSystemTime(new Date('2023-10-10T10:00:00'));
+            const slots = window.generatePickupTimeSlots('2023-10-10');
+            expect(slots.length).toBeGreaterThan(0);
+            expect(slots[0]).toBe('11:00');
+            expect(slots[slots.length - 1]).toBe('19:30');
+        });
+
+        it('returns empty array if current time + buffer is past all slots for today', () => {
+            // Set current time to today 19:30.
+            // Buffer is 45 mins, min time is 20:15.
+            // Last slot is 19:30, so no slots should be returned.
+            jest.setSystemTime(new Date('2023-10-10T19:30:00'));
+            const slots = window.generatePickupTimeSlots('2023-10-10');
+            expect(slots).toEqual([]);
+        });
+
+        it('returns empty array for invalid dates', () => {
+            expect(window.generatePickupTimeSlots(null)).toEqual([]);
+            expect(window.generatePickupTimeSlots(undefined)).toEqual([]);
+            expect(window.generatePickupTimeSlots('')).toEqual([]);
+            expect(window.generatePickupTimeSlots('invalid-date')).toEqual([]);
+        });
+    });
+
 });
