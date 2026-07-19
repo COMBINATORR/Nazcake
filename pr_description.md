@@ -1,11 +1,5 @@
-🎯 **What:**
-The testing gap for `normalizeProductBadge` has been addressed. The function is a pure string processing function used to strip redundant "fresh" badges. Before this PR, there were no test cases covering its behavior.
+💡 **What:** Modified `refreshAdminDashboard` in `app.js` to execute independent `loadProducts()` and `loadOrdersFromSupabase()` data fetches concurrently using `Promise.all()`. Chained `.then()` for their respective synchronous render functions (`renderAdminCatalog` and `renderAdminOrders`) to ensure each render happens immediately after its specific data finishes loading.
 
-📊 **Coverage:**
-The new test cases cover:
-- Empty strings and nullish values (`null`, `undefined`, `""`) -> Returns `""`.
-- Variations of "fresh" badges in Russian, Kazakh, and English (`"свежее"`, `"балғын"`, `"свежий"`, `"fresh"`) factoring in case-insensitivity and extra whitespace -> Returns `""`.
-- Any other regular string (e.g. `"хит продаж"`, `"new"`) with whitespace trimming -> Returns the trimmed string.
+🎯 **Why:** Previously, these network requests were awaited sequentially, increasing total latency. This optimization allows the admin dashboard to fetch data in parallel, significantly reducing the total blocking time for data retrieval.
 
-✨ **Result:**
-The `normalizeProductBadge` function now has full unit test coverage using Jest, increasing the test suite's reliability and ensuring proper normalization of product badges.
+📊 **Measured Improvement:** Baseline time was measured using mocked async functions (100ms and 150ms delays) running sequentially, taking ~250ms total. After the optimization, the parallel execution successfully reduced the time to ~150ms, showing a ~40% performance improvement by avoiding sequential delays.
