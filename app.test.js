@@ -41,6 +41,7 @@ window.checkAtyrauBounds = checkAtyrauBounds;
             window.exceedsProductStock = exceedsProductStock;
             window.applyLocalProductOverrides = applyLocalProductOverrides;
             window.persistLocalProductOverrides = persistLocalProductOverrides;
+            window.normalizeProductBadge = normalizeProductBadge;
             window.parseLocalDate = parseLocalDate;
             window.getProducts = () => products;
             window.setProducts = (p) => { products = p; };
@@ -49,6 +50,27 @@ window.checkAtyrauBounds = checkAtyrauBounds;
         eval(appJsCode);
     });
 
+
+    describe('normalizeProductBadge', () => {
+      it('should return empty string for null, undefined, or empty string', () => {
+        expect(window.normalizeProductBadge(null)).toBe('');
+        expect(window.normalizeProductBadge(undefined)).toBe('');
+        expect(window.normalizeProductBadge('')).toBe('');
+      });
+
+      it('should return empty string for fresh badges (case-insensitive with trimming)', () => {
+        expect(window.normalizeProductBadge('свежее')).toBe('');
+        expect(window.normalizeProductBadge(' балғын ')).toBe('');
+        expect(window.normalizeProductBadge('СВЕЖИЙ')).toBe('');
+        expect(window.normalizeProductBadge(' fresh ')).toBe('');
+      });
+
+      it('should return trimmed badge string for other inputs', () => {
+        expect(window.normalizeProductBadge('  хит продаж ')).toBe('хит продаж');
+        expect(window.normalizeProductBadge('new')).toBe('new');
+        expect(window.normalizeProductBadge(' 123 ')).toBe('123');
+      });
+    });
 
     describe('parseLocalDate', () => {
         it('should correctly parse a valid YYYY-MM-DD date string', () => {
