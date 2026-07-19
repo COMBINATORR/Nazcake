@@ -1558,10 +1558,10 @@ async function saveOrderToSupabase(order) {
 }
 
 async function refreshAdminDashboard() {
-  await loadProducts();
-  renderAdminCatalog();
-  await loadOrdersFromSupabase();
-  renderAdminOrders();
+  await Promise.all([
+    loadProducts().then(() => renderAdminCatalog()),
+    loadOrdersFromSupabase().then(() => renderAdminOrders())
+  ]);
 }
 
 // Shopping Cart State

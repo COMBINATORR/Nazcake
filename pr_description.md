@@ -1,3 +1,5 @@
-🎯 **What:** Removed the `anon` role from the UPDATE and DELETE policies for the `products` and `orders` tables.
-⚠️ **Risk:** The previous policy allowed anyone with the public anon key to modify products and delete orders without authentication.
-🛡️ **Solution:** Restricted `nazcake_products_update`, `nazcake_orders_update`, and `nazcake_orders_delete` policies to the `authenticated` role only.
+💡 **What:** Modified `refreshAdminDashboard` in `app.js` to execute independent `loadProducts()` and `loadOrdersFromSupabase()` data fetches concurrently using `Promise.all()`. Chained `.then()` for their respective synchronous render functions (`renderAdminCatalog` and `renderAdminOrders`) to ensure each render happens immediately after its specific data finishes loading.
+
+🎯 **Why:** Previously, these network requests were awaited sequentially, increasing total latency. This optimization allows the admin dashboard to fetch data in parallel, significantly reducing the total blocking time for data retrieval.
+
+📊 **Measured Improvement:** Baseline time was measured using mocked async functions (100ms and 150ms delays) running sequentially, taking ~250ms total. After the optimization, the parallel execution successfully reduced the time to ~150ms, showing a ~40% performance improvement by avoiding sequential delays.
