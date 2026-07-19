@@ -70,8 +70,8 @@
       // Why Choose Nazcake
       why_subtitle: "Преимущества",
       why_title: "Почему выбирают <span class=\"why-brand-wrap\"><span class=\"why-brand why-brand-fill\">Nazcake</span><span class=\"why-brand why-brand-glow\" aria-hidden=\"true\">Nazcake</span></span>?",
-      why_1_title: "Единственные в своём роде десерты",
-      why_1_text: "Фирменные торты и крафтовые десерты ручной работы для ваших особенных моментов.",
+      why_1_title: "Доступно, вкусно и свежо",
+      why_1_text: "Честные цены без переплат — каждый день свежая продукция высокого качества.",
       why_2_title: "Быстрая и бережная доставка",
       why_2_text: "Доставим заказ по Атырау точно к сроку — бережно и в идеальном виде.",
       why_3_title: "Честный и натуральный состав",
@@ -876,8 +876,8 @@
       // Why Choose Nazcake
       why_subtitle: "Артықшылықтар",
       why_title: "Неге таңдайды <span class=\"why-brand-wrap\"><span class=\"why-brand why-brand-fill\">Nazcake</span><span class=\"why-brand why-brand-glow\" aria-hidden=\"true\">Nazcake</span></span>?",
-      why_1_title: "Өзіндік үлгідегі десерттер",
-      why_1_text: "Ерекше сәттеріңізге арналған фирмалық торттар мен қолмен жасалған крафт десерттер.",
+      why_1_title: "Қолжетімді, дәмді және балғын",
+      why_1_text: "Артық төлемсіз шынайы баға — күн сайын жоғары сапалы жаңа өнім.",
       why_2_title: "Жылдам әрі ұқыпты жеткізу",
       why_2_text: "Атырау бойынша тапсырысты уақытында, ұқыпты және мінсіз күйде жеткіземіз.",
       why_3_title: "Адал әрі табиғи құрам",
