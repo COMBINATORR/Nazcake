@@ -4991,7 +4991,7 @@ const CATEGORY_STAGE_ITEMS = [
   {
     category: "semi-finished",
     src: "images/stage/semi_pelmeni-cut.webp",
-    ghost: "ПЕЛЬМЕНИ",
+    ghost: "ПОЛУФАБРИКАТЫ",
     // cool kitchen steel / dough cream
     bg: "#3a5a6a",
     bg2: "#101820",
