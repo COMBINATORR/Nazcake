@@ -273,14 +273,16 @@
       loop
       playsinline
       webkit-playsinline
+      autoplay
       preload="none"
       poster="images/hero-poster.webp"
       disablepictureinpicture
       data-lazy-video
       aria-hidden="true"
     >
-      <source data-src="Videos/Broll2_mobile.mp4" type="video/mp4; codecs=avc1.42E01E,mp4a.40.2">
-      <source data-src="Videos/Broll2.mp4" type="video/mp4">
+      <!-- Existing assets only: Broll2.mp4 was removed (404). WebM for modern browsers, H.264 MP4 for Safari. -->
+      <source data-src="Videos/Broll2.webm" type="video/webm">
+      <source data-src="Videos/Broll2_mobile.mp4" type="video/mp4">
     </video>
     <div class="hero-video-scrim" aria-hidden="true"></div>
     <div class="hero-grain" aria-hidden="true"></div>

@@ -4718,35 +4718,60 @@ function setupRuntimePerformance() {
   }
 }
 
-/** Defer hero MP4 until after first paint / preloader (poster shows immediately). */
+/** Defer hero video until after first paint / preloader (poster shows immediately). */
 function setupLazyHeroVideo() {
   const video = document.querySelector("video.hero-video-bg[data-lazy-video]");
   if (!video || video.dataset.videoLoaded === "1") return;
+
+  const tryPlay = () => {
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+    const p = video.play();
+    if (p && typeof p.catch === "function") p.catch(() => {});
+  };
 
   const activateSources = () => {
     if (video.dataset.videoLoaded === "1") return;
     video.dataset.videoLoaded = "1";
     video.classList.add("is-loading");
+    video.muted = true;
+    video.defaultMuted = true;
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
 
+    // Wire real sources (only files that exist in /Videos)
     video.querySelectorAll("source[data-src]").forEach((source) => {
-      source.setAttribute("src", source.getAttribute("data-src"));
+      const src = source.getAttribute("data-src");
+      if (!src) return;
+      source.setAttribute("src", src);
       source.removeAttribute("data-src");
     });
 
-    const tryPlay = () => {
-      const p = video.play();
-      if (p && typeof p.catch === "function") p.catch(() => {});
+    const markReady = () => {
+      video.classList.remove("is-loading");
+      video.classList.add("is-ready");
+      tryPlay();
     };
 
-    video.addEventListener(
-      "canplay",
-      () => {
-        video.classList.remove("is-loading");
-        video.classList.add("is-ready");
+    video.addEventListener("canplay", markReady, { once: true });
+    video.addEventListener("loadeddata", markReady, { once: true });
+
+    // If selected source fails, drop it and try the next <source>
+    video.addEventListener("error", () => {
+      const current = video.querySelector("source[src]");
+      if (current && current.nextElementSibling && current.nextElementSibling.tagName === "SOURCE") {
+        current.remove();
+        try {
+          video.load();
+        } catch (_) {
+          /* ignore */
+        }
         tryPlay();
-      },
-      { once: true }
-    );
+      } else {
+        video.classList.remove("is-loading");
+      }
+    });
 
     try {
       video.load();
@@ -4758,9 +4783,9 @@ function setupLazyHeroVideo() {
 
   const schedule = () => {
     if ("requestIdleCallback" in window) {
-      requestIdleCallback(() => activateSources(), { timeout: 2200 });
+      requestIdleCallback(() => activateSources(), { timeout: 1200 });
     } else {
-      setTimeout(activateSources, 900);
+      setTimeout(activateSources, 400);
     }
   };
 
@@ -4773,12 +4798,12 @@ function setupLazyHeroVideo() {
       }
     });
     mo.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+    // Fallback if preloader never clears
     setTimeout(() => {
       mo.disconnect();
-      schedule();
-    }, 4500);
+      if (video.dataset.videoLoaded !== "1") schedule();
+    }, 3500);
   } else {
-    // next frame then idle
     requestAnimationFrame(() => schedule());
   }
 }
