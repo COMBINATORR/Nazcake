@@ -3854,13 +3854,14 @@ function updateLocationUi() {
   widget.classList.remove("hidden");
   drawerWidget.classList.remove("hidden");
 
-  // Show/hide banner if not in Atyrau
+  // Show/hide zone warning (delivery section + cart) if not in Atyrau
+  const alertBannerCart = document.getElementById("location-alert-banner-cart");
+  const showOutOfZone = detectedCity !== "atyrau";
   if (alertBanner) {
-    if (detectedCity !== "atyrau") {
-      alertBanner.classList.remove("hidden");
-    } else {
-      alertBanner.classList.add("hidden");
-    }
+    alertBanner.classList.toggle("hidden", !showOutOfZone);
+  }
+  if (alertBannerCart) {
+    alertBannerCart.classList.toggle("hidden", !showOutOfZone);
   }
 }
 

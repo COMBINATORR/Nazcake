@@ -5737,7 +5737,7 @@ body.dark-theme .site-dialog-icon.is-warn {
   color: var(--accent-gold);
 }
 
-/* Location Warning Banner */
+/* Location Warning Banner (delivery section + cart checkout — not on hero) */
 .location-alert-banner {
   display: flex;
   align-items: center;
@@ -5746,10 +5746,21 @@ body.dark-theme .site-dialog-icon.is-warn {
   border: 1px solid rgba(220, 53, 69, 0.25);
   border-radius: 12px;
   padding: 12px 18px;
-  margin-bottom: 24px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  margin-bottom: 20px;
   animation: fadeInDown 0.5s ease-out;
+}
+
+.location-alert-banner.hidden {
+  display: none;
+}
+
+.location-alert-banner--delivery {
+  max-width: 100%;
+}
+
+.location-alert-banner--cart {
+  margin-bottom: 12px;
+  padding: 10px 14px;
 }
 
 .location-alert-banner .warning-icon {
@@ -5762,6 +5773,20 @@ body.dark-theme .site-dialog-icon.is-warn {
   font-size: 0.9rem;
   font-weight: 500;
   color: #c02434;
+  line-height: 1.4;
+}
+
+.location-alert-banner--cart .warning-text {
+  font-size: 0.82rem;
+}
+
+body.dark-theme .location-alert-banner {
+  background: rgba(220, 53, 69, 0.15);
+  border-color: rgba(248, 113, 113, 0.35);
+}
+
+body.dark-theme .location-alert-banner .warning-text {
+  color: #fca5a5;
 }
 
 @keyframes fadeInDown {
