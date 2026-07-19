@@ -42,6 +42,7 @@ window.checkAtyrauBounds = checkAtyrauBounds;
             window.persistLocalProductOverrides = persistLocalProductOverrides;
             window.getProducts = () => products;
             window.setProducts = (p) => { products = p; };
+            window.getUnitTranslationKey = getUnitTranslationKey;
         `;
 
         eval(appJsCode);
@@ -478,6 +479,27 @@ describe('escapeHTML', () => {
       expect(window.getCart().length).toBe(0);
       // restore
       Object.assign(p, prev);
+    });
+  });
+
+  describe("getUnitTranslationKey", () => {
+    it("should return correct translation key for valid units", () => {
+      expect(window.getUnitTranslationKey("шт.")).toBe("tg_unit_pcs");
+      expect(window.getUnitTranslationKey("кг")).toBe("tg_unit_kg");
+      expect(window.getUnitTranslationKey("12 шт.")).toBe("tg_unit_12pcs");
+      expect(window.getUnitTranslationKey("уп")).toBe("tg_unit_pack");
+    });
+
+    it("should return empty string for missing or falsy units", () => {
+      expect(window.getUnitTranslationKey(null)).toBe("");
+      expect(window.getUnitTranslationKey(undefined)).toBe("");
+      expect(window.getUnitTranslationKey("")).toBe("");
+    });
+
+    it("should return empty string for unknown units", () => {
+      expect(window.getUnitTranslationKey("г")).toBe("");
+      expect(window.getUnitTranslationKey("box")).toBe("");
+      expect(window.getUnitTranslationKey("random")).toBe("");
     });
   });
 });
