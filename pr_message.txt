@@ -1,1 +1,13 @@
-🔒 Fix insecure RLS policy for products and orders
+🧪 Add tests for normalizeProductBadge
+
+🎯 **What:** The testing gap addressed
+This PR addresses the lack of test coverage for the `normalizeProductBadge` function in `app.js`.
+
+📊 **Coverage:** What scenarios are now tested
+The new tests cover all scenarios:
+- Falsy/empty values (`null`, `undefined`, `""`) returning an empty string.
+- Case-insensitive checking and trimming for "fresh" badge keywords (`"свежее"`, `"балғын"`, `"свежий"`, `"fresh"`).
+- Default behavior of returning the trimmed string for all other inputs.
+
+✨ **Result:** The improvement in test coverage
+The `normalizeProductBadge` pure string processing function now has comprehensive unit tests in the Jest test suite, increasing the overall codebase reliability.
