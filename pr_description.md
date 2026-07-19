@@ -1,11 +1,11 @@
-🎯 **What:** The code health issue addressed
-Extracted the deeply nested, anonymous async function used in the `tabButtons` click listener inside `setupAdminDashboardNav` into a standalone function named `switchAdminTab`.
+🎯 **What:**
+The testing gap for `normalizeProductBadge` has been addressed. The function is a pure string processing function used to strip redundant "fresh" badges. Before this PR, there were no test cases covering its behavior.
 
-💡 **Why:** How this improves maintainability
-The original tab-switching logic was buried inside a `forEach` loop and an event listener within a larger setup function, leading to deep nesting and poor readability. Extracting it to a named function cleanly separates the logic, making `setupAdminDashboardNav` easier to read and maintain.
+📊 **Coverage:**
+The new test cases cover:
+- Empty strings and nullish values (`null`, `undefined`, `""`) -> Returns `""`.
+- Variations of "fresh" badges in Russian, Kazakh, and English (`"свежее"`, `"балғын"`, `"свежий"`, `"fresh"`) factoring in case-insensitivity and extra whitespace -> Returns `""`.
+- Any other regular string (e.g. `"хит продаж"`, `"new"`) with whitespace trimming -> Returns the trimmed string.
 
-✅ **Verification:** How you confirmed the change is safe
-Ran the existing Jest test suite for the `app.js` file using `pnpm test`. It passed without any failures, confirming that the extraction correctly maintained the existing behavior.
-
-✨ **Result:** The improvement achieved
-A cleaner `setupAdminDashboardNav` setup method that simply delegates to a clear and concise `switchAdminTab` logic function.
+✨ **Result:**
+The `normalizeProductBadge` function now has full unit test coverage using Jest, increasing the test suite's reliability and ensuring proper normalization of product badges.
