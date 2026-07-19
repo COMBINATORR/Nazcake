@@ -1772,7 +1772,8 @@ function renderBestsellers() {
   if (!bestsellersGrid) return;
   const bestsellers = products.filter(p => p.badge === "бестселлер" || p.badge === "хит" || p.badge === "премиум");
 
-  bestsellersGrid.innerHTML = bestsellers.map(p => createProductCardHtml(p)).join("");
+  bestsellersGrid.innerHTML = '';
+  bestsellers.forEach(p => bestsellersGrid.appendChild(createProductCardElement(p)));
   attachCardEvents(bestsellersGrid);
   refreshScrollReveal();
 }
@@ -1814,7 +1815,8 @@ function renderCatalog(category) {
       filtered = products.filter(p => p.category === category);
     }
 
-    catalogGrid.innerHTML = filtered.map(p => createProductCardHtml(p)).join("");
+    catalogGrid.innerHTML = '';
+    filtered.forEach(p => catalogGrid.appendChild(createProductCardElement(p)));
     attachCardEvents(catalogGrid);
     refreshScrollReveal();
     applyCatalogSectionTheme(category);
@@ -1863,54 +1865,109 @@ function applyCatalogSectionTheme(category) {
   }
 }
 
-function createProductCardHtml(p) {
+function createProductCardElement(p) {
   const { id, name, category, categoryLabel, badge, unit, price, sizeOptions, inStock, stock, image, isCustomName } = p;
-  const tName = escapeHTML(isCustomName ? name : (window.i18n ? window.i18n.t(`p_${id}_name`) : name));
-  const tCategoryLabel = escapeHTML(window.i18n ? window.i18n.t(`catalog_cat_${category}`) : categoryLabel);
+
+  const tName = isCustomName ? name : (window.i18n ? window.i18n.t(`p_${id}_name`) : name);
+  const tCategoryLabel = window.i18n ? window.i18n.t(`catalog_cat_${category}`) : categoryLabel;
   const displayBadge = normalizeProductBadge(badge);
   const badgeKey = displayBadge ? getBadgeTranslationKey(displayBadge) : "";
-  const tBadge = escapeHTML(
-    displayBadge
-      ? (window.i18n && badgeKey ? window.i18n.t(badgeKey) : displayBadge)
-      : ""
-  );
-  const tUnit = escapeHTML(window.i18n ? window.i18n.t(getUnitTranslationKey(unit)) : unit);
+  const tBadge = displayBadge
+    ? (window.i18n && badgeKey ? window.i18n.t(badgeKey) : displayBadge)
+    : "";
+  const tUnit = window.i18n ? window.i18n.t(getUnitTranslationKey(unit)) : unit;
 
   const isOutOfStock = isProductOutOfStock({ inStock, stock });
-  const cardClass = isOutOfStock ? "product-card out-of-stock" : "product-card";
+  const cardClass = isOutOfStock ? "product-card out-of-stock reveal-item" : "product-card reveal-item";
   const tOutOfStock = window.i18n ? window.i18n.t("catalog_out_of_stock") : "Нет в наличии";
-  const outOfStockBadge = isOutOfStock
-    ? `<span class="product-badge product-badge-outofstock"><span class="product-badge-text">${tOutOfStock}</span></span>`
-    : "";
-  const activeBadge = outOfStockBadge
-    || (displayBadge ? `<span class="product-badge"><span class="product-badge-text">${tBadge}</span></span>` : "");
-  const catAttr = category ? ` data-category="${escapeHTML(category)}"` : "";
 
-  return `
-    <div class="${cardClass} reveal-item" data-id="${id}"${catAttr}>
-      <div class="product-img-wrapper btn-preview">
-        ${activeBadge}
-        <img src="${image}" alt="${tName}" class="lazy-image loading" loading="lazy" width="360" height="360" onload="this.classList.remove('loading')">
-      </div>
-      <div class="product-info">
-        <span class="product-category">${tCategoryLabel}</span>
-        <h3 class="product-name btn-preview">${tName}</h3>
-        <div class="product-footer">
-          <span class="product-price">${
-            sizeOptions && sizeOptions.length > 0
-              ? `${window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "бастап" : "от"} ${Math.min(...sizeOptions.map(o => o.price)).toLocaleString()} ₸`
-              : `${price.toLocaleString()} ₸ / ${tUnit}`
-          }</span>
-          <button class="btn-card-add btn-add-to-cart" aria-label="Добавить в корзину" ${isOutOfStock ? 'disabled' : ''}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-          </button>
-        </div>
-      </div>
-    </div>
+  const cardDiv = document.createElement('div');
+  cardDiv.className = cardClass;
+  cardDiv.dataset.id = id;
+  if (category) {
+    cardDiv.dataset.category = category;
+  }
+
+  const imgWrapper = document.createElement('div');
+  imgWrapper.className = "product-img-wrapper btn-preview";
+
+  if (isOutOfStock) {
+    const badgeSpan = document.createElement('span');
+    badgeSpan.className = "product-badge product-badge-outofstock";
+    const textSpan = document.createElement('span');
+    textSpan.className = "product-badge-text";
+    textSpan.textContent = tOutOfStock;
+    badgeSpan.appendChild(textSpan);
+    imgWrapper.appendChild(badgeSpan);
+  } else if (displayBadge) {
+    const badgeSpan = document.createElement('span');
+    badgeSpan.className = "product-badge";
+    const textSpan = document.createElement('span');
+    textSpan.className = "product-badge-text";
+    textSpan.textContent = tBadge;
+    badgeSpan.appendChild(textSpan);
+    imgWrapper.appendChild(badgeSpan);
+  }
+
+  const imgElement = document.createElement('img');
+  imgElement.src = image;
+  imgElement.alt = tName;
+  imgElement.className = "lazy-image loading";
+  imgElement.setAttribute('loading', 'lazy');
+  imgElement.width = 360;
+  imgElement.height = 360;
+  imgElement.onload = function() {
+    this.classList.remove('loading');
+  };
+  imgWrapper.appendChild(imgElement);
+  cardDiv.appendChild(imgWrapper);
+
+  const infoDiv = document.createElement('div');
+  infoDiv.className = "product-info";
+
+  const catSpan = document.createElement('span');
+  catSpan.className = "product-category";
+  catSpan.textContent = tCategoryLabel;
+  infoDiv.appendChild(catSpan);
+
+  const titleH3 = document.createElement('h3');
+  titleH3.className = "product-name btn-preview";
+  titleH3.textContent = tName;
+  infoDiv.appendChild(titleH3);
+
+  const footerDiv = document.createElement('div');
+  footerDiv.className = "product-footer";
+
+  const priceSpan = document.createElement('span');
+  priceSpan.className = "product-price";
+
+  if (sizeOptions && sizeOptions.length > 0) {
+    const fromText = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "бастап" : "от";
+    const minPrice = Math.min(...sizeOptions.map(o => o.price));
+    priceSpan.textContent = `${fromText} ${minPrice.toLocaleString()} ₸`;
+  } else {
+    priceSpan.textContent = `${price.toLocaleString()} ₸ / ${tUnit}`;
+  }
+  footerDiv.appendChild(priceSpan);
+
+  const addBtn = document.createElement('button');
+  addBtn.className = "btn-card-add btn-add-to-cart";
+  addBtn.setAttribute('aria-label', 'Добавить в корзину');
+  if (isOutOfStock) {
+    addBtn.disabled = true;
+  }
+  addBtn.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+      <line x1="12" y1="5" x2="12" y2="19"></line>
+      <line x1="5" y1="12" x2="19" y2="12"></line>
+    </svg>
   `;
+  footerDiv.appendChild(addBtn);
+
+  infoDiv.appendChild(footerDiv);
+  cardDiv.appendChild(infoDiv);
+
+  return cardDiv;
 }
 
 // Attach Events (Preview click, stepper click, add click) to Rendered Cards
