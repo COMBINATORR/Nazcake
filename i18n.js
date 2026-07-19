@@ -1727,6 +1727,8 @@
     document.documentElement.setAttribute("lang", currentLang);
     updateDomTranslations();
 
+    const langDropdowns = document.getElementsByClassName("lang-dropdown");
+
     // Delegate language switcher clicks globally
     document.body.addEventListener("click", (e) => {
       const dropdownBtn = e.target.closest(".lang-dropdown-btn");
@@ -1736,13 +1738,13 @@
         const menu = dropdown.querySelector(".lang-dropdown-menu");
         
         // Close other dropdowns first
-        document.querySelectorAll(".lang-dropdown").forEach(other => {
+        for (const other of langDropdowns) {
           if (other !== dropdown) {
             other.classList.remove("open");
             const otherMenu = other.querySelector(".lang-dropdown-menu");
             if (otherMenu) otherMenu.classList.remove("show");
           }
-        });
+        }
         
         dropdown.classList.toggle("open");
         if (menu) menu.classList.toggle("show");
@@ -1767,11 +1769,11 @@
       }
       
       // Close all dropdowns when clicking outside
-      document.querySelectorAll(".lang-dropdown").forEach(dropdown => {
+      for (const dropdown of langDropdowns) {
         dropdown.classList.remove("open");
         const menu = dropdown.querySelector(".lang-dropdown-menu");
         if (menu) menu.classList.remove("show");
-      });
+      }
     });
   });
 
