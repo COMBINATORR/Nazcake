@@ -3761,28 +3761,34 @@ async function fetchCityFromIpProviders() {
     },
   ];
 
-  for (const provider of providers) {
-    try {
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 4500);
-      const response = await fetch(provider.url, {
-        signal: controller.signal,
-        headers: { Accept: "application/json" },
-        mode: "cors",
-        cache: "no-store",
-      });
-      clearTimeout(timer);
-      if (!response.ok) continue;
-      const data = await response.json();
-      const city = provider.city(data);
-      if (city && typeof city === "string" && city.trim()) {
-        return city.toLowerCase().trim();
-      }
-    } catch {
-      // try next provider
-    }
+  try {
+    const city = await Promise.any(
+      providers.map(async (provider) => {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 4500);
+        try {
+          const response = await fetch(provider.url, {
+            signal: controller.signal,
+            headers: { Accept: "application/json" },
+            mode: "cors",
+            cache: "no-store",
+          });
+          if (!response.ok) throw new Error("HTTP error");
+          const data = await response.json();
+          const cityData = provider.city(data);
+          if (cityData && typeof cityData === "string" && cityData.trim()) {
+            return cityData.toLowerCase().trim();
+          }
+          throw new Error("Invalid city data");
+        } finally {
+          clearTimeout(timer);
+        }
+      })
+    );
+    return city;
+  } catch (e) {
+    return null;
   }
-  return null;
 }
 
 async function setupGeolocation() {
