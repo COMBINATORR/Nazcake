@@ -1473,186 +1473,103 @@ let products = [
     category: "pastries",
     price: 350,
     unit: "шт.",
-    image: "images/Самса с курицей и грибами.webp",
-    desc: "Сытная хрустящая самса из слоеного теста с сочной начинкой из куриного филе и шампиньонов.",
-    ingredients:
-      "Мука, сливочное масло, соль, вода, куриное филе, грибы шампиньоны, лук, специи, яйцо (для смазывания), кунжут. Аллергены: глютен, молоко, яйца, кунжут.",
-    badge: "новинка",
-  },
-  {
-    id: "pastry_pirozhki_potato",
-    name: "Пирожки с картошкой",
-    category: "pastries",
-    price: 140,
-    unit: "шт.",
-    image: "images/Пирожки с картошкой.webp",
-    desc: "Мягкие, воздушные домашние пирожки из дрожжевого теста с нежным картофельным пюре и жареным луком.",
-    ingredients:
-      "Мука, дрожжи, вода, молоко, сахар, соль, растительное масло, картофель, лук репчатый, сливочное масло, яйцо. Аллергены: глютен, молоко, яйца.",
-    badge: "новинка",
-  },
-  {
-    id: "pastry_pirozhki_meat_cabbage",
-    name: "Пирожски с мясом и капустой",
-    category: "pastries",
-    price: 210,
-    unit: "шт.",
-    image: "images/Пирожки с мясом и капустой.webp",
-    desc: "Сытные домашние пирожки из воздушного дрожжевого теста с начинкой из говяжьего фарша и тушеной капусты.",
-    ingredients:
-      "Мука, дрожжи, молоко, сахар, соль, масло растительное, говяжий фарш, капуста белокочанная, лук, специи, яйцо. Аллергены: глютен, молоко, яйца.",
-    badge: "новинка",
-  },
-];
+    image: "images/Самса с куриц�function createProductCardElement(p) {
+  const { id, name, category, categoryLabel, badge, unit, price, sizeOptions, inStock, stock, image, isCustomName } = p;
 
-// Snapshot of static catalog badges (source of truth for storefront labels)
-const LOCAL_CATALOG_BADGES = new Map(
-  (typeof products !== "undefined" ? products : []).map((p) => [
-    p.id,
-    p.badge || "",
-  ]),
-);
+  const tName = isCustomName ? name : (window.i18n ? window.i18n.t(`p_${id}_name`) : name);
+  const tCategoryLabel = window.i18n ? window.i18n.t(`catalog_cat_${category}`) : categoryLabel;
+  const displayBadge = normalizeProductBadge(badge);
+  const badgeKey = displayBadge ? getBadgeTranslationKey(displayBadge) : "";
+  const tBadge = displayBadge
+    ? (window.i18n && badgeKey ? window.i18n.t(badgeKey) : displayBadge)
+    : "";
+  const tUnit = window.i18n ? window.i18n.t(getUnitTranslationKey(unit)) : unit;
 
-/** Fixed catalog order from the static list (Supabase created_at is identical for all rows → unstable). */
-const DEFAULT_PRODUCT_ORDER = products.map((p) => p.id);
-const DEFAULT_PRODUCT_RANK = new Map(
-  DEFAULT_PRODUCT_ORDER.map((id, i) => [id, i]),
-);
+  const isOutOfStock = isProductOutOfStock({ inStock, stock });
+  const cardClass = isOutOfStock ? "product-card out-of-stock reveal-item" : "product-card reveal-item";
+  const tOutOfStock = window.i18n ? window.i18n.t("catalog_out_of_stock") : "Нет в наличии";
 
-function sortProductsStable(list) {
-  return [...(list || [])].sort((a, b) => {
-    const ra = DEFAULT_PRODUCT_RANK.has(a.id)
-      ? DEFAULT_PRODUCT_RANK.get(a.id)
-      : 100000;
-    const rb = DEFAULT_PRODUCT_RANK.has(b.id)
-      ? DEFAULT_PRODUCT_RANK.get(b.id)
-      : 100000;
-    if (ra !== rb) return ra - rb;
-    return String(a.id).localeCompare(String(b.id), "en");
-  });
-}
-
-const CATEGORY_LABELS = {
-  bakery: "Хлебобулочные изделия",
-  pastries: "Выпечка",
-  pies: "Пироги",
-  on_order: "На заказ",
-  desserts: "Пирожные",
-  berry_desserts: "Пирожные с ягодами",
-  cakes: "Торты",
-  "semi-finished": "Полуфабрикаты",
-};
-
-let supabaseOrders = [];
-
-/** Finite stock qty, or null = no limit. Never treat null as 0. */
-function normalizeStockValue(value) {
-  if (value === null || value === undefined || value === "") return null;
-  const n =
-    typeof value === "number" ? value : parseInt(String(value).trim(), 10);
-  if (!Number.isFinite(n) || n < 0) return null;
-  return Math.floor(n);
-}
-
-function isProductOutOfStock(p) {
-  if (!p) return true;
-  if (p.inStock === false) return true;
-  const s = normalizeStockValue(p.stock);
-  return s !== null && s <= 0;
-}
-
-/** true if requested qty exceeds finite stock limit */
-function exceedsProductStock(p, qty) {
-  const s = normalizeStockValue(p?.stock);
-  if (s === null) return false;
-  return Number(qty) > s;
-}
-
-function applyLocalProductOverrides(baseProducts) {
-  const withLabels = (baseProducts || []).map((p) => ({
-    ...p,
-    inStock: p.inStock !== false,
-    stock: normalizeStockValue(p.stock),
-    categoryLabel: p.categoryLabel || CATEGORY_LABELS[p.category],
-  }));
-
-  try {
-    const customProducts = localStorage.getItem("nazcake_custom_products");
-    if (!customProducts) return withLabels;
-
-    const parsed = JSON.parse(customProducts);
-    if (!Array.isArray(parsed) || !parsed.length) return withLabels;
-
-    const customMap = new Map(parsed.map((cp) => [cp.id, cp]));
-    return withLabels.map((p) => {
-      const custom = customMap.get(p.id);
-      if (!custom) return p;
-      return {
-        ...p,
-        name: custom.name !== undefined ? custom.name : p.name,
-        price: custom.price !== undefined ? Number(custom.price) : p.price,
-        // Explicit false must win (was lost when only server data reloaded)
-        inStock:
-          custom.inStock !== undefined
-            ? custom.inStock !== false
-            : p.inStock !== false,
-        stock:
-          custom.stock !== undefined
-            ? normalizeStockValue(custom.stock)
-            : p.stock,
-        image: custom.image !== undefined ? custom.image : p.image,
-        sizeOptions:
-          custom.sizeOptions !== undefined ? custom.sizeOptions : p.sizeOptions,
-        isCustomName: custom.isCustomName === true || p.isCustomName === true,
-      };
-    });
-  } catch (e) {
-    console.warn("Failed to load custom products:", e);
-    return withLabels;
-  }
-}
-
-function persistLocalProductOverrides(list) {
-  try {
-    const customList = (list || []).map((p) => ({
-      id: p.id,
-      name: p.name,
-      price: p.price,
-      inStock: p.inStock !== false,
-      stock: normalizeStockValue(p.stock),
-      image: p.image,
-      isCustomName: p.isCustomName || false,
-    }));
-    localStorage.setItem("nazcake_custom_products", JSON.stringify(customList));
-    return true;
-  } catch (e) {
-    console.warn("Failed to save custom products to localStorage:", e);
-    return false;
-  }
-}
-
-async function loadProducts() {
-  if (!supabaseClient) {
-    console.log("Supabase is not configured. Using local products fallback.");
-    loadCustomProductsLocalFallback();
-    return;
+  const cardDiv = document.createElement('div');
+  cardDiv.className = cardClass;
+  cardDiv.dataset.id = id;
+  if (category) {
+    cardDiv.dataset.category = category;
   }
 
-  try {
-    const { data, error } = await supabaseClient
-      .from("products")
-      .select("*")
-      // All rows share the same created_at → order was random after UPDATE; id is only a stable secondary key
-      .order("id", { ascending: true });
+  const imgWrapper = document.createElement('div');
+  imgWrapper.className = "product-img-wrapper btn-preview";
 
-    if (error) throw error;
+  if (isOutOfStock) {
+    const badgeSpan = document.createElement('span');
+    badgeSpan.className = "product-badge product-badge-outofstock";
+    const textSpan = document.createElement('span');
+    textSpan.className = "product-badge-text";
+    textSpan.textContent = tOutOfStock;
+    badgeSpan.appendChild(textSpan);
+    imgWrapper.appendChild(badgeSpan);
+  } else if (displayBadge) {
+    const badgeSpan = document.createElement('span');
+    badgeSpan.className = "product-badge";
+    const textSpan = document.createElement('span');
+    textSpan.className = "product-badge-text";
+    textSpan.textContent = tBadge;
+    badgeSpan.appendChild(textSpan);
+    imgWrapper.appendChild(badgeSpan);
+  }
 
-    if (data && data.length > 0) {
-      const fromServer = data.map((dbProd) => ({
-        id: dbProd.id,
-        name: dbProd.name,
-        category: dbProd.category,
-        price: Number(dbProd.price),
+  const imgElement = document.createElement('img');
+  imgElement.src = image;
+  imgElement.alt = tName;
+  imgElement.className = "lazy-image loading";
+  imgElement.setAttribute('loading', 'lazy');
+  imgElement.width = 360;
+  imgElement.height = 360;
+  imgElement.onload = function() {
+    this.classList.remove('loading');
+  };
+  imgWrapper.appendChild(imgElement);
+  cardDiv.appendChild(imgWrapper);
+
+  const infoDiv = document.createElement('div');
+  infoDiv.className = "product-info";
+
+  const catSpan = document.createElement('span');
+  catSpan.className = "product-category";
+  catSpan.textContent = tCategoryLabel;
+  infoDiv.appendChild(catSpan);
+
+  const titleH3 = document.createElement('h3');
+  titleH3.className = "product-name btn-preview";
+  titleH3.textContent = tName;
+  infoDiv.appendChild(titleH3);
+
+  const footerDiv = document.createElement('div');
+  footerDiv.className = "product-footer";
+
+  const priceSpan = document.createElement('span');
+  priceSpan.className = "product-price";
+
+  if (sizeOptions && sizeOptions.length > 0) {
+    const fromText = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "бастап" : "от";
+    const minPrice = Math.min(...sizeOptions.map(o => o.price));
+    priceSpan.textContent = `${fromText} ${minPrice.toLocaleString()} ₸`;
+  } else {
+    priceSpan.textContent = `${price.toLocaleString()} ₸ / ${tUnit}`;
+  }
+  footerDiv.appendChild(priceSpan);
+
+  const addBtn = document.createElement('button');
+  addBtn.className = "btn-card-add btn-add-to-cart";
+  addBtn.setAttribute('aria-label', 'Добавить в корзину');
+  if (isOutOfStock) {
+    addBtn.disabled = true;
+  }
+  addBtn.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+      <line x1="12" y1="5" x2="12" y2="19"></line>
+      <line x1="5" y1="12" x2="19" y2="12"></line>
+    </svg>
+  `;    price: Number(dbProd.price),
         unit: dbProd.unit,
         image: dbProd.image || "",
         desc: dbProd.desc || "",
@@ -1769,10 +1686,10 @@ async function saveOrderToSupabase(order) {
 }
 
 async function refreshAdminDashboard() {
-  await loadProducts();
-  renderAdminCatalog();
-  await loadOrdersFromSupabase();
-  renderAdminOrders();
+  await Promise.all([
+    loadProducts().then(() => renderAdminCatalog()),
+    loadOrdersFromSupabase().then(() => renderAdminOrders())
+  ]);
 }
 
 // Shopping Cart State
@@ -2015,9 +1932,8 @@ function renderBestsellers() {
       p.badge === "бестселлер" || p.badge === "хит" || p.badge === "премиум",
   );
 
-  bestsellersGrid.innerHTML = bestsellers
-    .map((p) => createProductCardHtml(p))
-    .join("");
+  bestsellersGrid.innerHTML = '';
+  bestsellers.forEach(p => bestsellersGrid.appendChild(createProductCardElement(p)));
   attachCardEvents(bestsellersGrid);
   refreshScrollReveal();
 }
@@ -2063,9 +1979,8 @@ function renderCatalog(category) {
       filtered = products.filter((p) => p.category === category);
     }
 
-    catalogGrid.innerHTML = filtered
-      .map((p) => createProductCardHtml(p))
-      .join("");
+    catalogGrid.innerHTML = '';
+    filtered.forEach(p => catalogGrid.appendChild(createProductCardElement(p)));
     attachCardEvents(catalogGrid);
     refreshScrollReveal();
     applyCatalogSectionTheme(category);
@@ -2123,80 +2038,111 @@ function applyCatalogSectionTheme(category) {
   }
 }
 
-function createProductCardHtml(p) {
-  const {
-    id,
-    name,
-    category,
-    categoryLabel,
-    badge,
-    unit,
-    price,
-    sizeOptions,
-    inStock,
-    stock,
-    image,
-    isCustomName,
-  } = p;
-  const tName = escapeHTML(
-    isCustomName ? name : window.i18n ? window.i18n.t(`p_${id}_name`) : name,
-  );
-  const tCategoryLabel = escapeHTML(
-    window.i18n ? window.i18n.t(`catalog_cat_${category}`) : categoryLabel,
-  );
+
+function createProductCardElement(p) {
+  const { id, name, category, categoryLabel, badge, unit, price, sizeOptions, inStock, stock, image, isCustomName } = p;
+
+  const tName = isCustomName ? name : (window.i18n ? window.i18n.t(`p_${id}_name`) : name);
+  const tCategoryLabel = window.i18n ? window.i18n.t(`catalog_cat_${category}`) : categoryLabel;
   const displayBadge = normalizeProductBadge(badge);
   const badgeKey = displayBadge ? getBadgeTranslationKey(displayBadge) : "";
-  const tBadge = escapeHTML(
-    displayBadge
-      ? window.i18n && badgeKey
-        ? window.i18n.t(badgeKey)
-        : displayBadge
-      : "",
-  );
-  const tUnit = escapeHTML(
-    window.i18n ? window.i18n.t(getUnitTranslationKey(unit)) : unit,
-  );
+  const tBadge = displayBadge
+    ? (window.i18n && badgeKey ? window.i18n.t(badgeKey) : displayBadge)
+    : "";
+  const tUnit = window.i18n ? window.i18n.t(getUnitTranslationKey(unit)) : unit;
 
   const isOutOfStock = isProductOutOfStock({ inStock, stock });
-  const cardClass = isOutOfStock ? "product-card out-of-stock" : "product-card";
-  const tOutOfStock = window.i18n
-    ? window.i18n.t("catalog_out_of_stock")
-    : "Нет в наличии";
-  const outOfStockBadge = isOutOfStock
-    ? `<span class="product-badge product-badge-outofstock"><span class="product-badge-text">${tOutOfStock}</span></span>`
-    : "";
-  const activeBadge =
-    outOfStockBadge ||
-    (displayBadge
-      ? `<span class="product-badge"><span class="product-badge-text">${tBadge}</span></span>`
-      : "");
-  const catAttr = category ? ` data-category="${escapeHTML(category)}"` : "";
+  const cardClass = isOutOfStock ? "product-card out-of-stock reveal-item" : "product-card reveal-item";
+  const tOutOfStock = window.i18n ? window.i18n.t("catalog_out_of_stock") : "Нет в наличии";
 
-  return `
-    <div class="${cardClass} reveal-item" data-id="${id}"${catAttr}>
-      <div class="product-img-wrapper btn-preview">
-        ${activeBadge}
-        <img src="${image}" alt="${tName}" class="lazy-image loading" loading="lazy" width="360" height="360" onload="this.classList.remove('loading')">
-      </div>
-      <div class="product-info">
-        <span class="product-category">${tCategoryLabel}</span>
-        <h3 class="product-name btn-preview">${tName}</h3>
-        <div class="product-footer">
-          <span class="product-price">${
-            sizeOptions && sizeOptions.length > 0
-              ? `${window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "бастап" : "от"} ${Math.min(...sizeOptions.map((o) => o.price)).toLocaleString()} ₸`
-              : `${price.toLocaleString()} ₸ / ${tUnit}`
-          }</span>
-          <button class="btn-card-add btn-add-to-cart" aria-label="Добавить в корзину" ${isOutOfStock ? "disabled" : ""}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-          </button>
-        </div>
-      </div>
-    </div>
+  const cardDiv = document.createElement('div');
+  cardDiv.className = cardClass;
+  cardDiv.dataset.id = id;
+  if (category) {
+    cardDiv.dataset.category = category;
+  }
+
+  const imgWrapper = document.createElement('div');
+  imgWrapper.className = "product-img-wrapper btn-preview";
+
+  if (isOutOfStock) {
+    const badgeSpan = document.createElement('span');
+    badgeSpan.className = "product-badge product-badge-outofstock";
+    const textSpan = document.createElement('span');
+    textSpan.className = "product-badge-text";
+    textSpan.textContent = tOutOfStock;
+    badgeSpan.appendChild(textSpan);
+    imgWrapper.appendChild(badgeSpan);
+  } else if (displayBadge) {
+    const badgeSpan = document.createElement('span');
+    badgeSpan.className = "product-badge";
+    const textSpan = document.createElement('span');
+    textSpan.className = "product-badge-text";
+    textSpan.textContent = tBadge;
+    badgeSpan.appendChild(textSpan);
+    imgWrapper.appendChild(badgeSpan);
+  }
+
+  const imgElement = document.createElement('img');
+  imgElement.src = image;
+  imgElement.alt = tName;
+  imgElement.className = "lazy-image loading";
+  imgElement.setAttribute('loading', 'lazy');
+  imgElement.width = 360;
+  imgElement.height = 360;
+  imgElement.onload = function() {
+    this.classList.remove('loading');
+  };
+  imgWrapper.appendChild(imgElement);
+  cardDiv.appendChild(imgWrapper);
+
+  const infoDiv = document.createElement('div');
+  infoDiv.className = "product-info";
+
+  const catSpan = document.createElement('span');
+  catSpan.className = "product-category";
+  catSpan.textContent = tCategoryLabel;
+  infoDiv.appendChild(catSpan);
+
+  const titleH3 = document.createElement('h3');
+  titleH3.className = "product-name btn-preview";
+  titleH3.textContent = tName;
+  infoDiv.appendChild(titleH3);
+
+  const footerDiv = document.createElement('div');
+  footerDiv.className = "product-footer";
+
+  const priceSpan = document.createElement('span');
+  priceSpan.className = "product-price";
+
+  if (sizeOptions && sizeOptions.length > 0) {
+    const fromText = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "бастап" : "от";
+    const minPrice = Math.min(...sizeOptions.map(o => o.price));
+    priceSpan.textContent = `${fromText} ${minPrice.toLocaleString()} ₸`;
+  } else {
+    priceSpan.textContent = `${price.toLocaleString()} ₸ / ${tUnit}`;
+  }
+  footerDiv.appendChild(priceSpan);
+
+  const addBtn = document.createElement('button');
+  addBtn.className = "btn-card-add btn-add-to-cart";
+  addBtn.setAttribute('aria-label', 'Добавить в корзину');
+  if (isOutOfStock) {
+    addBtn.disabled = true;
+  }
+  addBtn.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+      <line x1="12" y1="5" x2="12" y2="19"></line>
+      <line x1="5" y1="12" x2="19" y2="12"></line>
+    </svg>
+
   `;
+  footerDiv.appendChild(addBtn);
+
+  infoDiv.appendChild(footerDiv);
+  cardDiv.appendChild(infoDiv);
+
+  return cardDiv;
 }
 
 // Attach Events (Preview click, stepper click, add click) to Rendered Cards
@@ -2877,9 +2823,7 @@ async function fetchCoordinates(address) {
   const url = `https://nominatim.openstreetmap.org/search?q=Атырау, ${encodeURIComponent(address)}&format=json&limit=1`;
   const response = await fetch(url, {
     headers: {
-      "User-Agent":
-        "NazcakeConfectioneryDeliveryCalculator/1.0 (contact: info@nazcake.kz)",
-    },
+      "User-Agent": "NazcakeConfectioneryDeliveryCalculator/1.0 (contact: nazcakeatyrau@gmail.com)",
   });
 
   if (!response.ok) {
@@ -4281,28 +4225,34 @@ async function fetchCityFromIpProviders() {
     },
   ];
 
-  for (const provider of providers) {
-    try {
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 4500);
-      const response = await fetch(provider.url, {
-        signal: controller.signal,
-        headers: { Accept: "application/json" },
-        mode: "cors",
-        cache: "no-store",
-      });
-      clearTimeout(timer);
-      if (!response.ok) continue;
-      const data = await response.json();
-      const city = provider.city(data);
-      if (city && typeof city === "string" && city.trim()) {
-        return city.toLowerCase().trim();
-      }
-    } catch {
-      // try next provider
-    }
+  try {
+    const city = await Promise.any(
+      providers.map(async (provider) => {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 4500);
+        try {
+          const response = await fetch(provider.url, {
+            signal: controller.signal,
+            headers: { Accept: "application/json" },
+            mode: "cors",
+            cache: "no-store",
+          });
+          if (!response.ok) throw new Error("HTTP error");
+          const data = await response.json();
+          const cityData = provider.city(data);
+          if (cityData && typeof cityData === "string" && cityData.trim()) {
+            return cityData.toLowerCase().trim();
+          }
+          throw new Error("Invalid city data");
+        } finally {
+          clearTimeout(timer);
+        }
+      })
+    );
+    return city;
+  } catch (e) {
+    return null;
   }
-  return null;
 }
 
 async function setupGeolocation() {
@@ -4371,13 +4321,9 @@ function updateLocationUi() {
   widget.classList.remove("hidden");
   drawerWidget.classList.remove("hidden");
 
-  // Show/hide banner if not in Atyrau
+  // Zone warning only in cart (near delivery address), never on landing/hero
   if (alertBanner) {
-    if (detectedCity !== "atyrau") {
-      alertBanner.classList.remove("hidden");
-    } else {
-      alertBanner.classList.add("hidden");
-    }
+    alertBanner.classList.toggle("hidden", detectedCity === "atyrau");
   }
 }
 
@@ -5300,35 +5246,60 @@ function setupRuntimePerformance() {
   }
 }
 
-/** Defer hero MP4 until after first paint / preloader (poster shows immediately). */
+/** Defer hero video until after first paint / preloader (poster shows immediately). */
 function setupLazyHeroVideo() {
   const video = document.querySelector("video.hero-video-bg[data-lazy-video]");
   if (!video || video.dataset.videoLoaded === "1") return;
+
+  const tryPlay = () => {
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+    const p = video.play();
+    if (p && typeof p.catch === "function") p.catch(() => {});
+  };
 
   const activateSources = () => {
     if (video.dataset.videoLoaded === "1") return;
     video.dataset.videoLoaded = "1";
     video.classList.add("is-loading");
+    video.muted = true;
+    video.defaultMuted = true;
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
 
+    // Wire real sources (only files that exist in /Videos)
     video.querySelectorAll("source[data-src]").forEach((source) => {
-      source.setAttribute("src", source.getAttribute("data-src"));
+      const src = source.getAttribute("data-src");
+      if (!src) return;
+      source.setAttribute("src", src);
       source.removeAttribute("data-src");
     });
 
-    const tryPlay = () => {
-      const p = video.play();
-      if (p && typeof p.catch === "function") p.catch(() => {});
+    const markReady = () => {
+      video.classList.remove("is-loading");
+      video.classList.add("is-ready");
+      tryPlay();
     };
 
-    video.addEventListener(
-      "canplay",
-      () => {
-        video.classList.remove("is-loading");
-        video.classList.add("is-ready");
+    video.addEventListener("canplay", markReady, { once: true });
+    video.addEventListener("loadeddata", markReady, { once: true });
+
+    // If selected source fails, drop it and try the next <source>
+    video.addEventListener("error", () => {
+      const current = video.querySelector("source[src]");
+      if (current && current.nextElementSibling && current.nextElementSibling.tagName === "SOURCE") {
+        current.remove();
+        try {
+          video.load();
+        } catch (_) {
+          /* ignore */
+        }
         tryPlay();
-      },
-      { once: true },
-    );
+      } else {
+        video.classList.remove("is-loading");
+      }
+    });
 
     try {
       video.load();
@@ -5340,9 +5311,9 @@ function setupLazyHeroVideo() {
 
   const schedule = () => {
     if ("requestIdleCallback" in window) {
-      requestIdleCallback(() => activateSources(), { timeout: 2200 });
+      requestIdleCallback(() => activateSources(), { timeout: 1200 });
     } else {
-      setTimeout(activateSources, 900);
+      setTimeout(activateSources, 400);
     }
   };
 
@@ -5355,12 +5326,12 @@ function setupLazyHeroVideo() {
       }
     });
     mo.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+    // Fallback if preloader never clears
     setTimeout(() => {
       mo.disconnect();
-      schedule();
-    }, 4500);
+      if (video.dataset.videoLoaded !== "1") schedule();
+    }, 3500);
   } else {
-    // next frame then idle
     requestAnimationFrame(() => schedule());
   }
 }

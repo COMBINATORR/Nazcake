@@ -810,7 +810,7 @@
       p_pastry_pirozhki_potato_desc: "Мягкие, воздушные домашние пирожки из дрожжевого теста с нежным картофельным пюре и жареным луком.",
       p_pastry_pirozhki_potato_ingredients: "Мука, дрожжи, вода, молоко, сахар, соль, растительное масло, картофель, лук репчатый, сливочное масло, яйцо. Аллергены: глютен, молоко, яйца.",
 
-      p_pastry_pirozhki_meat_cabbage_name: "Пирожски с мясом и капустой",
+      p_pastry_pirozhki_meat_cabbage_name: "Пирожки с мясом и капустой",
       p_pastry_pirozhki_meat_cabbage_desc: "Сытные домашние пирожки из воздушного дрожжевого теста с начинкой из говяжьего фарша и тушеной капусты.",
       p_pastry_pirozhki_meat_cabbage_ingredients: "Мука, дрожжи, молоко, сахар, соль, масло растительное, говяжий фарш, капуста белокочанная, лук, специи, яйцо. Аллергены: глютен, молоко, яйца.",
     },
@@ -1727,6 +1727,8 @@
     document.documentElement.setAttribute("lang", currentLang);
     updateDomTranslations();
 
+    const langDropdowns = document.getElementsByClassName("lang-dropdown");
+
     // Delegate language switcher clicks globally
     document.body.addEventListener("click", (e) => {
       const dropdownBtn = e.target.closest(".lang-dropdown-btn");
@@ -1736,13 +1738,13 @@
         const menu = dropdown.querySelector(".lang-dropdown-menu");
         
         // Close other dropdowns first
-        document.querySelectorAll(".lang-dropdown").forEach(other => {
+        for (const other of langDropdowns) {
           if (other !== dropdown) {
             other.classList.remove("open");
             const otherMenu = other.querySelector(".lang-dropdown-menu");
             if (otherMenu) otherMenu.classList.remove("show");
           }
-        });
+        }
         
         dropdown.classList.toggle("open");
         if (menu) menu.classList.toggle("show");
@@ -1767,11 +1769,11 @@
       }
       
       // Close all dropdowns when clicking outside
-      document.querySelectorAll(".lang-dropdown").forEach(dropdown => {
+      for (const dropdown of langDropdowns) {
         dropdown.classList.remove("open");
         const menu = dropdown.querySelector(".lang-dropdown-menu");
         if (menu) menu.classList.remove("show");
-      });
+      }
     });
   });
 
