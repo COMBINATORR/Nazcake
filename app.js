@@ -1313,7 +1313,7 @@ let products = [
   },
   {
     id: 'pastry_pirozhki_meat_cabbage',
-    name: 'Пирожски с мясом и капустой',
+    name: 'Пирожки с мясом и капустой',
     category: 'pastries',
     price: 210,
     unit: 'шт.',
