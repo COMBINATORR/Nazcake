@@ -2970,9 +2970,8 @@ function clampNonNegativeIntInput(input, fillEmpty = false) {
     return;
   }
   // strip leading zeros but keep single 0
-  raw = String(parseInt(raw, 10));
-  if (!Number.isFinite(Number(raw)) || Number(raw) < 0) raw = "0";
-  input.value = raw;
+  const parsed = parseInt(raw, 10);
+  input.value = String(Number.isFinite(parsed) ? Math.max(0, parsed) : 0);
 }
 
 // Global helper functions for image uploads
