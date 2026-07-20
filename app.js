@@ -2581,7 +2581,7 @@ async function fetchCoordinates(address) {
   const url = `https://nominatim.openstreetmap.org/search?q=Атырау, ${encodeURIComponent(address)}&format=json&limit=1`;
   const response = await fetch(url, {
     headers: {
-      "User-Agent": "NazcakeConfectioneryDeliveryCalculator/1.0 (contact: info@nazcake.kz)"
+      "User-Agent": "NazcakeConfectioneryDeliveryCalculator/1.0 (contact: nazcakeatyrau@gmail.com)"
     }
   });
 
