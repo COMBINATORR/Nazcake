@@ -1363,12 +1363,6 @@
               </div>
               <button class="btn btn-primary btn-gradient flex-1" id="modal-add-btn" type="button" data-i18n="preview_btn_add">Добавить в корзину</button>
             </div>
-            <button class="btn btn-secondary modal-kaspi-btn" id="modal-quick-kaspi-btn" type="button">
-              <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true">
-                <path d="M4 4h6v6H4V4zm2 2v2h2V6H6zm8-2h6v6h-6V4zm2 2v2h2V6h-2zM4 14h6v6H4v-6zm2 2v2h2v-2H6zm10 0h2v2h-2v-2zm2-2h2v2h-2v-2zm0 4h2v2h-2v-2zm-2 2h2v-2h-2v2zm-2-6h2v2h-2v-2zm2 2h2v2h-2v-2zm-4 0h2v2h-2v-2zm0 4h2v2h-2v-2z"></path>
-              </svg>
-              <span data-i18n="preview_btn_kaspi_quick">Быстрый заказ (Kaspi QR)</span>
-            </button>
           </div>
         </div>
       </div>
@@ -1823,69 +1817,7 @@
     </div>
   </div>
 
-  <!-- Kaspi QR Fast Checkout Modal -->
-  <div class="modal-overlay" id="kaspi-qr-modal" style="display: none; z-index: 2500;">
-    <div class="modal-container" style="max-width: 420px; border-radius: 24px; padding: 24px; text-align: center; background-color: var(--bg-primary); border: 1.5px solid var(--border-color); box-shadow: var(--premium-shadow); position: relative;">
-      <button class="modal-close-btn" id="close-kaspi-modal-btn" aria-label="Закрыть" style="position: absolute; top: 15px; right: 15px; background: none; border: none; cursor: pointer; color: var(--text-secondary);">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </button>
-      
-      <div id="kaspi-form-step">
-        <h3 class="modal-product-title" style="margin-top: 10px; font-size: 1.4rem;" data-i18n="kaspi_title">Быстрый заказ</h3>
-        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px;" data-i18n="kaspi_subtitle">Заполните данные для оплаты по Kaspi QR</p>
-        
-        <div class="form-group" style="text-align: left; margin-bottom: 15px;">
-          <label for="kaspi-name" style="font-size: 0.85rem; font-weight: 700; margin-bottom: 6px; display: block;" data-i18n="cart_input_name">Ваше Имя</label>
-          <input type="text" id="kaspi-name" name="name" autocomplete="name" class="contact-input" placeholder="Иван" style="width: 100%; height: 44px; padding: 0 12px; border-radius: 12px; border: 1px solid var(--border-color); font-family: var(--font-body); font-size: 0.95rem;">
-        </div>
-        
-        <div class="form-group" style="text-align: left; margin-bottom: 20px;">
-          <label for="kaspi-phone" style="font-size: 0.85rem; font-weight: 700; margin-bottom: 6px; display: block;" data-i18n="cart_input_phone">Номер Телефона (+7…)</label>
-          <input type="tel" id="kaspi-phone" name="tel" autocomplete="tel" class="contact-input" placeholder="+7 (701) 123-45-67" style="width: 100%; height: 44px; padding: 0 12px; border-radius: 12px; border: 1px solid var(--border-color); font-family: var(--font-body); font-size: 0.95rem;">
-        </div>
 
-        <div style="background-color: var(--bg-secondary); padding: 15px; border-radius: 16px; margin-bottom: 20px; text-align: left;">
-          <div style="display: flex; justify-content: space-between; font-size: 0.95rem; font-weight: 700; color: var(--accent-chocolate); margin-bottom: 6px;">
-            <span id="kaspi-product-name">—</span>
-            <span id="kaspi-product-qty">x1</span>
-          </div>
-          <div style="display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: 800; color: var(--accent-gold);">
-            <span data-i18n="cart_subtotal">Подытог:</span>
-            <span id="kaspi-total-price">0 ₸</span>
-          </div>
-        </div>
-
-        <button class="btn btn-primary btn-gradient" id="btn-kaspi-generate" style="width: 100%; font-weight: 700; height: 48px; border-radius: 30px;" data-i18n="kaspi_pay_btn">Сгенерировать QR</button>
-      </div>
-
-      <div id="kaspi-qr-step" style="display: none;">
-        <h3 class="modal-product-title" style="margin-top: 10px; font-size: 1.4rem; color: #e11d48;" data-i18n="kaspi_qr_title">Оплата по Kaspi QR</h3>
-        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 20px;" data-i18n="kaspi_qr_subtitle">Откройте приложение Kaspi и отсканируйте код:</p>
-        
-        <div style="display: inline-block; padding: 16px; background: white; border-radius: 20px; border: 2px solid #e11d48; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(225, 29, 72, 0.1);">
-          <div id="kaspi-qr-placeholder"></div>
-        </div>
-        
-        <div style="font-size: 1.25rem; font-weight: 800; color: #e11d48; margin-bottom: 12px;" id="kaspi-qr-amount">0 ₸</div>
-        
-        <button class="btn btn-primary btn-gradient" id="btn-kaspi-complete" style="width: 100%; font-weight: 700; height: 48px; border-radius: 30px;" data-i18n="kaspi_success_btn">Оплата подтверждена</button>
-      </div>
-
-      <div id="kaspi-success-step" style="display: none;">
-        <div style="width: 60px; height: 60px; border-radius: 50%; background-color: #10b981; color: white; display: flex; align-items: center; justify-content: center; margin: 20px auto 15px auto;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="30" height="30">
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
-        </div>
-        <h3 class="modal-product-title" style="font-size: 1.4rem; color: #10b981;" data-i18n="kaspi_success_title">Заказ оформлен!</h3>
-        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px; padding: 0 10px;" data-i18n="kaspi_success_desc">Оплата получена. Наш курьер свяжется с вами в течение 10 минут для уточнения адреса доставки.</p>
-        <button class="btn btn-primary" id="btn-kaspi-close-final" style="width: 100%; font-weight: 700; height: 48px; border-radius: 30px; background-color: var(--accent-chocolate);" data-i18n="kaspi_close_btn">Отлично</button>
-      </div>
-    </div>
-  </div>
 
   <!-- Supabase JS Client Library -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

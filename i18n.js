@@ -56,7 +56,7 @@
       // Ticker after catalog
       ticker_mid_1: "Только натуральные ингредиенты",
       ticker_mid_2: "Халяль · ручная работа каждый день",
-      ticker_mid_3: "Заказ в WhatsApp и Kaspi · Атырау",
+      ticker_mid_3: "Заказ в WhatsApp · Атырау",
 
       // About Section
       about_subtitle: "Философия",
@@ -862,7 +862,7 @@
       // Ticker after catalog
       ticker_mid_1: "Тек табиғи ингредиенттер",
       ticker_mid_2: "Халал · күн сайын қолдан жасалған",
-      ticker_mid_3: "WhatsApp пен Kaspi арқылы тапсырыс · Атырау",
+      ticker_mid_3: "WhatsApp арқылы тапсырыс · Атырау",
 
       // About Section
       about_subtitle: "Философия",
