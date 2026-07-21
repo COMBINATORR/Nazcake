@@ -3309,19 +3309,30 @@ function updateCheckoutMethodUi(method) {
   const timeGroup = document.getElementById("checkout-time-group");
   const dateInput = document.getElementById("checkout-pickup-date");
   const timeSelect = document.getElementById("checkout-pickup-time");
+  const timeLabel = timeGroup ? timeGroup.querySelector(".control-label") : null;
+  const timeHint = timeGroup ? timeGroup.querySelector(".address-hint") : null;
+  const t = window.i18n ? window.i18n.t.bind(window.i18n) : (k) => k;
 
   if (method === "delivery") {
     if (addressGroup) addressGroup.classList.remove("hidden");
     if (addressInput) addressInput.setAttribute("required", "required");
-    if (timeGroup) timeGroup.classList.add("hidden");
-    if (dateInput) dateInput.removeAttribute("required");
-    if (timeSelect) timeSelect.removeAttribute("required");
+    // Show time group for delivery too
+    if (timeGroup) timeGroup.classList.remove("hidden");
+    if (dateInput) dateInput.setAttribute("required", "required");
+    if (timeSelect) timeSelect.setAttribute("required", "required");
+    // Update label and hint for delivery context
+    if (timeLabel) timeLabel.textContent = window.i18n ? t("cart_lbl_delivery_time") : "Когда доставить:";
+    if (timeHint) timeHint.textContent = window.i18n ? t("cart_delivery_time_hint") : "Работаем ежедневно 09:00–20:00. Доставка занимает около 1 часа.";
+    setupPickupDateLimits();
   } else {
     if (addressGroup) addressGroup.classList.add("hidden");
     if (addressInput) addressInput.removeAttribute("required");
     if (timeGroup) timeGroup.classList.remove("hidden");
     if (dateInput) dateInput.setAttribute("required", "required");
     if (timeSelect) timeSelect.setAttribute("required", "required");
+    // Restore label and hint for pickup context
+    if (timeLabel) timeLabel.textContent = window.i18n ? t("cart_lbl_pickup_time") : "Когда заберёте:";
+    if (timeHint) timeHint.textContent = window.i18n ? t("cart_pickup_time_hint") : "Работаем ежедневно 09:00–20:00. На подготовку нужно около 45 минут.";
     setupPickupDateLimits();
   }
 }
@@ -3339,6 +3350,9 @@ function formatCheckoutMessage(name, phone, method, address, cart, subtotal, t, 
 
   if (method === "delivery") {
     message += `📍 *${window.i18n ? t("tg_address") : "Адрес"}:* ${address}\n`;
+    if (preferredTime) {
+      message += `🕐 *${window.i18n ? t("tg_delivery_time") : "Желаемое время доставки"}:* ${preferredTime}\n`;
+    }
   } else if (preferredTime) {
     message += `🕐 *${window.i18n ? t("tg_pickup_time") : "Время самовывоза"}:* ${preferredTime}\n`;
   }
@@ -3370,7 +3384,7 @@ function buildOrderObject(name, phone, method, address, cart, subtotal, t, prefe
     customerPhone: phone,
     deliveryMethod: method,
     address: method === "delivery" ? address : "",
-    preferredTime: method === "pickup" ? (preferredTime || "") : "",
+    preferredTime: preferredTime || "",
     items: cart.map(item => {
       const p = item.product;
       let displayName = p.isCustomName ? p.name : (window.i18n ? t(`p_${p.id}_name`) : p.name);
@@ -3439,19 +3453,20 @@ async function handleCheckoutSubmit(e) {
   }
 
   let preferredTime = "";
-  if (method === "pickup") {
-    if (!pickupDate || !pickupTime) {
-      await showAlert(window.i18n ? t("cart_err_pickup_time") : "Выберите дату и время самовывоза.");
-      return;
-    }
-    const validSlots = generatePickupTimeSlots(pickupDate);
-    if (!validSlots.includes(pickupTime)) {
-      await showAlert(window.i18n ? t("cart_err_pickup_slots") : "На выбранную дату нет свободных слотов. Выберите другой день.");
-      refreshPickupTimeSlots(false);
-      return;
-    }
-    preferredTime = formatPickupDisplay(pickupDate, pickupTime);
+  // Validate date/time for both pickup and delivery
+  if (!pickupDate || !pickupTime) {
+    const errKey = method === "delivery" ? "cart_err_delivery_time" : "cart_err_pickup_time";
+    const errFallback = method === "delivery" ? "Выберите дату и время доставки." : "Выберите дату и время самовывоза.";
+    await showAlert(window.i18n ? t(errKey) : errFallback);
+    return;
   }
+  const validSlots = generatePickupTimeSlots(pickupDate);
+  if (!validSlots.includes(pickupTime)) {
+    await showAlert(window.i18n ? t("cart_err_pickup_slots") : "На выбранную дату нет свободных слотов. Выберите другой день.");
+    refreshPickupTimeSlots(false);
+    return;
+  }
+  preferredTime = formatPickupDisplay(pickupDate, pickupTime);
 
   // Custom validation (form has novalidate — no native browser bubbles)
   if (!name) {
@@ -3475,10 +3490,8 @@ async function handleCheckoutSubmit(e) {
   localStorage.setItem("nazcake_customer_phone", phone);
   localStorage.setItem("nazcake_customer_address", address);
   localStorage.setItem("nazcake_customer_method", method);
-  if (method === "pickup") {
-    localStorage.setItem("nazcake_customer_pickup_date", pickupDate);
-    localStorage.setItem("nazcake_customer_pickup_time", pickupTime);
-  }
+  localStorage.setItem("nazcake_customer_pickup_date", pickupDate);
+  localStorage.setItem("nazcake_customer_pickup_time", pickupTime);
 
   const submitBtn = document.getElementById("checkout-submit-btn");
   submitBtn.disabled = true;
@@ -4157,6 +4170,7 @@ function renderAdminOrders() {
   const deliveryYandex = t("admin_delivery_yandex", "Доставка Яндекс");
   const deliveryPickup = t("admin_delivery_pickup", "Самовывоз");
   const tPickupTime = t("admin_lbl_pickup_time", "Время самовывоза");
+  const tDeliveryTime = t("admin_lbl_delivery_time", "Желаемое время доставки");
 
   listContainer.innerHTML = history.map(order => {
     const methodText = order.deliveryMethod === "delivery" ? deliveryYandex : deliveryPickup;
@@ -4168,6 +4182,7 @@ function renderAdminOrders() {
     const address = escapeHTML(String(order.address || ""));
     const preferredTime = escapeHTML(String(order.preferredTime || ""));
     const subtotal = Number(order.subtotal) || 0;
+    const timeLabel = order.deliveryMethod === "delivery" ? tDeliveryTime : tPickupTime;
 
     return `
       <div class="admin-order-card" data-order-id="${orderId}">
@@ -4193,7 +4208,7 @@ function renderAdminOrders() {
             <p>📞 <strong>${escapeHTML(tPhone)}:</strong> <a href="tel:${customerPhone}">${customerPhone}</a></p>
             <p>📦 <strong>${escapeHTML(tMethod)}:</strong> ${escapeHTML(methodText)}</p>
             ${order.deliveryMethod === "delivery" ? `<p>📍 <strong>${escapeHTML(tAddress)}:</strong> ${address}</p>` : ""}
-            ${order.deliveryMethod !== "delivery" && preferredTime ? `<p>🕐 <strong>${escapeHTML(tPickupTime)}:</strong> ${preferredTime}</p>` : ""}
+            ${preferredTime ? `<p>🕐 <strong>${escapeHTML(timeLabel)}:</strong> ${preferredTime}</p>` : ""}
           </div>
           <div class="admin-order-items-col">
             <div class="admin-order-items-title">${escapeHTML(tItems)}</div>
