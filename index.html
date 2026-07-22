@@ -10,11 +10,17 @@
   <!-- Search Console & Webmaster Verification -->
   <meta name="yandex-verification" content="8dd19446682f2901" />
 
-  <!-- Local SEO Geo Meta Tags -->
+  <!-- Local GEO SEO Meta Tags for Search Engines -->
   <meta name="geo.region" content="KZ-ATY">
-  <meta name="geo.placename" content="Атырау">
+  <meta name="geo.placename" content="Атырау, Казахстан">
   <meta name="geo.position" content="47.124524;51.939947">
   <meta name="ICBM" content="47.124524, 51.939947">
+  <meta name="yandex-locality" content="Атырау">
+
+  <!-- Open Graph GEO Location Metadata -->
+  <meta property="og:locality" content="Атырау">
+  <meta property="og:region" content="Атырауская область">
+  <meta property="og:country-name" content="Казахстан">
 
   <!-- Favicon / app icons -->
   <link rel="icon" href="favicon.ico" sizes="any">
@@ -40,14 +46,15 @@
   <meta property="twitter:description" content="Авторские торты, изысканные пирожные, домашняя выпечка и полуфабрикаты в Атырау с быстрой Яндекс.Доставкой. Закажите прямо сейчас!">
   <meta property="twitter:image" content="https://nazcake.pro/images/dessert_chocolate_design.webp">
 
-  <!-- Structured Data JSON-LD (Schema.org Bakery & Local Business markup for Search Engines) -->
+  <!-- Structured Data JSON-LD (Schema.org Bakery, FoodEstablishment & LocalBusiness for Google/Yandex Maps) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "Bakery",
+    "@type": ["Bakery", "FoodEstablishment", "LocalBusiness"],
     "@id": "https://nazcake.pro/",
     "name": "Nazcake",
-    "alternateName": "Nazcake onimderi",
+    "alternateName": "Nazcake onimderi — Кондитерская в Атырау",
+    "description": "Кондитерский дом и пекарня в Атырау. Авторские торты на заказ, выпечка, пирожные и полуфабрикаты ручной лепки с быстрой доставкой.",
     "image": [
       "https://nazcake.pro/images/dessert_chocolate_design.webp",
       "https://nazcake.pro/images/cake_pistachio.webp",
@@ -56,10 +63,13 @@
     "url": "https://nazcake.pro/",
     "telephone": "+77783567221",
     "priceRange": "$$",
+    "hasMenu": "https://nazcake.pro/#catalog",
+    "servesCuisine": ["Торты на заказ", "Пекарня", "Выпечка", "Пирожные", "Полуфабрикаты"],
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "ул. Балхаш 23",
       "addressLocality": "Атырау",
+      "addressRegion": "Атырауская область",
       "postalCode": "060000",
       "addressCountry": "KZ"
     },
@@ -67,6 +77,11 @@
       "@type": "GeoCoordinates",
       "latitude": 47.124524,
       "longitude": 51.939947
+    },
+    "areaServed": {
+      "@type": "City",
+      "name": "Атырау",
+      "sameAs": "https://ru.wikipedia.org/wiki/Атырау"
     },
     "openingHoursSpecification": {
       "@type": "OpeningHoursSpecification",
@@ -82,8 +97,16 @@
       "opens": "09:00",
       "closes": "20:00"
     },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+77783567221",
+      "contactType": "customer service",
+      "areaServed": "KZ",
+      "availableLanguage": ["Russian", "Kazakh"]
+    },
     "sameAs": [
-      "https://www.instagram.com/nazcake_onimderi/"
+      "https://www.instagram.com/nazcake_onimderi/",
+      "https://2gis.kz/atyrau/firm/70000001043802585"
     ]
   }
   </script>
