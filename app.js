@@ -1364,10 +1364,8 @@ function normalizeStockValue(value) {
 }
 
 function isProductOutOfStock(p) {
-  if (!p) return true;
-  if (p.inStock === false) return true;
-  const s = normalizeStockValue(p.stock);
-  return s !== null && s <= 0;
+  const s = p ? normalizeStockValue(p.stock) : null;
+  return !p || p.inStock === false || (s !== null && s <= 0);
 }
 
 /** true if requested qty exceeds finite stock limit */
