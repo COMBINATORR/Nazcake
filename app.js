@@ -3947,7 +3947,7 @@ function setupAdminLogin(loginModal, dashModal) {
       }
 
       const usernameInput = document.getElementById("admin-username");
-      const email = usernameInput ? usernameInput.value.trim() : "admin@gmail.com";
+      const email = usernameInput ? usernameInput.value.trim() : "nazcakeatyrau@gmail.com";
 
       let loginSuccessful = false;
 
