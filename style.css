@@ -3100,7 +3100,7 @@ body.dark-theme .bestsellers-arrow:hover {
 
 .product-img-wrapper {
   position: relative;
-  padding-bottom: 90%; /* 1:0.9 Aspect Ratio for elegant proportions */
+  padding-bottom: 85%; /* Slightly tighter aspect ratio for edge-to-edge photo focus */
   background-color: var(--img-bg, #fcf9f5);
   overflow: hidden;
   cursor: pointer;
@@ -3115,10 +3115,10 @@ body.dark-theme .bestsellers-arrow:hover {
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  padding: 14px;
+  padding: 0;
   box-sizing: border-box;
 }
 
