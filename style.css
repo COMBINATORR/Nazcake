@@ -3319,26 +3319,35 @@ body.dark-theme .bestsellers-arrow:hover {
   color: rgba(255, 255, 255, 0.82) !important;
 }
 
+.catalog-section.is-cat-themed .product-card {
+  background: #ffffff;
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+}
+
+.catalog-section.is-cat-themed .product-card:hover {
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.28);
+}
+
+body.dark-theme .catalog-section.is-cat-themed .product-card {
+  background: #1e1916;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
 .catalog-section.is-cat-themed .product-name {
-  color: #faf6f1;
+  color: var(--text-primary);
 }
 
 .catalog-section.is-cat-themed .product-category {
-  color: rgba(255, 255, 255, 0.62);
+  color: var(--text-muted);
 }
 
 .catalog-section.is-cat-themed .product-price {
-  color: #f0d9a0;
+  color: var(--accent-chocolate);
 }
 
-.catalog-section.is-cat-themed .product-img-wrapper {
-  background-color: rgba(255, 255, 255, 0.06);
-  background-image: none;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
-}
-
-.catalog-section.is-cat-themed .product-card:hover .product-img-wrapper {
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.38);
+body.dark-theme .catalog-section.is-cat-themed .product-price {
+  color: var(--accent-gold);
 }
 
 .catalog-section.is-cat-themed .tab-btn {
