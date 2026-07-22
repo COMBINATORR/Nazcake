@@ -359,6 +359,8 @@ body.dark-theme .main-header.scrolled {
   display: flex;
   align-items: center;
   justify-content: center;
+  justify-self: center;
+  width: fit-content;
   flex-wrap: nowrap;
   gap: 3px;
   min-width: 0;
