@@ -360,45 +360,39 @@ body.dark-theme .main-header.scrolled {
   align-items: center;
   justify-content: center;
   flex-wrap: nowrap;
-  gap: 6px 4px;
+  gap: 3px;
   min-width: 0;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .nav-link {
   position: relative;
   font-family: var(--font-nav);
-  font-weight: 900;
-  font-size: 0.82rem;
+  font-weight: 800;
+  font-size: 0.8rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--text-secondary);
   white-space: nowrap;
-  padding: 10px 12px;
+  padding: 8px 13px;
   border-radius: 999px;
-  transition: color 0.2s ease, background-color 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
 }
 
 .nav-link::after {
-  content: "";
-  position: absolute;
-  left: 12px;
-  right: 12px;
-  bottom: 6px;
-  height: 1.5px;
-  border-radius: 2px;
-  background: var(--accent-gold);
-  transform: scaleX(0);
-  transform-origin: center;
-  transition: transform 0.22s ease;
+  display: none;
 }
 
 .nav-link:hover {
-  color: var(--accent-gold);
-  background: rgba(194, 143, 26, 0.06);
-}
-
-.nav-link:hover::after {
-  transform: scaleX(1);
+  color: var(--accent-chocolate);
+  background: rgba(74, 44, 17, 0.08);
 }
 
 .header-actions {
@@ -7457,16 +7451,30 @@ body.dark-theme .btn-secondary:hover {
 
 /* Transparent Header State Contrast Optimization (White text over video)
    Keep SN Pro 900 — do not fall back to a lighter “old” weight */
+.main-header:not(.scrolled) .nav-menu {
+  background: rgba(20, 15, 12, 0.42);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.25);
+}
+
+body.dark-theme .nav-menu {
+  background: rgba(26, 21, 18, 0.85);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.45);
+}
+
 .main-header:not(.scrolled) .nav-link {
   font-family: var(--font-nav) !important;
-  font-weight: 900 !important;
-  color: #ffffff !important;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  font-weight: 800 !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+  text-shadow: none !important;
 }
 
 .main-header.scrolled .nav-link {
   font-family: var(--font-nav) !important;
-  font-weight: 900 !important;
+  font-weight: 800 !important;
 }
 
 .main-header:not(.scrolled) .logo-main {
@@ -7493,12 +7501,8 @@ body.dark-theme .btn-secondary:hover {
 }
 
 .main-header:not(.scrolled) .nav-link:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff !important;
-}
-
-.main-header:not(.scrolled) .nav-link::after {
-  background: #f6e073;
+  background: rgba(255, 255, 255, 0.18) !important;
+  color: #ffffff !important;
 }
 
 .main-header:not(.scrolled) .header-actions svg {
