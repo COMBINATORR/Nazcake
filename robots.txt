@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api/
+
+# Host directive for Yandex
+Host: https://nazcake.pro
+
+# Sitemap location
+Sitemap: https://nazcake.pro/sitemap.xml
