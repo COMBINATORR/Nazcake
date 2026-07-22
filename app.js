@@ -1364,8 +1364,7 @@ function normalizeStockValue(value) {
 }
 
 function isProductOutOfStock(p) {
-  if (!p) return true;
-  if (p.inStock === false) return true;
+  if (!p || p.inStock === false) return true;
   const s = normalizeStockValue(p.stock);
   return s !== null && s <= 0;
 }
