@@ -7514,10 +7514,40 @@ body.dark-theme .header-actions {
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
 }
 
-.main-header:not(.scrolled) .nav-link:hover {
-  background: rgba(255, 255, 255, 0.18) !important;
-  color: #ffffff !important;
+
+/* SEO Local Content Box Styles */
+.seo-about-box {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
+body.dark-theme .seo-about-box {
+  background: rgba(30, 25, 22, 0.85) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-theme .seo-box-title {
+  color: var(--accent-gold-light) !important;
+}
+
+body.dark-theme .seo-about-box p {
+  color: rgba(255, 255, 255, 0.82) !important;
+}
+
+@media (max-width: 768px) {
+  .seo-about-box {
+    padding: 24px 20px !important;
+    margin-top: 36px !important;
+    border-radius: 18px !important;
+  }
+  .seo-box-title {
+    font-size: 1.18rem !important;
+  }
+  .seo-about-box p {
+    font-size: 0.92rem !important;
+  }
+}
+
 
 .main-header:not(.scrolled) .header-actions svg {
   stroke: #ffffff !important;
