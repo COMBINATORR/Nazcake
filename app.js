@@ -2930,9 +2930,7 @@ function checkAtyrauBounds(lat, lon, bounds) {
 function calculateDeliveryCost(distance) {
   let cost = 500 + Math.round(distance * 150);
   cost = Math.ceil(cost / 50) * 50;
-  if (cost < 500) cost = 500;
-  if (cost > 3500) cost = 3500;
-  return cost;
+  return Math.min(Math.max(cost, 500), 3500);
 }
 
 function calculateDeliveryTime(distance) {
