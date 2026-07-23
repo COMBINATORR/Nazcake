@@ -5170,9 +5170,9 @@ body.dark-theme .site-dialog-icon.is-warn {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 2px;
+    gap: 1px;
     margin: 0;
-    padding: 3px 6px;
+    padding: 3px 3px 3px 3px;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.88);
     backdrop-filter: blur(18px) saturate(180%);
@@ -5182,11 +5182,13 @@ body.dark-theme .site-dialog-icon.is-warn {
   }
 
   .header-actions .lang-dropdown-btn {
-    min-width: 36px;
-    min-height: 36px;
-    height: 36px;
-    padding: 4px 8px;
-    font-size: 0.78rem;
+    min-width: auto;
+    min-height: 34px;
+    height: 34px;
+    padding: 3px 5px 3px 7px;
+    gap: 3px;
+    font-size: 0.76rem;
+    font-weight: 800;
   }
 
   .header-actions .header-theme-btn,
