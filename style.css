@@ -5153,28 +5153,23 @@ body.dark-theme .site-dialog-icon.is-warn {
   }
 
   .header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     height: 70px;
-    /* Same inset left (logo) and right (hamburger strokes) */
     padding-left: max(12px, env(safe-area-inset-left, 0px)) !important;
     padding-right: max(12px, env(safe-area-inset-right, 0px)) !important;
-    grid-template-columns: auto 1fr auto;
-    column-gap: 8px;
   }
 
-  /*
-    Optical balance: logo icon starts at left rail, but default hamburger
-    is centered in a 44px hit area — looks like ~10px extra gap on the right.
-    Flush the bars to the right edge of the control.
-  */
   .header-actions {
     display: flex;
     align-items: center;
     justify-content: flex-end;
     width: fit-content;
     flex-shrink: 0;
-    gap: 1px;
-    margin: 0;
-    padding: 3px 4px 3px 6px;
+    margin-left: auto;
+    gap: 3px;
+    padding: 3px 6px 3px 10px;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.88);
     backdrop-filter: blur(18px) saturate(180%);
@@ -5191,18 +5186,18 @@ body.dark-theme .site-dialog-icon.is-warn {
     min-width: auto;
     min-height: 34px;
     height: 34px;
-    padding: 3px 5px 3px 7px;
+    padding: 3px 4px;
     gap: 3px;
-    font-size: 0.76rem;
+    font-size: 0.78rem;
     font-weight: 800;
   }
 
   .header-actions .header-theme-btn,
   .header-actions .cart-btn {
-    min-width: 36px;
-    min-height: 36px;
-    width: 36px;
-    height: 36px;
+    min-width: 34px;
+    min-height: 34px;
+    width: 34px;
+    height: 34px;
     padding: 6px;
     margin: 0;
   }
@@ -5210,12 +5205,12 @@ body.dark-theme .site-dialog-icon.is-warn {
   .mobile-menu-toggle {
     display: flex !important;
     flex-direction: column;
-    width: 36px;
-    min-width: 36px;
-    max-width: 36px;
-    height: 36px;
-    min-height: 36px;
-    padding: 8px 7px;
+    width: 34px;
+    min-width: 34px;
+    max-width: 34px;
+    height: 34px;
+    min-height: 34px;
+    padding: 8px 6px;
     margin: 0;
     align-items: center;
     justify-content: center;
@@ -5229,7 +5224,7 @@ body.dark-theme .site-dialog-icon.is-warn {
 
   .mobile-menu-toggle span {
     display: block;
-    width: 20px;
+    width: 18px;
     height: 2px;
     margin: 2px 0;
     border-radius: 2px;
