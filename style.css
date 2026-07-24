@@ -5521,6 +5521,8 @@ body.dark-theme .site-dialog-icon.is-warn {
 
   .product-card {
     border-radius: 0;
+    border: none;
+    box-shadow: none;
   }
 
   .product-img-wrapper {
