@@ -25,7 +25,7 @@ describe('Nazcake i18n Unit Tests', () => {
             // By default, localStorage is empty, so 'ru' is selected
             window.i18n.setLanguage('ru'); // Ensure ru is active
             const result = window.i18n.t('meta_title');
-            expect(result).toBe('Nazcake — Премиальная кондитерская и пекарня в Атырау');
+            expect(result).toBe('Nazcake — Кондитерская и пекарня в Атырау');
         });
 
         it('should return the key itself if translation does not exist in any language', () => {
@@ -43,7 +43,7 @@ describe('Nazcake i18n Unit Tests', () => {
 
             // It should fall back to ru translation for a known key
             const result = window.i18n.t('meta_title');
-            expect(result).toBe('Nazcake — Премиальная кондитерская и пекарня в Атырау');
+            expect(result).toBe('Nazcake — Кондитерская и пекарня в Атырау');
         });
     });
 });
