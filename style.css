@@ -65,7 +65,8 @@
 html {
   scroll-behavior: smooth;
   font-size: 16px;
-  touch-action: manipulation;
+  /* pan only — block pinch-zoom (manipulation still allows pinch on some browsers) */
+  touch-action: pan-x pan-y;
   /* Prevent iOS text size inflate in landscape */
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
@@ -80,7 +81,8 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  touch-action: manipulation;
+  /* pan only — full pinch-zoom off (see also viewport user-scalable=no) */
+  touch-action: pan-x pan-y;
   /* Notch / home indicator safe areas */
   padding-left: env(safe-area-inset-left, 0px);
   padding-right: env(safe-area-inset-right, 0px);
@@ -785,7 +787,7 @@ body.dark-theme .main-header.scrolled {
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
   /* poster shows immediately; video fades in after lazy load */
-  background-color: #1a120c;
+  background: #1a120c url('images/hero-poster.webp') center / cover no-repeat;
   opacity: 1;
   transition: opacity 0.45s ease;
 }
@@ -4122,7 +4124,8 @@ body.modal-open .admin-orders-list {
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: 28px 24px 12px;
+  /* right/top padding keeps long titles clear of absolute close (×) button */
+  padding: 32px 60px 12px 24px;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -4148,10 +4151,17 @@ body.modal-open .admin-orders-list {
 }
 
 .modal-product-title {
-  font-size: 1.55rem;
+  font-size: clamp(1.05rem, 2.2vw, 1.35rem);
   margin-bottom: 6px;
-  line-height: 1.15;
+  line-height: 1.25;
   letter-spacing: -0.02em;
+  font-weight: 800;
+  /* Global h3 is uppercase + heavy — long names must wrap, not clip under × */
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  max-width: 100%;
+  hyphens: auto;
 }
 
 .modal-product-price {
@@ -5397,7 +5407,7 @@ body.dark-theme .site-dialog-icon.is-warn {
   }
 
   .preview-details-scrollable {
-    padding: 16px 18px 10px;
+    padding: 20px 56px 10px 18px;
   }
 
   .modal-sticky-actions {

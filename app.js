@@ -1,31 +1,77 @@
-// Premium Page Preloader removal logic
-window.addEventListener("load", () => {
-  const preloader = document.getElementById("page-preloader");
-  if (preloader) {
-    if (sessionStorage.getItem("nazcake_preloader_shown")) {
-      preloader.remove();
-      document.body.classList.remove("preloader-active");
-      return;
-    }
+// Block pinch / multi-touch zoom (viewport + CSS cover most cases; iOS needs gesture events)
+(function blockMobilePageZoom() {
+  const prevent = (e) => {
+    e.preventDefault();
+  };
 
+  // Safari iOS gesture events (not in all browsers)
+  ["gesturestart", "gesturechange", "gestureend"].forEach((type) => {
+    document.addEventListener(type, prevent, { passive: false });
+  });
+
+  // Multi-finger touch (pinch) — allow single-finger scroll
+  document.addEventListener(
+    "touchmove",
+    (e) => {
+      if (e.touches && e.touches.length > 1) prevent(e);
+    },
+    { passive: false }
+  );
+
+  // Ctrl/⌘ + wheel zoom (desktop trackpads / accessibility — keep page scale fixed)
+  document.addEventListener(
+    "wheel",
+    (e) => {
+      if (e.ctrlKey) prevent(e);
+    },
+    { passive: false }
+  );
+})();
+
+// Premium Page Preloader — hide after JS is ready, never hang on window.load
+// (window.load waits for every image/font/video → long stuck preloader on slow networks)
+// Inline failsafe in index.html also calls window.__nazcakeHidePreloader after 2.8s.
+(function setupPagePreloader() {
+  const MIN_MS = 700; // short brand moment (was 1600ms AFTER full window.load)
+  const started = performance.now();
+
+  function hidePreloader() {
+    const elapsed = performance.now() - started;
+    const wait = Math.max(0, MIN_MS - elapsed);
     setTimeout(() => {
-      preloader.classList.add("fade-out");
-      document.body.classList.remove("preloader-active");
-      sessionStorage.setItem("nazcake_preloader_shown", "true");
-      setTimeout(() => {
-        preloader.remove();
-      }, 800);
-    }, 1600); // 1.6s minimum display time for the sequence
-  } else {
-    document.body.classList.remove("preloader-active");
+      if (typeof window.__nazcakeHidePreloader === "function") {
+        window.__nazcakeHidePreloader();
+      } else {
+        // Fallback if inline helper missing
+        const preloader = document.getElementById("page-preloader");
+        document.body.classList.remove("preloader-active");
+        if (preloader) {
+          preloader.classList.add("fade-out");
+          setTimeout(() => preloader.remove(), 500);
+        }
+        try {
+          sessionStorage.setItem("nazcake_preloader_shown", "true");
+        } catch (_) { /* ignore */ }
+      }
+    }, wait);
   }
-});
+
+  // Do NOT wait for window "load" — catalog images / Google Fonts / CDN can stall for many seconds.
+  if (document.readyState === "complete" || document.readyState === "interactive") {
+    requestAnimationFrame(hidePreloader);
+  } else {
+    document.addEventListener("DOMContentLoaded", hidePreloader, { once: true });
+  }
+})();
 
 // Confectionery Nazcake App Logic
 
 // Supabase Configuration
 const SUPABASE_URL = "https://wuqxqxjskviaptxswojz.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind1cXhxeGpza3ZpYXB0eHN3b2p6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwMjM0MTksImV4cCI6MjA5OTU5OTQxOX0.bv24jib8hPJyaL1mV4kJd5d8o92zBIg603RqEMIsc7A"; // Replace with your public Anon Key from Supabase Dashboard
+
+/** Public Storage bucket for admin-uploaded product photos (see supabase_product_images_storage.sql) */
+const PRODUCT_IMAGES_BUCKET = "product-images";
 
 let supabaseClient = null;
 if (typeof window !== 'undefined' && window.supabase && SUPABASE_ANON_KEY !== "YOUR_SUPABASE_ANON_KEY") {
@@ -150,7 +196,7 @@ let products = [
     category: "pastries",
     price: 250,
     unit: "шт.",
-    image: "images/pastry_samsa_meat.webp",
+    image: "images/pastry_samsa_meat.webp?v=20260724",
     desc: "Хрустящая слоеная самса с начинкой из сочного фарша с луком и специями.",
     ingredients: "Мука, яйцо, соль, масло слоеное, лук, фарш говяжий, перец черный молотый, кунжут белый. Аллергены: глютен, молоко, яйца, кунжут.",
     badge: "хит"
@@ -161,7 +207,7 @@ let products = [
     category: "pastries",
     price: 250,
     unit: "шт.",
-    image: "images/pastry_samsa_liver.webp",
+    image: "images/pastry_samsa_liver.webp?v=20260724",
     desc: "Ароматная самса с сытной и сочной начинкой из говяжьей печени с луком.",
     ingredients: "Мука, соль, сахар, разрыхлитель, масло сливочное, кефир, яйцо, печень, легкие, кунжут. Аллергены: глютен, молоко, яйца, кунжут.",
     badge: ""
@@ -172,7 +218,7 @@ let products = [
     category: "pastries",
     price: 250,
     unit: "шт.",
-    image: "images/pastry_samsa_chicken.webp",
+    image: "images/pastry_samsa_chicken.webp?v=20260724",
     desc: "Нежная самса с начинкой из сочного куриного филе и тянущегося сыра.",
     ingredients: "Мука, яйцо, соль, масло слоеное, куриное филе, масло растительное, сливки, сыр, перец черный молотый, кунжут белый. Аллергены: глютен, молоко, яйца, кунжут.",
     badge: "новое"
@@ -183,7 +229,7 @@ let products = [
     category: "pastries",
     price: 250,
     unit: "шт.",
-    image: "images/pastry_samsa_cabbage.webp",
+    image: "images/pastry_samsa_cabbage.webp?v=20260724",
     desc: "Сытная самса с традиционным сочетанием мясного фарша и сочной тушеной капусты.",
     ingredients: "Мука, яйцо, соль, масло слоеное, капуста, лук, масло растительное, фарш говяжий, перец черный молотый, кунжут белый. Аллергены: глютен, молоко, яйца, кунжут.",
     badge: ""
@@ -194,7 +240,7 @@ let products = [
     category: "pastries",
     price: 240,
     unit: "шт.",
-    image: "images/pastry_pirog_liver.webp",
+    image: "images/pastry_pirog_liver.webp?v=20260724",
     desc: "Румяные домашние пирожки со специями и нежным ливерным паштетом.",
     ingredients: "Мука, дрожжи, сливочное масло, сахар, соль, молоко, яйца, печень, легкие. Аллергены: глютен, молоко, яйца.",
     badge: "хит"
@@ -205,7 +251,7 @@ let products = [
     category: "pastries",
     price: 180,
     unit: "шт.",
-    image: "images/pastry_pirog_liver_mini.webp",
+    image: "images/pastry_pirog_liver_mini.webp?v=20260724b",
     desc: "Маленькие порционные пирожки на один укус с сытной начинкой из ливера.",
     ingredients: "Мука, дрожжи, сливочное масло, сахар, соль, молоко, яйца, печень, легкие. Аллергены: глютен, молоко, яйца.",
     badge: ""
@@ -216,7 +262,7 @@ let products = [
     category: "pastries",
     price: 100,
     unit: "шт.",
-    image: "images/pastry_bun_plain.webp",
+    image: "images/pastry_bun_plain.webp?v=20260724",
     desc: "Мягкая сдобная булочка с румяной корочкой. Отлично подойдет к чаю или молоку.",
     ingredients: "Мука, дрожжи, сливочное масло, сахар, соль, разрыхлитель, ванилин, яйцо, молоко. Аллергены: глютен, молоко, яйца.",
     badge: ""
@@ -227,7 +273,7 @@ let products = [
     category: "pastries",
     price: 110,
     unit: "шт.",
-    image: "images/pastry_bun_condensed.webp",
+    image: "images/pastry_bun_condensed.webp?v=20260724",
     desc: "Сладкая булочка с начинкой из цельного вареного сгущенного молока.",
     ingredients: "Мука, дрожжи, сливочное масло, сахар, соль, разрыхлитель, ванилин, яйцо, молоко, вареная сгущенка. Аллергены: глютен, молоко, яйца.",
     badge: "хит"
@@ -238,7 +284,7 @@ let products = [
     category: "pastries",
     price: 120,
     unit: "шт.",
-    image: "images/pastry_bun_dryfruit.webp",
+    image: "images/pastry_bun_dryfruit.webp?v=20260724",
     desc: "Ароматная булочка с начинкой из изюма, кураги и чернослива.",
     ingredients: "Мука, дрожжи, сливочное масло, сахар, соль, разрыхлитель, ванилин, яйцо, молоко, сухофрукты, джем. Аллергены: глютен, молоко, яйца.",
     badge: ""
@@ -249,7 +295,7 @@ let products = [
     category: "pastries",
     price: 120,
     unit: "шт.",
-    image: "images/pastry_bun_cottage.webp",
+    image: "images/pastry_bun_cottage.webp?v=20260724",
     desc: "Воздушная булочка с начинкой из сладкого домашнего творога.",
     ingredients: "Мука, дрожжи, сливочное масло, сахар, соль, разрыхлитель, ванилин, яйцо, молоко, творог. Аллергены: глютен, молоко, яйца.",
     badge: ""
@@ -260,7 +306,7 @@ let products = [
     category: "pastries",
     price: 190,
     unit: "шт.",
-    image: "images/pastry_sochnik.webp",
+    image: "images/pastry_sochnik.webp?v=20260724c",
     desc: "Классический сочник с золотистой корочкой и нежным творожным центром.",
     ingredients: "Масло сливочное, мука, разрыхлитель, яйцо, сахар, творог, сахарная пудра, ванилин. Аллергены: глютен, молоко, яйца.",
     badge: ""
@@ -271,8 +317,8 @@ let products = [
     category: "pastries",
     price: 3400,
     unit: "кг",
-    image: "images/pastry_manty_condensed.webp",
-    desc: "Необычные сладкие манты с начинкой из ароматной вареной сгущенки. Настоящее лакомство!.",
+    image: "images/pastry_manty_condensed.webp?v=20260724d",
+    desc: "Необычные сладкие манты с начинкой из ароматной вареной сгущенки. Настоящее лакомство!",
     ingredients: "Вареная сгущенка, молоко, масло сливочное, мука, разрыхлитель, молоко, яйцо. Аллергены: глютен, молоко, яйца.",
     badge: "новое"
   },
@@ -282,7 +328,7 @@ let products = [
     category: "pastries",
     price: 3000,
     unit: "кг",
-    image: "images/pastry_rogaliki.webp",
+    image: "images/pastry_rogaliki.webp?v=20260724d",
     desc: "Рассыпчатые мини-рогалики с начинкой из нежного сладкого творога.",
     ingredients: "Творог, молоко, масло сливочное, мука, разрыхлитель, молоко, сахар, яйцо. Аллергены: глютен, молоко, яйца.",
     badge: ""
@@ -293,7 +339,7 @@ let products = [
     category: "pastries",
     price: 4200,
     unit: "кг",
-    image: "images/pastry_tea_set.webp",
+    image: "images/pastry_tea_set.webp?v=20260724c",
     desc: "Ассорти из мелкой сладкой домашней выпечки, идеально подходящее для чаепития большой компании.",
     ingredients: "Рогалики: творог, молоко, масло сливочное, мука, разрыхлитель, молоко, сахар, яйцо. Манты со сгущенкой: вареная сгущенка, молоко, масло сливочное, мука, разрыхлитель, молоко, яйцо. Сочник: масло сливочное, мука, разрыхлитель, яйцо, сахар, творог, сахарная пудра, ванилин. Трубочки с кремом: мука, сливочное масло, сахар, какао, сметана, разрыхлитель, яйцо, сгущенка, сливки. Аллергены: глютен, молоко, яйца.",
     badge: ""
@@ -1295,7 +1341,7 @@ let products = [
     category: 'pastries',
     price: 350,
     unit: 'шт.',
-    image: 'images/Самса с курицей и грибами.webp',
+    image: 'images/Самса с курицей и грибами.webp?v=20260724b',
     desc: 'Сытная хрустящая самса из слоеного теста с сочной начинкой из куриного филе и шампиньонов.',
     ingredients: 'Мука, сливочное масло, соль, вода, куриное филе, грибы шампиньоны, лук, специи, яйцо (для смазывания), кунжут. Аллергены: глютен, молоко, яйца, кунжут.',
     badge: 'новинка'
@@ -1306,7 +1352,7 @@ let products = [
     category: 'pastries',
     price: 140,
     unit: 'шт.',
-    image: 'images/Пирожки с картошкой.webp',
+    image: 'images/Пирожки с картошкой.webp?v=20260724b',
     desc: 'Мягкие, воздушные домашние пирожки из дрожжевого теста с нежным картофельным пюре и жареным луком.',
     ingredients: 'Мука, дрожжи, вода, молоко, сахар, соль, растительное масло, картофель, лук репчатый, сливочное масло, яйцо. Аллергены: глютен, молоко, яйца.',
     badge: 'новинка'
@@ -1317,7 +1363,7 @@ let products = [
     category: 'pastries',
     price: 210,
     unit: 'шт.',
-    image: 'images/Пирожки с мясом и капустой.webp',
+    image: 'images/Пирожки с мясом и капустой.webp?v=20260724b',
     desc: 'Сытные домашние пирожки из воздушного дрожжевого теста с начинкой из говяжьего фарша и тушеной капусты.',
     ingredients: 'Мука, дрожжи, молоко, сахар, соль, масло растительное, говяжий фарш, капуста белокочанная, лук, специи, яйцо. Аллергены: глютен, молоко, яйца.',
     badge: 'новинка'
@@ -1328,6 +1374,48 @@ let products = [
 const LOCAL_CATALOG_BADGES = new Map(
   (typeof products !== "undefined" ? products : []).map((p) => [p.id, p.badge || ""])
 );
+
+// Force fresh pastry photos (new JPG → WebP) even when Supabase still has old image URLs.
+// Never override admin-uploaded images (data: / http(s):).
+const LOCAL_CATALOG_IMAGE_OVERRIDES = new Map([
+  ["pastry_samsa_meat", "images/pastry_samsa_meat.webp?v=20260724"],
+  ["pastry_samsa_liver", "images/pastry_samsa_liver.webp?v=20260724"],
+  ["pastry_samsa_chicken", "images/pastry_samsa_chicken.webp?v=20260724"],
+  ["pastry_samsa_cabbage", "images/pastry_samsa_cabbage.webp?v=20260724"],
+  ["pastry_liver_pie", "images/pastry_pirog_liver.webp?v=20260724"],
+  ["pastry_bun_plain", "images/pastry_bun_plain.webp?v=20260724"],
+  ["pastry_bun_condensed", "images/pastry_bun_condensed.webp?v=20260724"],
+  ["pastry_bun_fruits", "images/pastry_bun_dryfruit.webp?v=20260724"],
+  ["pastry_bun_curd", "images/pastry_bun_cottage.webp?v=20260724"],
+  ["pastry_liver_pie_mini", "images/pastry_pirog_liver_mini.webp?v=20260724b"],
+  ["pastry_samsa_chicken_mushroom", "images/Самса с курицей и грибами.webp?v=20260724b"],
+  ["pastry_pirozhki_potato", "images/Пирожки с картошкой.webp?v=20260724b"],
+  ["pastry_pirozhki_meat_cabbage", "images/Пирожки с мясом и капустой.webp?v=20260724b"],
+  ["pastry_sochnik", "images/pastry_sochnik.webp?v=20260724c"],
+  ["pastry_tea_set", "images/pastry_tea_set.webp?v=20260724c"],
+  ["pastry_manty_condensed", "images/pastry_manty_condensed.webp?v=20260724d"],
+  ["pastry_rogaliki", "images/pastry_rogaliki.webp?v=20260724d"],
+]);
+
+/**
+ * Resolve product image for storefront.
+ * Priority: admin data-URL / remote URL from DB → static path override → DB path → "".
+ */
+function resolveProductImage(productId, serverImage) {
+  const fromDb = serverImage == null ? "" : String(serverImage).trim();
+  if (
+    fromDb.startsWith("data:image/") ||
+    fromDb.startsWith("http://") ||
+    fromDb.startsWith("https://")
+  ) {
+    return fromDb;
+  }
+  if (LOCAL_CATALOG_IMAGE_OVERRIDES.has(productId)) {
+    return LOCAL_CATALOG_IMAGE_OVERRIDES.get(productId);
+  }
+  return fromDb;
+}
+
 
 /** Fixed catalog order from the static list (Supabase created_at is identical for all rows → unstable). */
 const DEFAULT_PRODUCT_ORDER = products.map((p) => p.id);
@@ -1402,7 +1490,11 @@ function applyLocalProductOverrides(baseProducts) {
         // Explicit false must win (was lost when only server data reloaded)
         inStock: custom.inStock !== undefined ? custom.inStock !== false : p.inStock !== false,
         stock: custom.stock !== undefined ? normalizeStockValue(custom.stock) : p.stock,
-        image: custom.image !== undefined ? custom.image : p.image,
+        // Skip empty / stripped base64 — keep server or static path
+        image:
+          custom.image && String(custom.image).trim() && !String(custom.image).startsWith("data:")
+            ? custom.image
+            : p.image,
         sizeOptions: custom.sizeOptions !== undefined ? custom.sizeOptions : p.sizeOptions,
         isCustomName: custom.isCustomName === true || p.isCustomName === true
       };
@@ -1413,17 +1505,29 @@ function applyLocalProductOverrides(baseProducts) {
   }
 }
 
+/** Never persist base64 data-URLs in localStorage (quota + privacy). Keep paths / https only. */
+function imageForLocalStorage(image) {
+  if (!image || typeof image !== "string") return "";
+  const s = image.trim();
+  if (!s || s.startsWith("data:")) return "";
+  return s;
+}
+
 function persistLocalProductOverrides(list) {
   try {
-    const customList = (list || []).map((p) => ({
-      id: p.id,
-      name: p.name,
-      price: p.price,
-      inStock: p.inStock !== false,
-      stock: normalizeStockValue(p.stock),
-      image: p.image,
-      isCustomName: p.isCustomName || false
-    }));
+    const customList = (list || []).map((p) => {
+      const item = {
+        id: p.id,
+        name: p.name,
+        price: p.price,
+        inStock: p.inStock !== false,
+        stock: normalizeStockValue(p.stock),
+        isCustomName: p.isCustomName || false
+      };
+      const img = imageForLocalStorage(p.image);
+      if (img) item.image = img;
+      return item;
+    });
     localStorage.setItem("nazcake_custom_products", JSON.stringify(customList));
     return true;
   } catch (e) {
@@ -1455,7 +1559,7 @@ async function loadProducts() {
         category: dbProd.category,
         price: Number(dbProd.price),
         unit: dbProd.unit,
-        image: dbProd.image || "",
+        image: resolveProductImage(dbProd.id, dbProd.image),
         desc: dbProd.desc || "",
         ingredients: dbProd.ingredients || "",
         badge: (() => {
@@ -2734,28 +2838,96 @@ function calculateImageDimensions(width, height, maxDim) {
 }
 
 window.handleAdminImageUpload = function(event, id) {
-  const file = event.target.files[0];
+  const input = event && event.target;
+  const file = input && input.files && input.files[0];
   if (!file) return;
 
+  // Reset so re-selecting the same file still fires change
+  const resetInput = () => {
+    try {
+      if (input) input.value = "";
+    } catch (_) { /* ignore */ }
+  };
+
+  const maxBytes = 12 * 1024 * 1024; // 12 MB source file
+  if (file.size > maxBytes) {
+    resetInput();
+    showAlert(
+      window.i18n
+        ? window.i18n.t("admin_err_image_size")
+        : "Файл слишком большой (макс. 12 МБ). Сожмите фото и попробуйте снова."
+    );
+    return;
+  }
+
+  // Accept common raster types; reject empty/unknown MIME when present
+  const mime = (file.type || "").toLowerCase();
+  if (mime && !mime.startsWith("image/")) {
+    resetInput();
+    showAlert(
+      window.i18n
+        ? window.i18n.t("admin_err_image_type")
+        : "Выберите файл изображения (JPG, PNG, WebP…)."
+    );
+    return;
+  }
+
   const reader = new FileReader();
-  reader.onload = function(e) {
+  reader.onerror = function () {
+    resetInput();
+    showAlert(
+      window.i18n
+        ? window.i18n.t("admin_err_image_read")
+        : "Не удалось прочитать файл. Попробуйте другое фото."
+    );
+  };
+  reader.onload = function (e) {
     const img = new Image();
-    img.onload = function() {
-      // Resize using canvas to keep it lightweight for localStorage
-      const canvas = document.createElement("canvas");
-      const maxDim = 600;
-      const { width, height } = calculateImageDimensions(img.width, img.height, maxDim);
+    img.onload = function () {
+      try {
+        // Resize using canvas to keep it lightweight for localStorage / Supabase text field
+        const canvas = document.createElement("canvas");
+        const maxDim = 800; // was 600 — sharper on retina, still ~50–100KB as JPEG
+        const { width, height } = calculateImageDimensions(img.width, img.height, maxDim);
 
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(img, 0, 0, width, height);
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        // White fill so transparent PNG does not become black JPEG
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
 
-      // Convert to compressed jpeg data URL (0.7 quality is about ~10-15KB)
-      const dataUrl = canvas.toDataURL("image/jpeg", 0.7);
+        // JPEG preview data URL — on Save uploaded to Supabase Storage (public URL in products.image)
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.78);
 
-      // Preview locally in the admin panel row
-      window.updateAdminImagePreview(id, dataUrl);
+        if (!dataUrl || dataUrl.length < 32) {
+          throw new Error("empty_data_url");
+        }
+        // Hard guard: huge data URLs blow localStorage (~5MB) and slow catalog
+        if (dataUrl.length > 900 * 1024) {
+          throw new Error("data_url_too_large");
+        }
+
+        window.updateAdminImagePreview(id, dataUrl);
+      } catch (err) {
+        console.warn("Admin image process failed:", err);
+        showAlert(
+          window.i18n
+            ? window.i18n.t("admin_err_image_process")
+            : "Не удалось обработать фото. Попробуйте меньший файл (JPG)."
+        );
+      } finally {
+        resetInput();
+      }
+    };
+    img.onerror = function () {
+      resetInput();
+      showAlert(
+        window.i18n
+          ? window.i18n.t("admin_err_image_decode")
+          : "Браузер не смог открыть это изображение (формат не поддерживается)."
+      );
     };
     img.src = e.target.result;
   };
@@ -2764,26 +2936,145 @@ window.handleAdminImageUpload = function(event, id) {
 
 
 window.updateAdminImagePreview = function(id, dataUrl) {
-      const row = document.querySelector(`.admin-product-row[data-id="${id}"]`);
+  const row = document.querySelector(`.admin-product-row[data-id="${id}"]`);
   if (!row) return;
 
-        const imgEl = row.querySelector(".admin-prod-img");
-        if (imgEl) {
-          imgEl.src = dataUrl;
-        } else {
-          const imgContainer = row.querySelector(".admin-prod-img-container");
+  const imgEl = row.querySelector(".admin-prod-img");
+  if (imgEl) {
+    imgEl.src = dataUrl;
+  } else {
+    const imgContainer = row.querySelector(".admin-prod-img-container");
     if (!imgContainer) return;
-          const emptyDiv = imgContainer.querySelector(".empty-admin-img");
-          if (emptyDiv) {
-            const newImg = document.createElement("img");
-            newImg.className = "admin-prod-img";
-            newImg.alt = "Preview";
-            newImg.src = dataUrl;
-            imgContainer.replaceChild(newImg, emptyDiv);
-          }
-        }
-        row.setAttribute("data-new-image", dataUrl);
+    const emptyDiv = imgContainer.querySelector(".empty-admin-img");
+    if (emptyDiv) {
+      const newImg = document.createElement("img");
+      newImg.className = "admin-prod-img";
+      newImg.alt = "Preview";
+      newImg.src = dataUrl;
+      imgContainer.replaceChild(newImg, emptyDiv);
+    }
+  }
+  // Preview only — on Save this is uploaded to Supabase Storage and replaced by public URL
+  row.setAttribute("data-new-image", dataUrl);
 };
+
+/** data:image/...;base64,... → Blob (for Storage upload) */
+function dataUrlToBlob(dataUrl) {
+  if (!dataUrl || typeof dataUrl !== "string" || !dataUrl.startsWith("data:")) {
+    throw new Error("invalid_data_url");
+  }
+  const comma = dataUrl.indexOf(",");
+  if (comma < 0) throw new Error("invalid_data_url");
+  const header = dataUrl.slice(0, comma);
+  const b64 = dataUrl.slice(comma + 1);
+  const mimeMatch = header.match(/data:([^;]+)/);
+  const mime = (mimeMatch && mimeMatch[1]) || "image/jpeg";
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new Blob([bytes], { type: mime });
+}
+
+/** Extract object path inside product-images bucket from a public URL (or null). */
+function extractProductImageStoragePath(url) {
+  if (!url || typeof url !== "string") return null;
+  const markers = [
+    `/storage/v1/object/public/${PRODUCT_IMAGES_BUCKET}/`,
+    `/storage/v1/object/sign/${PRODUCT_IMAGES_BUCKET}/`
+  ];
+  for (const marker of markers) {
+    const i = url.indexOf(marker);
+    if (i !== -1) {
+      try {
+        return decodeURIComponent(url.slice(i + marker.length).split("?")[0]);
+      } catch (_) {
+        return url.slice(i + marker.length).split("?")[0];
+      }
+    }
+  }
+  return null;
+}
+
+/**
+ * Upload compressed admin photo to Supabase Storage.
+ * Requires authenticated session + product-images bucket (SQL setup once).
+ * @returns {Promise<string>} public URL
+ */
+async function uploadAdminProductImage(productId, dataUrl) {
+  if (!supabaseClient) {
+    throw new Error(
+      window.i18n
+        ? window.i18n.t("admin_err_no_supabase")
+        : "Сервер не подключён. Нельзя загрузить фото."
+    );
+  }
+
+  const { data: sessionData, error: sessionErr } = await supabaseClient.auth.getSession();
+  if (sessionErr || !sessionData || !sessionData.session) {
+    throw new Error(
+      window.i18n
+        ? window.i18n.t("admin_err_auth_required")
+        : "Войдите в админку заново (сессия истекла), затем сохраните фото."
+    );
+  }
+
+  const blob = dataUrlToBlob(dataUrl);
+  const safeId = String(productId || "product").replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 80);
+  const objectPath = `products/${safeId}/${Date.now()}.jpg`;
+
+  const { error: uploadError } = await supabaseClient.storage
+    .from(PRODUCT_IMAGES_BUCKET)
+    .upload(objectPath, blob, {
+      contentType: "image/jpeg",
+      upsert: true,
+      cacheControl: "3600"
+    });
+
+  if (uploadError) {
+    const msg = uploadError.message || String(uploadError);
+    if (/bucket not found|not found/i.test(msg)) {
+      throw new Error(
+        window.i18n
+          ? window.i18n.t("admin_err_bucket")
+          : "Хранилище фото не настроено. В Supabase выполните SQL из файла supabase_product_images_storage.sql (один раз)."
+      );
+    }
+    if (/row-level security|policy|permission|jwt|not allowed|unauthorized/i.test(msg)) {
+      throw new Error(
+        window.i18n
+          ? window.i18n.t("admin_err_storage_rls")
+          : "Нет прав на загрузку фото. Проверьте политики Storage и что вы вошли как admin."
+      );
+    }
+    throw new Error(msg);
+  }
+
+  const { data: pub } = supabaseClient.storage
+    .from(PRODUCT_IMAGES_BUCKET)
+    .getPublicUrl(objectPath);
+
+  const publicUrl = pub && pub.publicUrl;
+  if (!publicUrl) {
+    throw new Error(
+      window.i18n
+        ? window.i18n.t("admin_err_public_url")
+        : "Файл загружен, но не удалось получить публичную ссылку."
+    );
+  }
+  return publicUrl;
+}
+
+/** Best-effort delete of previous Storage object when replacing photo. */
+async function tryRemoveOldProductImage(oldImageUrl) {
+  if (!supabaseClient || !oldImageUrl) return;
+  const path = extractProductImageStoragePath(oldImageUrl);
+  if (!path) return;
+  try {
+    await supabaseClient.storage.from(PRODUCT_IMAGES_BUCKET).remove([path]);
+  } catch (e) {
+    console.warn("Could not remove old product image:", e);
+  }
+}
 
 // Global helper function to save product edit
 window.saveAdminProduct = async function(id) {
@@ -2801,7 +3092,7 @@ window.saveAdminProduct = async function(id) {
   const stockRaw = String(stockField.value ?? "").trim();
   const stockInput = stockRaw === "" ? null : parseInt(stockRaw, 10);
   const inStockInput = row.querySelector(".admin-edit-instock").checked;
-  const newImageVal = row.getAttribute("data-new-image") || undefined;
+  const newImageRaw = row.getAttribute("data-new-image") || undefined;
 
   if (!nameInput) {
     await showAlert(window.i18n ? window.i18n.t("admin_err_name") : "Введите название товара!");
@@ -2823,6 +3114,30 @@ window.saveAdminProduct = async function(id) {
 
   let serverSaved = false;
   let serverErrorMsg = "";
+  let imageToSave = undefined; // final URL or path to write
+  const prevProduct = products.find((p) => p.id === id);
+  const previousImage = prevProduct ? prevProduct.image : "";
+
+  // 0. If admin picked a new photo (data-URL preview) → upload to Storage first
+  if (newImageRaw && String(newImageRaw).startsWith("data:image/")) {
+    try {
+      saveBtn.textContent = window.i18n ? window.i18n.t("admin_uploading_image") : "Фото…";
+      imageToSave = await uploadAdminProductImage(id, newImageRaw);
+    } catch (e) {
+      serverErrorMsg = e.message || String(e);
+      console.warn("Product image upload failed:", serverErrorMsg);
+      saveBtn.disabled = false;
+      saveBtn.textContent = origText;
+      await showAlert(
+        (window.i18n ? window.i18n.t("admin_err_image_upload") : "Не удалось загрузить фото на сервер.") +
+          "\n\n" +
+          serverErrorMsg
+      );
+      return;
+    }
+  } else if (newImageRaw && (newImageRaw.startsWith("http://") || newImageRaw.startsWith("https://") || newImageRaw.startsWith("images/"))) {
+    imageToSave = newImageRaw;
+  }
 
   // 1. Save to Supabase (if active) — require returned rows (RLS can return 200 + [])
   if (supabaseClient) {
@@ -2834,34 +3149,52 @@ window.saveAdminProduct = async function(id) {
         stock: stockInput,
         is_custom_name: true
       };
-      if (newImageVal !== undefined) {
-        updateData.image = newImageVal;
+      if (imageToSave !== undefined) {
+        updateData.image = imageToSave;
       }
 
       const { data, error } = await supabaseClient
-        .from('products')
+        .from("products")
         .update(updateData)
-        .eq('id', id)
-        .select('id');
+        .eq("id", id)
+        .select("id");
 
       if (error) throw error;
       if (!data || data.length === 0) {
         throw new Error(
           window.i18n
             ? window.i18n.t("admin_err_rls")
-            : "Сервер не обновил товар (нет прав UPDATE / RLS). Сохранено локально."
+            : "Сервер не обновил товар (нет прав UPDATE / RLS). Войдите в админку и попробуйте снова."
         );
       }
       serverSaved = true;
-      console.log("Successfully saved product edit to Supabase:", id);
+      console.log("Successfully saved product edit to Supabase:", id, imageToSave ? "(with image URL)" : "");
+
+      // Cleanup previous Storage file when we replaced it with a new public URL
+      if (imageToSave && previousImage && imageToSave !== previousImage) {
+        tryRemoveOldProductImage(previousImage);
+      }
     } catch (e) {
       serverErrorMsg = e.message || String(e);
       console.warn("Failed to save product edit to Supabase:", serverErrorMsg);
     }
+  } else if (imageToSave && String(imageToSave).startsWith("http")) {
+    // No supabase client — still apply URL locally only
+  } else if (newImageRaw && String(newImageRaw).startsWith("data:")) {
+    // Should not reach here (upload returns early without client)
+    imageToSave = undefined;
   }
 
+  // Prefer Storage URL; never keep multi‑100KB base64 in the live catalog
+  const finalImage =
+    imageToSave !== undefined
+      ? imageToSave
+      : prevProduct
+        ? prevProduct.image
+        : "";
+
   // 2. Update in local memory array (always — so UI stays consistent)
-  products = products.map(p => {
+  products = products.map((p) => {
     if (p.id === id) {
       return {
         ...p,
@@ -2869,27 +3202,39 @@ window.saveAdminProduct = async function(id) {
         price: priceInput,
         inStock: inStockInput,
         stock: stockInput,
-        image: newImageVal !== undefined ? newImageVal : p.image,
+        image: finalImage,
         isCustomName: true
       };
     }
     return p;
   });
 
-  // 3. Persist local overrides (survives refresh even when Supabase RLS blocks UPDATE)
+  // 3. Persist local overrides (no base64 — only paths/https)
   const localOk = persistLocalProductOverrides(products);
   if (!localOk && !serverSaved) {
     saveBtn.disabled = false;
     saveBtn.textContent = origText;
-    await showAlert(window.i18n ? window.i18n.t("admin_err_local_storage") : "Не удалось сохранить изменения (память браузера переполнена).");
+    await showAlert(
+      window.i18n
+        ? window.i18n.t("admin_err_local_storage")
+        : "Не удалось сохранить изменения (память браузера переполнена)."
+    );
     return;
   }
 
   if (!serverSaved && supabaseClient && serverErrorMsg) {
-    const serverErr = window.i18n ? window.i18n.t("admin_err_server") : "Ошибка при сохранении на сервере";
-    const localOnly = window.i18n ? window.i18n.t("admin_err_local_only") : "Данные сохранены локально в этом браузере.";
-    // Non-blocking: still show success on button, but inform once
-    console.warn(serverErr + ": " + serverErrorMsg + " — " + localOnly);
+    saveBtn.disabled = false;
+    saveBtn.textContent = origText;
+    await showAlert(
+      (window.i18n ? window.i18n.t("admin_err_server") : "Ошибка при сохранении на сервере") +
+        "\n\n" +
+        serverErrorMsg +
+        "\n\n" +
+        (window.i18n
+          ? window.i18n.t("admin_err_local_only")
+          : "Часть данных могла сохраниться только в этом браузере.")
+    );
+    // still re-render so admin sees current state
   }
 
   // Visual feedback on save
@@ -2901,6 +3246,9 @@ window.saveAdminProduct = async function(id) {
     saveBtn.style.background = "";
   }, 1000);
 
+  // Clear pending preview attribute so re-save does not re-upload
+  row.removeAttribute("data-new-image");
+
   // Re-render main site catalog, bestsellers, and cart
   renderBestsellers();
   const activeTab = document.querySelector(".tab-btn.active");
@@ -2909,9 +3257,9 @@ window.saveAdminProduct = async function(id) {
   renderAdminCatalog();
 
   // Sync cart items with updated product data
-  const updatedProduct = products.find(p => p.id === id);
+  const updatedProduct = products.find((p) => p.id === id);
   if (updatedProduct) {
-    cart.forEach(item => {
+    cart.forEach((item) => {
       if (item.product && item.product.id === id) {
         item.product = updatedProduct;
       }
@@ -4795,9 +5143,9 @@ function setupLazyHeroVideo() {
 
   const schedule = () => {
     if ("requestIdleCallback" in window) {
-      requestIdleCallback(() => activateSources(), { timeout: 1200 });
+      requestIdleCallback(() => activateSources(), { timeout: 300 });
     } else {
-      setTimeout(activateSources, 400);
+      setTimeout(activateSources, 100);
     }
   };
 
@@ -4814,7 +5162,7 @@ function setupLazyHeroVideo() {
     setTimeout(() => {
       mo.disconnect();
       if (video.dataset.videoLoaded !== "1") schedule();
-    }, 3500);
+    }, 2000);
   } else {
     requestAnimationFrame(() => schedule());
   }
@@ -5117,11 +5465,19 @@ function setupCategoryStage() {
   let activeIndex = 0;
   let isAnimating = false;
 
-  // Preload all stage images
-  CATEGORY_STAGE_ITEMS.forEach((item) => {
-    const img = new Image();
-    img.src = item.src;
-  });
+  // Preload stage images after first paint (don't compete with preloader / critical CSS/JS)
+  const preloadStageImages = () => {
+    CATEGORY_STAGE_ITEMS.forEach((item) => {
+      const img = new Image();
+      img.decoding = "async";
+      img.src = item.src;
+    });
+  };
+  if ("requestIdleCallback" in window) {
+    requestIdleCallback(preloadStageImages, { timeout: 2000 });
+  } else {
+    setTimeout(preloadStageImages, 600);
+  }
 
   /* Carousel: all items in DOM for spin animation.
      At rest only center is visible — left/right park off-screen (CSS). */
