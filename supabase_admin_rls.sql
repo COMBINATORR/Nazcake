@@ -1,6 +1,8 @@
 -- Nazcake: allow product/order updates from the website admin
 -- Run in Supabase Dashboard → SQL Editor
 --
+-- Product photos: also run supabase_product_images_storage.sql (Storage bucket + policies).
+--
 -- Why: the site uses the anon key. SELECT works, but UPDATE returns HTTP 200
 -- with 0 rows when RLS blocks writes — admin changes then only lived in memory
 -- until refresh. The site also saves overrides to localStorage as a fallback.

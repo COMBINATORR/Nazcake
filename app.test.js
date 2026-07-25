@@ -42,6 +42,11 @@ window.checkAtyrauBounds = checkAtyrauBounds;
             window.applyLocalProductOverrides = applyLocalProductOverrides;
             window.persistLocalProductOverrides = persistLocalProductOverrides;
             window.normalizeProductBadge = normalizeProductBadge;
+            window.resolveProductImage = resolveProductImage;
+            window.dataUrlToBlob = dataUrlToBlob;
+            window.extractProductImageStoragePath = extractProductImageStoragePath;
+            window.imageForLocalStorage = imageForLocalStorage;
+            window.PRODUCT_IMAGES_BUCKET = PRODUCT_IMAGES_BUCKET;
             window.parseLocalDate = parseLocalDate;
             window.getProducts = () => products;
             window.setProducts = (p) => { products = p; };
@@ -451,6 +456,53 @@ describe('escapeHTML', () => {
     it('should not scale images smaller than maxDim', () => {
         const result = window.calculateImageDimensions(400, 300, 600);
         expect(result).toEqual({ width: 400, height: 300 });
+    });
+  });
+
+  describe('resolveProductImage (admin vs static override)', () => {
+    it('prefers admin data-URL over LOCAL_CATALOG_IMAGE_OVERRIDES', () => {
+      const dataUrl = 'data:image/jpeg;base64,/9j/4AAQ';
+      expect(window.resolveProductImage('pastry_tea_set', dataUrl)).toBe(dataUrl);
+    });
+
+    it('prefers https CDN URL over static override', () => {
+      const url = 'https://cdn.example.com/tea.jpg';
+      expect(window.resolveProductImage('pastry_tea_set', url)).toBe(url);
+    });
+
+    it('uses static override when DB has plain file path', () => {
+      const resolved = window.resolveProductImage('pastry_tea_set', 'images/pastry_tea_set.webp');
+      expect(resolved).toContain('pastry_tea_set.webp');
+      expect(resolved).toMatch(/\?v=/);
+    });
+
+    it('falls back to DB path when no override', () => {
+      expect(window.resolveProductImage('unknown_sku', 'images/foo.webp')).toBe('images/foo.webp');
+    });
+  });
+
+  describe('admin image storage helpers', () => {
+    it('dataUrlToBlob produces JPEG blob from data URL', () => {
+      // 1x1 jpeg
+      const dataUrl =
+        'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAn/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIQAxAAAAGcP//EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEAAQUCf//EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQMBAT8Bf//EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQIBAT8Bf//Z';
+      const blob = window.dataUrlToBlob(dataUrl);
+      expect(blob).toBeInstanceOf(Blob);
+      expect(blob.type).toMatch(/image\/jpeg/);
+      expect(blob.size).toBeGreaterThan(0);
+    });
+
+    it('extractProductImageStoragePath parses public URL', () => {
+      const bucket = window.PRODUCT_IMAGES_BUCKET || 'product-images';
+      const url = `https://xxx.supabase.co/storage/v1/object/public/${bucket}/products/tea/1.jpg`;
+      expect(window.extractProductImageStoragePath(url)).toBe('products/tea/1.jpg');
+      expect(window.extractProductImageStoragePath('images/local.webp')).toBeNull();
+    });
+
+    it('imageForLocalStorage strips data URLs', () => {
+      expect(window.imageForLocalStorage('data:image/jpeg;base64,abc')).toBe('');
+      expect(window.imageForLocalStorage('https://cdn/x.jpg')).toBe('https://cdn/x.jpg');
+      expect(window.imageForLocalStorage('images/a.webp')).toBe('images/a.webp');
     });
   });
 

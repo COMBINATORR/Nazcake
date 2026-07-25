@@ -338,8 +338,12 @@
       data-lazy-video
       aria-hidden="true"
     >
-      <!-- Existing assets only: Broll2.mp4 was removed (404). WebM for modern browsers, H.264 MP4 for Safari. -->
-      <source data-src="Videos/Broll2.webm" type="video/webm">
+      <!-- Mobile vertical video (under 768px width) -->
+      <source data-src="Videos/Broll2_mobile_web.mp4" type="video/mp4" media="(max-width: 768px)">
+      
+      <!-- Desktop horizontal video -->
+      <source data-src="Videos/Broll2.webm" type="video/webm" media="(min-width: 769px)">
+      <!-- Universal fallback for older browsers -->
       <source data-src="Videos/Broll2_mobile.mp4" type="video/mp4">
     </video>
     <div class="hero-video-scrim" aria-hidden="true"></div>
