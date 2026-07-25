@@ -2073,6 +2073,42 @@ function createProductCardElement(p) {
   return cardDiv;
 }
 
+// Setup Yandex.Delivery Address Price Calculator
+// --- Delivery Calculator Helpers ---
+const geocodingCache = new Map();
+
+async function fetchCoordinates(address) {
+  const normalizedAddress = address.trim().toLowerCase();
+  if (geocodingCache.has(normalizedAddress)) {
+    return geocodingCache.get(normalizedAddress);
+  }
+
+  const url = `https://nominatim.openstreetmap.org/search?q=Атырау, ${encodeURIComponent(address)}&format=json&limit=1`;
+  const response = await fetch(url, {
+    headers: {
+      "User-Agent": "NazcakeConfectioneryDeliveryCalculator/1.0 (contact: nazcakeatyrau@gmail.com)"
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error("delivery_err_geocoder");
+  }
+
+  const data = await response.json();
+  if (data.length === 0) {
+    throw new Error("delivery_err_notfound");
+  }
+
+  const location = data[0];
+  const coords = {
+    lat: parseFloat(location.lat),
+    lon: parseFloat(location.lon)
+  };
+
+  geocodingCache.set(normalizedAddress, coords);
+  return coords;
+}
+
 // Attach Events (Preview click, stepper click, add click) to Rendered Cards
 function attachCardEvents(gridElement) {
   // Remove loading blur class if image is already cached/loaded
