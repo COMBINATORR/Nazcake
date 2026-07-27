@@ -1397,6 +1397,8 @@ const LOCAL_CATALOG_IMAGE_OVERRIDES = new Map([
   ["pastry_tea_set", "images/pastry_tea_set.webp?v=20260724c"],
   ["pastry_manty_condensed", "images/pastry_manty_condensed.webp?v=20260724d"],
   ["pastry_rogaliki", "images/pastry_rogaliki.webp?v=20260724d"],
+  ["bread_pancakes_meat", "images/bread_pancakes_meat.webp?v=20260728_v3"],
+  ["bread_pancakes_plain", "images/bread_pancakes_plain.webp?v=20260728_v3"],
 ]);
 
 /**
