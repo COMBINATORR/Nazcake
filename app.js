@@ -1577,6 +1577,10 @@ async function loadProducts() {
       // Local overrides + restore intended catalog positions (static list order)
       products = sortProductsStable(applyLocalProductOverrides(fromServer));
       console.log("Successfully loaded products from Supabase:", products.length);
+      renderBestsellers();
+      const activeTab = document.querySelector(".tab-btn.active");
+      const category = activeTab ? activeTab.getAttribute("data-category") : "new";
+      renderCatalog(category);
     } else {
       console.log("Supabase products table is empty. Using local products fallback.");
       loadCustomProductsLocalFallback();
@@ -1873,11 +1877,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 function renderBestsellers() {
   if (!bestsellersGrid) return;
-  const bestsellers = products.filter(p => p.badge === "бестселлер" || p.badge === "хит" || p.badge === "премиум");
+  const bestsellers = products.filter(p => {
+    if (!p || !p.badge) return false;
+    const b = normalizeProductBadge(p.badge).toLowerCase();
+    return b === "бестселлер" || b === "хит" || b === "премиум" || b === "bestseller" || b === "hit" || b === "premium";
+  });
+
+  const listToRender = bestsellers.length > 0 ? bestsellers : products.slice(0, 6);
 
   bestsellersGrid.innerHTML = '';
-  bestsellers.forEach(p => bestsellersGrid.appendChild(createProductCardElement(p)));
+  listToRender.forEach(p => bestsellersGrid.appendChild(createProductCardElement(p)));
   attachCardEvents(bestsellersGrid);
+  bestsellersGrid.querySelectorAll('.reveal-item').forEach(el => el.classList.add('revealed'));
   refreshScrollReveal();
 }
 
@@ -1912,13 +1923,17 @@ function renderCatalog(category) {
     let filtered = products;
     if (category === "new") {
       filtered = products.filter(isNewArrivalProduct);
-    } else if (category !== "all") {
+      if (filtered.length < 2) {
+        filtered = products;
+      }
+    } else if (category && category !== "all") {
       filtered = products.filter(p => p.category === category);
     }
 
     catalogGrid.innerHTML = '';
     filtered.forEach(p => catalogGrid.appendChild(createProductCardElement(p)));
     attachCardEvents(catalogGrid);
+    catalogGrid.querySelectorAll('.reveal-item').forEach(el => el.classList.add('revealed'));
     refreshScrollReveal();
     applyCatalogSectionTheme(category);
 
