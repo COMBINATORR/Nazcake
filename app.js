@@ -1928,7 +1928,7 @@ function renderCatalog() {
 
   catalogGrid.innerHTML = '';
 
-  CATALOG_CATEGORY_ORDER.forEach(cat => {
+  CATALOG_CATEGORY_ORDER.forEach((cat, catIndex) => {
     let catProducts = [];
     if (cat.id === "new") {
       catProducts = products.filter(isNewArrivalProduct);
@@ -1969,6 +1969,43 @@ function renderCatalog() {
     const gridDiv = document.createElement("div");
     gridDiv.className = "products-grid";
     catProducts.forEach(p => gridDiv.appendChild(createProductCardElement(p)));
+
+    // Transition end card to next category for horizontal swiping on mobile
+    if (catIndex < CATALOG_CATEGORY_ORDER.length - 1) {
+      const nextCat = CATALOG_CATEGORY_ORDER[catIndex + 1];
+      const endCard = document.createElement("div");
+      endCard.className = "category-end-card";
+      endCard.dataset.nextCategory = nextCat.id;
+
+      const subSpan = document.createElement("span");
+      subSpan.className = "end-card-sub";
+      subSpan.textContent = "Следующая категория";
+
+      const nameH4 = document.createElement("h4");
+      nameH4.className = "end-card-name";
+      nameH4.setAttribute("data-i18n", nextCat.i18nKey);
+      nameH4.textContent = window.i18n ? window.i18n.t(nextCat.i18nKey) : nextCat.defaultTitle;
+
+      const arrowSpan = document.createElement("span");
+      arrowSpan.className = "end-card-arrow";
+      arrowSpan.textContent = "→";
+
+      endCard.appendChild(subSpan);
+      endCard.appendChild(nameH4);
+      endCard.appendChild(arrowSpan);
+
+      endCard.addEventListener("click", () => {
+        const nextGroup = document.getElementById(`cat-group-${nextCat.id}`);
+        if (nextGroup) {
+          const stickyHeaderHeight = window.innerWidth <= 768 ? 120 : 145;
+          const targetY = nextGroup.getBoundingClientRect().top + window.pageYOffset - stickyHeaderHeight;
+          window.scrollTo({ top: targetY, behavior: "smooth" });
+          setActiveTabButton(nextCat.id, true);
+        }
+      });
+
+      gridDiv.appendChild(endCard);
+    }
 
     groupDiv.appendChild(gridDiv);
     catalogGrid.appendChild(groupDiv);
@@ -2075,26 +2112,15 @@ const CATEGORY_SCENE_PALETTE = {
   on_order: { a: "#8b6b2e", b: "#241c0c", c: "#f0d070" }
 };
 
-/** Paint catalog section with stage-style gradient for active category tab. */
+/** Paint catalog section — kept clean and high contrast across site. */
 function applyCatalogSectionTheme(category) {
   const section = document.querySelector(".catalog-section") || document.getElementById("catalog");
   if (!section) return;
-  const palette = category && category !== "all" && category !== "new"
-    ? CATEGORY_SCENE_PALETTE[category]
-    : null;
-  if (palette) {
-    section.classList.add("is-cat-themed");
-    section.dataset.catTheme = category;
-    section.style.setProperty("--cat-accent", palette.a);
-    section.style.setProperty("--cat-accent-2", palette.b);
-    section.style.setProperty("--cat-accent-3", palette.c);
-  } else {
-    section.classList.remove("is-cat-themed");
-    section.removeAttribute("data-cat-theme");
-    section.style.removeProperty("--cat-accent");
-    section.style.removeProperty("--cat-accent-2");
-    section.style.removeProperty("--cat-accent-3");
-  }
+  section.classList.remove("is-cat-themed");
+  section.removeAttribute("data-cat-theme");
+  section.style.removeProperty("--cat-accent");
+  section.style.removeProperty("--cat-accent-2");
+  section.style.removeProperty("--cat-accent-3");
 }
 
 function createProductCardElement(p) {
@@ -2311,20 +2337,12 @@ function setupEventListeners() {
       const targetGroup = document.getElementById(`cat-group-${category}`);
       if (targetGroup) {
         isScrollingFromTabClick = true;
-
-        if (window.innerWidth <= 768 && catalogGrid) {
-          catalogGrid.scrollTo({
-            left: targetGroup.offsetLeft - 12,
-            behavior: "smooth"
-          });
-        } else {
-          const stickyHeaderHeight = 140;
-          const targetY = targetGroup.getBoundingClientRect().top + window.pageYOffset - stickyHeaderHeight;
-          window.scrollTo({
-            top: targetY,
-            behavior: "smooth"
-          });
-        }
+        const stickyHeaderHeight = window.innerWidth <= 768 ? 120 : 145;
+        const targetY = targetGroup.getBoundingClientRect().top + window.pageYOffset - stickyHeaderHeight;
+        window.scrollTo({
+          top: targetY,
+          behavior: "smooth"
+        });
 
         setTimeout(() => {
           isScrollingFromTabClick = false;
