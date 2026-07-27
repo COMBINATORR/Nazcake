@@ -1910,6 +1910,7 @@ function renderSkeletons() {
   catalogGrid.innerHTML = skeletonHtml;
 }
 
+let catalogTimeout;
 // Render Catalog by Category Filter with smooth seamless transition
 function renderCatalog(category) {
   if (!catalogGrid) return;
