@@ -1391,19 +1391,22 @@ const LOCAL_CATALOG_IMAGE_OVERRIDES = new Map([
   ["pastry_samsa_chicken_mushroom", "images/Самса с курицей и грибами.webp?v=20260724b"],
   ["pastry_pirozhki_potato", "images/Пирожки с картошкой.webp?v=20260724b"],
   ["pastry_pirozhki_meat_cabbage", "images/Пирожки с мясом и капустой.webp?v=20260724b"],
-  ["pastry_sochnik", "images/pastry_sochnik.webp?v=20260728_v2"],
-  ["pie_meat_round", "images/pie_meat_round.webp?v=20260728_v2"],
-  ["cake_biscuit_roll", "images/cake_biscuit_roll.webp?v=20260728_v2"],
+  ["pastry_sochnik", "images/pastry_sochnik.webp?v=20260728_v4"],
+  ["pie_meat_round", "images/pie_meat_round.webp?v=20260728_v4"],
+  ["cake_biscuit_roll", "images/cake_biscuit_roll.webp?v=20260728_v4"],
+  ["pie_curd_large", "images/pie_curd_large.webp?v=20260728_v4"],
+  ["pie_fruits_large", "images/pie_fruits_large.webp?v=20260728_v4"],
+  ["pie_curd_condensed", "images/pie_curd_condensed.webp?v=20260728_v4"],
   ["pastry_tea_set", "images/pastry_tea_set.webp?v=20260724c"],
   ["pastry_manty_condensed", "images/pastry_manty_condensed.webp?v=20260724d"],
   ["pastry_rogaliki", "images/pastry_rogaliki.webp?v=20260724d"],
-  ["bread_pancakes_meat", "images/bread_pancakes_meat.webp?v=20260728_v3"],
-  ["bread_pancakes_plain", "images/bread_pancakes_plain.webp?v=20260728_v3"],
+  ["bread_pancakes_meat", "images/bread_pancakes_meat.webp?v=20260728_v4"],
+  ["bread_pancakes_plain", "images/bread_pancakes_plain.webp?v=20260728_v4"],
 ]);
 
 /**
  * Resolve product image for storefront.
- * Priority: admin data-URL / remote URL from DB → static path override → DB path → "".
+ * Priority: admin data-URL / remote URL from DB → static path override → local product image → DB path → "".
  */
 function resolveProductImage(productId, serverImage) {
   const fromDb = serverImage == null ? "" : String(serverImage).trim();
@@ -1416,6 +1419,10 @@ function resolveProductImage(productId, serverImage) {
   }
   if (LOCAL_CATALOG_IMAGE_OVERRIDES.has(productId)) {
     return LOCAL_CATALOG_IMAGE_OVERRIDES.get(productId);
+  }
+  const localProd = products.find((p) => p.id === productId);
+  if (localProd && localProd.image) {
+    return localProd.image;
   }
   return fromDb;
 }
