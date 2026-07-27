@@ -3004,9 +3004,35 @@ body.dark-theme .bestsellers-scroll-thumb {
     scroll-padding-inline: 0;
   }
 
-  /* Catalog feed mobile rules */
+  /* Catalog feed mobile rules: horizontal swipe per category */
   .catalog-feed {
     gap: 36px;
+  }
+
+  .catalog-category-group .products-grid {
+    display: flex !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 12px !important;
+    padding-bottom: 8px;
+    padding-left: 2px !important;
+    padding-right: 2px !important;
+    margin: 0 !important;
+  }
+
+  .catalog-category-group .products-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .catalog-category-group .products-grid .product-card {
+    flex: 0 0 min(calc(100vw - 50px), 290px) !important;
+    max-width: min(calc(100vw - 50px), 290px) !important;
+    width: min(calc(100vw - 50px), 290px) !important;
+    scroll-snap-align: start;
+    box-sizing: border-box !important;
   }
 
   .catalog-tabs {
