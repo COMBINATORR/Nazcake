@@ -2842,6 +2842,16 @@ body.dark-theme .ig-grid {
   /* Milk Bar–scale cards: fewer per row, larger photos on desktop */
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
   gap: 36px 32px;
+  transition: opacity 0.22s cubic-bezier(0.4, 0, 0.2, 1), transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 1;
+  transform: translateY(0);
+  will-change: opacity, transform;
+}
+
+.products-grid.is-filtering {
+  opacity: 0.1;
+  transform: translateY(8px);
+  pointer-events: none;
 }
 
 @media (min-width: 1200px) {

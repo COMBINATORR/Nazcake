@@ -1787,7 +1787,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupSiteDialog();
   await loadProducts();
   renderBestsellers();
-  renderCatalog("all");
+  renderCatalog("new");
   setupEventListeners();
   setupDeliveryCalculator();
   setupGeolocation();
@@ -1824,7 +1824,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       triggerHapticFeedback();
       renderBestsellers();
       const activeTab = document.querySelector(".tab-btn.active");
-      const category = activeTab ? activeTab.getAttribute("data-category") : "all";
+      const category = activeTab ? activeTab.getAttribute("data-category") : "new";
       renderCatalog(category);
       updateCartUi();
       updateLocationUi();
@@ -1899,20 +1899,18 @@ function renderSkeletons() {
   catalogGrid.innerHTML = skeletonHtml;
 }
 
-let catalogTimeout;
-// Render Catalog by Category Filter
+// Render Catalog by Category Filter with smooth seamless transition
 function renderCatalog(category) {
   if (!catalogGrid) return;
 
-  // Render skeletons immediately to indicate loading
-  renderSkeletons();
-
   if (catalogTimeout) clearTimeout(catalogTimeout);
+
+  // Smooth fade-out & subtle shift down before updating grid
+  catalogGrid.classList.add("is-filtering");
 
   catalogTimeout = setTimeout(() => {
     let filtered = products;
     if (category === "new") {
-      // Products marked as new (badge «новое» / isNew) — ready for bulk new arrivals
       filtered = products.filter(isNewArrivalProduct);
     } else if (category !== "all") {
       filtered = products.filter(p => p.category === category);
@@ -1923,7 +1921,11 @@ function renderCatalog(category) {
     attachCardEvents(catalogGrid);
     refreshScrollReveal();
     applyCatalogSectionTheme(category);
-  }, 250);
+
+    requestAnimationFrame(() => {
+      catalogGrid.classList.remove("is-filtering");
+    });
+  }, 140);
 }
 
 /** True if product should appear under «Новинки» tab. */
@@ -3288,7 +3290,7 @@ window.saveAdminProduct = async function(id) {
   // Re-render main site catalog, bestsellers, and cart
   renderBestsellers();
   const activeTab = document.querySelector(".tab-btn.active");
-  const category = activeTab ? activeTab.getAttribute("data-category") : "all";
+  const category = activeTab ? activeTab.getAttribute("data-category") : "new";
   renderCatalog(category);
   renderAdminCatalog();
 
