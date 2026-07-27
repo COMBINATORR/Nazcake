@@ -55,7 +55,7 @@ const MAP_OVERRIDE = {
   'торт сникерс': ['dessert_snickers.webp', 'Торт сникерс.webp'],
   'торт фисташка малина': ['dessert_pistachio_raspberry.webp', 'Фисташковый торт.webp'],
   'трубочки с кремом': ['Трубочки с кремом.webp'],
-  'чайный набор': ['pastry_tea_set.webp'],
+  'чайный набор': ['pastry_tea_set.webp', 'Чайный набор.webp'],
   'чесночный мини батон': ['bread_garlic.webp'],
   'шоколадный торт': ['dessert_chocolate.webp', 'Шоколадный торт.webp']
 };
