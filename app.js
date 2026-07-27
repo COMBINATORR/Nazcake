@@ -2001,7 +2001,7 @@ function setupCatalogScrollSpy() {
       }
     });
 
-    if (!currentCategory) {
+    if (!currentCategory && window.innerWidth > 768) {
       const headerOffset = 150;
       let closestCategory = null;
       let minDistance = Infinity;
@@ -2025,10 +2025,11 @@ function setupCatalogScrollSpy() {
     }
   };
 
+  const isMobile = window.innerWidth <= 768;
   scrollSpyObserver = new IntersectionObserver(handleIntersect, {
-    root: null,
-    rootMargin: "-120px 0px -40% 0px",
-    threshold: [0.1, 0.3, 0.6]
+    root: isMobile ? catalogGrid : null,
+    rootMargin: isMobile ? "0px -20% 0px -20%" : "-120px 0px -40% 0px",
+    threshold: [0.15, 0.4, 0.7]
   });
 
   groups.forEach(g => scrollSpyObserver.observe(g));
@@ -2310,13 +2311,20 @@ function setupEventListeners() {
       const targetGroup = document.getElementById(`cat-group-${category}`);
       if (targetGroup) {
         isScrollingFromTabClick = true;
-        const stickyHeaderHeight = 140;
-        const targetY = targetGroup.getBoundingClientRect().top + window.pageYOffset - stickyHeaderHeight;
 
-        window.scrollTo({
-          top: targetY,
-          behavior: "smooth"
-        });
+        if (window.innerWidth <= 768 && catalogGrid) {
+          catalogGrid.scrollTo({
+            left: targetGroup.offsetLeft - 12,
+            behavior: "smooth"
+          });
+        } else {
+          const stickyHeaderHeight = 140;
+          const targetY = targetGroup.getBoundingClientRect().top + window.pageYOffset - stickyHeaderHeight;
+          window.scrollTo({
+            top: targetY,
+            behavior: "smooth"
+          });
+        }
 
         setTimeout(() => {
           isScrollingFromTabClick = false;
