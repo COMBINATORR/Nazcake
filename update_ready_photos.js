@@ -9,6 +9,15 @@ const IMAGES_DIR = path.join(__dirname, 'images');
 
 // Explicit mapping dictionary for Russian names & aliases to images/ files
 const MAP_OVERRIDE = {
+  'булочка с сухофруктами': ['pastry_bun_dryfruit.webp'],
+  'булочка с творогом': ['pastry_bun_cottage.webp'],
+  'карамель': ['dessert_caramel.webp', 'pie_caramel.webp'],
+  'карамельный с оформлением': ['dessert_caramel_design.webp'],
+  'котлеты': ['Котлеты.webp'],
+  'ливерные пирожки': ['pastry_pirog_liver.webp', 'pastry_samsa_liver.webp'],
+  'шоколадный с оформлением': ['dessert_chocolate_design.webp'],
+  'эклер в шоколаде': ['dessert_ekler_choco.webp'],
+  'эклеры': ['dessert_ekler.webp'],
   'банановый торт': ['dessert_banana.webp', 'Банановый торт.webp'],
   'банофи пай торт': ['dessert_banoffee.webp', 'Торт Баноффи пай.webp'],
   'бауырсаки': ['bread_baursaki.webp'],
