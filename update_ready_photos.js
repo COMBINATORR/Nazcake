@@ -30,7 +30,7 @@ const MAP_OVERRIDE = {
   'миренговый рулет': ['Миренговый рулет.webp'],
   'мишка на севере': ['Торт Мишка на севере.webp'],
   'морковный торт': ['dessert_carrot.webp', 'Морковный торт.webp'],
-  'пирог с сухофруктами': ['pie_dryfruit.webp', 'pastry_bun_dryfruit.webp'],
+  'пирог с сухофруктами': ['pie_dryfruit.webp'],
   'пирог с творогом со сгущенкой': ['pie_cottage_condensed.webp'],
   'пирог с творогом': ['pie_curd.webp'],
   'пирожки с картошкой': ['Пирожки с картошкой.webp'],
