@@ -25,6 +25,8 @@
       nav_contacts: "Контакты",
       nav_menu_title: "Меню",
       nav_badge_new: "новое",
+      maintenance_badge: "ТЕХНИЧЕСКИЕ РАБОТЫ",
+      maintenance_banner: "Идут технические работы по обновлению каталога. Скоро сайт заработает в штатном режиме!",
 
       // Hero Section
       hero_subtitle: "ВЫПЕЧКА • ТОРТЫ • АТЫРАУ",
@@ -863,6 +865,8 @@
       nav_contacts: "Байланыс",
       nav_menu_title: "Мәзір",
       nav_badge_new: "жаңа",
+      maintenance_badge: "ТЕХНИКАЛЫҚ ЖҰМЫСТАР",
+      maintenance_banner: "Каталогты жаңарту бойынша техникалық жұмыстар жүргізілуде. Жақында сайт қалыпты режимде жұмыс істейді!",
 
       // Hero Section
       hero_subtitle: "ӨНІМДЕР • ТОРТТАР • АТЫРАУ",
