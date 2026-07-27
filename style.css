@@ -3508,7 +3508,7 @@ body.dark-theme .catalog-tabs {
   box-shadow: 0 4px 14px rgba(74, 44, 17, 0.2);
 }
 
-/* Category Group Headers & Feed Containers */
+/* Category Group Headers & High-Contrast Feed Styling */
 .catalog-category-group {
   display: block;
   width: 100%;
@@ -3521,43 +3521,75 @@ body.dark-theme .catalog-tabs {
   justify-content: space-between;
   width: 100%;
   margin-bottom: 24px;
-  padding-bottom: 12px;
-  border-bottom: 2px solid rgba(196, 138, 40, 0.3);
+  padding: 12px 18px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 16px;
+  border-left: 5px solid var(--accent-chocolate, #4a2c11);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
 }
 
 .category-group-title {
   font-family: var(--font-title);
-  font-size: 1.75rem;
+  font-size: 1.65rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: #2b1810;
   display: flex;
   align-items: center;
   gap: 12px;
   margin: 0;
-  letter-spacing: -0.02em;
-}
-
-.category-group-icon {
-  font-size: 1.5rem;
+  letter-spacing: -0.01em;
 }
 
 .category-group-name {
-  color: var(--text-primary);
+  color: #2b1810;
 }
 
 .category-group-count {
   font-size: 0.85rem;
-  font-weight: 700;
-  background: rgba(196, 138, 40, 0.15);
-  color: var(--accent-gold);
-  padding: 4px 12px;
-  border-radius: 14px;
-  margin-left: 8px;
+  font-weight: 800;
+  background: var(--accent-chocolate, #4a2c11);
+  color: #ffffff;
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-left: 10px;
+  box-shadow: 0 2px 8px rgba(74, 44, 17, 0.25);
+}
+
+/* High-contrast styling when catalog scene dark theme is active */
+.catalog-section.is-cat-themed .category-group-header {
+  background: rgba(0, 0, 0, 0.45);
+  border-left-color: var(--accent-gold, #d4a017);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.catalog-section.is-cat-themed .category-group-title,
+.catalog-section.is-cat-themed .category-group-name {
+  color: #ffffff !important;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+}
+
+.catalog-section.is-cat-themed .category-group-count {
+  background: var(--accent-gold, #d4a017);
+  color: #1a100c;
+  box-shadow: 0 2px 10px rgba(212, 160, 23, 0.4);
+}
+
+body.dark-theme .category-group-header {
+  background: rgba(36, 28, 22, 0.85);
+  border-left-color: var(--accent-gold, #d4a017);
+}
+
+body.dark-theme .category-group-title,
+body.dark-theme .category-group-name {
+  color: #f5ece5;
 }
 
 body.dark-theme .category-group-count {
-  background: rgba(251, 191, 36, 0.2);
-  color: #fbbf24;
+  background: var(--accent-gold, #d4a017);
+  color: #1a100c;
 }
 
 /* «Новинки» tab — slight gold accent so it stands out in the row */

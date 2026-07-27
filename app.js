@@ -1907,15 +1907,15 @@ function renderSkeletons() {
 }
 
 const CATALOG_CATEGORY_ORDER = [
-  { id: "new", i18nKey: "catalog_cat_new", defaultTitle: "Новинки", icon: "✨" },
-  { id: "bakery", i18nKey: "catalog_cat_bakery", defaultTitle: "Хлебобулочные изделия", icon: "🍞" },
-  { id: "pastries", i18nKey: "catalog_cat_pastries", defaultTitle: "Выпечка", icon: "🥐" },
-  { id: "pies", i18nKey: "catalog_cat_pies", defaultTitle: "Пироги", icon: "🥧" },
-  { id: "desserts", i18nKey: "catalog_cat_desserts", defaultTitle: "Пирожные", icon: "🍰" },
-  { id: "berry_desserts", i18nKey: "catalog_cat_berry_desserts", defaultTitle: "Пирожные с ягодами", icon: "🍓" },
-  { id: "cakes", i18nKey: "catalog_cat_cakes", defaultTitle: "Торты", icon: "🎂" },
-  { id: "semi-finished", i18nKey: "catalog_cat_semi", defaultTitle: "Полуфабрикаты", icon: "🥟" },
-  { id: "on_order", i18nKey: "catalog_cat_on_order", defaultTitle: "На заказ", icon: "🎁" }
+  { id: "new", i18nKey: "catalog_cat_new", defaultTitle: "Новинки" },
+  { id: "bakery", i18nKey: "catalog_cat_bakery", defaultTitle: "Хлебобулочные изделия" },
+  { id: "pastries", i18nKey: "catalog_cat_pastries", defaultTitle: "Выпечка" },
+  { id: "pies", i18nKey: "catalog_cat_pies", defaultTitle: "Пироги" },
+  { id: "desserts", i18nKey: "catalog_cat_desserts", defaultTitle: "Пирожные" },
+  { id: "berry_desserts", i18nKey: "catalog_cat_berry_desserts", defaultTitle: "Пирожные с ягодами" },
+  { id: "cakes", i18nKey: "catalog_cat_cakes", defaultTitle: "Торты" },
+  { id: "semi-finished", i18nKey: "catalog_cat_semi", defaultTitle: "Полуфабрикаты" },
+  { id: "on_order", i18nKey: "catalog_cat_on_order", defaultTitle: "На заказ" }
 ];
 
 let isScrollingFromTabClick = false;
@@ -1951,10 +1951,6 @@ function renderCatalog() {
     const titleEl = document.createElement("h3");
     titleEl.className = "category-group-title";
 
-    const iconSpan = document.createElement("span");
-    iconSpan.className = "category-group-icon";
-    iconSpan.textContent = cat.icon;
-
     const nameSpan = document.createElement("span");
     nameSpan.className = "category-group-name";
     nameSpan.setAttribute("data-i18n", cat.i18nKey);
@@ -1964,7 +1960,6 @@ function renderCatalog() {
     countBadge.className = "category-group-count";
     countBadge.textContent = catProducts.length;
 
-    titleEl.appendChild(iconSpan);
     titleEl.appendChild(nameSpan);
     titleEl.appendChild(countBadge);
     headerDiv.appendChild(titleEl);
