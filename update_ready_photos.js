@@ -14,7 +14,7 @@ const MAP_OVERRIDE = {
   'карамель': ['dessert_caramel.webp', 'pie_caramel.webp'],
   'карамельный с оформлением': ['dessert_caramel_design.webp'],
   'котлеты': ['Котлеты.webp'],
-  'ливерные пирожки': ['pastry_pirog_liver.webp', 'pastry_samsa_liver.webp'],
+  'ливерные пирожки': ['pastry_pirog_liver.webp'],
   'шоколадный с оформлением': ['dessert_chocolate_design.webp'],
   'эклер в шоколаде': ['dessert_ekler_choco.webp'],
   'эклеры': ['dessert_ekler.webp'],
