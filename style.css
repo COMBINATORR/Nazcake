@@ -3464,14 +3464,40 @@ body.dark-theme .catalog-section.is-cat-themed .product-price {
 }
 
 .catalog-tabs {
+  position: sticky;
+  top: calc(76px + env(safe-area-inset-top, 0px));
+  z-index: 90;
   display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: nowrap;
+  overflow-x: auto;
   gap: 10px;
-  margin-bottom: 45px;
+  padding: 12px 16px;
+  margin-bottom: 40px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.catalog-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+body.dark-theme .catalog-tabs {
+  background: rgba(24, 20, 16, 0.92);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 }
 
 .tab-btn {
+  flex: 0 0 auto;
+  white-space: nowrap;
   background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
   color: var(--text-secondary);
@@ -3496,6 +3522,55 @@ body.dark-theme .catalog-section.is-cat-themed .product-price {
   color: white;
   border-color: var(--accent-chocolate);
   box-shadow: 0 4px 12px rgba(74, 44, 17, 0.15);
+}
+
+/* Category Group Headers & Feed Containers */
+.catalog-category-group {
+  margin-bottom: 56px;
+  scroll-margin-top: 140px;
+}
+
+.category-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid rgba(196, 138, 40, 0.2);
+}
+
+.category-group-title {
+  font-family: var(--font-title);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+
+.category-group-icon {
+  font-size: 1.4rem;
+}
+
+.category-group-name {
+  letter-spacing: -0.02em;
+}
+
+.category-group-count {
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: rgba(196, 138, 40, 0.15);
+  color: var(--accent-gold);
+  padding: 3px 10px;
+  border-radius: 12px;
+  margin-left: 6px;
+}
+
+body.dark-theme .category-group-count {
+  background: rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
 }
 
 /* «Новинки» tab — slight gold accent so it stands out in the row */

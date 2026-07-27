@@ -1578,9 +1578,7 @@ async function loadProducts() {
       products = sortProductsStable(applyLocalProductOverrides(fromServer));
       console.log("Successfully loaded products from Supabase:", products.length);
       renderBestsellers();
-      const activeTab = document.querySelector(".tab-btn.active");
-      const category = activeTab ? activeTab.getAttribute("data-category") : "new";
-      renderCatalog(category);
+      renderCatalog();
     } else {
       console.log("Supabase products table is empty. Using local products fallback.");
       loadCustomProductsLocalFallback();
@@ -1791,7 +1789,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupSiteDialog();
   await loadProducts();
   renderBestsellers();
-  renderCatalog("new");
+  renderCatalog();
   setupEventListeners();
   setupDeliveryCalculator();
   setupGeolocation();
@@ -1827,9 +1825,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.i18n.onLanguageChange(() => {
       triggerHapticFeedback();
       renderBestsellers();
-      const activeTab = document.querySelector(".tab-btn.active");
-      const category = activeTab ? activeTab.getAttribute("data-category") : "new";
-      renderCatalog(category);
+      renderCatalog();
       updateCartUi();
       updateLocationUi();
     });
@@ -1910,38 +1906,157 @@ function renderSkeletons() {
   catalogGrid.innerHTML = skeletonHtml;
 }
 
+const CATALOG_CATEGORY_ORDER = [
+  { id: "new", i18nKey: "catalog_cat_new", defaultTitle: "Новинки", icon: "✨" },
+  { id: "bakery", i18nKey: "catalog_cat_bakery", defaultTitle: "Хлебобулочные изделия", icon: "🍞" },
+  { id: "pastries", i18nKey: "catalog_cat_pastries", defaultTitle: "Выпечка", icon: "🥐" },
+  { id: "pies", i18nKey: "catalog_cat_pies", defaultTitle: "Пироги", icon: "🥧" },
+  { id: "desserts", i18nKey: "catalog_cat_desserts", defaultTitle: "Пирожные", icon: "🍰" },
+  { id: "berry_desserts", i18nKey: "catalog_cat_berry_desserts", defaultTitle: "Пирожные с ягодами", icon: "🍓" },
+  { id: "cakes", i18nKey: "catalog_cat_cakes", defaultTitle: "Торты", icon: "🎂" },
+  { id: "semi-finished", i18nKey: "catalog_cat_semi", defaultTitle: "Полуфабрикаты", icon: "🥟" },
+  { id: "on_order", i18nKey: "catalog_cat_on_order", defaultTitle: "На заказ", icon: "🎁" }
+];
+
+let isScrollingFromTabClick = false;
+let scrollSpyObserver = null;
 let catalogTimeout;
-// Render Catalog by Category Filter with smooth seamless transition
-function renderCatalog(category) {
+
+// Render Continuous Catalog Feed
+function renderCatalog() {
   if (!catalogGrid) return;
 
-  if (catalogTimeout) clearTimeout(catalogTimeout);
+  catalogGrid.innerHTML = '';
 
-  // Smooth fade-out & subtle shift down before updating grid
-  catalogGrid.classList.add("is-filtering");
-
-  catalogTimeout = setTimeout(() => {
-    let filtered = products;
-    if (category === "new") {
-      filtered = products.filter(isNewArrivalProduct);
-      if (filtered.length < 2) {
-        filtered = products;
-      }
-    } else if (category && category !== "all") {
-      filtered = products.filter(p => p.category === category);
+  CATALOG_CATEGORY_ORDER.forEach(cat => {
+    let catProducts = [];
+    if (cat.id === "new") {
+      catProducts = products.filter(isNewArrivalProduct);
+    } else {
+      catProducts = products.filter(p => p.category === cat.id);
     }
 
-    catalogGrid.innerHTML = '';
-    filtered.forEach(p => catalogGrid.appendChild(createProductCardElement(p)));
-    attachCardEvents(catalogGrid);
-    catalogGrid.querySelectorAll('.reveal-item').forEach(el => el.classList.add('revealed'));
-    refreshScrollReveal();
-    applyCatalogSectionTheme(category);
+    if (!catProducts || catProducts.length === 0) return;
 
-    requestAnimationFrame(() => {
-      catalogGrid.classList.remove("is-filtering");
+    // Group container
+    const groupDiv = document.createElement("div");
+    groupDiv.className = "catalog-category-group";
+    groupDiv.id = `cat-group-${cat.id}`;
+    groupDiv.dataset.category = cat.id;
+
+    // Category group header
+    const headerDiv = document.createElement("div");
+    headerDiv.className = "category-group-header";
+
+    const titleEl = document.createElement("h3");
+    titleEl.className = "category-group-title";
+
+    const iconSpan = document.createElement("span");
+    iconSpan.className = "category-group-icon";
+    iconSpan.textContent = cat.icon;
+
+    const nameSpan = document.createElement("span");
+    nameSpan.className = "category-group-name";
+    nameSpan.setAttribute("data-i18n", cat.i18nKey);
+    nameSpan.textContent = window.i18n ? window.i18n.t(cat.i18nKey) : cat.defaultTitle;
+
+    const countBadge = document.createElement("span");
+    countBadge.className = "category-group-count";
+    countBadge.textContent = catProducts.length;
+
+    titleEl.appendChild(iconSpan);
+    titleEl.appendChild(nameSpan);
+    titleEl.appendChild(countBadge);
+    headerDiv.appendChild(titleEl);
+    groupDiv.appendChild(headerDiv);
+
+    // Items grid
+    const gridDiv = document.createElement("div");
+    gridDiv.className = "products-grid";
+    catProducts.forEach(p => gridDiv.appendChild(createProductCardElement(p)));
+
+    groupDiv.appendChild(gridDiv);
+    catalogGrid.appendChild(groupDiv);
+  });
+
+  attachCardEvents(catalogGrid);
+  catalogGrid.querySelectorAll('.reveal-item').forEach(el => el.classList.add('revealed'));
+  refreshScrollReveal();
+  setupCatalogScrollSpy();
+}
+
+function setupCatalogScrollSpy() {
+  if (scrollSpyObserver) {
+    scrollSpyObserver.disconnect();
+  }
+
+  const groups = document.querySelectorAll(".catalog-category-group");
+  if (!groups || groups.length === 0) return;
+
+  const handleIntersect = (entries) => {
+    if (isScrollingFromTabClick) return;
+
+    let currentCategory = null;
+    let maxIntersectionRatio = 0;
+
+    entries.forEach(entry => {
+      if (entry.isIntersecting && entry.intersectionRatio > maxIntersectionRatio) {
+        maxIntersectionRatio = entry.intersectionRatio;
+        currentCategory = entry.target.getAttribute("data-category");
+      }
     });
-  }, 140);
+
+    if (!currentCategory) {
+      const headerOffset = 150;
+      let closestCategory = null;
+      let minDistance = Infinity;
+
+      groups.forEach(g => {
+        const rect = g.getBoundingClientRect();
+        const dist = Math.abs(rect.top - headerOffset);
+        if (rect.top <= window.innerHeight && rect.bottom >= headerOffset) {
+          if (dist < minDistance) {
+            minDistance = dist;
+            closestCategory = g.getAttribute("data-category");
+          }
+        }
+      });
+
+      if (closestCategory) currentCategory = closestCategory;
+    }
+
+    if (currentCategory) {
+      setActiveTabButton(currentCategory, false);
+    }
+  };
+
+  scrollSpyObserver = new IntersectionObserver(handleIntersect, {
+    root: null,
+    rootMargin: "-120px 0px -40% 0px",
+    threshold: [0.1, 0.3, 0.6]
+  });
+
+  groups.forEach(g => scrollSpyObserver.observe(g));
+}
+
+function setActiveTabButton(category, scrollTabIntoView = true) {
+  const tabButtons = document.querySelectorAll(".catalog-tabs .tab-btn");
+  let activeBtn = null;
+
+  tabButtons.forEach(btn => {
+    if (btn.getAttribute("data-category") === category) {
+      btn.classList.add("active");
+      activeBtn = btn;
+    } else {
+      btn.classList.remove("active");
+    }
+  });
+
+  if (activeBtn && scrollTabIntoView) {
+    activeBtn.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+  }
+
+  applyCatalogSectionTheme(category);
 }
 
 /** True if product should appear under «Новинки» tab. */
@@ -2190,14 +2305,28 @@ function attachCardEvents(gridElement) {
 
 // Setup Basic Navigation & UI Listeners
 function setupEventListeners() {
-  // Catalog tabs toggle
+  // Catalog tabs toggle & smooth scroll to category section
   tabButtons.forEach(btn => {
     btn.addEventListener("click", () => {
       triggerHapticFeedback();
-      tabButtons.forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
       const category = btn.getAttribute("data-category");
-      renderCatalog(category);
+      setActiveTabButton(category, true);
+
+      const targetGroup = document.getElementById(`cat-group-${category}`);
+      if (targetGroup) {
+        isScrollingFromTabClick = true;
+        const stickyHeaderHeight = 140;
+        const targetY = targetGroup.getBoundingClientRect().top + window.pageYOffset - stickyHeaderHeight;
+
+        window.scrollTo({
+          top: targetY,
+          behavior: "smooth"
+        });
+
+        setTimeout(() => {
+          isScrollingFromTabClick = false;
+        }, 850);
+      }
     });
   });
 
