@@ -1459,8 +1459,9 @@ const LOCAL_CATALOG_IMAGE_OVERRIDES = new Map([
   ["berry_choux_rings", "images/berry_choux_rings.webp?v=20260728_v10"],
   ["berry_cupcake_red", "images/berry_cupcake_red.webp?v=20260728_v10"],
   ["cake_napoleon", "images/cake_napoleon.webp?v=20260728_v10"],
-  ["cake_esterhazy", "images/cake_esterhazy.webp?v=20260728_v10"],
-  ["cake_kitkat", "images/cake_kitkat.webp?v=20260728_v10"],
+  ["cake_esterhazy", "images/cake_esterhazy.webp?v=20260728_v11"],
+  ["cake_kitkat", "images/cake_kitkat.webp?v=20260728_v11"],
+  ["dessert_meringue_caramel", "images/dessert_meringue_caramel.webp?v=20260728_v11"],
 ]);
 
 /**
