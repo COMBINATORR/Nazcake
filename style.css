@@ -3565,7 +3565,7 @@ body.dark-theme .catalog-section.is-cat-themed .product-price {
 
 .catalog-tabs {
   position: sticky;
-  top: calc(115px + env(safe-area-inset-top, 0px));
+  top: calc(80px + env(safe-area-inset-top, 0px));
   z-index: 90;
   display: flex;
   justify-content: flex-start;
