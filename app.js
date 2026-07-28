@@ -1452,8 +1452,12 @@ const LOCAL_CATALOG_IMAGE_OVERRIDES = new Map([
   ["dessert_pistachio_raspberry", "images/dessert_pistachio_raspberry.webp?v=20260728_v6"],
   ["berry_cheesecake", "images/berry_cheesecake.webp?v=20260728_v7"],
   ["berry_cupcake_choco", "images/berry_cupcake_choco.webp?v=20260728_v7"],
-  ["dessert_grillage", "images/dessert_grillage.webp?v=20260728_v7"],
-  ["dessert_latte", "images/dessert_latte.webp?v=20260728_v7"],
+  ["dessert_grillage", "images/dessert_grillage.webp?v=20260728_v8"],
+  ["dessert_latte", "images/dessert_latte.webp?v=20260728_v8"],
+  ["dessert_almond_fruits", "images/dessert_almond_fruits.webp?v=20260728_v8"],
+  ["berry_royal", "images/berry_royal.webp?v=20260728_v8"],
+  ["berry_choux_rings", "images/berry_choux_rings.webp?v=20260728_v8"],
+  ["berry_cupcake_red", "images/berry_cupcake_red.webp?v=20260728_v8"],
 ]);
 
 /**
