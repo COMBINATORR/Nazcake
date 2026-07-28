@@ -1024,7 +1024,7 @@ let products = [
     category: "cakes",
     price: 8500,
     unit: "шт.",
-    image: "images/Торт киткат.webp",
+    image: "images/cake_kitkat.webp",
     desc: "Праздничный шоколадный торт, оформленный хрустящими батончиками KitKat по кругу.",
     ingredients: "Сливочное масло, сахар, миндальная мука, мука, шоколад, вафельная стружка, сахарная пудра, ванилин, разрыхлитель, яйцо, варёная сгущенка, сливки. Аллергены: глютен, молоко, яйца, орехи.",
     badge: "",
@@ -1036,7 +1036,7 @@ let products = [
     category: "cakes",
     price: 9800,
     unit: "шт.",
-    image: "images/Торт Эстерхазе.webp",
+    image: "images/cake_esterhazy.webp",
     desc: "Изысканный венгерский миндальный торт. Белково-ореховые коржи прослоены нежным заварным кремом с пралине.",
     ingredients: "Белок, сахар, миндальная мука, соль, молоко, желток, ванилин, кукурузный крахмал, сгущенное молоко, миндальное пралине, сливочное масло, сливки, глюкозный сироп, желатиновая масса, белый шоколад. Аллергены: глютен, молоко, яйца, орехи, желатин.",
     badge: "премиум",
@@ -1059,7 +1059,7 @@ let products = [
     category: "cakes",
     price: 3200,
     unit: "шт.",
-    image: "images/Торт наполеон.webp",
+    image: "images/cake_napoleon.webp",
     desc: "Домашний Наполеон по семейному рецепту. Тонкие коржи отлично пропитаны нежным сливочно-заварным кремом.",
     ingredients: "Шанти, яйцо, мука, сахар, разрыхлитель, сливки, молоко. Аллергены: глютен, молоко, яйца.",
     badge: ""
@@ -1456,8 +1456,11 @@ const LOCAL_CATALOG_IMAGE_OVERRIDES = new Map([
   ["dessert_latte", "images/dessert_latte.webp?v=20260728_v8"],
   ["dessert_almond_fruits", "images/dessert_almond_fruits.webp?v=20260728_v8"],
   ["berry_royal", "images/berry_royal.webp?v=20260728_v8"],
-  ["berry_choux_rings", "images/berry_choux_rings.webp?v=20260728_v8"],
-  ["berry_cupcake_red", "images/berry_cupcake_red.webp?v=20260728_v8"],
+  ["berry_choux_rings", "images/berry_choux_rings.webp?v=20260728_v10"],
+  ["berry_cupcake_red", "images/berry_cupcake_red.webp?v=20260728_v10"],
+  ["cake_napoleon", "images/cake_napoleon.webp?v=20260728_v10"],
+  ["cake_esterhazy", "images/cake_esterhazy.webp?v=20260728_v10"],
+  ["cake_kitkat", "images/cake_kitkat.webp?v=20260728_v10"],
 ]);
 
 /**
