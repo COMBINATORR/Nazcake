@@ -5847,11 +5847,13 @@ function setupCategoryStage() {
     if (targetTab) {
       if (typeof triggerHapticFeedback === "function") triggerHapticFeedback();
       targetTab.click();
-    } else if (typeof renderCatalog === "function") {
-      renderCatalog(category);
+    } else {
+      if (typeof renderCatalog === "function") {
+        renderCatalog(category);
+      }
+      const catalog = document.getElementById("catalog");
+      if (catalog) catalog.scrollIntoView({ behavior: "smooth" });
     }
-    const catalog = document.getElementById("catalog");
-    if (catalog) catalog.scrollIntoView({ behavior: "smooth" });
   };
 
   const applyRoles = () => {
