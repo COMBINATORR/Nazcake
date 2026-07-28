@@ -1878,6 +1878,17 @@
     
     <div class="footer-bottom">
       <p data-i18n="footer_copyright">© 2026 Кондитерский дом Nazcake. Все права защищены. Разработано с заботой о вкусе.</p>
+      <div id="studio-credit-menu" class="studio-credit-menu" style="touch-action: none; -webkit-user-select: none; user-select: none; position: relative;">
+        <!-- Backdrop -->
+        <div id="studio-credit-backdrop" class="studio-credit-backdrop" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 99998;"></div>
+        
+        <!-- Radial fan container -->
+        <div id="studio-credit-fan" class="pointer-events-none" style="width: 0; height: 0; position: absolute; left: 50%; bottom: calc(100% - 4px); z-index: 99999; display: none;"></div>
+
+        <button type="button" id="spcwlkr-credit" class="spcwlkr-credit" aria-haspopup="menu" aria-expanded="false" aria-label="SPCWLKR Digital Studio. Удерживайте для связи: +7 (702) 379-80-74">
+          Powered by SPCWLKR Digital Studio
+        </button>
+      </div>
     </div>
   </footer>
 
@@ -1982,6 +1993,6 @@
   <!-- Leaflet loaded lazily from app.js when contacts section approaches -->
   <!-- JavaScript Application -->
   <script defer src="i18n.js?v=7.1"></script>
-  <script defer src="app.js?v=11.8"></script>
+  <script defer src="app.js?v=11.9"></script>
 </body>
 </html>

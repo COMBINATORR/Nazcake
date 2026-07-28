@@ -2492,6 +2492,7 @@ function setupEventListeners() {
   }
 
   checkoutForm.addEventListener("submit", handleCheckoutSubmit);
+  setupStudioCreditMenu();
 }
 
 // Open Product Preview Modal
@@ -6202,6 +6203,364 @@ function adjustColorBrightness(hex, percent) {
   B = B < 255 ? (B > 0 ? B : 0) : 255;
 
   return `#${[R, G, B].map(x => x.toString(16).padStart(2, '0')).join('')}`;
+}
+
+const CREDIT_ACTIONS = [
+  {
+    id: 'phone',
+    label: 'Звонок',
+    href: 'tel:+77023798074',
+    external: false,
+    iconSvg: `<svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" style="width: 20px; height: 20px;"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg>`,
+    accent: '#5BA3E8',
+    angle: -55
+  },
+  {
+    id: 'whatsapp',
+    label: 'WhatsApp',
+    href: 'https://wa.me/77023798074',
+    external: true,
+    iconSvg: `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`,
+    accent: '#2DD36F',
+    angle: 0
+  },
+  {
+    id: 'telegram',
+    label: 'Telegram',
+    href: 'https://t.me/grokhunter',
+    external: true,
+    iconSvg: `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px;"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" /></svg>`,
+    accent: '#3DBBFF',
+    angle: 55
+  }
+];
+
+function setupStudioCreditMenu() {
+  const creditBtn = document.getElementById("spcwlkr-credit");
+  const backdrop = document.getElementById("studio-credit-backdrop");
+  const fan = document.getElementById("studio-credit-fan");
+  if (!creditBtn || !backdrop || !fan) return;
+
+  const PHONE_DISPLAY = "+7 (702) 379-80-74";
+  const HOLD_MS = 280;
+  const RADIUS = 86;
+  const HIT_RADIUS = 56;
+  const INFLUENCE_RADIUS = 110;
+  const EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
+
+  let open = false;
+  let pressed = false;
+  let openedByHold = false;
+  let suppressClick = false;
+  let holdTimer = null;
+  let pointerId = null;
+  let activeId = null;
+  let lastVibrateId = null;
+  let rafMove = null;
+
+  fan.innerHTML = CREDIT_ACTIONS.map((action, i) => {
+    const rad = ((action.angle - 90) * Math.PI) / 180;
+    const x = Math.cos(rad) * RADIUS;
+    const y = Math.sin(rad) * RADIUS;
+
+    return `
+      <div id="fan-item-${action.id}" class="absolute flex flex-col items-center" style="
+        position: absolute;
+        left: ${x}px;
+        top: ${y}px;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        pointer-events: none;
+        transition: transform 280ms ${EASE}, opacity 200ms ease;
+        transition-delay: 0ms;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+      ">
+        <button type="button" class="studio-credit-fan-btn flex items-center justify-center w-12 h-12 rounded-full border" style="
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          border: 1px solid var(--border-color);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: var(--bg-card, #ffffff);
+          box-shadow: 0 8px 22px rgba(0,0,0,0.28);
+          transform: scale(0.35);
+          opacity: 0;
+          color: var(--text-primary);
+          transition: transform 320ms ${EASE}, opacity 220ms ease;
+          cursor: pointer;
+        " data-action-id="${action.id}" aria-label="${action.label}">
+          ${action.iconSvg}
+        </button>
+        <span class="studio-credit-fan-label mt-1.5 whitespace-nowrap" style="
+          margin-top: 6px;
+          font-family: var(--font-display);
+          font-size: 9px;
+          font-weight: 700;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          opacity: 0;
+          transition: opacity 180ms ease, transform 90ms linear;
+        ">${action.label}</span>
+      </div>
+    `;
+  }).join("");
+
+  const fanItems = fan.querySelectorAll(".absolute");
+  const fanButtons = fan.querySelectorAll(".studio-credit-fan-btn");
+
+  const clearHold = () => {
+    if (holdTimer) {
+      clearTimeout(holdTimer);
+      holdTimer = null;
+    }
+  };
+
+  const close = () => {
+    clearHold();
+    open = false;
+    activeId = null;
+    pressed = false;
+    openedByHold = false;
+    pointerId = null;
+    lastVibrateId = null;
+
+    creditBtn.classList.remove("spcwlkr-credit-active");
+    creditBtn.setAttribute("aria-expanded", "false");
+    backdrop.style.display = "none";
+    fan.style.display = "none";
+
+    fanItems.forEach((item, i) => {
+      item.style.opacity = "0";
+      item.style.pointerEvents = "none";
+      item.style.transition = `transform 280ms ${EASE}, opacity 200ms ease`;
+      item.style.transitionDelay = "0ms";
+      item.style.transform = `translate(-50%, -50%)`;
+
+      const btn = item.querySelector(".studio-credit-fan-btn");
+      btn.style.transform = "scale(0.35)";
+      btn.style.opacity = "0";
+      btn.style.color = "var(--text-primary)";
+      btn.style.borderColor = "var(--border-color)";
+      btn.style.boxShadow = "0 8px 22px rgba(0,0,0,0.28)";
+
+      const label = item.querySelector(".studio-credit-fan-label");
+      label.style.opacity = "0";
+    });
+  };
+
+  const openMenu = () => {
+    open = true;
+    activeId = null;
+    creditBtn.classList.add("spcwlkr-credit-active");
+    creditBtn.setAttribute("aria-expanded", "true");
+    backdrop.style.display = "block";
+    fan.style.display = "block";
+
+    if (typeof navigator !== "undefined" && navigator.vibrate) {
+      navigator.vibrate(12);
+    }
+
+    fanItems.forEach((item, i) => {
+      const action = CREDIT_ACTIONS[i];
+      const rad = ((action.angle - 90) * Math.PI) / 180;
+      const x = Math.cos(rad) * RADIUS;
+      const y = Math.sin(rad) * RADIUS;
+
+      item.style.opacity = "1";
+      item.style.pointerEvents = "auto";
+      item.style.transition = `transform 90ms linear, opacity 280ms ${EASE}`;
+      item.style.transitionDelay = `${40 + i * 55}ms`;
+      item.style.transform = `translate(-50%, -50%)`;
+
+      const btn = item.querySelector(".studio-credit-fan-btn");
+      btn.style.transform = "scale(0.88)";
+      btn.style.opacity = "0.55";
+      btn.style.transition = `transform 320ms ${EASE}, opacity 220ms ease`;
+
+      const label = item.querySelector(".studio-credit-fan-label");
+      label.style.opacity = "0.75";
+    });
+  };
+
+  const updateMagnet = (clientX, clientY) => {
+    let best = null;
+    let bestDist = HIT_RADIUS;
+
+    CREDIT_ACTIONS.forEach((action, i) => {
+      const item = fanItems[i];
+      const btn = fanButtons[i];
+      if (!item || !btn) return;
+
+      const r = btn.getBoundingClientRect();
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+      const dx = clientX - cx;
+      const dy = clientY - cy;
+      const dist = Math.hypot(dx, dy);
+
+      let influence = 0;
+      if (dist < INFLUENCE_RADIUS) {
+        const t = 1 - dist / INFLUENCE_RADIUS;
+        influence = t * t * (3 - 2 * t);
+      }
+
+      const pull = influence * 10;
+      const len = dist || 1;
+      const pullX = (dx / len) * pull;
+      const pullY = (dy / len) * pull;
+
+      item.style.transition = "transform 90ms linear, opacity 280ms ease";
+      item.style.transitionDelay = "0ms";
+      item.style.transform = `translate(calc(-50% + ${pullX}px), calc(-50% + ${pullY}px))`;
+
+      const isCurrentActive = activeId === action.id;
+      const scale = 0.88 + influence * 0.42 + (isCurrentActive ? 0.14 : 0);
+      const opacity = 0.55 + influence * 0.45;
+
+      btn.style.transform = `scale(${scale})`;
+      btn.style.opacity = opacity;
+
+      const label = item.querySelector(".studio-credit-fan-label");
+      label.style.opacity = 0.75 + influence * 0.25;
+      label.style.transform = `scale(${isCurrentActive ? 1.06 : 0.96 + influence * 0.08})`;
+
+      if (dist < bestDist) {
+        bestDist = dist;
+        best = action.id;
+      }
+    });
+
+    CREDIT_ACTIONS.forEach((action, i) => {
+      const btn = fanButtons[i];
+      const label = fanItems[i].querySelector(".studio-credit-fan-label");
+      const isCurrentActive = (best === action.id);
+      
+      btn.style.color = isCurrentActive ? action.accent : "var(--text-primary)";
+      btn.style.borderColor = isCurrentActive ? action.accent : "var(--border-color)";
+      if (isCurrentActive) {
+        btn.style.boxShadow = `0 0 0 2px ${action.accent}8c, 0 12px 32px rgba(0,0,0,0.4), 0 0 24px ${action.accent}59`;
+        label.style.color = action.accent;
+      } else {
+        btn.style.boxShadow = "0 8px 22px rgba(0,0,0,0.28)";
+        label.style.color = "";
+      }
+    });
+
+    if (best !== activeId) {
+      activeId = best;
+      if (best && best !== lastVibrateId && typeof navigator !== "undefined" && navigator.vibrate) {
+        lastVibrateId = best;
+        navigator.vibrate(6);
+      }
+      if (!best) lastVibrateId = null;
+    }
+  };
+
+  const pickNearest = (clientX, clientY) => {
+    let best = null;
+    let bestDist = HIT_RADIUS;
+    fanButtons.forEach((btn, i) => {
+      const r = btn.getBoundingClientRect();
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+      const d = Math.hypot(clientX - cx, clientY - cy);
+      if (d < bestDist) {
+        bestDist = d;
+        best = CREDIT_ACTIONS[i].id;
+      }
+    });
+    return best;
+  };
+
+  const openAction = (action) => {
+    if (!action) return;
+    if (action.external) {
+      window.open(action.href, "_blank", "noopener,noreferrer");
+    } else {
+      window.location.href = action.href;
+    }
+  };
+
+  const onPointerDown = (e) => {
+    if (e.button != null && e.button !== 0) return;
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch (err) {}
+    pointerId = e.pointerId;
+    pressed = true;
+    openedByHold = false;
+    suppressClick = false;
+
+    const { clientX, clientY } = e;
+    clearHold();
+
+    holdTimer = setTimeout(() => {
+      openedByHold = true;
+      suppressClick = true;
+      openMenu();
+      requestAnimationFrame(() => {
+        updateMagnet(clientX, clientY);
+      });
+    }, HOLD_MS);
+  };
+
+  const onPointerMove = (e) => {
+    if (!open) return;
+    if (pointerId != null && e.pointerId !== pointerId) return;
+
+    const { clientX, clientY } = e;
+    if (rafMove) cancelAnimationFrame(rafMove);
+    rafMove = requestAnimationFrame(() => {
+      updateMagnet(clientX, clientY);
+    });
+  };
+
+  const onPointerUp = (e) => {
+    clearHold();
+    pressed = false;
+
+    if (open && openedByHold) {
+      const id = pickNearest(e.clientX, e.clientY) || activeId;
+      const action = CREDIT_ACTIONS.find(a => a.id === id);
+      close();
+      if (action) {
+        setTimeout(() => openAction(action), 50);
+      }
+      return;
+    }
+
+    if (!openedByHold && !suppressClick) {
+      if (open) close();
+      else openMenu();
+    }
+  };
+
+  const onPointerCancel = () => {
+    clearHold();
+    pressed = false;
+    if (openedByHold) close();
+  };
+
+  creditBtn.addEventListener("pointerdown", onPointerDown);
+  creditBtn.addEventListener("pointermove", onPointerMove);
+  creditBtn.addEventListener("pointerup", onPointerUp);
+  creditBtn.addEventListener("pointercancel", onPointerCancel);
+  creditBtn.addEventListener("contextmenu", (e) => e.preventDefault());
+
+  backdrop.addEventListener("click", close);
+
+  fanButtons.forEach((btn, i) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openAction(CREDIT_ACTIONS[i]);
+      close();
+    });
+  });
 }
 
 if (typeof module !== 'undefined') {

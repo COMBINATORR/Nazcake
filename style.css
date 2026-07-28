@@ -5513,10 +5513,22 @@ body.dark-theme .site-dialog-icon.is-warn {
 }
 
 .footer-bottom {
-  text-align: center;
+  border-top: 1px solid var(--border-color);
+  margin-top: 20px;
   padding-top: 25px;
   font-size: 0.8rem;
   color: #908479;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+@media (min-width: 769px) {
+  .footer-bottom {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
 }
 
 @media (max-width: 768px) {
@@ -8313,4 +8325,171 @@ body.dark-theme .seo-about-box p {
   left: 0;
   right: 0;
   width: 100%;
+}
+
+/* ══════════════════════════════════════════
+   SPCWLKR DIGITAL STUDIO — LETTERPRESS CREDIT
+   (Copied from Manicure Master project)
+══════════════════════════════════════════ */
+.spcwlkr-credit {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: transparent;
+  background: linear-gradient(135deg, #b49368 0%, #8e6c46 50%, #b49368 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow:
+    1px 1px 1px rgba(255, 255, 255, 0.7),
+    -1px -1px 1px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background-color: transparent;
+  transition:
+    transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    text-shadow 0.4s ease,
+    background 0.4s ease,
+    color 0.4s ease;
+  will-change: transform, text-shadow;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.spcwlkr-credit:hover {
+  background: linear-gradient(135deg, #8e6c46 0%, #c5a880 50%, #8e6c46 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow:
+    0px 1px 0px rgba(255, 255, 255, 0.8),
+    0px 2px 3px rgba(0, 0, 0, 0.15),
+    0px 4px 8px rgba(0, 0, 0, 0.08),
+    0px 8px 16px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+.spcwlkr-credit-active {
+  background: linear-gradient(135deg, #8e6c46 0%, #c5a880 50%, #8e6c46 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow:
+    0px 1px 0px rgba(255, 255, 255, 0.8),
+    0px 2px 3px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px) scale(1.02);
+}
+
+/* Dark theme overrides */
+body.dark-theme .spcwlkr-credit {
+  background: linear-gradient(135deg, #6b5a48 0%, #4a3d30 50%, #6b5a48 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow:
+    1px 1px 1px rgba(255, 255, 255, 0.04),
+    -1px -1px 1px rgba(0, 0, 0, 0.6);
+}
+body.dark-theme .spcwlkr-credit:hover {
+  background: linear-gradient(135deg, #c5a880 0%, #e8d5b7 50%, #c5a880 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow:
+    0px 1px 0px rgba(197, 168, 128, 0.25),
+    0px 2px 3px rgba(0, 0, 0, 0.4),
+    0px 4px 8px rgba(0, 0, 0, 0.25),
+    0px 8px 16px rgba(0, 0, 0, 0.1);
+}
+body.dark-theme .spcwlkr-credit-active {
+  background: linear-gradient(135deg, #c5a880 0%, #e8d5b7 50%, #c5a880 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow:
+    0px 1px 0px rgba(197, 168, 128, 0.25),
+    0px 2px 3px rgba(0, 0, 0, 0.4),
+    0px 4px 8px rgba(0, 0, 0, 0.25);
+}
+
+.studio-credit-fan-btn {
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  background: color-mix(in srgb, #ffffff 94%, #fff);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  will-change: transform, opacity, box-shadow;
+}
+body.dark-theme .studio-credit-fan-btn {
+  background: color-mix(in srgb, #1a1a1a 92%, #000 8%);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.28);
+}
+
+.studio-credit-menu {
+  min-height: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.studio-credit-fan-label {
+  font-family: var(--font-display);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #2a2218;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9),
+    0 1px 3px rgba(0, 0, 0, 0.18);
+}
+body.dark-theme .studio-credit-fan-label {
+  color: #f5f0e8;
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.85),
+    0 0 10px rgba(0, 0, 0, 0.45);
+}
+
+.studio-credit-hint {
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #1e1812;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.95),
+    0 2px 6px rgba(0, 0, 0, 0.12);
+  animation: studio-hint-in 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+body.dark-theme .studio-credit-hint {
+  color: #f7f2ea;
+  text-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.9),
+    0 0 12px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes studio-hint-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 6px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.studio-credit-backdrop {
+  background: rgba(30, 24, 18, 0.22);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  animation: studio-backdrop-in 220ms ease both;
+}
+body.dark-theme .studio-credit-backdrop {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+@keyframes studio-backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
