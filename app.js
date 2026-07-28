@@ -6282,15 +6282,12 @@ function setupStudioCreditMenu() {
           width: 48px;
           height: 48px;
           border-radius: 50%;
-          border: 1px solid var(--border-color);
           display: flex;
           align-items: center;
           justify-content: center;
-          background: var(--bg-card, #ffffff);
-          box-shadow: 0 8px 22px rgba(0,0,0,0.28);
           transform: scale(0.35);
           opacity: 0;
-          color: var(--text-primary);
+          color: #ffffff;
           transition: transform 320ms ${EASE}, opacity 220ms ease;
           cursor: pointer;
         " data-action-id="${action.id}" aria-label="${action.label}">
@@ -6344,9 +6341,9 @@ function setupStudioCreditMenu() {
       const btn = item.querySelector(".studio-credit-fan-btn");
       btn.style.transform = "scale(0.35)";
       btn.style.opacity = "0";
-      btn.style.color = "var(--text-primary)";
-      btn.style.borderColor = "var(--border-color)";
-      btn.style.boxShadow = "0 8px 22px rgba(0,0,0,0.28)";
+      btn.style.color = "#ffffff";
+      btn.style.borderColor = "rgba(255, 255, 255, 0.12)";
+      btn.style.boxShadow = "0 8px 22px rgba(0,0,0,0.4)";
 
       const label = item.querySelector(".studio-credit-fan-label");
       label.style.opacity = "0";
@@ -6379,7 +6376,7 @@ function setupStudioCreditMenu() {
 
       const btn = item.querySelector(".studio-credit-fan-btn");
       btn.style.transform = "scale(0.88)";
-      btn.style.opacity = "0.55";
+      btn.style.opacity = "0.9";
       btn.style.transition = `transform 320ms ${EASE}, opacity 220ms ease`;
 
       const label = item.querySelector(".studio-credit-fan-label");
@@ -6420,7 +6417,7 @@ function setupStudioCreditMenu() {
 
       const isCurrentActive = activeId === action.id;
       const scale = 0.88 + influence * 0.42 + (isCurrentActive ? 0.14 : 0);
-      const opacity = 0.55 + influence * 0.45;
+      const opacity = 0.9 + influence * 0.1;
 
       btn.style.transform = `scale(${scale})`;
       btn.style.opacity = opacity;
@@ -6440,13 +6437,13 @@ function setupStudioCreditMenu() {
       const label = fanItems[i].querySelector(".studio-credit-fan-label");
       const isCurrentActive = (best === action.id);
       
-      btn.style.color = isCurrentActive ? action.accent : "var(--text-primary)";
-      btn.style.borderColor = isCurrentActive ? action.accent : "var(--border-color)";
+      btn.style.color = isCurrentActive ? action.accent : "#ffffff";
+      btn.style.borderColor = isCurrentActive ? action.accent : "rgba(255, 255, 255, 0.12)";
       if (isCurrentActive) {
         btn.style.boxShadow = `0 0 0 2px ${action.accent}8c, 0 12px 32px rgba(0,0,0,0.4), 0 0 24px ${action.accent}59`;
         label.style.color = action.accent;
       } else {
-        btn.style.boxShadow = "0 8px 22px rgba(0,0,0,0.28)";
+        btn.style.boxShadow = "0 8px 22px rgba(0,0,0,0.4)";
         label.style.color = "";
       }
     });
