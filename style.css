@@ -8333,7 +8333,7 @@ body.dark-theme .seo-about-box p {
 ══════════════════════════════════════════ */
 .spcwlkr-credit {
   display: inline-block;
-  font-family: var(--font-display);
+  font-family: 'Oswald', sans-serif;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.18em;
@@ -8391,7 +8391,7 @@ body.dark-theme .seo-about-box p {
 }
 
 .studio-credit-fan-label {
-  font-family: var(--font-display);
+  font-family: 'Oswald', sans-serif;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -8403,7 +8403,7 @@ body.dark-theme .seo-about-box p {
 }
 
 .studio-credit-hint {
-  font-family: var(--font-display);
+  font-family: 'Oswald', sans-serif;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.16em;
