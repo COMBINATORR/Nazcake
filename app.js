@@ -1441,8 +1441,17 @@ const LOCAL_CATALOG_IMAGE_OVERRIDES = new Map([
   ["cake_banoffee", "images/cake_banoffee.webp?v=20260728_v5"],
   ["cake_cheesecake_spanish", "images/cake_cheesecake_spanish.webp?v=20260728_v5"],
   ["cake_cheesecake_tary", "images/cake_cheesecake_tary.webp?v=20260728_v5"],
-  ["pastry_shu", "images/pastry_shu.webp?v=20260728_v5"],
-  ["pastry_tubes", "images/pastry_tubes.webp?v=20260728_v5"],
+  ["pastry_shu", "images/pastry_shu.webp?v=20260728_v6"],
+  ["pastry_tubes", "images/pastry_tubes.webp?v=20260728_v6"],
+  ["berry_milk_girl", "images/berry_milk_girl.webp?v=20260728_v6"],
+  ["berry_nutella", "images/berry_nutella.webp?v=20260728_v6"],
+  ["berry_oreo", "images/berry_oreo.webp?v=20260728_v6"],
+  ["berry_pavlova", "images/berry_pavlova.webp?v=20260728_v6"],
+  ["berry_snickers", "images/berry_snickers.webp?v=20260728_v6"],
+  ["dessert_pistachio_magnum", "images/dessert_pistachio_magnum.webp?v=20260728_v6"],
+  ["dessert_pistachio_raspberry", "images/dessert_pistachio_raspberry.webp?v=20260728_v6"],
+  ["berry_cheesecake", "images/berry_cheesecake.webp?v=20260728_v6"],
+  ["berry_cupcake_choco", "images/berry_cupcake_choco.webp?v=20260728_v6"],
 ]);
 
 /**
