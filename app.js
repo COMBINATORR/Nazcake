@@ -1459,9 +1459,20 @@ const LOCAL_CATALOG_IMAGE_OVERRIDES = new Map([
   ["berry_choux_rings", "images/berry_choux_rings.webp?v=20260728_v10"],
   ["berry_cupcake_red", "images/berry_cupcake_red.webp?v=20260728_v10"],
   ["cake_napoleon", "images/cake_napoleon.webp?v=20260728_v10"],
-  ["cake_esterhazy", "images/cake_esterhazy.webp?v=20260728_v11"],
-  ["cake_kitkat", "images/cake_kitkat.webp?v=20260728_v11"],
-  ["dessert_meringue_caramel", "images/dessert_meringue_caramel.webp?v=20260728_v11"],
+  ["cake_esterhazy", "images/cake_esterhazy.webp?v=20260728_v12"],
+  ["cake_kitkat", "images/cake_kitkat.webp?v=20260728_v12"],
+  ["dessert_meringue_caramel", "images/dessert_meringue_caramel.webp?v=20260728_v12"],
+  ["semi_meatballs", "images/semi_meatballs.webp?v=20260728_v12"],
+  ["semi_tefteli", "images/semi_tefteli.webp?v=20260728_v12"],
+  ["semi_kotlety", "images/semi_kotlety.webp?v=20260728_v12"],
+  ["semi_golubtsy", "images/semi_golubtsy.webp?v=20260728_v12"],
+  ["semi_pelmeni", "images/semi_pelmeni.webp?v=20260728_v12"],
+  ["semi_manty", "images/semi_manty.webp?v=20260728_v12"],
+  ["semi_borek", "images/semi_borek.webp?v=20260728_v12"],
+  ["semi_chebureki", "images/semi_chebureki.webp?v=20260728_v12"],
+  ["semi_vareniki", "images/semi_vareniki.webp?v=20260728_v12"],
+  ["semi_dough_baursak", "images/semi_dough_baursak.webp?v=20260728_v12"],
+  ["semi_dough_puff", "images/semi_dough_puff.webp?v=20260728_v12"],
 ]);
 
 /**
