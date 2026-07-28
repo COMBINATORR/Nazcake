@@ -1241,7 +1241,7 @@ let products = [
     category: "semi-finished",
     price: 2100,
     unit: "кг",
-    image: "images/Чечевичный суп.webp",
+    image: "images/semi_soup_lentil.webp",
     desc: "Ароматный и сытный турецкий чечевичный суп-пюре. Готов к разогреву.",
     ingredients: "Костный бульон, чечевица, перец сладкий, морковь, картофель, лук, сливки, соль, перец. Аллергены: молоко.",
     badge: "супы"
@@ -1252,7 +1252,7 @@ let products = [
     category: "semi-finished",
     price: 1900,
     unit: "кг",
-    image: "images/Бульон говяжий.webp",
+    image: "images/semi_beef_broth.webp",
     desc: "Наваристый крепкий говяжий бульон, уваренный в течение нескольких часов. Отличная основа для супов.",
     ingredients: "Питьевая вода, говяжьи кости.",
     badge: "супы"
@@ -1274,7 +1274,7 @@ let products = [
     category: "semi-finished",
     price: 650,
     unit: "шт.",
-    image: "images/Тесто для бешбармака.webp",
+    image: "images/semi_dough_beshbarmak.webp",
     desc: "Тонко раскатанное домашнее тесто (сочни) для традиционного казахского бешбармака.",
     ingredients: "Мука, соль, яйцо, вода, масло растительное. Аллергены: глютен, яйца.",
     badge: "тесто"
@@ -1471,8 +1471,11 @@ const LOCAL_CATALOG_IMAGE_OVERRIDES = new Map([
   ["semi_borek", "images/semi_borek.webp?v=20260728_v12"],
   ["semi_chebureki", "images/semi_chebureki.webp?v=20260728_v12"],
   ["semi_vareniki", "images/semi_vareniki.webp?v=20260728_v12"],
-  ["semi_dough_baursak", "images/semi_dough_baursak.webp?v=20260728_v12"],
-  ["semi_dough_puff", "images/semi_dough_puff.webp?v=20260728_v12"],
+  ["semi_dough_baursak", "images/semi_dough_baursak.webp?v=20260728_v13"],
+  ["semi_dough_puff", "images/semi_dough_puff.webp?v=20260728_v13"],
+  ["semi_soup_lentil", "images/semi_soup_lentil.webp?v=20260728_v13"],
+  ["semi_beef_broth", "images/semi_beef_broth.webp?v=20260728_v13"],
+  ["semi_dough_beshbarmak", "images/semi_dough_beshbarmak.webp?v=20260728_v13"],
 ]);
 
 /**
