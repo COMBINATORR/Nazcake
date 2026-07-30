@@ -1,3 +1,16 @@
+
+function generateSecureOrderId(prefix) {
+  let randomNum;
+  if (typeof window !== 'undefined' && window.crypto && window.crypto.getRandomValues) {
+    const array = new Uint32Array(1);
+    window.crypto.getRandomValues(array);
+    randomNum = array[0] / (0xffffffff + 1);
+  } else {
+    randomNum = Math.random();
+  }
+  return prefix + Math.floor(100000 + randomNum * 900000);
+}
+
 // Block pinch / multi-touch zoom (viewport + CSS cover most cases; iOS needs gesture events)
 (function blockMobilePageZoom() {
   const prevent = (e) => {
@@ -4023,7 +4036,7 @@ function formatCheckoutMessage(name, phone, method, address, cart, subtotal, t, 
 
 function buildOrderObject(name, phone, method, address, cart, subtotal, t, preferredTime) {
   return {
-    id: "NZ-" + Math.floor(100000 + Math.random() * 900000),
+    id: generateSecureOrderId("NZ-"),
     date: new Date().toLocaleString("ru-RU"),
     customerName: name,
     customerPhone: phone,
@@ -5000,7 +5013,7 @@ function loadCachedCustomerData() {
 
 function saveKaspiOrder(name, phone, productName, qty, price) {
   const newOrder = {
-    id: "NZ-K-" + Math.floor(100000 + Math.random() * 900000),
+    id: generateSecureOrderId("NZ-K-"),
     date: new Date().toLocaleString("ru-RU"),
     customerName: name,
     customerPhone: phone,
