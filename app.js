@@ -2975,6 +2975,11 @@ function updateCartUi() {
 // --- Delivery Calculator Helpers ---
 
 async function fetchCoordinates(address) {
+  const normalizedAddress = address.trim().toLowerCase();
+  if (geocodingCache.has(normalizedAddress)) {
+    return geocodingCache.get(normalizedAddress);
+  }
+
   const url = `https://nominatim.openstreetmap.org/search?q=Атырау, ${encodeURIComponent(address)}&format=json&limit=1`;
   const response = await fetch(url, {
     headers: {
@@ -2992,10 +2997,12 @@ async function fetchCoordinates(address) {
   }
 
   const location = data[0];
-  return {
+  const coords = {
     lat: parseFloat(location.lat),
-lon: parseFloat(location.lon)
+    lon: parseFloat(location.lon)
   };
+  geocodingCache.set(normalizedAddress, coords);
+  return coords;
 }
 
 // Render Dashboard Data
