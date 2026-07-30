@@ -4131,12 +4131,12 @@ async function handleCheckoutSubmit(e) {
   }
 
   // Save customer data to localStorage
-  localStorage.setItem("nazcake_customer_name", name);
-  localStorage.setItem("nazcake_customer_phone", phone);
-  localStorage.setItem("nazcake_customer_address", address);
-  localStorage.setItem("nazcake_customer_method", method);
-  localStorage.setItem("nazcake_customer_pickup_date", pickupDate);
-  localStorage.setItem("nazcake_customer_pickup_time", pickupTime);
+  sessionStorage.setItem("nazcake_customer_name", name);
+  sessionStorage.setItem("nazcake_customer_phone", phone);
+  sessionStorage.setItem("nazcake_customer_address", address);
+  sessionStorage.setItem("nazcake_customer_method", method);
+  sessionStorage.setItem("nazcake_customer_pickup_date", pickupDate);
+  sessionStorage.setItem("nazcake_customer_pickup_time", pickupTime);
 
   const submitBtn = document.getElementById("checkout-submit-btn");
   submitBtn.disabled = true;
@@ -4953,10 +4953,10 @@ function formatPhoneInput(e) {
 }
 
 function loadCachedCustomerData() {
-  const cachedName = localStorage.getItem("nazcake_customer_name");
-  const cachedPhone = localStorage.getItem("nazcake_customer_phone");
-  const cachedAddress = localStorage.getItem("nazcake_customer_address");
-  const cachedMethod = localStorage.getItem("nazcake_customer_method");
+  const cachedName = sessionStorage.getItem("nazcake_customer_name");
+  const cachedPhone = sessionStorage.getItem("nazcake_customer_phone");
+  const cachedAddress = sessionStorage.getItem("nazcake_customer_address");
+  const cachedMethod = sessionStorage.getItem("nazcake_customer_method");
 
   if (cachedName) {
     const cName = document.getElementById("checkout-name");
@@ -4984,8 +4984,8 @@ function loadCachedCustomerData() {
     }
   }
 
-  const cachedPickupDate = localStorage.getItem("nazcake_customer_pickup_date");
-  const cachedPickupTime = localStorage.getItem("nazcake_customer_pickup_time");
+  const cachedPickupDate = sessionStorage.getItem("nazcake_customer_pickup_date");
+  const cachedPickupTime = sessionStorage.getItem("nazcake_customer_pickup_time");
   const dateInput = document.getElementById("checkout-pickup-date");
   const timeSelect = document.getElementById("checkout-pickup-time");
   if (dateInput && cachedPickupDate) {
@@ -5179,8 +5179,8 @@ async function handleKaspiGenerateClick() {
   }
 
   // Save cache
-  localStorage.setItem("nazcake_customer_name", nameVal);
-  localStorage.setItem("nazcake_customer_phone", phoneVal);
+  sessionStorage.setItem("nazcake_customer_name", nameVal);
+  sessionStorage.setItem("nazcake_customer_phone", phoneVal);
 
   // Sync checkout form in cart
   const cName = document.getElementById("checkout-name");
