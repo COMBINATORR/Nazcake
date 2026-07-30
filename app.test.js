@@ -54,6 +54,7 @@ window.checkAtyrauBounds = checkAtyrauBounds;
             window.getProducts = () => products;
             window.setProducts = (p) => { products = p; };
             window.getUnitTranslationKey = getUnitTranslationKey;
+            window.sortProductsStable = sortProductsStable;
         `;
 
         eval(appJsCode);
@@ -151,6 +152,45 @@ window.checkAtyrauBounds = checkAtyrauBounds;
             });
         });
     });
+
+  describe('sortProductsStable', () => {
+    it('returns empty array for null or undefined', () => {
+      expect(window.sortProductsStable(null)).toEqual([]);
+      expect(window.sortProductsStable(undefined)).toEqual([]);
+    });
+
+    it('maintains the order of known products based on DEFAULT_PRODUCT_RANK', () => {
+      // These are known product IDs from the initial 'products' array
+      const list = [{ id: 'bread_baursaki' }, { id: 'bread_burger' }];
+      // bread_burger has lower index (0) than bread_baursaki (1)
+      const sorted = window.sortProductsStable(list);
+      expect(sorted[0].id).toBe('bread_burger');
+      expect(sorted[1].id).toBe('bread_baursaki');
+    });
+
+    it('sorts unknown products alphabetically', () => {
+      const list = [{ id: 'z_unknown' }, { id: 'a_unknown' }];
+      const sorted = window.sortProductsStable(list);
+      expect(sorted[0].id).toBe('a_unknown');
+      expect(sorted[1].id).toBe('z_unknown');
+    });
+
+    it('places known products before unknown products, and sorts unknown alphabetically', () => {
+      const list = [
+        { id: 'z_unknown' },
+        { id: 'bread_rye' }, // Known, rank 2
+        { id: 'a_unknown' },
+        { id: 'bread_burger' } // Known, rank 0
+      ];
+
+      const sorted = window.sortProductsStable(list);
+
+      expect(sorted[0].id).toBe('bread_burger');
+      expect(sorted[1].id).toBe('bread_rye');
+      expect(sorted[2].id).toBe('a_unknown');
+      expect(sorted[3].id).toBe('z_unknown');
+    });
+  });
     describe('normalizeProductBadge', () => {
       it('should return empty string for null, undefined, or empty string', () => {
         expect(window.normalizeProductBadge(null)).toBe('');
