@@ -30,6 +30,7 @@ describe('Nazcake App Unit Tests', () => {
             window.setDetectedCity = (c) => { detectedCity = c; };
             window.calculateImageDimensions = calculateImageDimensions;
 window.calculateDeliveryCost = calculateDeliveryCost;
+window.calculateDeliveryTime = calculateDeliveryTime;
 window.generatePickupTimeSlots = generatePickupTimeSlots;
 
 window.getHaversineDistance = getHaversineDistance;
@@ -267,7 +268,24 @@ window.checkAtyrauBounds = checkAtyrauBounds;
     });
 
 
-describe('calculateDeliveryCost', () => {
+
+  describe('calculateDeliveryTime', () => {
+    it('should correctly calculate delivery time for distance 0', () => {
+      expect(window.calculateDeliveryTime(0)).toBe(20);
+    });
+
+    it('should correctly calculate delivery time for small positive distances', () => {
+      expect(window.calculateDeliveryTime(2)).toBe(28);
+      expect(window.calculateDeliveryTime(5)).toBe(40);
+      expect(window.calculateDeliveryTime(1.5)).toBe(26);
+    });
+
+    it('should handle large distances properly', () => {
+      expect(window.calculateDeliveryTime(100)).toBe(420);
+    });
+  });
+
+  describe('calculateDeliveryCost', () => {
         it('should return minimum cost of 500', () => {
             expect(window.calculateDeliveryCost(0)).toBe(500);
         });

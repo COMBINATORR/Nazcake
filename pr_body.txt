@@ -1,3 +1,3 @@
-🎯 **What:** Removed hardcoded Supabase Anonymous Keys from backend scripts and app.js, replacing them with environment variables and dynamic ENV configuration.
-⚠️ **Risk:** Hardcoding credentials (even safe ones like an anon key) in version control exposes the key unnecessarily and flags security scanners.
-🛡️ **Solution:** The codebase now expects credentials to be loaded dynamically from environment variables or `window.ENV`.
+🎯 **What:** Added missing unit tests for the `calculateDeliveryTime` function.
+📊 **Coverage:** Covered test cases for 0 distance, small positive distances (with and without fractions), and large distances.
+✨ **Result:** Improved test coverage for the delivery time calculation logic, ensuring future modifications are verified automatically.
