@@ -2,6 +2,7 @@ const fs = require('fs/promises');
 const path = require('path');
 const imghash = require('imghash');
 const sharp = require('sharp');
+const os = require('os');
 
 const IMAGES_DIR = path.join(__dirname, 'images');
 const PHOTOS_DIR = path.join(__dirname, 'Фото');
@@ -49,15 +50,39 @@ async function main() {
     const imageFiles = await getFiles(IMAGES_DIR);
     const db = [];
     
-    for (const file of imageFiles) {
+    // Concurrency limiter function
+    const concurrencyLimit = os.cpus().length;
+    const executeWithLimit = async (tasks, limit) => {
+        const results = [];
+        const executing = new Set();
+
+        for (const task of tasks) {
+            const p = task().then(result => {
+                executing.delete(p);
+                return result;
+            });
+            executing.add(p);
+            results.push(p);
+
+            if (executing.size >= limit) {
+                await Promise.race(executing);
+            }
+        }
+
+        return Promise.all(results);
+    };
+
+    const indexTasks = imageFiles.map(file => async () => {
         try {
-            // Compute hash for existing image
             const hash = await imghash.hash(file, 8); // 8x8 block
             db.push({ file, name: path.basename(file), hash });
         } catch (e) {
             // Ignore non-image files or errors
         }
-    }
+    });
+
+    await executeWithLimit(indexTasks, concurrencyLimit);
+
     console.log(`Проиндексировано ${db.length} изображений в базе.`);
 
     await fs.mkdir(OUTPUT_DIR, { recursive: true });
@@ -68,7 +93,7 @@ async function main() {
 
     let processedCount = 0;
 
-    for (const file of sourceFiles) {
+    const processTasks = sourceFiles.map(file => async () => {
         try {
             const sourceHash = await imghash.hash(file, 8);
             
@@ -107,7 +132,9 @@ async function main() {
         } catch (e) {
             console.error(`Ошибка при обработке ${path.basename(file)}:`, e.message);
         }
-    }
+    });
+
+    await executeWithLimit(processTasks, concurrencyLimit);
 
     console.log(`Успешно обработано: ${processedCount} фотографий.`);
 }
