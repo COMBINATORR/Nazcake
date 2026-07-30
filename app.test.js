@@ -43,6 +43,7 @@ window.checkAtyrauBounds = checkAtyrauBounds;
             window.applyLocalProductOverrides = applyLocalProductOverrides;
             window.persistLocalProductOverrides = persistLocalProductOverrides;
             window.normalizeProductBadge = normalizeProductBadge;
+            window.isNewArrivalProduct = isNewArrivalProduct;
             window.resolveProductImage = resolveProductImage;
             window.dataUrlToBlob = dataUrlToBlob;
             window.extractProductImageStoragePath = extractProductImageStoragePath;
@@ -57,6 +58,35 @@ window.checkAtyrauBounds = checkAtyrauBounds;
         eval(appJsCode);
     });
 
+
+
+    describe('isNewArrivalProduct', () => {
+      it('should return false for falsy values', () => {
+        expect(window.isNewArrivalProduct(null)).toBe(false);
+        expect(window.isNewArrivalProduct(undefined)).toBe(false);
+      });
+
+      it('should return true if isNew or is_new is true', () => {
+        expect(window.isNewArrivalProduct({ isNew: true })).toBe(true);
+        expect(window.isNewArrivalProduct({ is_new: true })).toBe(true);
+        expect(window.isNewArrivalProduct({ isNew: true, badge: 'old' })).toBe(true);
+      });
+
+      it('should return true for new arrival badges (case-insensitive with trimming)', () => {
+        expect(window.isNewArrivalProduct({ badge: 'новое' })).toBe(true);
+        expect(window.isNewArrivalProduct({ badge: ' жаңа ' })).toBe(true);
+        expect(window.isNewArrivalProduct({ badge: 'NEW' })).toBe(true);
+        expect(window.isNewArrivalProduct({ badge: 'Новинка' })).toBe(true);
+        expect(window.isNewArrivalProduct({ badge: 'новинки' })).toBe(true);
+      });
+
+      it('should return false for non-matching badges or missing properties', () => {
+        expect(window.isNewArrivalProduct({})).toBe(false);
+        expect(window.isNewArrivalProduct({ badge: 'хит' })).toBe(false);
+        expect(window.isNewArrivalProduct({ badge: 'популярное' })).toBe(false);
+        expect(window.isNewArrivalProduct({ isNew: false, badge: 'other' })).toBe(false);
+      });
+    });
 
     describe('normalizeProductBadge', () => {
       it('should return empty string for null, undefined, or empty string', () => {
