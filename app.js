@@ -3057,13 +3057,13 @@ function renderAdminCatalog() {
     const priceVal = Number.isFinite(priceRaw) && priceRaw >= 0 ? Math.floor(priceRaw) : 0;
 
     return `
-      <div class="admin-product-row" data-id="${p.id}">
-        <div class="admin-prod-img-container" onclick="triggerAdminImageUpload('${p.id}')" role="button" tabindex="0" aria-label="${escapeHTML(tChange)}">
-          ${p.image ? `<img src="${p.image}" alt="${pName}" class="admin-prod-img" width="80" height="80">` : `<div class="admin-prod-img empty-admin-img" style="background-color: var(--bg-tertiary);"></div>`}
+      <div class="admin-product-row" data-id="${escapeHTML(p.id)}">
+        <div class="admin-prod-img-container" onclick="triggerAdminImageUpload('${escapeHTML(p.id)}')" role="button" tabindex="0" aria-label="${escapeHTML(tChange)}">
+          ${p.image ? `<img src="${escapeHTML(p.image)}" alt="${pName}" class="admin-prod-img" width="80" height="80">` : `<div class="admin-prod-img empty-admin-img" style="background-color: var(--bg-tertiary);"></div>`}
           <div class="admin-prod-img-overlay">
             <span>${escapeHTML(tChange)}</span>
           </div>
-          <input type="file" id="admin-file-input-${p.id}" class="admin-edit-image-file" accept="image/*" style="display: none;" onchange="handleAdminImageUpload(event, '${p.id}')">
+          <input type="file" id="admin-file-input-${escapeHTML(p.id)}" class="admin-edit-image-file" accept="image/*" style="display: none;" onchange="handleAdminImageUpload(event, '${escapeHTML(p.id)}')">
         </div>
         <div class="admin-product-details">
           <div class="admin-prod-form-group admin-field-name">
@@ -3084,7 +3084,7 @@ function renderAdminCatalog() {
               ${escapeHTML(tInStock)}
             </label>
           </div>
-          <button type="button" class="btn btn-primary btn-admin-save" onclick="saveAdminProduct('${p.id}')">${escapeHTML(tSave)}</button>
+          <button type="button" class="btn btn-primary btn-admin-save" onclick="saveAdminProduct('${escapeHTML(p.id)}')">${escapeHTML(tSave)}</button>
         </div>
       </div>
     `;
