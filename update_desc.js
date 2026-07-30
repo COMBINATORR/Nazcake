@@ -93,10 +93,24 @@ async function run() {
   const client = new Client({ connectionString });
   await client.connect();
   
-  for (const p of updates) {
-    const query = `UPDATE public.products SET "desc" = $1, ingredients = $2 WHERE id = $3`;
-    await client.query(query, [p.desc, p.ingredients, p.id]);
-    console.log("Updated in DB:", p.id);
+  if (updates.length > 0) {
+    const descs = updates.map(p => p.desc);
+    const ingredients = updates.map(p => p.ingredients);
+    const ids = updates.map(p => p.id);
+
+    const query = `
+      UPDATE public.products AS p
+      SET "desc" = c."desc", ingredients = c.ingredients
+      FROM (
+        SELECT unnest($1::text[]) AS "desc",
+               unnest($2::text[]) AS ingredients,
+               unnest($3::text[]) AS id
+      ) AS c
+      WHERE p.id = c.id
+    `;
+
+    await client.query(query, [descs, ingredients, ids]);
+    console.log("Batch updated " + updates.length + " records in DB");
   }
   
   await client.end();

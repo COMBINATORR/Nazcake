@@ -12,3 +12,4 @@
 ## 2026-07-13 - [Nested Loop Optimization in Admin Save]
 **Learning:** Found an O(N*M) nested loop inside `saveAdminProduct` where `products.find(p => p.id === id)` was executed inside a `cart.forEach()` loop despite the search criteria being constant.
 **Action:** Hoisted the product lookup out of the loop to run exactly once per save instead of once per cart item matching the id. This dropped execution time significantly.
+When performing bulk database updates in PostgreSQL using the pg library, prefer passing arrays and using unnest with explicit type casting (e.g., SELECT unnest($1::text[])) rather than building a dynamic VALUES clause with solely parameterized variables to prevent parameter data type inference errors and to prevent hitting the parameter limit.
