@@ -81,7 +81,7 @@ function generateSecureOrderId(prefix) {
 
 // Supabase Configuration
 const SUPABASE_URL = "https://wuqxqxjskviaptxswojz.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind1cXhxeGpza3ZpYXB0eHN3b2p6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwMjM0MTksImV4cCI6MjA5OTU5OTQxOX0.bv24jib8hPJyaL1mV4kJd5d8o92zBIg603RqEMIsc7A"; // Replace with your public Anon Key from Supabase Dashboard
+const SUPABASE_ANON_KEY = (typeof window !== "undefined" && window.ENV?.SUPABASE_ANON_KEY) || "YOUR_SUPABASE_ANON_KEY"; // Replace with your public Anon Key from Supabase Dashboard
 
 /** Public Storage bucket for admin-uploaded product photos (see supabase_product_images_storage.sql) */
 const PRODUCT_IMAGES_BUCKET = "product-images";

@@ -1,5 +1,3 @@
-💡 **What:** Refactored the data insertion script `insert_new_products.js` to batch product upserts into a single parameterized `INSERT` query. Replaced an N+1 loop over `newProducts` that executed a network call per product with a multi-row `VALUES` clause generated dynamically.
-🎯 **Why:** To resolve an N+1 query issue that caused unnecessary network round-trips to Supabase, significantly slowing down the script's execution.
-📊 **Measured Improvement:** The execution time of the upsert logic was benchmarked locally. The baseline execution with the N+1 loop took ~5200 ms for 1000 items, while the optimized batch execution took ~9.5 ms, representing roughly a 547x speedup over the baseline.
-
-Note: Also changed a hardcoded absolute path to `__dirname` to ensure the script works correctly in different environments.
+🎯 **What:** The hardcoded `SUPABASE_ANON_KEY` in `app.js` was removed and replaced with a dynamic fallback `(typeof window !== "undefined" && window.ENV?.SUPABASE_ANON_KEY) || "YOUR_SUPABASE_ANON_KEY"`.
+⚠️ **Risk:** Hardcoding credentials (even safe ones like an anon key) in version control is flagged by security scanners, as it exposes the key unnecessarily and prevents easy rotation.
+🛡️ **Solution:** The codebase now expects the key to be injected at runtime via `window.ENV` or handles the lack thereof gracefully by using local mock data (preserving existing offline fallback behavior). This fixes the vulnerability and ensures the key is never checked into git.
