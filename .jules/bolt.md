@@ -12,3 +12,6 @@
 ## 2026-07-13 - [Nested Loop Optimization in Admin Save]
 **Learning:** Found an O(N*M) nested loop inside `saveAdminProduct` where `products.find(p => p.id === id)` was executed inside a `cart.forEach()` loop despite the search criteria being constant.
 **Action:** Hoisted the product lookup out of the loop to run exactly once per save instead of once per cart item matching the id. This dropped execution time significantly.
+
+### Concurrency Limits in Node.js Scripts
+* For CPU or I/O intensive batch tasks in Node.js scripts (like image processing with `sharp` or hashing), prefer using `Promise.all()` with a concurrency limiter (e.g., bounded by `os.cpus().length`) over sequential `await` loops. This optimizes execution time without overloading system memory.
