@@ -1833,7 +1833,7 @@ function normalizeProductBadge(badge) {
 function getBadgeTranslationKey(badge) {
   const b = normalizeProductBadge(badge);
   if (!b) return "";
-  switch (b) {
+  switch (b.toLowerCase()) {
     case "бестселлер": return "badge_bestseller";
     case "горячее": return "badge_hot";
     case "новое": return "badge_new";
