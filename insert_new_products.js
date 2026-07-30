@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { Client } = require('pg');
 
-const workspaceDir = 'c:/Users/ASUS/Desktop/Nazcake';
+const workspaceDir = __dirname;
 const envPath = path.join(workspaceDir, '.env');
 
 const envContent = fs.readFileSync(envPath, 'utf8');
@@ -163,11 +163,18 @@ async function run() {
   const client = new Client({ connectionString });
   await client.connect();
   
-  for (const p of newProducts) {
+  if (newProducts.length > 0) {
+    const values = [];
+    const placeholders = [];
+    let i = 1;
+    for (const p of newProducts) {
+      placeholders.push(`($${i++}, $${i++}, $${i++}, $${i++}, $${i++}, $${i++}, $${i++}, $${i++}, $${i++}, $${i++}, $${i++}, $${i++}, $${i++})`);
+      values.push(p.id, p.name, p.category, p.price, p.unit, p.image, p.desc, p.ingredients, p.badge, p.in_stock, p.stock, p.size_options, p.is_custom_name);
+    }
     const query = `
       INSERT INTO public.products 
       (id, name, category, price, unit, image, "desc", ingredients, badge, in_stock, stock, size_options, is_custom_name)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+      VALUES ${placeholders.join(', ')}
       ON CONFLICT (id) DO UPDATE SET
         name = EXCLUDED.name,
         category = EXCLUDED.category,
@@ -177,12 +184,8 @@ async function run() {
         badge = EXCLUDED.badge,
         size_options = EXCLUDED.size_options;
     `;
-    const values = [
-      p.id, p.name, p.category, p.price, p.unit, p.image, p.desc, p.ingredients,
-      p.badge, p.in_stock, p.stock, p.size_options, p.is_custom_name
-    ];
     await client.query(query, values);
-    console.log("Upserted:", p.id);
+    console.log(`Upserted ${newProducts.length} products`);
   }
   
   await client.end();
