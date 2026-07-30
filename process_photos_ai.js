@@ -157,11 +157,25 @@ async function main() {
     const startIndex = testMode ? Math.floor(sourceFiles.length / 2) : 0;
     const limit = testMode ? 5 : sourceFiles.length;
     
-    for (let i = startIndex; i < startIndex + limit && i < sourceFiles.length; i++) {
-        await processImage(sourceFiles[i], knownProducts);
-        // Delay to avoid rate limits
-        await new Promise(resolve => setTimeout(resolve, 3000));
+    const CONCURRENCY_LIMIT = 5;
+    const tasks = sourceFiles.slice(startIndex, startIndex + limit);
+    let currentIndex = 0;
+
+    const worker = async () => {
+        while (currentIndex < tasks.length) {
+            const taskIndex = currentIndex++;
+            const file = tasks[taskIndex];
+            await processImage(file, knownProducts);
+            // Delay to avoid rate limits
+            await new Promise(resolve => setTimeout(resolve, 3000));
+        }
+    };
+
+    const workers = [];
+    for (let i = 0; i < CONCURRENCY_LIMIT; i++) {
+        workers.push(worker());
     }
+    await Promise.all(workers);
     
     console.log("Done.");
 }
