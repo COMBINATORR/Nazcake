@@ -1,5 +1,3 @@
-💡 **What:** Refactored the data insertion script `insert_new_products.js` to batch product upserts into a single parameterized `INSERT` query. Replaced an N+1 loop over `newProducts` that executed a network call per product with a multi-row `VALUES` clause generated dynamically.
-🎯 **Why:** To resolve an N+1 query issue that caused unnecessary network round-trips to Supabase, significantly slowing down the script's execution.
-📊 **Measured Improvement:** The execution time of the upsert logic was benchmarked locally. The baseline execution with the N+1 loop took ~5200 ms for 1000 items, while the optimized batch execution took ~9.5 ms, representing roughly a 547x speedup over the baseline.
-
-Note: Also changed a hardcoded absolute path to `__dirname` to ensure the script works correctly in different environments.
+🎯 **What:** Removed hardcoded Supabase Anonymous Keys from `delete_cake.js` and `update_pies.js` scripts, replacing them with environment variables.
+⚠️ **Risk:** Hardcoding API keys or JWTs directly into the source code is a significant security risk. If the repository is ever made public, or if unauthorized individuals gain access to the source code, these credentials can be extracted and used to access the database or API. Even though it's an "anonymous" key, it shouldn't be exposed in backend scripts, as it's meant to be managed securely.
+🛡️ **Solution:** The hardcoded strings were removed. The scripts now load the key dynamically using `require('dotenv').config()` and `process.env.SUPABASE_ANON_KEY`, preventing the key from being committed to version control.
