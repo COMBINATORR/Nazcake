@@ -1,3 +1,16 @@
+
+function generateSecureOrderId(prefix) {
+  let randomNum;
+  if (typeof window !== 'undefined' && window.crypto && window.crypto.getRandomValues) {
+    const array = new Uint32Array(1);
+    window.crypto.getRandomValues(array);
+    randomNum = array[0] / (0xffffffff + 1);
+  } else {
+    randomNum = Math.random();
+  }
+  return prefix + Math.floor(100000 + randomNum * 900000);
+}
+
 // Block pinch / multi-touch zoom (viewport + CSS cover most cases; iOS needs gesture events)
 (function blockMobilePageZoom() {
   const prevent = (e) => {
@@ -68,7 +81,7 @@
 
 // Supabase Configuration
 const SUPABASE_URL = "https://wuqxqxjskviaptxswojz.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind1cXhxeGpza3ZpYXB0eHN3b2p6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwMjM0MTksImV4cCI6MjA5OTU5OTQxOX0.bv24jib8hPJyaL1mV4kJd5d8o92zBIg603RqEMIsc7A"; // Replace with your public Anon Key from Supabase Dashboard
+const SUPABASE_ANON_KEY = (typeof window !== "undefined" && window.ENV?.SUPABASE_ANON_KEY) || "YOUR_SUPABASE_ANON_KEY"; // Replace with your public Anon Key from Supabase Dashboard
 
 /** Public Storage bucket for admin-uploaded product photos (see supabase_product_images_storage.sql) */
 const PRODUCT_IMAGES_BUCKET = "product-images";
@@ -4022,7 +4035,7 @@ function formatCheckoutMessage(name, phone, method, address, cart, subtotal, t, 
 
 function buildOrderObject(name, phone, method, address, cart, subtotal, t, preferredTime) {
   return {
-    id: "NZ-" + Math.floor(100000 + Math.random() * 900000),
+    id: generateSecureOrderId("NZ-"),
     date: new Date().toLocaleString("ru-RU"),
     customerName: name,
     customerPhone: phone,
@@ -4130,6 +4143,12 @@ async function handleCheckoutSubmit(e) {
   }
 
   // Save customer data to localStorage
+  sessionStorage.setItem("nazcake_customer_name", name);
+  sessionStorage.setItem("nazcake_customer_phone", phone);
+  sessionStorage.setItem("nazcake_customer_address", address);
+  sessionStorage.setItem("nazcake_customer_method", method);
+  sessionStorage.setItem("nazcake_customer_pickup_date", pickupDate);
+  sessionStorage.setItem("nazcake_customer_pickup_time", pickupTime);
 
   const submitBtn = document.getElementById("checkout-submit-btn");
   submitBtn.disabled = true;
@@ -4945,9 +4964,54 @@ function formatPhoneInput(e) {
   e.target.value = formatted;
 }
 
+function loadCachedCustomerData() {
+  const cachedName = sessionStorage.getItem("nazcake_customer_name");
+  const cachedPhone = sessionStorage.getItem("nazcake_customer_phone");
+  const cachedAddress = sessionStorage.getItem("nazcake_customer_address");
+  const cachedMethod = sessionStorage.getItem("nazcake_customer_method");
+
+  if (cachedName) {
+    const cName = document.getElementById("checkout-name");
+    const kName = document.getElementById("kaspi-name");
+    if (cName) cName.value = cachedName;
+    if (kName) kName.value = cachedName;
+  }
+  if (cachedPhone) {
+    const cPhone = document.getElementById("checkout-phone");
+    const kPhone = document.getElementById("kaspi-phone");
+    if (cPhone) cPhone.value = cachedPhone;
+    if (kPhone) kPhone.value = cachedPhone;
+  }
+  if (cachedAddress) {
+    const cAddress = document.getElementById("checkout-address");
+    if (cAddress) cAddress.value = cachedAddress;
+  }
+  if (cachedMethod) {
+    const radio = document.querySelector(`input[name="delivery-method"][value="${cachedMethod}"]`);
+    if (radio) {
+      radio.checked = true;
+      // Trigger change event to show/hide address / time groups
+      const event = new Event('change');
+      radio.dispatchEvent(event);
+    }
+  }
+
+  const cachedPickupDate = sessionStorage.getItem("nazcake_customer_pickup_date");
+  const cachedPickupTime = sessionStorage.getItem("nazcake_customer_pickup_time");
+  const dateInput = document.getElementById("checkout-pickup-date");
+  const timeSelect = document.getElementById("checkout-pickup-time");
+  if (dateInput && cachedPickupDate) {
+    dateInput.value = cachedPickupDate;
+    refreshPickupTimeSlots(false);
+    if (timeSelect && cachedPickupTime) {
+      const opts = Array.from(timeSelect.options).map((o) => o.value);
+      if (opts.includes(cachedPickupTime)) timeSelect.value = cachedPickupTime;
+    }
+  }
+}
 function saveKaspiOrder(name, phone, productName, qty, price) {
   const newOrder = {
-    id: "NZ-K-" + Math.floor(100000 + Math.random() * 900000),
+    id: generateSecureOrderId("NZ-K-"),
     date: new Date().toLocaleString("ru-RU"),
     customerName: name,
     customerPhone: phone,
@@ -5125,6 +5189,8 @@ async function handleKaspiGenerateClick() {
   }
 
   // Save cache
+  sessionStorage.setItem("nazcake_customer_name", nameVal);
+  sessionStorage.setItem("nazcake_customer_phone", phoneVal);
 
   // Sync checkout form in cart
   const cName = document.getElementById("checkout-name");
