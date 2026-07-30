@@ -34,6 +34,7 @@ window.calculateDeliveryTime = calculateDeliveryTime;
 window.generatePickupTimeSlots = generatePickupTimeSlots;
 
 window.getHaversineDistance = getHaversineDistance;
+            window.getDeliveryErrorMessage = getDeliveryErrorMessage;
             window.deg2rad = deg2rad;
 
 window.checkAtyrauBounds = checkAtyrauBounds;
@@ -57,7 +58,6 @@ window.checkAtyrauBounds = checkAtyrauBounds;
 
         eval(appJsCode);
     });
-
 
 
     describe('isNewArrivalProduct', () => {
@@ -88,6 +88,69 @@ window.checkAtyrauBounds = checkAtyrauBounds;
       });
     });
 
+    describe('getDeliveryErrorMessage', () => {
+        let originalI18n;
+
+        beforeEach(() => {
+            // Save the original window.i18n just in case
+            originalI18n = window.i18n;
+        });
+
+        afterEach(() => {
+            // Restore window.i18n to its original state
+            window.i18n = originalI18n;
+        });
+
+        describe('when window.i18n is defined', () => {
+            beforeEach(() => {
+                window.i18n = {
+                    t: jest.fn(key => 'translated_' + key)
+                };
+            });
+
+            it('should return translated message for delivery_err_geocoder', () => {
+                expect(window.getDeliveryErrorMessage('delivery_err_geocoder')).toBe('translated_delivery_err_geocoder');
+                expect(window.i18n.t).toHaveBeenCalledWith('delivery_err_geocoder');
+            });
+
+            it('should return translated message for delivery_err_notfound', () => {
+                expect(window.getDeliveryErrorMessage('delivery_err_notfound')).toBe('translated_delivery_err_notfound');
+                expect(window.i18n.t).toHaveBeenCalledWith('delivery_err_notfound');
+            });
+
+            it('should return translated message for delivery_err_outofbounds', () => {
+                expect(window.getDeliveryErrorMessage('delivery_err_outofbounds')).toBe('translated_delivery_err_outofbounds');
+                expect(window.i18n.t).toHaveBeenCalledWith('delivery_err_outofbounds');
+            });
+
+            it('should return translated default message for unknown errors', () => {
+                expect(window.getDeliveryErrorMessage('some_random_error')).toBe('translated_delivery_err_unknown');
+                expect(window.i18n.t).toHaveBeenCalledWith('delivery_err_unknown');
+            });
+        });
+
+        describe('when window.i18n is undefined', () => {
+            beforeEach(() => {
+                window.i18n = undefined;
+            });
+
+            it('should return hardcoded Russian message for delivery_err_geocoder', () => {
+                expect(window.getDeliveryErrorMessage('delivery_err_geocoder')).toBe('Не удалось подключиться к серверу геокодирования.');
+            });
+
+            it('should return hardcoded Russian message for delivery_err_notfound', () => {
+                expect(window.getDeliveryErrorMessage('delivery_err_notfound')).toBe('Адрес не найден. Пожалуйста, проверьте правильность написания.');
+            });
+
+            it('should return hardcoded Russian message for delivery_err_outofbounds', () => {
+                expect(window.getDeliveryErrorMessage('delivery_err_outofbounds')).toBe('Яндекс.Доставка (Экспресс) доступна только в пределах города Атырау.');
+            });
+
+            it('should return hardcoded Russian message for unknown errors', () => {
+                expect(window.getDeliveryErrorMessage('some_random_error')).toBe('Ошибка при расчете стоимости доставки.');
+            });
+        });
+    });
     describe('normalizeProductBadge', () => {
       it('should return empty string for null, undefined, or empty string', () => {
         expect(window.normalizeProductBadge(null)).toBe('');
