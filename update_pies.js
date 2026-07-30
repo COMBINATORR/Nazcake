@@ -1,6 +1,11 @@
-require('dotenv').config();
-const SUPABASE_URL = "https://wuqxqxjskviaptxswojz.supabase.co";
+require("dotenv").config();
+const SUPABASE_URL = process.env.SUPABASE_URL || "https://wuqxqxjskviaptxswojz.supabase.co";
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
+
+if (!SUPABASE_ANON_KEY) {
+  console.error("Missing SUPABASE_ANON_KEY environment variable");
+  process.exit(1);
+}
 
 async function updatePies() {
   const headers = {
