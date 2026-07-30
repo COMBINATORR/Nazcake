@@ -55,6 +55,7 @@ window.checkAtyrauBounds = checkAtyrauBounds;
             window.setProducts = (p) => { products = p; };
             window.getUnitTranslationKey = getUnitTranslationKey;
             window.sortProductsStable = sortProductsStable;
+            window.getBadgeTranslationKey = getBadgeTranslationKey;
         `;
 
         eval(appJsCode);
@@ -191,6 +192,41 @@ window.checkAtyrauBounds = checkAtyrauBounds;
       expect(sorted[3].id).toBe('z_unknown');
     });
   });
+
+    describe('getBadgeTranslationKey', () => {
+      it('should return correct translation key for known badges', () => {
+        expect(window.getBadgeTranslationKey('бестселлер')).toBe('badge_bestseller');
+        expect(window.getBadgeTranslationKey('горячее')).toBe('badge_hot');
+        expect(window.getBadgeTranslationKey('новое')).toBe('badge_new');
+        expect(window.getBadgeTranslationKey('хит')).toBe('badge_hit');
+        expect(window.getBadgeTranslationKey('премиум')).toBe('badge_premium');
+        expect(window.getBadgeTranslationKey('заказной')).toBe('badge_custom');
+        expect(window.getBadgeTranslationKey('custom')).toBe('badge_custom');
+        expect(window.getBadgeTranslationKey('vip')).toBe('badge_vip');
+        expect(window.getBadgeTranslationKey('ручная лепка')).toBe('badge_hand');
+      });
+
+      it('should handle variations in casing and whitespace', () => {
+        expect(window.getBadgeTranslationKey(' БЕСТСЕЛЛЕР ')).toBe('badge_bestseller');
+        expect(window.getBadgeTranslationKey('Новое')).toBe('badge_new');
+      });
+
+      it('should return empty string for fresh badges', () => {
+        expect(window.getBadgeTranslationKey('свежее')).toBe('');
+        expect(window.getBadgeTranslationKey('fresh')).toBe('');
+      });
+
+      it('should return empty string for unknown badges', () => {
+        expect(window.getBadgeTranslationKey('unknown_badge')).toBe('');
+        expect(window.getBadgeTranslationKey('какой-то значок')).toBe('');
+      });
+
+      it('should return empty string for falsy/empty values', () => {
+        expect(window.getBadgeTranslationKey('')).toBe('');
+        expect(window.getBadgeTranslationKey(null)).toBe('');
+        expect(window.getBadgeTranslationKey(undefined)).toBe('');
+      });
+    });
     describe('normalizeProductBadge', () => {
       it('should return empty string for null, undefined, or empty string', () => {
         expect(window.normalizeProductBadge(null)).toBe('');
