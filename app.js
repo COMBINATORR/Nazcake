@@ -1886,7 +1886,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupCartSwipeClose();
   setupModalSwipeClose();
   initScrollReveal();
-  loadCachedCustomerData();
   setupKaspiQrCheckout();
   setupThemeToggler();
   setupBestsellersCarousel();
@@ -4131,12 +4130,6 @@ async function handleCheckoutSubmit(e) {
   }
 
   // Save customer data to localStorage
-  localStorage.setItem("nazcake_customer_name", name);
-  localStorage.setItem("nazcake_customer_phone", phone);
-  localStorage.setItem("nazcake_customer_address", address);
-  localStorage.setItem("nazcake_customer_method", method);
-  localStorage.setItem("nazcake_customer_pickup_date", pickupDate);
-  localStorage.setItem("nazcake_customer_pickup_time", pickupTime);
 
   const submitBtn = document.getElementById("checkout-submit-btn");
   submitBtn.disabled = true;
@@ -4952,52 +4945,6 @@ function formatPhoneInput(e) {
   e.target.value = formatted;
 }
 
-function loadCachedCustomerData() {
-  const cachedName = localStorage.getItem("nazcake_customer_name");
-  const cachedPhone = localStorage.getItem("nazcake_customer_phone");
-  const cachedAddress = localStorage.getItem("nazcake_customer_address");
-  const cachedMethod = localStorage.getItem("nazcake_customer_method");
-
-  if (cachedName) {
-    const cName = document.getElementById("checkout-name");
-    const kName = document.getElementById("kaspi-name");
-    if (cName) cName.value = cachedName;
-    if (kName) kName.value = cachedName;
-  }
-  if (cachedPhone) {
-    const cPhone = document.getElementById("checkout-phone");
-    const kPhone = document.getElementById("kaspi-phone");
-    if (cPhone) cPhone.value = cachedPhone;
-    if (kPhone) kPhone.value = cachedPhone;
-  }
-  if (cachedAddress) {
-    const cAddress = document.getElementById("checkout-address");
-    if (cAddress) cAddress.value = cachedAddress;
-  }
-  if (cachedMethod) {
-    const radio = document.querySelector(`input[name="delivery-method"][value="${cachedMethod}"]`);
-    if (radio) {
-      radio.checked = true;
-      // Trigger change event to show/hide address / time groups
-      const event = new Event('change');
-      radio.dispatchEvent(event);
-    }
-  }
-
-  const cachedPickupDate = localStorage.getItem("nazcake_customer_pickup_date");
-  const cachedPickupTime = localStorage.getItem("nazcake_customer_pickup_time");
-  const dateInput = document.getElementById("checkout-pickup-date");
-  const timeSelect = document.getElementById("checkout-pickup-time");
-  if (dateInput && cachedPickupDate) {
-    dateInput.value = cachedPickupDate;
-    refreshPickupTimeSlots(false);
-    if (timeSelect && cachedPickupTime) {
-      const opts = Array.from(timeSelect.options).map((o) => o.value);
-      if (opts.includes(cachedPickupTime)) timeSelect.value = cachedPickupTime;
-    }
-  }
-}
-
 function saveKaspiOrder(name, phone, productName, qty, price) {
   const newOrder = {
     id: "NZ-K-" + Math.floor(100000 + Math.random() * 900000),
@@ -5156,7 +5103,6 @@ function handleQuickKaspiClick() {
     }
 
     // Load cache
-    loadCachedCustomerData();
   }
 }
 
@@ -5179,8 +5125,6 @@ async function handleKaspiGenerateClick() {
   }
 
   // Save cache
-  localStorage.setItem("nazcake_customer_name", nameVal);
-  localStorage.setItem("nazcake_customer_phone", phoneVal);
 
   // Sync checkout form in cart
   const cName = document.getElementById("checkout-name");
