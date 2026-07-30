@@ -48,6 +48,7 @@ window.checkAtyrauBounds = checkAtyrauBounds;
             window.imageForLocalStorage = imageForLocalStorage;
             window.PRODUCT_IMAGES_BUCKET = PRODUCT_IMAGES_BUCKET;
             window.parseLocalDate = parseLocalDate;
+            window.clampNonNegativeIntInput = clampNonNegativeIntInput;
             window.getProducts = () => products;
             window.setProducts = (p) => { products = p; };
             window.getUnitTranslationKey = getUnitTranslationKey;
@@ -76,6 +77,68 @@ window.checkAtyrauBounds = checkAtyrauBounds;
         expect(window.normalizeProductBadge('new')).toBe('new');
         expect(window.normalizeProductBadge(' 123 ')).toBe('123');
       });
+    });
+
+
+    describe('clampNonNegativeIntInput', () => {
+        it('should do nothing if input is null or undefined', () => {
+            expect(() => window.clampNonNegativeIntInput(null)).not.toThrow();
+            expect(() => window.clampNonNegativeIntInput(undefined)).not.toThrow();
+        });
+
+        it('should clear value if empty or non-digit and fillEmpty is false', () => {
+            const input = { value: '' };
+            window.clampNonNegativeIntInput(input);
+            expect(input.value).toBe('');
+
+            const input2 = { value: 'abc' };
+            window.clampNonNegativeIntInput(input2);
+            expect(input2.value).toBe('');
+
+            const input3 = { value: '-' };
+            window.clampNonNegativeIntInput(input3);
+            expect(input3.value).toBe('');
+        });
+
+        it('should set value to "0" if empty or non-digit and fillEmpty is true', () => {
+            const input = { value: '' };
+            window.clampNonNegativeIntInput(input, true);
+            expect(input.value).toBe('0');
+
+            const input2 = { value: 'abc' };
+            window.clampNonNegativeIntInput(input2, true);
+            expect(input2.value).toBe('0');
+        });
+
+        it('should strip non-digit characters', () => {
+            const input = { value: '1a2b3' };
+            window.clampNonNegativeIntInput(input);
+            expect(input.value).toBe('123');
+
+            const input2 = { value: '-42' }; // '-' is stripped, so '42'
+            window.clampNonNegativeIntInput(input2);
+            expect(input2.value).toBe('42');
+        });
+
+        it('should strip leading zeros but keep a single zero', () => {
+            const input = { value: '007' };
+            window.clampNonNegativeIntInput(input);
+            expect(input.value).toBe('7');
+
+            const input2 = { value: '0' };
+            window.clampNonNegativeIntInput(input2);
+            expect(input2.value).toBe('0');
+
+            const input3 = { value: '000' };
+            window.clampNonNegativeIntInput(input3);
+            expect(input3.value).toBe('0');
+        });
+
+        it('should handle undefined value property', () => {
+            const input = {};
+            window.clampNonNegativeIntInput(input);
+            expect(input.value).toBe('');
+        });
     });
 
     describe('parseLocalDate', () => {

@@ -1,3 +1,3 @@
-🎯 **What:** Removed hardcoded Supabase Anonymous Keys from backend scripts and app.js, replacing them with environment variables and dynamic ENV configuration.
-⚠️ **Risk:** Hardcoding credentials (even safe ones like an anon key) in version control exposes the key unnecessarily and flags security scanners.
-🛡️ **Solution:** The codebase now expects credentials to be loaded dynamically from environment variables or `window.ENV`.
+🎯 **What:** Added unit tests for the `clampNonNegativeIntInput` function in `app.js`.
+📊 **Coverage:** Tested `null`/`undefined` inputs, empty/non-digit strings with and without the `fillEmpty` flag, stripping of non-digits, stripping of leading zeros, and handling of a missing `value` property on the input mock.
+✨ **Result:** Improved test coverage for DOM input manipulation edge cases, making future refactoring safer.
