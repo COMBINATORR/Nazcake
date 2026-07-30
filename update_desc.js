@@ -93,11 +93,15 @@ async function run() {
   const client = new Client({ connectionString });
   await client.connect();
   
-  for (const p of updates) {
-    const query = `UPDATE public.products SET "desc" = $1, ingredients = $2 WHERE id = $3`;
-    await client.query(query, [p.desc, p.ingredients, p.id]);
-    console.log("Updated in DB:", p.id);
-  }
+  const query = `
+    UPDATE public.products
+    SET "desc" = data."desc",
+        ingredients = data.ingredients
+    FROM json_to_recordset($1::json) AS data(id text, "desc" text, ingredients text)
+    WHERE public.products.id = data.id;
+  `;
+  await client.query(query, [JSON.stringify(updates)]);
+  updates.forEach(p => console.log("Updated in DB:", p.id));
   
   await client.end();
 }
