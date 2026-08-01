@@ -1,3 +1,6 @@
-🎯 **What:** Added missing unit tests for `calculateDeliveryTime`, `isNewArrivalProduct`, `getDeliveryErrorMessage`, and `sortProductsStable`.
-📊 **Coverage:** Covered all test cases for sorting, new arrivals, delivery times, and delivery error messages.
-✨ **Result:** Significantly improved test coverage and code quality, ensuring robust and automatic verification.
+🧹 Remove unused getDeliveryErrorMessage function
+
+🎯 **What:** Removed unused `getDeliveryErrorMessage` function and its tests.
+💡 **Why:** The function was not being referenced anywhere in the codebase. Removing unused code improves code health and maintainability.
+✅ **Verification:** Ran `node -c app.js` and `node -c app.test.js` to ensure the syntax remains valid after deletion. Ran the full test suite (`pnpm test`), and all 105 tests passed successfully without issues.
+✨ **Result:** A cleaner codebase with less dead code, without any changes to functionality.
