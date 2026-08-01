@@ -12,7 +12,7 @@ function generateSecureOrderId(prefix) {
 }
 
 // Block pinch / multi-touch zoom (viewport + CSS cover most cases; iOS needs gesture events)
-(function blockMobilePageZoom() {
+(function () {
   const prevent = (e) => {
     e.preventDefault();
   };
