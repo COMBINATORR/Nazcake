@@ -3017,11 +3017,6 @@ async function fetchCoordinates(address) {
   return coords;
 }
 
-// Render Dashboard Data
-function renderAdminDashboard() {
-  renderAdminCatalog();
-  renderAdminOrders();
-}
 
 // Render products in catalog management tab
 function renderAdminCatalog() {
