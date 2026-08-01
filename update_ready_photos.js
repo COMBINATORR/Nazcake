@@ -38,7 +38,7 @@ const MAP_OVERRIDE = {
   'пирог с сухофруктами': ['pie_dryfruit.webp'],
   'пирог с творогом со сгущенкой': ['pie_cottage_condensed.webp', 'pie_curd_condensed.webp'],
   'пирог с творогом': ['pie_curd.webp', 'pie_curd_large.webp'],
-  'пирог карамель': ['pie_caramel.webp', 'dessert_caramel.webp'],
+  'пирог карамель': ['pie_caramel.webp'],
   'сметанник': ['pie_smetannik.webp'],
   'пирог сникерс': ['pie_snickers.webp'],
 
