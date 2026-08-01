@@ -1151,7 +1151,7 @@ let products = [
     category: "semi-finished",
     price: 3300,
     unit: "кг",
-    image: "images/Фрикадельки куриные.webp",
+    image: "images/semi_meatballs.webp",
     desc: "Домашние фрикадельки для супа. Быстрое и сытное решение для семейного обеда.",
     ingredients: "Лук, рис, соль, говяжий фарш, перец черный молотый.",
     badge: "заморозка",
@@ -1232,7 +1232,7 @@ let products = [
     category: "semi-finished",
     price: 1500,
     unit: "уп.",
-    image: "images/Чебукери.webp",
+    image: "images/semi_chebureki.webp",
     desc: "Упаковка чебуреков ручной лепки. При жарке получается пузырчатое хрустящее тесто.",
     ingredients: "Мука, соль, яйцо, вода, масло растительное, лук, масло сливочное, говяжий фарш, перец черный молотый, картофельное пюре. Аллергены: глютен, молоко, яйца.",
     badge: "ручная лепка"
@@ -1693,6 +1693,7 @@ async function loadProducts() {
 function loadCustomProductsLocalFallback() {
   products.forEach(p => {
     p.categoryLabel = CATEGORY_LABELS[p.category];
+    p.image = resolveProductImage(p.id, p.image);
   });
   products = sortProductsStable(applyLocalProductOverrides(products));
 }
