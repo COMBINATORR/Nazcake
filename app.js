@@ -44,7 +44,7 @@ function generateSecureOrderId(prefix) {
 // Premium Page Preloader — hide after JS is ready, never hang on window.load
 // (window.load waits for every image/font/video → long stuck preloader on slow networks)
 // Inline failsafe in index.html also calls window.__nazcakeHidePreloader after 2.8s.
-(function setupPagePreloader() {
+(function () {
   const MIN_MS = 700; // short brand moment (was 1600ms AFTER full window.load)
   const started = performance.now();
 
