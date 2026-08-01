@@ -5583,10 +5583,6 @@ function setupContactsMapLazy() {
   io.observe(section);
 }
 
-/** @deprecated use setupContactsMapLazy — kept name alias for clarity */
-function setupContactsMap() {
-  setupContactsMapLazy();
-}
 
 function initContactsMap(el) {
   if (!el || typeof L === "undefined") return;
