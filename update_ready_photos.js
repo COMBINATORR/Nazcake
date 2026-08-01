@@ -13,7 +13,7 @@ const MAP_OVERRIDE = {
   'булочка с творогом': ['pastry_bun_cottage.webp'],
   'карамель': ['dessert_caramel.webp', 'pie_caramel.webp'],
   'карамельный с оформлением': ['dessert_caramel_design.webp'],
-  'котлеты': ['Котлеты.webp'],
+  'котлеты': ['semi_kotlety.webp', 'Котлеты.webp'],
   'ливерные пирожки': ['pastry_pirog_liver.webp'],
   'шоколадный с оформлением': ['dessert_chocolate_design.webp'],
   'эклер в шоколаде': ['dessert_ekler_choco.webp'],
@@ -39,12 +39,12 @@ const MAP_OVERRIDE = {
   'ржаной хлеб': ['bread_rye.webp'],
   'ржаные тандырные лепёшки': ['bread_rye_flatbread.webp'],
   'сайка': ['bread_saika.webp'],
-  'сигара борек': ['Сигара борек.webp'],
-  'слоёное тесто': ['Слоёное тесто.webp'],
+  'сигара борек': ['semi_borek.webp', 'Сигара борек.webp'],
+  'слоёное тесто': ['semi_dough_puff.webp', 'Слоёное тесто.webp'],
   'сметанник': ['pie_smetannik.webp'],
   'тандыр лепёшки': ['bread_flatbread.webp'],
   'тары чизкейк': ['Торт Тары Чизкейк.webp', 'Тары Чизкейк (половина).webp'],
-  'тефтели с мясом': ['Тефтели.webp'],
+  'тефтели с мясом': ['semi_tefteli.webp', 'Тефтели.webp'],
   'торт вупи пай': ['Торт вупипай.webp', 'berry_milk_girl.webp'],
   'торт графские развалины': ['Торт Графские развалины.webp'],
   'торт королевский': ['dessert_royal.webp', 'Королевский торт.webp'],
@@ -57,7 +57,19 @@ const MAP_OVERRIDE = {
   'трубочки с кремом': ['Трубочки с кремом.webp'],
   'чайный набор': ['pastry_tea_set.webp', 'Чайный набор.webp'],
   'чесночный мини батон': ['bread_garlic.webp'],
-  'шоколадный торт': ['dessert_chocolate.webp', 'Шоколадный торт.webp']
+  'шоколадный торт': ['dessert_chocolate.webp', 'Шоколадный торт.webp'],
+
+  // Полуфабрикаты (Semi-finished products)
+  'фрикадельки': ['semi_meatballs.webp'],
+  'голубцы': ['semi_golubtsy.webp', 'Голубцы.webp'],
+  'пельмени домашние': ['semi_pelmeni.webp', 'Пельмени.webp'],
+  'манты с говядиной': ['semi_manty.webp', 'Манты.webp'],
+  'чебуреки': ['semi_chebureki.webp', 'Чебукери.webp'],
+  'вареники': ['semi_vareniki.webp', 'Вареники.webp'],
+  'тесто для бауырсаков': ['semi_dough_baursak.webp', 'Тесто для бауырсаков.webp'],
+  'чечевичный суп': ['semi_soup_lentil.webp', 'Чечевичный суп.webp'],
+  'говяжий бульон': ['semi_beef_broth.webp', 'Бульон говяжий.webp'],
+  'тесто для бешбармака': ['semi_dough_beshbarmak.webp', 'Тесто для бешбармака.webp']
 };
 
 async function processAllReadyPhotos() {
