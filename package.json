@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
+    "@vercel/analytics": "^2.0.1",
     "dotenv": "^17.4.2",
     "imghash": "^1.1.4",
     "leven": "^4.1.0",
