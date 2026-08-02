@@ -1897,6 +1897,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   renderCatalog();
   setupEventListeners();
   setupDeliveryCalculator();
+  initAutocomplete("delivery-address");
+  initAutocomplete("checkout-address");
   setupGeolocation();
   updateCartUi();
   setupAdminPanel();
@@ -2335,6 +2337,150 @@ function createProductCardElement(p) {
 // Setup Yandex.Delivery Address Price Calculator
 // --- Delivery Calculator Helpers ---
 const geocodingCache = new Map();
+
+function initAutocomplete(inputId) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+
+  const suggestionsList = document.createElement("ul");
+  suggestionsList.className = "autocomplete-suggestions hidden";
+  input.parentNode.appendChild(suggestionsList);
+
+  let debounceTimer = null;
+  let activeIndex = -1;
+  let currentItems = [];
+
+  document.addEventListener("click", (e) => {
+    if (e.target !== input && e.target !== suggestionsList && !suggestionsList.contains(e.target)) {
+      hideSuggestions();
+    }
+  });
+
+  input.addEventListener("input", () => {
+    clearTimeout(debounceTimer);
+    const query = input.value.trim();
+    activeIndex = -1;
+
+    if (query.length < 3) {
+      hideSuggestions();
+      return;
+    }
+
+    debounceTimer = setTimeout(async () => {
+      if (typeof LOCATION_IQ_KEY === "undefined" || !LOCATION_IQ_KEY || LOCATION_IQ_KEY === "YOUR_LOCATIONIQ_API_KEY") {
+        return;
+      }
+
+      try {
+        const url = `https://us1.locationiq.com/v1/autocomplete.php?key=${LOCATION_IQ_KEY}&q=Атырау, ${encodeURIComponent(query)}&limit=5&countrycodes=kz&viewbox=51.75,47.20,52.10,47.05&bounded=1`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("Autocomplete request failed");
+        
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          currentItems = data.map(item => {
+            let name = item.display_name;
+            name = name.replace(/, Атырау.*$/i, "");
+            name = name.replace(/, городская администрация Атырау.*$/i, "");
+            return {
+              original: item.display_name,
+              cleaned: name,
+              lat: item.lat,
+              lon: item.lon
+            };
+          });
+          renderSuggestions();
+        } else {
+          hideSuggestions();
+        }
+      } catch (e) {
+        console.warn("Autocomplete failed:", e);
+        hideSuggestions();
+      }
+    }, 250);
+  });
+
+  input.addEventListener("keydown", (e) => {
+    const items = suggestionsList.querySelectorAll(".autocomplete-suggestion");
+    if (!items.length) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      activeIndex = (activeIndex + 1) % items.length;
+      updateActiveItem(items);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      activeIndex = (activeIndex - 1 + items.length) % items.length;
+      updateActiveItem(items);
+    } else if (e.key === "Enter") {
+      if (activeIndex > -1) {
+        e.preventDefault();
+        selectItem(currentItems[activeIndex]);
+      }
+    } else if (e.key === "Escape") {
+      hideSuggestions();
+    }
+  });
+
+  function renderSuggestions() {
+    suggestionsList.innerHTML = "";
+    if (currentItems.length === 0) {
+      hideSuggestions();
+      return;
+    }
+
+    currentItems.forEach((item, idx) => {
+      const li = document.createElement("li");
+      li.className = "autocomplete-suggestion";
+      
+      const query = input.value.trim().toLowerCase();
+      const name = item.cleaned;
+      const index = name.toLowerCase().indexOf(query);
+      if (index > -1) {
+        li.innerHTML = name.substring(0, index) + 
+                       `<strong>${name.substring(index, index + query.length)}</strong>` + 
+                       name.substring(index + query.length);
+      } else {
+        li.textContent = name;
+      }
+
+      li.addEventListener("click", () => {
+        selectItem(item);
+      });
+
+      suggestionsList.appendChild(li);
+    });
+
+    suggestionsList.classList.remove("hidden");
+  }
+
+  function updateActiveItem(items) {
+    items.forEach((item, idx) => {
+      if (idx === activeIndex) {
+        item.classList.add("active");
+        item.scrollIntoView({ block: "nearest" });
+      } else {
+        item.classList.remove("active");
+      }
+    });
+  }
+
+  function selectItem(item) {
+    input.value = item.cleaned;
+    hideSuggestions();
+    
+    if (inputId === "delivery-address") {
+      const calcBtn = document.getElementById("calc-delivery-btn");
+      if (calcBtn) calcBtn.click();
+    }
+  }
+
+  function hideSuggestions() {
+    suggestionsList.classList.add("hidden");
+    suggestionsList.innerHTML = "";
+    activeIndex = -1;
+  }
+}
 
 async function fetchCoordinates(address) {
   const normalizedAddress = address.trim().toLowerCase();
@@ -3688,10 +3834,35 @@ calcBtn.textContent = window.i18n ? window.i18n.t("delivery_btn_calculating") : 
 
       checkAtyrauBounds(lat, lon, atyrauBounds);
 
+      let distance = 0;
+      let estTime = 0;
+      let usedDirections = false;
 
-      const distance = getHaversineDistance(bakeryLat, bakeryLon, lat, lon);
+      // Try Directions API if key is configured
+      if (typeof LOCATION_IQ_KEY !== "undefined" && LOCATION_IQ_KEY && LOCATION_IQ_KEY !== "YOUR_LOCATIONIQ_API_KEY") {
+        try {
+          const url = `https://us1.locationiq.com/v1/directions/driving/${bakeryLon},${bakeryLat};${lon},${lat}?key=${LOCATION_IQ_KEY}&overview=false`;
+          const routeResp = await fetch(url);
+          if (routeResp.ok) {
+            const routeData = await routeResp.json();
+            if (routeData.code === "Ok" && routeData.routes && routeData.routes.length > 0) {
+              const route = routeData.routes[0];
+              distance = route.distance / 1000; // in km
+              estTime = Math.round(route.duration / 60) + 20; // driving duration + prep time
+              usedDirections = true;
+            }
+          }
+        } catch (e) {
+          console.warn("Directions API failed, falling back to Haversine:", e);
+        }
+      }
+
+      if (!usedDirections) {
+        distance = getHaversineDistance(bakeryLat, bakeryLon, lat, lon);
+        estTime = calculateDeliveryTime(distance);
+      }
+
       const cost = calculateDeliveryCost(distance);
-      const estTime = calculateDeliveryTime(distance);
 
       resDistance.textContent = `${distance.toFixed(1)} км`;
       resCost.textContent = `${cost.toLocaleString()} ₸`;

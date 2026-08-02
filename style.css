@@ -5177,6 +5177,7 @@ body.dark-theme .site-dialog-icon.is-warn {
 
 .form-group {
   margin-bottom: 12px;
+  position: relative;
 }
 
 .checkout-radio-group {
@@ -8470,4 +8471,49 @@ body.dark-theme .seo-about-box p {
 @keyframes studio-backdrop-in {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+/* Address Autocomplete Dropdown */
+.autocomplete-suggestions {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  width: 100%;
+  background: var(--bg-card, rgba(30, 30, 30, 0.95));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  border-radius: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 999;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+.autocomplete-suggestion {
+  padding: 12px 15px;
+  font-size: 0.9rem;
+  color: var(--text-color, #ffffff);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  text-align: left;
+}
+
+.autocomplete-suggestion:last-child {
+  border-bottom: none;
+}
+
+.autocomplete-suggestion:hover,
+.autocomplete-suggestion.active {
+  background: var(--primary-color, #ff6b6b);
+  color: #ffffff;
+}
+
+.autocomplete-suggestion strong {
+  color: inherit;
+  font-weight: 700;
 }
