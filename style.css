@@ -3870,7 +3870,7 @@ body.dark-theme .tab-btn.tab-btn--new:not(.active) {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
   gap: 14px;
-  margin-top: 20px;
+  margin-top: 0;
   margin-bottom: 20px;
 }
 
