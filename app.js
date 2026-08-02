@@ -83,6 +83,9 @@ function generateSecureOrderId(prefix) {
 const SUPABASE_URL = "https://wuqxqxjskviaptxswojz.supabase.co";
 const SUPABASE_ANON_KEY = (typeof window !== "undefined" && window.ENV?.SUPABASE_ANON_KEY) || "YOUR_SUPABASE_ANON_KEY"; // Replace with your public Anon Key from Supabase Dashboard
 
+// LocationIQ Geocoding API Key (optional alternative to OpenStreetMap Nominatim)
+const LOCATION_IQ_KEY = (typeof window !== "undefined" && window.ENV?.LOCATION_IQ_KEY) || "YOUR_LOCATIONIQ_API_KEY"; // Replace with your LocationIQ API token (e.g. pk.c3db5a8cb59...) if you have one
+
 /** Public Storage bucket for admin-uploaded product photos (see supabase_product_images_storage.sql) */
 const PRODUCT_IMAGES_BUCKET = "product-images";
 
@@ -2339,23 +2342,36 @@ async function fetchCoordinates(address) {
     return geocodingCache.get(normalizedAddress);
   }
 
-  const url = `https://nominatim.openstreetmap.org/search?q=Атырау, ${encodeURIComponent(address)}&format=json&limit=1`;
-  const response = await fetch(url, {
-    headers: {
-      "User-Agent": "NazcakeConfectioneryDeliveryCalculator/1.0 (contact: nazcakeatyrau@gmail.com)"
-    }
-  });
+  let url;
+  let headers = {};
+
+  if (typeof LOCATION_IQ_KEY !== "undefined" && LOCATION_IQ_KEY && LOCATION_IQ_KEY !== "YOUR_LOCATIONIQ_API_KEY") {
+    url = `https://us1.locationiq.com/v1/search.php?key=${LOCATION_IQ_KEY}&q=Атырау, ${encodeURIComponent(address)}&format=json&limit=1`;
+  } else {
+    url = `https://nominatim.openstreetmap.org/search?q=Атырау, ${encodeURIComponent(address)}&format=json&limit=1`;
+    headers["User-Agent"] = "NazcakeConfectioneryDeliveryCalculator/1.0 (contact: nazcakeatyrau@gmail.com)";
+  }
+
+  let response;
+  try {
+    response = await fetch(url, { headers });
+  } catch (e) {
+    throw new Error("delivery_err_geocoder");
+  }
 
   if (!response.ok) {
+    if (response.status === 404 || response.status === 400) {
+      throw new Error("delivery_err_notfound");
+    }
     throw new Error("delivery_err_geocoder");
   }
 
   const data = await response.json();
-  if (data.length === 0) {
+  if (!data || data.length === 0) {
     throw new Error("delivery_err_notfound");
   }
 
-  const location = data[0];
+  const location = Array.isArray(data) ? data[0] : data;
   const coords = {
     lat: parseFloat(location.lat),
     lon: parseFloat(location.lon)
@@ -2992,27 +3008,41 @@ async function fetchCoordinates(address) {
     return geocodingCache.get(normalizedAddress);
   }
 
-  const url = `https://nominatim.openstreetmap.org/search?q=Атырау, ${encodeURIComponent(address)}&format=json&limit=1`;
-  const response = await fetch(url, {
-    headers: {
-      "User-Agent": "NazcakeConfectioneryDeliveryCalculator/1.0 (contact: nazcakeatyrau@gmail.com)"
-    }
-  });
+  let url;
+  let headers = {};
+
+  if (typeof LOCATION_IQ_KEY !== "undefined" && LOCATION_IQ_KEY && LOCATION_IQ_KEY !== "YOUR_LOCATIONIQ_API_KEY") {
+    url = `https://us1.locationiq.com/v1/search.php?key=${LOCATION_IQ_KEY}&q=Атырау, ${encodeURIComponent(address)}&format=json&limit=1`;
+  } else {
+    url = `https://nominatim.openstreetmap.org/search?q=Атырау, ${encodeURIComponent(address)}&format=json&limit=1`;
+    headers["User-Agent"] = "NazcakeConfectioneryDeliveryCalculator/1.0 (contact: nazcakeatyrau@gmail.com)";
+  }
+
+  let response;
+  try {
+    response = await fetch(url, { headers });
+  } catch (e) {
+    throw new Error("delivery_err_geocoder");
+  }
 
   if (!response.ok) {
+    if (response.status === 404 || response.status === 400) {
+      throw new Error("delivery_err_notfound");
+    }
     throw new Error("delivery_err_geocoder");
   }
 
   const data = await response.json();
-  if (data.length === 0) {
+  if (!data || data.length === 0) {
     throw new Error("delivery_err_notfound");
   }
 
-  const location = data[0];
+  const location = Array.isArray(data) ? data[0] : data;
   const coords = {
     lat: parseFloat(location.lat),
     lon: parseFloat(location.lon)
   };
+
   geocodingCache.set(normalizedAddress, coords);
   return coords;
 }
