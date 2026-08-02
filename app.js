@@ -1899,6 +1899,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupDeliveryCalculator();
   initAutocomplete("delivery-address");
   initAutocomplete("checkout-address");
+  initCountUpAnimations();
   setupGeolocation();
   updateCartUi();
   setupAdminPanel();
@@ -2480,6 +2481,54 @@ function initAutocomplete(inputId) {
     suggestionsList.innerHTML = "";
     activeIndex = -1;
   }
+}
+
+function initCountUpAnimations() {
+  const nums = document.querySelectorAll(".about-features .feature-num");
+  if (!nums.length) return;
+
+  if (typeof IntersectionObserver === "undefined") {
+    // Fallback for environment without IntersectionObserver
+    nums.forEach(el => {
+      const target = el.getAttribute("data-target");
+      const suffix = el.getAttribute("data-suffix") || "";
+      el.textContent = target + suffix;
+    });
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries, self) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const target = parseInt(el.getAttribute("data-target"), 10);
+        const suffix = el.getAttribute("data-suffix") || "";
+        
+        let start = 0;
+        const duration = 2000;
+        const startTime = performance.now();
+
+        function update(currentTime) {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const easeProgress = progress * (2 - progress);
+          const currentVal = Math.floor(easeProgress * target);
+          el.textContent = currentVal + suffix;
+
+          if (progress < 1) {
+            requestAnimationFrame(update);
+          } else {
+            el.textContent = target + suffix;
+          }
+        }
+
+        requestAnimationFrame(update);
+        self.unobserve(el);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  nums.forEach(num => observer.observe(num));
 }
 
 async function fetchCoordinates(address) {
@@ -6307,7 +6356,14 @@ function setupBestsellersCarousel() {
     const card = grid.querySelector(".product-card");
     const gap = parseFloat(getComputedStyle(grid).gap) || 36;
     const step = card ? card.getBoundingClientRect().width + gap : 440;
-    grid.scrollBy({ left: dir * step, behavior: "smooth" });
+    const maxScroll = grid.scrollWidth - grid.clientWidth;
+    if (dir === 1 && grid.scrollLeft >= maxScroll - 10) {
+      grid.scrollTo({ left: 0, behavior: "smooth" });
+    } else if (dir === -1 && grid.scrollLeft <= 10) {
+      grid.scrollTo({ left: maxScroll, behavior: "smooth" });
+    } else {
+      grid.scrollBy({ left: dir * step, behavior: "smooth" });
+    }
   };
 
   if (prevBtn) {
@@ -6370,6 +6426,52 @@ function setupBestsellersCarousel() {
       hasMoved = false;
     }
   }, true);
+
+  // Carousel Autoplay with Progress Indicator
+  let autoplayInterval = null;
+  let autoplayProgress = 0;
+  const AUTOPLAY_DURATION = 5000; // 5 seconds
+  const UPDATE_INTERVAL = 50; // update progress every 50ms
+  let isPaused = false;
+
+  const startAutoplay = () => {
+    if (autoplayInterval) clearInterval(autoplayInterval);
+    autoplayInterval = setInterval(() => {
+      if (isPaused) return;
+
+      autoplayProgress += UPDATE_INTERVAL;
+      const bar = document.getElementById("bestsellers-progress-bar");
+      if (bar) {
+        bar.style.width = `${Math.min(100, (autoplayProgress / AUTOPLAY_DURATION) * 100)}%`;
+      }
+
+      if (autoplayProgress >= AUTOPLAY_DURATION) {
+        autoplayProgress = 0;
+        scrollByCard(1);
+      }
+    }, UPDATE_INTERVAL);
+  };
+
+  const resetAutoplay = () => {
+    autoplayProgress = 0;
+    const bar = document.getElementById("bestsellers-progress-bar");
+    if (bar) bar.style.width = "0%";
+  };
+
+  // Pause on hover / touch
+  wrapper.addEventListener("mouseenter", () => { isPaused = true; });
+  wrapper.addEventListener("mouseleave", () => { isPaused = false; });
+  grid.addEventListener("touchstart", () => { isPaused = true; }, { passive: true });
+  grid.addEventListener("touchend", () => { isPaused = false; }, { passive: true });
+
+  // Reset timer on user interaction
+  if (prevBtn) prevBtn.addEventListener("click", resetAutoplay);
+  if (nextBtn) nextBtn.addEventListener("click", resetAutoplay);
+  grid.addEventListener("mousedown", resetAutoplay);
+  if (rail) rail.addEventListener("mousedown", resetAutoplay);
+
+  // Start Autoplay on init
+  startAutoplay();
 }
 
 // ----------------------------

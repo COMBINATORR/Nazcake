@@ -3264,15 +3264,26 @@ body.dark-theme .bestsellers-arrow:hover {
   flex-direction: column;
   border: 1px solid rgba(0, 0, 0, 0.05);
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
               border-color 0.3s ease;
 }
 
 .product-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.09);
-  border-color: rgba(229, 193, 88, 0.3);
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+  border-color: rgba(229, 193, 88, 0.35);
+}
+
+/* Spring bounce animation for card add button on hover */
+.product-card:hover .btn-card-add {
+  animation: spring-bounce 0.6s cubic-bezier(0.25, 1.1, 0.5, 1.35) both;
+}
+
+@keyframes spring-bounce {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.25); }
+  100% { transform: scale(1.1); }
 }
 
 .product-img-wrapper {
@@ -8516,4 +8527,24 @@ body.dark-theme .seo-about-box p {
 .autocomplete-suggestion strong {
   color: inherit;
   font-weight: 700;
+}
+
+/* Bestsellers Autoplay Progress Bar */
+.bestsellers-progress-bar-container {
+  width: 120px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 15px auto 0;
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+
+.bestsellers-progress-bar {
+  width: 0%;
+  height: 100%;
+  background: var(--primary-color, #ff6b6b);
+  transition: width 50ms linear;
+  box-shadow: 0 0 8px var(--primary-color, #ff6b6b);
+  border-radius: 2px;
 }

@@ -472,16 +472,16 @@
         <p class="about-text reveal-item" data-i18n="about_text_1">Кондитерский дом <strong class="brand-word">Nazcake</strong> уже более 15 лет радует жителей Атырау изысканными вкусами и теплой домашней атмосферой. Каждый день мы создаем свежую выпечку и десерты, приносящие радость в каждый дом.</p>
         <div class="about-features reveal-item">
           <div class="feature-item">
-            <span class="feature-num">100%</span>
-            <span class="feature-label" data-i18n="about_feat_natural">Натурально</span>
+            <span class="feature-num" data-target="15" data-suffix="+">0</span>
+            <span class="feature-label" data-i18n="about_feat_experience">Лет опыта</span>
           </div>
           <div class="feature-item">
-            <span class="feature-num">200+</span>
+            <span class="feature-num" data-target="200" data-suffix="+">0</span>
             <span class="feature-label" data-i18n="about_feat_recipes">Рецептов</span>
           </div>
           <div class="feature-item">
-            <span class="feature-num">Atyrau</span>
-            <span class="feature-label" data-i18n="about_feat_location">Локация</span>
+            <span class="feature-num" data-target="100" data-suffix="%">0</span>
+            <span class="feature-label" data-i18n="about_feat_natural">Натурально</span>
           </div>
         </div>
       </div>
@@ -1171,6 +1171,10 @@
         <!-- Custom rail (no OS scrollbar arrows) -->
         <div class="bestsellers-scroll-rail" id="bestsellers-scroll-rail" aria-hidden="true">
           <div class="bestsellers-scroll-thumb" id="bestsellers-scroll-thumb"></div>
+        </div>
+        <!-- Progress bar for autoplay loop -->
+        <div class="bestsellers-progress-bar-container" aria-hidden="true">
+          <div class="bestsellers-progress-bar" id="bestsellers-progress-bar"></div>
         </div>
       </div>
     </div>
