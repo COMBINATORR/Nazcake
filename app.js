@@ -6427,51 +6427,6 @@ function setupBestsellersCarousel() {
     }
   }, true);
 
-  // Carousel Autoplay with Progress Indicator
-  let autoplayInterval = null;
-  let autoplayProgress = 0;
-  const AUTOPLAY_DURATION = 5000; // 5 seconds
-  const UPDATE_INTERVAL = 50; // update progress every 50ms
-  let isPaused = false;
-
-  const startAutoplay = () => {
-    if (autoplayInterval) clearInterval(autoplayInterval);
-    autoplayInterval = setInterval(() => {
-      if (isPaused) return;
-
-      autoplayProgress += UPDATE_INTERVAL;
-      const bar = document.getElementById("bestsellers-progress-bar");
-      if (bar) {
-        bar.style.width = `${Math.min(100, (autoplayProgress / AUTOPLAY_DURATION) * 100)}%`;
-      }
-
-      if (autoplayProgress >= AUTOPLAY_DURATION) {
-        autoplayProgress = 0;
-        scrollByCard(1);
-      }
-    }, UPDATE_INTERVAL);
-  };
-
-  const resetAutoplay = () => {
-    autoplayProgress = 0;
-    const bar = document.getElementById("bestsellers-progress-bar");
-    if (bar) bar.style.width = "0%";
-  };
-
-  // Pause on hover / touch
-  wrapper.addEventListener("mouseenter", () => { isPaused = true; });
-  wrapper.addEventListener("mouseleave", () => { isPaused = false; });
-  grid.addEventListener("touchstart", () => { isPaused = true; }, { passive: true });
-  grid.addEventListener("touchend", () => { isPaused = false; }, { passive: true });
-
-  // Reset timer on user interaction
-  if (prevBtn) prevBtn.addEventListener("click", resetAutoplay);
-  if (nextBtn) nextBtn.addEventListener("click", resetAutoplay);
-  grid.addEventListener("mousedown", resetAutoplay);
-  if (rail) rail.addEventListener("mousedown", resetAutoplay);
-
-  // Start Autoplay on init
-  startAutoplay();
 }
 
 // ----------------------------

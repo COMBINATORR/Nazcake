@@ -8528,23 +8528,3 @@ body.dark-theme .seo-about-box p {
   color: inherit;
   font-weight: 700;
 }
-
-/* Bestsellers Autoplay Progress Bar */
-.bestsellers-progress-bar-container {
-  width: 120px;
-  height: 3px;
-  background: rgba(255, 255, 255, 0.1);
-  margin: 15px auto 0;
-  border-radius: 2px;
-  overflow: hidden;
-  position: relative;
-}
-
-.bestsellers-progress-bar {
-  width: 0%;
-  height: 100%;
-  background: var(--primary-color, #ff6b6b);
-  transition: width 50ms linear;
-  box-shadow: 0 0 8px var(--primary-color, #ff6b6b);
-  border-radius: 2px;
-}
