@@ -14,7 +14,7 @@ const MAP_OVERRIDE = {
   'булочка с творогом': ['pastry_bun_cottage.webp'],
   'булочка со сгущенкой': ['pastry_bun_condensed.webp'],
   'булочка без начинки': ['pastry_bun_plain.webp'],
-  'ливерные пирожки': ['pastry_pirog_liver.webp', 'pastry_pirog_liver_mini.webp'],
+  'ливерные пирожки': ['pastry_pirog_liver.webp'],
   'бауырсаки': ['bread_baursaki.webp'],
   'блины без начинки': ['bread_pancakes_plain.webp'],
   'блины с мясом': ['bread_pancakes_meat.webp'],
