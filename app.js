@@ -470,7 +470,7 @@ let products = [
     category: "pies",
     price: 7500,
     unit: "шт.",
-    image: "images/pie_fruits_large.webp",
+    image: "images/pie_dryfruit.webp",
     desc: "Большой прямоугольный пирог, обильно наполненный отборным изюмом и курагой.",
     ingredients: "Мука, дрожжи, сливочное масло, сахар, соль, разрыхлитель, ванилин, яйцо, молоко, сухофрукты, джем. Аллергены: глютен, молоко, яйца.",
     badge: "custom"
@@ -1411,7 +1411,7 @@ const LOCAL_CATALOG_IMAGE_OVERRIDES = new Map([
   ["pie_meat_round", "images/pie_meat_round.webp?v=20260728_v5"],
   ["cake_biscuit_roll", "images/cake_biscuit_roll.webp?v=20260728_v5"],
   ["pie_curd_large", "images/pie_curd_large.webp?v=20260728_v5"],
-  ["pie_fruits_large", "images/pie_fruits_large.webp?v=20260728_v5"],
+  ["pie_fruits_large", "images/pie_dryfruit.webp?v=20260728_v5"],
   ["pie_curd_condensed", "images/pie_curd_condensed.webp?v=20260728_v5"],
   ["pastry_tea_set", "images/pastry_tea_set.webp?v=20260724c"],
   ["pastry_manty_condensed", "images/pastry_manty_condensed.webp?v=20260724d"],
