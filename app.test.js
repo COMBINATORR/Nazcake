@@ -239,6 +239,21 @@ window.checkAtyrauBounds = checkAtyrauBounds;
             expect(input3.value).toBe('0');
         });
 
+
+        it('should handle extremely large numeric strings containing scientific notation from parseInt', () => {
+            const input = document.createElement('input');
+            input.value = '9'.repeat(50);
+            window.clampNonNegativeIntInput(input);
+            expect(input.value).toBe('1e+50');
+        });
+
+        it('should handle float numbers as input value by stripping the dot', () => {
+            const input = document.createElement('input');
+            input.value = '3.14';
+            window.clampNonNegativeIntInput(input);
+            expect(input.value).toBe('314');
+        });
+
         it('should handle undefined value property', () => {
             const input = {};
             window.clampNonNegativeIntInput(input);
