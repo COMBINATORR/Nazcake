@@ -677,11 +677,47 @@ describe('escapeHTML', () => {
       expect(blob.size).toBeGreaterThan(0);
     });
 
-    it('extractProductImageStoragePath parses public URL', () => {
+    describe('extractProductImageStoragePath', () => {
       const bucket = window.PRODUCT_IMAGES_BUCKET || 'product-images';
-      const url = `https://xxx.supabase.co/storage/v1/object/public/${bucket}/products/tea/1.jpg`;
-      expect(window.extractProductImageStoragePath(url)).toBe('products/tea/1.jpg');
-      expect(window.extractProductImageStoragePath('images/local.webp')).toBeNull();
+
+      it('parses public URL', () => {
+        const url = `https://xxx.supabase.co/storage/v1/object/public/${bucket}/products/tea/1.jpg`;
+        expect(window.extractProductImageStoragePath(url)).toBe('products/tea/1.jpg');
+      });
+
+      it('parses signed URL', () => {
+        const url = `https://xxx.supabase.co/storage/v1/object/sign/${bucket}/products/cake/2.jpg?token=abc`;
+        expect(window.extractProductImageStoragePath(url)).toBe('products/cake/2.jpg');
+      });
+
+      it('strips query strings from public URLs', () => {
+        const url = `https://xxx.supabase.co/storage/v1/object/public/${bucket}/products/pie/3.jpg?t=12345`;
+        expect(window.extractProductImageStoragePath(url)).toBe('products/pie/3.jpg');
+      });
+
+      it('decodes URL encoded paths', () => {
+        const url = `https://xxx.supabase.co/storage/v1/object/public/${bucket}/products/fancy%20cake%26stuff.jpg`;
+        expect(window.extractProductImageStoragePath(url)).toBe('products/fancy cake&stuff.jpg');
+      });
+
+      it('returns null for local/unmatched URLs', () => {
+        expect(window.extractProductImageStoragePath('images/local.webp')).toBeNull();
+        expect(window.extractProductImageStoragePath('/assets/img.png')).toBeNull();
+      });
+
+      it('handles invalid inputs gracefully', () => {
+        expect(window.extractProductImageStoragePath(null)).toBeNull();
+        expect(window.extractProductImageStoragePath(undefined)).toBeNull();
+        expect(window.extractProductImageStoragePath('')).toBeNull();
+        expect(window.extractProductImageStoragePath(123)).toBeNull();
+        expect(window.extractProductImageStoragePath({})).toBeNull();
+      });
+
+      it('falls back to raw string match if decodeURIComponent fails', () => {
+        // %81 is an invalid URI encoding, decodeURIComponent will throw
+        const url = `https://xxx.supabase.co/storage/v1/object/public/${bucket}/products/bad%81path.jpg`;
+        expect(window.extractProductImageStoragePath(url)).toBe('products/bad%81path.jpg');
+      });
     });
 
     it('imageForLocalStorage strips data URLs', () => {
