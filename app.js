@@ -1,14 +1,12 @@
 
 function generateSecureOrderId(prefix) {
-  let randomNum;
-  if (typeof window !== 'undefined' && window.crypto && window.crypto.getRandomValues) {
+  if (typeof crypto !== "undefined" && crypto.getRandomValues) {
     const array = new Uint32Array(1);
-    window.crypto.getRandomValues(array);
-    randomNum = array[0] / (0xffffffff + 1);
-  } else {
-    randomNum = Math.random();
+    crypto.getRandomValues(array);
+    const randomHex = array[0].toString(16).padStart(8, "0").toUpperCase();
+    return prefix + randomHex;
   }
-  return prefix + Math.floor(100000 + randomNum * 900000);
+  return prefix + Math.floor(Math.random() * 1000000000).toString(16).toUpperCase();
 }
 
 // Block pinch / multi-touch zoom (viewport + CSS cover most cases; iOS needs gesture events)
