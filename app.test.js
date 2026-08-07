@@ -56,11 +56,53 @@ window.checkAtyrauBounds = checkAtyrauBounds;
             window.getUnitTranslationKey = getUnitTranslationKey;
             window.sortProductsStable = sortProductsStable;
             window.getBadgeTranslationKey = getBadgeTranslationKey;
+            window.loadProducts = loadProducts;
+            loadCustomProductsLocalFallback = jest.fn(loadCustomProductsLocalFallback);
+            window.getLoadCustomProductsLocalFallbackMock = () => loadCustomProductsLocalFallback;
+            window.setSupabaseClient = (client) => { supabaseClient = client; };
+
         `;
 
         eval(appJsCode);
     });
 
+
+
+    describe('loadProducts', () => {
+        let originalConsoleError;
+
+
+        beforeEach(() => {
+            originalConsoleError = console.error;
+            console.error = jest.fn();
+            // Reset the fallback mock
+            window.getLoadCustomProductsLocalFallbackMock().mockClear();
+        });
+
+        afterEach(() => {
+            console.error = originalConsoleError;
+            window.setSupabaseClient(null);
+        });
+
+        it('should call console.error and loadCustomProductsLocalFallback on Supabase error', async () => {
+            const mockError = new Error('Mock Supabase connection error');
+            const mockSupabaseClient = {
+                from: jest.fn().mockReturnThis(),
+                select: jest.fn().mockReturnThis(),
+                order: jest.fn().mockResolvedValue({ data: null, error: mockError })
+            };
+
+            window.setSupabaseClient(mockSupabaseClient);
+
+            await window.loadProducts();
+
+            expect(console.error).toHaveBeenCalledWith(
+                "Failed to load products from DB, using fallback",
+                mockError
+            );
+            expect(window.getLoadCustomProductsLocalFallbackMock()).toHaveBeenCalled();
+        });
+    });
 
     describe('isNewArrivalProduct', () => {
       it('should return false for falsy values', () => {
