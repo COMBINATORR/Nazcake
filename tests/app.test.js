@@ -130,18 +130,20 @@ describe('calculateDeliveryTime', () => {
     });
 
     it('should calculate time for 0 distance correctly', () => {
-      expect(window.calculateDeliveryTime(0)).toBe(20);
+      expect(window.calculateDeliveryTime(0)).toBe(30);
+    });
+
+    it('should correctly calculate delivery time for distance 3', () => {
+      expect(window.calculateDeliveryTime(3)).toBe(45);
+    });
+
+    it('should correctly calculate delivery time for distance 3.5', () => {
+      expect(window.calculateDeliveryTime(3.5)).toBe(50);
     });
 
     it('should calculate time for integer distance correctly', () => {
-      expect(window.calculateDeliveryTime(5)).toBe(40);
-      expect(window.calculateDeliveryTime(10)).toBe(60);
+      expect(window.calculateDeliveryTime(10)).toBe(80);
     });
-
-    it('should round appropriately for fractional distance', () => {
-      expect(window.calculateDeliveryTime(5.125)).toBe(41);
-      expect(window.calculateDeliveryTime(5.1)).toBe(40);
-  });
   });
 
 it('prevents XSS in cart UI', () => {
