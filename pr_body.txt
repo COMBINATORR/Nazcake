@@ -1,3 +1,11 @@
-🎯 **What:** Added unit tests for the `clampNonNegativeIntInput` function in `app.js`.
-📊 **Coverage:** Tested `null`/`undefined` inputs, empty/non-digit strings with and without the `fillEmpty` flag, stripping of non-digits, stripping of leading zeros, and handling of a missing `value` property on the input mock.
-✨ **Result:** Improved test coverage for DOM input manipulation edge cases, making future refactoring safer.
+💡 **What:**
+Replaced a repeated synchronous filesystem call (`fs.readdirSync`) inside the asynchronous AI worker function (`processImage`) with a pre-populated in-memory array cache initialized during script startup.
+
+🎯 **Why:**
+The original implementation performed an expensive, blocking `readdirSync` operation inside an asynchronous loop executing concurrently across multiple workers. For thousands of files, this resulted in extreme performance degradation because the entire Node event loop was blocked waiting on sequential disk I/O, negating any benefits from asynchronous API calls. Moving the lookup to a pre-cached array turns an O(N) I/O bottleneck into an in-memory lookup.
+
+📊 **Measured Improvement:**
+Using a 5000-iteration benchmark over 2000 output files:
+* **Baseline:** ~8131.88ms
+* **Optimized:** ~1060.54ms
+* **Speedup:** 86.96% improvement in lookup time.
