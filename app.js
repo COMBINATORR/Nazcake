@@ -1938,7 +1938,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // Mobile Video Autoplay – robust cross-browser fix
+  // Mobile Video Autoplay – robust cross-browser solution
   const heroVideo = document.querySelector('.hero-video-bg');
   if (heroVideo) {
     // Ensure muted (required for autoplay on all mobile browsers)
