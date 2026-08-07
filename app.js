@@ -2438,9 +2438,9 @@ function initAutocomplete(inputId) {
       const name = item.cleaned;
       const index = name.toLowerCase().indexOf(query);
       if (index > -1) {
-        li.innerHTML = name.substring(0, index) + 
-                       `<strong>${name.substring(index, index + query.length)}</strong>` + 
-                       name.substring(index + query.length);
+        li.innerHTML = escapeHTML(name.substring(0, index)) +
+                       `<strong>${escapeHTML(name.substring(index, index + query.length))}</strong>` +
+                       escapeHTML(name.substring(index + query.length));
       } else {
         li.textContent = name;
       }
