@@ -2233,7 +2233,7 @@ function applyCatalogSectionTheme(category) {
   section.style.removeProperty("--cat-accent-3");
 }
 
-function createProductCardElement(p) {
+function formatProductData(p) {
   const { id, name, category, categoryLabel, badge, unit, price, sizeOptions, inStock, stock, image, isCustomName } = p;
 
   const tName = isCustomName ? name : (window.i18n ? window.i18n.t(`p_${id}_name`) : name);
@@ -2248,6 +2248,45 @@ function createProductCardElement(p) {
   const isOutOfStock = isProductOutOfStock({ inStock, stock });
   const cardClass = isOutOfStock ? "product-card out-of-stock reveal-item" : "product-card reveal-item";
   const tOutOfStock = window.i18n ? window.i18n.t("catalog_out_of_stock") : "Нет в наличии";
+
+  let priceText = "";
+  if (sizeOptions && sizeOptions.length > 0) {
+    const fromText = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "бастап" : "от";
+    const minPrice = Math.min(...sizeOptions.map(o => o.price));
+    priceText = `${fromText} ${minPrice.toLocaleString()} ₸`;
+  } else {
+    priceText = `${price.toLocaleString()} ₸ / ${tUnit}`;
+  }
+
+  return {
+    id,
+    category,
+    image,
+    tName,
+    tCategoryLabel,
+    displayBadge,
+    tBadge,
+    isOutOfStock,
+    cardClass,
+    tOutOfStock,
+    priceText
+  };
+}
+
+function createProductCardElement(p) {
+  const {
+    id,
+    category,
+    image,
+    tName,
+    tCategoryLabel,
+    displayBadge,
+    tBadge,
+    isOutOfStock,
+    cardClass,
+    tOutOfStock,
+    priceText
+  } = formatProductData(p);
 
   const cardDiv = document.createElement('div');
   cardDiv.className = cardClass;
@@ -2308,14 +2347,7 @@ function createProductCardElement(p) {
 
   const priceSpan = document.createElement('span');
   priceSpan.className = "product-price";
-
-  if (sizeOptions && sizeOptions.length > 0) {
-    const fromText = window.i18n && window.i18n.getCurrentLanguage() === "kk" ? "бастап" : "от";
-    const minPrice = Math.min(...sizeOptions.map(o => o.price));
-    priceSpan.textContent = `${fromText} ${minPrice.toLocaleString()} ₸`;
-  } else {
-    priceSpan.textContent = `${price.toLocaleString()} ₸ / ${tUnit}`;
-  }
+  priceSpan.textContent = priceText;
   footerDiv.appendChild(priceSpan);
 
   const addBtn = document.createElement('button');
