@@ -5993,6 +5993,101 @@ const CATEGORY_STAGE_ITEMS = [
   }
 ];
 
+function getCategoryStageLabel(category) {
+  if (window.i18n && typeof window.i18n.t === "function") {
+    return window.i18n.t(`catalog_cat_${category}`);
+  }
+  return category;
+}
+
+function getCategoryStageDesc(category) {
+  if (window.i18n && typeof window.i18n.t === "function") {
+    return window.i18n.t(`category_stage_desc_${category}`);
+  }
+  return "";
+}
+
+function syncCategoryStageGhostFontSize(ghostEl, section) {
+  if (!ghostEl || !section) return;
+  const parent = ghostEl.parentElement;
+  if (!parent) return;
+
+  let longest = "ПИРОЖНЫЕ С ЯГОДАМИ";
+  CATEGORY_STAGE_ITEMS.forEach((item) => {
+    const t = (getCategoryStageLabel(item.category) || item.ghost || "").toUpperCase();
+    if (t.length > longest.length) longest = t;
+  });
+
+  const maxW = Math.max(80, parent.clientWidth - 8);
+  const prevText = ghostEl.textContent;
+  const prevSize = ghostEl.style.fontSize;
+
+  ghostEl.style.transform = "translate(-50%, -50%)";
+  ghostEl.style.fontSize = "200px";
+  ghostEl.textContent = longest;
+
+  let lo = 14;
+  let hi = Math.min(200, Math.floor(parent.clientWidth * 0.28));
+  let best = lo;
+  while (lo <= hi) {
+    const mid = (lo + hi) >> 1;
+    ghostEl.style.fontSize = `${mid}px`;
+    if (ghostEl.scrollWidth <= maxW) {
+      best = mid;
+      lo = mid + 1;
+    } else {
+      hi = mid - 1;
+    }
+  }
+
+  const sizePx = `${best}px`;
+  section.style.setProperty("--ghost-font-size", sizePx);
+  ghostEl.style.fontSize = sizePx;
+  ghostEl.style.transform = "translate(-50%, -50%)";
+  ghostEl.textContent = prevText || longest;
+  if (prevSize && !prevText) ghostEl.style.fontSize = sizePx;
+}
+
+function attachCategoryStageSwipeHandlers(section, navigate, setSwipeIgnoreClick) {
+  let swipeStartX = 0;
+  let swipeStartY = 0;
+  let swipeTracking = false;
+  let swipePointerId = null;
+  const SWIPE_MIN_PX = 46;
+  const SWIPE_RATIO = 1.15; // horizontal must beat vertical
+
+  section.addEventListener("pointerdown", (e) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    if (e.target.closest("button, a, input, textarea, select")) return;
+    swipeTracking = true;
+    swipePointerId = e.pointerId;
+    swipeStartX = e.clientX;
+    swipeStartY = e.clientY;
+  });
+
+  const endSwipe = (e) => {
+    if (!swipeTracking) return;
+    if (swipePointerId !== null && e.pointerId !== swipePointerId) return;
+    swipeTracking = false;
+    swipePointerId = null;
+    const dx = e.clientX - swipeStartX;
+    const dy = e.clientY - swipeStartY;
+    if (Math.abs(dx) < SWIPE_MIN_PX) return;
+    if (Math.abs(dx) < Math.abs(dy) * SWIPE_RATIO) return;
+    setSwipeIgnoreClick(true);
+    setTimeout(() => {
+      setSwipeIgnoreClick(false);
+    }, 450);
+    navigate(dx < 0 ? "next" : "prev");
+  };
+
+  section.addEventListener("pointerup", endSwipe);
+  section.addEventListener("pointercancel", () => {
+    swipeTracking = false;
+    swipePointerId = null;
+  });
+}
+
 function setupCategoryStage() {
   const section = document.getElementById("category-stage");
   const stage = document.getElementById("category-stage-track");
@@ -6031,65 +6126,6 @@ function setupCategoryStage() {
 
   const items = Array.from(stage.querySelectorAll(".category-stage-item"));
 
-  const categoryLabel = (category) => {
-    if (window.i18n && typeof window.i18n.t === "function") {
-      return window.i18n.t(`catalog_cat_${category}`);
-    }
-    return category;
-  };
-
-  const categoryDesc = (category) => {
-    if (window.i18n && typeof window.i18n.t === "function") {
-      return window.i18n.t(`category_stage_desc_${category}`);
-    }
-    return "";
-  };
-
-  /**
-   * One font size for ALL ghost titles, sized so the longest label
-   * («Пирожные с ягодами» / KK equivalent) fits the screen — desktop & mobile.
-   */
-  const syncGhostFontSize = () => {
-    if (!ghostEl || !section) return;
-    const parent = ghostEl.parentElement;
-    if (!parent) return;
-
-    let longest = "ПИРОЖНЫЕ С ЯГОДАМИ";
-    CATEGORY_STAGE_ITEMS.forEach((item) => {
-      const t = (categoryLabel(item.category) || item.ghost || "").toUpperCase();
-      if (t.length > longest.length) longest = t;
-    });
-
-    const maxW = Math.max(80, parent.clientWidth - 8);
-    const prevText = ghostEl.textContent;
-    const prevSize = ghostEl.style.fontSize;
-
-    ghostEl.style.transform = "translate(-50%, -50%)";
-    ghostEl.style.fontSize = "200px";
-    ghostEl.textContent = longest;
-
-    let lo = 14;
-    let hi = Math.min(200, Math.floor(parent.clientWidth * 0.28));
-    let best = lo;
-    while (lo <= hi) {
-      const mid = (lo + hi) >> 1;
-      ghostEl.style.fontSize = `${mid}px`;
-      if (ghostEl.scrollWidth <= maxW) {
-        best = mid;
-        lo = mid + 1;
-      } else {
-        hi = mid - 1;
-      }
-    }
-
-    const sizePx = `${best}px`;
-    section.style.setProperty("--ghost-font-size", sizePx);
-    ghostEl.style.fontSize = sizePx;
-    ghostEl.style.transform = "translate(-50%, -50%)";
-    ghostEl.textContent = prevText || longest;
-    if (prevSize && !prevText) ghostEl.style.fontSize = sizePx;
-  };
-
   const openCategoryInCatalog = (category) => {
     if (!category) return;
     const targetTab = Array.from(document.querySelectorAll(".tab-btn")).find(
@@ -6124,7 +6160,7 @@ function setupCategoryStage() {
       else if (i === roles.right) el.classList.add("is-right");
       else el.classList.add("is-back");
       el.setAttribute("tabindex", i === roles.center ? "0" : "-1");
-      el.setAttribute("aria-label", categoryLabel(CATEGORY_STAGE_ITEMS[i].category));
+      el.setAttribute("aria-label", getCategoryStageLabel(CATEGORY_STAGE_ITEMS[i].category));
     });
 
     section.style.setProperty("--stage-accent", current.bg);
@@ -6132,16 +6168,16 @@ function setupCategoryStage() {
     section.style.setProperty("--stage-accent-3", current.bg3 || current.bg);
 
     if (titleEl) {
-      titleEl.textContent = categoryLabel(current.category);
+      titleEl.textContent = getCategoryStageLabel(current.category);
       titleEl.removeAttribute("data-i18n");
     }
     if (copyEl) {
-      copyEl.textContent = categoryDesc(current.category);
+      copyEl.textContent = getCategoryStageDesc(current.category);
       copyEl.removeAttribute("data-i18n");
     }
     if (ghostEl) {
       // Full category title for every slide — same font size as the longest one
-      ghostEl.textContent = (categoryLabel(current.category) || current.ghost || "").toUpperCase();
+      ghostEl.textContent = (getCategoryStageLabel(current.category) || current.ghost || "").toUpperCase();
       ghostEl.style.transform = "translate(-50%, -50%)";
     }
   };
@@ -6150,7 +6186,7 @@ function setupCategoryStage() {
   window.addEventListener("resize", () => {
     clearTimeout(ghostResizeTimer);
     ghostResizeTimer = setTimeout(() => {
-      syncGhostFontSize();
+      syncCategoryStageGhostFontSize(ghostEl, section);
       applyRoles();
     }, 80);
   });
@@ -6176,45 +6212,9 @@ function setupCategoryStage() {
     });
   }
 
-  // Swipes (Pointer Events cover touch + mouse; no double-fire with touch*)
-  // finger/drag left → next, right → prev; vertical scroll still works (touch-action: pan-y)
-  let swipeStartX = 0;
-  let swipeStartY = 0;
-  let swipeTracking = false;
-  let swipePointerId = null;
   let swipeIgnoreClick = false;
-  const SWIPE_MIN_PX = 46;
-  const SWIPE_RATIO = 1.15; // horizontal must beat vertical
-
-  section.addEventListener("pointerdown", (e) => {
-    if (e.pointerType === "mouse" && e.button !== 0) return;
-    if (e.target.closest("button, a, input, textarea, select")) return;
-    swipeTracking = true;
-    swipePointerId = e.pointerId;
-    swipeStartX = e.clientX;
-    swipeStartY = e.clientY;
-  });
-
-  const endSwipe = (e) => {
-    if (!swipeTracking) return;
-    if (swipePointerId !== null && e.pointerId !== swipePointerId) return;
-    swipeTracking = false;
-    swipePointerId = null;
-    const dx = e.clientX - swipeStartX;
-    const dy = e.clientY - swipeStartY;
-    if (Math.abs(dx) < SWIPE_MIN_PX) return;
-    if (Math.abs(dx) < Math.abs(dy) * SWIPE_RATIO) return;
-    swipeIgnoreClick = true;
-    setTimeout(() => {
-      swipeIgnoreClick = false;
-    }, 450);
-    navigate(dx < 0 ? "next" : "prev");
-  };
-
-  section.addEventListener("pointerup", endSwipe);
-  section.addEventListener("pointercancel", () => {
-    swipeTracking = false;
-    swipePointerId = null;
+  attachCategoryStageSwipeHandlers(section, navigate, (val) => {
+    swipeIgnoreClick = val;
   });
 
   items.forEach((el, i) => {
@@ -6241,14 +6241,14 @@ function setupCategoryStage() {
 
   if (window.i18n && typeof window.i18n.onLanguageChange === "function") {
     window.i18n.onLanguageChange(() => {
-      syncGhostFontSize();
+      syncCategoryStageGhostFontSize(ghostEl, section);
       applyRoles();
     });
   }
 
   // Size once to longest label, then show active category
   requestAnimationFrame(() => {
-    syncGhostFontSize();
+    syncCategoryStageGhostFontSize(ghostEl, section);
     applyRoles();
   });
 }
