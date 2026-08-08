@@ -1686,7 +1686,7 @@ async function loadProducts() {
       loadCustomProductsLocalFallback();
     }
   } catch (e) {
-    console.warn("Failed to fetch products from Supabase, falling back to local:", e);
+    console.error("Failed to load products from DB, using fallback", e);
     loadCustomProductsLocalFallback();
   }
 }
@@ -1936,7 +1936,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // Mobile Video Autoplay – robust cross-browser fix
+  // Mobile Video Autoplay – robust cross-browser solution
   const heroVideo = document.querySelector('.hero-video-bg');
   if (heroVideo) {
     // Ensure muted (required for autoplay on all mobile browsers)
@@ -2436,9 +2436,9 @@ function initAutocomplete(inputId) {
       const name = item.cleaned;
       const index = name.toLowerCase().indexOf(query);
       if (index > -1) {
-        li.innerHTML = name.substring(0, index) + 
-                       `<strong>${name.substring(index, index + query.length)}</strong>` + 
-                       name.substring(index + query.length);
+        li.innerHTML = escapeHTML(name.substring(0, index)) +
+                       `<strong>${escapeHTML(name.substring(index, index + query.length))}</strong>` +
+                       escapeHTML(name.substring(index + query.length));
       } else {
         li.textContent = name;
       }
@@ -3806,13 +3806,13 @@ function checkAtyrauBounds(lat, lon, bounds) {
 }
 
 function calculateDeliveryCost(distance) {
-  let cost = 500 + Math.round(distance * 150);
-  cost = Math.ceil(cost / 50) * 50;
-  return Math.min(Math.max(cost, 500), 3500);
+  if (distance <= 3) return 800;
+  return 800 + Math.ceil(distance - 3) * 150;
 }
 
 function calculateDeliveryTime(distance) {
-  return Math.round(distance * 4) + 20;
+  const baseTime = 30; // 30 mins base
+  return baseTime + Math.ceil(distance) * 5; // +5 mins per km
 }
 
 function showDeliveryError(msg, errorBox, resultsBox) {
@@ -4260,6 +4260,20 @@ function formatCheckoutMessage(name, phone, method, address, cart, subtotal, t, 
 
   message += `\n💵 *${window.i18n ? t("tg_total") : "Итоговая сумма"}:* ${subtotal.toLocaleString()} ₸`;
   return message;
+}
+
+
+function generateSecureOrderId(prefix) {
+  if (typeof window !== 'undefined' && window.crypto && window.crypto.getRandomValues) {
+    const array = new Uint32Array(1);
+    window.crypto.getRandomValues(array);
+    return prefix + (100000 + (array[0] % 900000));
+  } else if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+    const array = new Uint32Array(1);
+    crypto.getRandomValues(array);
+    return prefix + (100000 + (array[0] % 900000));
+  }
+  throw new Error("Secure random number generator not available.");
 }
 
 function buildOrderObject(name, phone, method, address, cart, subtotal, t, preferredTime) {
