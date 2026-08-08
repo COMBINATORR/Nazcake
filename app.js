@@ -2342,35 +2342,46 @@ function createProductCardElement(p) {
 // --- Delivery Calculator Helpers ---
 const geocodingCache = new Map();
 
-function initAutocomplete(inputId) {
-  const input = document.getElementById(inputId);
-  if (!input) return;
+class Autocomplete {
+  constructor(inputId) {
+    this.inputId = inputId;
+    this.input = document.getElementById(inputId);
+    if (!this.input) return;
 
-  const suggestionsList = document.createElement("ul");
-  suggestionsList.className = "autocomplete-suggestions hidden";
-  input.parentNode.appendChild(suggestionsList);
+    this.suggestionsList = document.createElement("ul");
+    this.suggestionsList.className = "autocomplete-suggestions hidden";
+    this.input.parentNode.appendChild(this.suggestionsList);
 
-  let debounceTimer = null;
-  let activeIndex = -1;
-  let currentItems = [];
+    this.debounceTimer = null;
+    this.activeIndex = -1;
+    this.currentItems = [];
 
-  document.addEventListener("click", (e) => {
-    if (e.target !== input && e.target !== suggestionsList && !suggestionsList.contains(e.target)) {
-      hideSuggestions();
+    this.initEventListeners();
+  }
+
+  initEventListeners() {
+    document.addEventListener("click", this.handleDocumentClick.bind(this));
+    this.input.addEventListener("input", this.handleInput.bind(this));
+    this.input.addEventListener("keydown", this.handleKeydown.bind(this));
+  }
+
+  handleDocumentClick(e) {
+    if (e.target !== this.input && e.target !== this.suggestionsList && !this.suggestionsList.contains(e.target)) {
+      this.hideSuggestions();
     }
-  });
+  }
 
-  input.addEventListener("input", () => {
-    clearTimeout(debounceTimer);
-    const query = input.value.trim();
-    activeIndex = -1;
+  handleInput() {
+    clearTimeout(this.debounceTimer);
+    const query = this.input.value.trim();
+    this.activeIndex = -1;
 
     if (query.length < 3) {
-      hideSuggestions();
+      this.hideSuggestions();
       return;
     }
 
-    debounceTimer = setTimeout(async () => {
+    this.debounceTimer = setTimeout(async () => {
       if (typeof LOCATION_IQ_KEY === "undefined" || !LOCATION_IQ_KEY || LOCATION_IQ_KEY === "YOUR_LOCATIONIQ_API_KEY") {
         return;
       }
@@ -2382,7 +2393,7 @@ function initAutocomplete(inputId) {
         
         const data = await res.json();
         if (Array.isArray(data)) {
-          currentItems = data.map(item => {
+          this.currentItems = data.map(item => {
             let name = item.display_name;
             name = name.replace(/, Атырау.*$/i, "");
             name = name.replace(/, городская администрация Атырау.*$/i, "");
@@ -2393,51 +2404,51 @@ function initAutocomplete(inputId) {
               lon: item.lon
             };
           });
-          renderSuggestions();
+          this.renderSuggestions();
         } else {
-          hideSuggestions();
+          this.hideSuggestions();
         }
       } catch (e) {
         console.warn("Autocomplete failed:", e);
-        hideSuggestions();
+        this.hideSuggestions();
       }
     }, 250);
-  });
+  }
 
-  input.addEventListener("keydown", (e) => {
-    const items = suggestionsList.querySelectorAll(".autocomplete-suggestion");
+  handleKeydown(e) {
+    const items = this.suggestionsList.querySelectorAll(".autocomplete-suggestion");
     if (!items.length) return;
 
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      activeIndex = (activeIndex + 1) % items.length;
-      updateActiveItem(items);
+      this.activeIndex = (this.activeIndex + 1) % items.length;
+      this.updateActiveItem(items);
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
-      activeIndex = (activeIndex - 1 + items.length) % items.length;
-      updateActiveItem(items);
+      this.activeIndex = (this.activeIndex - 1 + items.length) % items.length;
+      this.updateActiveItem(items);
     } else if (e.key === "Enter") {
-      if (activeIndex > -1) {
+      if (this.activeIndex > -1) {
         e.preventDefault();
-        selectItem(currentItems[activeIndex]);
+        this.selectItem(this.currentItems[this.activeIndex]);
       }
     } else if (e.key === "Escape") {
-      hideSuggestions();
+      this.hideSuggestions();
     }
-  });
+  }
 
-  function renderSuggestions() {
-    suggestionsList.innerHTML = "";
-    if (currentItems.length === 0) {
-      hideSuggestions();
+  renderSuggestions() {
+    this.suggestionsList.innerHTML = "";
+    if (this.currentItems.length === 0) {
+      this.hideSuggestions();
       return;
     }
 
-    currentItems.forEach((item, idx) => {
+    this.currentItems.forEach((item, idx) => {
       const li = document.createElement("li");
       li.className = "autocomplete-suggestion";
       
-      const query = input.value.trim().toLowerCase();
+      const query = this.input.value.trim().toLowerCase();
       const name = item.cleaned;
       const index = name.toLowerCase().indexOf(query);
       if (index > -1) {
@@ -2449,18 +2460,18 @@ function initAutocomplete(inputId) {
       }
 
       li.addEventListener("click", () => {
-        selectItem(item);
+        this.selectItem(item);
       });
 
-      suggestionsList.appendChild(li);
+      this.suggestionsList.appendChild(li);
     });
 
-    suggestionsList.classList.remove("hidden");
+    this.suggestionsList.classList.remove("hidden");
   }
 
-  function updateActiveItem(items) {
+  updateActiveItem(items) {
     items.forEach((item, idx) => {
-      if (idx === activeIndex) {
+      if (idx === this.activeIndex) {
         item.classList.add("active");
         item.scrollIntoView({ block: "nearest" });
       } else {
@@ -2469,21 +2480,25 @@ function initAutocomplete(inputId) {
     });
   }
 
-  function selectItem(item) {
-    input.value = item.cleaned;
-    hideSuggestions();
+  selectItem(item) {
+    this.input.value = item.cleaned;
+    this.hideSuggestions();
     
-    if (inputId === "delivery-address") {
+    if (this.inputId === "delivery-address") {
       const calcBtn = document.getElementById("calc-delivery-btn");
       if (calcBtn) calcBtn.click();
     }
   }
 
-  function hideSuggestions() {
-    suggestionsList.classList.add("hidden");
-    suggestionsList.innerHTML = "";
-    activeIndex = -1;
+  hideSuggestions() {
+    this.suggestionsList.classList.add("hidden");
+    this.suggestionsList.innerHTML = "";
+    this.activeIndex = -1;
   }
+}
+
+function initAutocomplete(inputId) {
+  new Autocomplete(inputId);
 }
 
 function initCountUpAnimations() {
