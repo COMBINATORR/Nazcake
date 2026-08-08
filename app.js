@@ -1688,7 +1688,7 @@ async function loadProducts() {
       loadCustomProductsLocalFallback();
     }
   } catch (e) {
-    console.warn("Failed to fetch products from Supabase, falling back to local:", e);
+    console.error("Failed to load products from DB, using fallback", e);
     loadCustomProductsLocalFallback();
   }
 }
