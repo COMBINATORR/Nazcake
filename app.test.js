@@ -480,36 +480,38 @@ window.checkAtyrauBounds = checkAtyrauBounds;
 
   describe('calculateDeliveryTime', () => {
     it('should correctly calculate delivery time for distance 0', () => {
-      expect(window.calculateDeliveryTime(0)).toBe(20);
+      expect(window.calculateDeliveryTime(0)).toBe(30);
     });
 
-    it('should correctly calculate delivery time for small positive distances', () => {
-      expect(window.calculateDeliveryTime(2)).toBe(28);
-      expect(window.calculateDeliveryTime(5)).toBe(40);
-      expect(window.calculateDeliveryTime(1.5)).toBe(26);
+    it('should correctly calculate delivery time for distance 3', () => {
+      expect(window.calculateDeliveryTime(3)).toBe(45);
     });
 
-    it('should handle large distances properly', () => {
-      expect(window.calculateDeliveryTime(100)).toBe(420);
+    it('should correctly calculate delivery time for distance 3.5', () => {
+      expect(window.calculateDeliveryTime(3.5)).toBe(50);
+    });
+
+    it('should correctly calculate delivery time for distance 10', () => {
+      expect(window.calculateDeliveryTime(10)).toBe(80);
     });
   });
 
   describe('calculateDeliveryCost', () => {
-        it('should return minimum cost of 500', () => {
-            expect(window.calculateDeliveryCost(0)).toBe(500);
-        });
+    it('should correctly calculate delivery cost for distance 0', () => {
+      expect(window.calculateDeliveryCost(0)).toBe(800);
+    });
 
-        it('should round up to the nearest 50', () => {
-            // 500 + Math.round(2 * 150) = 800
-            expect(window.calculateDeliveryCost(2)).toBe(800);
-            // 500 + Math.round(2.1 * 150) = 500 + 315 = 815 -> ceil(815/50)*50 = 850
-            expect(window.calculateDeliveryCost(2.1)).toBe(850);
-        });
+    it('should correctly calculate delivery cost for distance 3', () => {
+      expect(window.calculateDeliveryCost(3)).toBe(800);
+    });
 
-        it('should cap the maximum cost at 3500', () => {
-            expect(window.calculateDeliveryCost(20)).toBe(3500);
-            expect(window.calculateDeliveryCost(50)).toBe(3500);
-        });
+    it('should correctly calculate delivery cost for distance 3.5', () => {
+      expect(window.calculateDeliveryCost(3.5)).toBe(950);
+    });
+
+    it('should correctly calculate delivery cost for distance 10', () => {
+      expect(window.calculateDeliveryCost(10)).toBe(1850);
+    });
   });
 
 describe('Distance Calculator (Haversine)', () => {

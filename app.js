@@ -3808,13 +3808,13 @@ function checkAtyrauBounds(lat, lon, bounds) {
 }
 
 function calculateDeliveryCost(distance) {
-  let cost = 500 + Math.round(distance * 150);
-  cost = Math.ceil(cost / 50) * 50;
-  return Math.min(Math.max(cost, 500), 3500);
+  if (distance <= 3) return 800;
+  return 800 + Math.ceil(distance - 3) * 150;
 }
 
 function calculateDeliveryTime(distance) {
-  return Math.round(distance * 4) + 20;
+  const baseTime = 30; // 30 mins base
+  return baseTime + Math.ceil(distance) * 5; // +5 mins per km
 }
 
 function showDeliveryError(msg, errorBox, resultsBox) {
