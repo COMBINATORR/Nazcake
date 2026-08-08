@@ -7626,7 +7626,8 @@ body.preloader-active {
   }
 }
 
-.cart-btn.jiggle {
+.cart-btn.jiggle,
+.sticky-bar-cart-icon.jiggle {
   animation: cart-bounce 0.5s ease-in-out;
 }
 

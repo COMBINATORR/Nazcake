@@ -2594,6 +2594,72 @@ async function fetchCoordinates(address) {
   return coords;
 }
 
+function animateFlyToCart(cardElement, buttonElement) {
+  const imgElement = cardElement.querySelector(".product-img");
+  if (!imgElement) return;
+
+  const flyingImg = imgElement.cloneNode(true);
+  flyingImg.classList.add("flying-cart-img");
+
+  const imgRect = imgElement.getBoundingClientRect();
+  const startX = imgRect.left + imgRect.width / 2;
+  const startY = imgRect.top + imgRect.height / 2;
+
+  flyingImg.style.position = "fixed";
+  flyingImg.style.top = `${startY - 20}px`;
+  flyingImg.style.left = `${startX - 20}px`;
+  flyingImg.style.width = "40px";
+  flyingImg.style.height = "40px";
+  flyingImg.style.borderRadius = "50%";
+  flyingImg.style.objectFit = "cover";
+  flyingImg.style.zIndex = "99999";
+  flyingImg.style.pointerEvents = "none";
+  flyingImg.style.boxShadow = "0 8px 20px rgba(253, 114, 114, 0.4)";
+  flyingImg.style.border = "2px solid #ffffff";
+  flyingImg.style.opacity = "1";
+  flyingImg.style.transition = "transform 0.8s cubic-bezier(0.1, 0.8, 0.3, 1), top 0.8s cubic-bezier(0.3, 0.1, 0.8, 0.15), left 0.8s linear, opacity 0.8s ease-in-out";
+  flyingImg.style.transform = "scale(1.2)";
+
+  document.body.appendChild(flyingImg);
+
+  let cartTarget = document.getElementById("open-cart-btn");
+  const stickyBar = document.getElementById("sticky-bottom-bar");
+  if (stickyBar && !stickyBar.classList.contains("hidden")) {
+    const stickyIcon = stickyBar.querySelector(".sticky-bar-cart-icon");
+    if (stickyIcon) {
+      cartTarget = stickyIcon;
+    }
+  }
+
+  if (!cartTarget) {
+    setTimeout(() => flyingImg.remove(), 100);
+    return;
+  }
+
+  const cartRect = cartTarget.getBoundingClientRect();
+  const endX = cartRect.left + cartRect.width / 2;
+  const endY = cartRect.top + cartRect.height / 2;
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      flyingImg.style.top = `${endY - 20}px`;
+      flyingImg.style.left = `${endX - 20}px`;
+      flyingImg.style.transform = "scale(0.15) rotate(360deg)";
+      flyingImg.style.opacity = "0.2";
+    });
+  });
+
+  setTimeout(() => {
+    flyingImg.remove();
+    cartTarget.classList.remove("jiggle");
+    void cartTarget.offsetWidth;
+    cartTarget.classList.add("jiggle");
+    setTimeout(() => {
+      cartTarget.classList.remove("jiggle");
+    }, 500);
+  }, 800);
+}
+
 // Attach Events (Preview click, stepper click, add click) to Rendered Cards
 function attachCardEvents(gridElement) {
   // Remove loading blur class if image is already cached/loaded
@@ -2633,6 +2699,7 @@ function attachCardEvents(gridElement) {
         e.stopPropagation(); // Avoid triggering preview modal if clicked
         triggerHapticFeedback();
         addToCart(id, 1);
+        animateFlyToCart(card, addBtn);
 
         if (addBtn.classList.contains("added")) {
           return;
