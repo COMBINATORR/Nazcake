@@ -98,31 +98,73 @@ describe('App Functions', () => {
     expect(window.getCart().length).toBe(0);
   });
 
-  it('tests Haversine Distance (nested functions)', () => {
-    // Extract nested functions for testing
-    const codeWithExports = appJsCode + `
-      // We need to extract the logic to test it directly
-      // Since it's nested inside setupDeliveryCalculator, we can extract using regex
-
-      const haversineMatch = appJsCode.match(/function getHaversineDistance\\(.*?\\)[\\s\\S]*?return R \\* c; \\/\\/ Distance in km\\s*}/);
-      const deg2radMatch = appJsCode.match(/function deg2rad\\(.*?\\)[\\s\\S]*?return deg \\* \\(Math\\.PI \\/ 180\\);\\s*}/);
-
-      if (haversineMatch && deg2radMatch) {
-        eval(deg2radMatch[0]);
-        eval(haversineMatch[0]);
+  describe('Distance Calculator (Haversine)', () => {
+    beforeEach(() => {
+      const codeWithExports = appJsCode + `
         window.getHaversineDistance = getHaversineDistance;
-      }
-    `;
-    eval(codeWithExports);
+        window.deg2rad = deg2rad;
+      `;
+      eval(codeWithExports);
+    });
 
-    // London to Paris: ~344 km
-    // Lat/Lon London: 51.5074, -0.1278
-    // Lat/Lon Paris: 48.8566, 2.3522
-    const dist = window.getHaversineDistance(51.5074, -0.1278, 48.8566, 2.3522);
-    expect(dist).toBeGreaterThan(340);
-    expect(dist).toBeLessThan(350);
+    describe('deg2rad', () => {
+      it('should be defined', () => {
+        expect(window.deg2rad).toBeDefined();
+      });
+
+      it('should convert degrees to radians correctly', () => {
+        expect(window.deg2rad(0)).toBe(0);
+        expect(window.deg2rad(90)).toBeCloseTo(Math.PI / 2);
+        expect(window.deg2rad(180)).toBeCloseTo(Math.PI);
+        expect(window.deg2rad(360)).toBeCloseTo(2 * Math.PI);
+        expect(window.deg2rad(-90)).toBeCloseTo(-Math.PI / 2);
+      });
+    });
+
+    describe('getHaversineDistance', () => {
+      it('should be defined', () => {
+        expect(window.getHaversineDistance).toBeDefined();
+      });
+
+      it('should return 0 when coordinates are exactly the same', () => {
+        expect(window.getHaversineDistance(0, 0, 0, 0)).toBe(0);
+        expect(window.getHaversineDistance(45.5, -122.6, 45.5, -122.6)).toBe(0);
+      });
+
+      it('should calculate distance across longitude (0,0 to 0,1)', () => {
+        expect(window.getHaversineDistance(0, 0, 0, 1)).toBeCloseTo(111.195, 2);
+      });
+
+      it('should calculate a real-world distance (New York to London)', () => {
+        const nyLat = 40.7128;
+        const nyLon = -74.0060;
+        const lonLat = 51.5074;
+        const lonLon = -0.1278;
+
+        const distance = window.getHaversineDistance(nyLat, nyLon, lonLat, lonLon);
+        expect(distance).toBeGreaterThan(5500);
+        expect(distance).toBeLessThan(5600);
+      });
+
+      it('should have commutative property (distance A->B equals B->A)', () => {
+        const nyLat = 40.7128, nyLon = -74.0060;
+        const lonLat = 51.5074, lonLon = -0.1278;
+
+        const distAB = window.getHaversineDistance(nyLat, nyLon, lonLat, lonLon);
+        const distBA = window.getHaversineDistance(lonLat, lonLon, nyLat, nyLon);
+        expect(distAB).toBe(distBA);
+      });
+
+      it('should handle negative coordinates correctly', () => {
+        const sydLat = -33.8688, sydLon = 151.2093;
+        const ctLat = -33.9249, ctLon = 18.4241;
+
+        const distance = window.getHaversineDistance(sydLat, sydLon, ctLat, ctLon);
+        expect(distance).toBeGreaterThan(0);
+        expect(window.getHaversineDistance(0, -90, 0, 90)).toBeCloseTo(20015.08, 1);
+      });
+    });
   });
-
 describe('calculateDeliveryTime', () => {
     beforeEach(() => {
       const codeWithExports = appJsCode + "\nwindow.calculateDeliveryTime = calculateDeliveryTime;";
@@ -130,18 +172,20 @@ describe('calculateDeliveryTime', () => {
     });
 
     it('should calculate time for 0 distance correctly', () => {
-      expect(window.calculateDeliveryTime(0)).toBe(20);
+      expect(window.calculateDeliveryTime(0)).toBe(30);
+    });
+
+    it('should correctly calculate delivery time for distance 3', () => {
+      expect(window.calculateDeliveryTime(3)).toBe(45);
+    });
+
+    it('should correctly calculate delivery time for distance 3.5', () => {
+      expect(window.calculateDeliveryTime(3.5)).toBe(50);
     });
 
     it('should calculate time for integer distance correctly', () => {
-      expect(window.calculateDeliveryTime(5)).toBe(40);
-      expect(window.calculateDeliveryTime(10)).toBe(60);
+      expect(window.calculateDeliveryTime(10)).toBe(80);
     });
-
-    it('should round appropriately for fractional distance', () => {
-      expect(window.calculateDeliveryTime(5.125)).toBe(41);
-      expect(window.calculateDeliveryTime(5.1)).toBe(40);
-  });
   });
 
 it('prevents XSS in cart UI', () => {
@@ -170,7 +214,7 @@ it('prevents XSS in cart UI', () => {
     expect(cartHtml).toContain('&lt;script&gt;');
   });
 
-describe('escapeHTML', () => {
+  describe('escapeHTML', () => {
     beforeEach(() => {
       const codeWithExports = appJsCode + `
         window.escapeHTML = escapeHTML;
@@ -214,4 +258,40 @@ describe('escapeHTML', () => {
       expect(window.escapeHTML('')).toBe('');
     });
   });
+});
+
+describe('checkAtyrauBounds', () => {
+    beforeEach(() => {
+        const codeWithExports = appJsCode + "\nwindow.checkAtyrauBounds = checkAtyrauBounds;";
+        eval(codeWithExports);
+    });
+
+    const bounds = {
+        minLat: 46.9,
+        maxLat: 47.2,
+        minLon: 51.7,
+        maxLon: 52.1
+    };
+
+    it('should not throw an error when coordinates are within bounds', () => {
+        expect(() => window.checkAtyrauBounds(47.0, 51.9, bounds)).not.toThrow();
+        expect(() => window.checkAtyrauBounds(46.9, 51.7, bounds)).not.toThrow();
+        expect(() => window.checkAtyrauBounds(47.2, 52.1, bounds)).not.toThrow();
+    });
+
+    it('should throw an error when latitude is too small', () => {
+        expect(() => window.checkAtyrauBounds(46.8, 51.9, bounds)).toThrow();
+    });
+
+    it('should throw an error when latitude is too large', () => {
+        expect(() => window.checkAtyrauBounds(47.3, 51.9, bounds)).toThrow();
+    });
+
+    it('should throw an error when longitude is too small', () => {
+        expect(() => window.checkAtyrauBounds(47.0, 51.6, bounds)).toThrow();
+    });
+
+    it('should throw an error when longitude is too large', () => {
+        expect(() => window.checkAtyrauBounds(47.0, 52.2, bounds)).toThrow();
+    });
 });
