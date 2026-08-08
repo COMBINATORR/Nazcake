@@ -677,6 +677,34 @@ describe('escapeHTML', () => {
       expect(blob.size).toBeGreaterThan(0);
     });
 
+    it('dataUrlToBlob throws invalid_data_url for empty, non-string, or non-data URL inputs', () => {
+      expect(() => window.dataUrlToBlob(null)).toThrow('invalid_data_url');
+      expect(() => window.dataUrlToBlob(undefined)).toThrow('invalid_data_url');
+      expect(() => window.dataUrlToBlob('')).toThrow('invalid_data_url');
+      expect(() => window.dataUrlToBlob(123)).toThrow('invalid_data_url');
+      expect(() => window.dataUrlToBlob('notadataurl')).toThrow('invalid_data_url');
+    });
+
+    it('dataUrlToBlob throws invalid_data_url when there is no comma', () => {
+      expect(() => window.dataUrlToBlob('data:image/jpeg;base64')).toThrow('invalid_data_url');
+    });
+
+    it('dataUrlToBlob parses image/png MIME type correctly', () => {
+      const dataUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==';
+      const blob = window.dataUrlToBlob(dataUrl);
+      expect(blob).toBeInstanceOf(Blob);
+      expect(blob.type).toMatch(/image\/png/);
+      expect(blob.size).toBeGreaterThan(0);
+    });
+
+    it('dataUrlToBlob defaults to image/jpeg if MIME type is omitted', () => {
+      const dataUrl = 'data:;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAn/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIQAxAAAAGcP//EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEAAQUCf//EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQMBAT8Bf//EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQIBAT8Bf//Z';
+      const blob = window.dataUrlToBlob(dataUrl);
+      expect(blob).toBeInstanceOf(Blob);
+      expect(blob.type).toMatch(/image\/jpeg/);
+      expect(blob.size).toBeGreaterThan(0);
+    });
+
     it('extractProductImageStoragePath parses public URL', () => {
       const bucket = window.PRODUCT_IMAGES_BUCKET || 'product-images';
       const url = `https://xxx.supabase.co/storage/v1/object/public/${bucket}/products/tea/1.jpg`;
