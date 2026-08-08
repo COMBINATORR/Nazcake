@@ -2598,13 +2598,18 @@ function animateFlyToCart(cardElement, buttonElement) {
   const imgElement = cardElement.querySelector(".lazy-image") || cardElement.querySelector("img");
   if (!imgElement) return;
 
-  const flyingImg = imgElement.cloneNode(true);
-  // Clear original classes to prevent any layout conflicts
+  const flyingImg = document.createElement("div");
   flyingImg.className = "flying-cart-img";
 
   const imgRect = imgElement.getBoundingClientRect();
   const startX = imgRect.left + imgRect.width / 2;
   const startY = imgRect.top + imgRect.height / 2;
+
+  // Set the background image to the source of the product image
+  flyingImg.style.backgroundImage = `url('${imgElement.src}')`;
+  flyingImg.style.backgroundSize = "cover";
+  flyingImg.style.backgroundPosition = "center";
+  flyingImg.style.backgroundRepeat = "no-repeat";
 
   let cartTarget = document.getElementById("open-cart-btn");
   const stickyBar = document.getElementById("sticky-bottom-bar");
