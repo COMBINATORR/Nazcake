@@ -2595,16 +2595,33 @@ async function fetchCoordinates(address) {
 }
 
 function animateFlyToCart(cardElement, buttonElement) {
-  const imgElement = cardElement.querySelector(".product-img");
+  const imgElement = cardElement.querySelector(".lazy-image") || cardElement.querySelector("img");
   if (!imgElement) return;
 
   const flyingImg = imgElement.cloneNode(true);
-  flyingImg.classList.add("flying-cart-img");
+  // Clear original classes to prevent any layout conflicts
+  flyingImg.className = "flying-cart-img";
 
   const imgRect = imgElement.getBoundingClientRect();
   const startX = imgRect.left + imgRect.width / 2;
   const startY = imgRect.top + imgRect.height / 2;
 
+  let cartTarget = document.getElementById("open-cart-btn");
+  const stickyBar = document.getElementById("sticky-bottom-bar");
+  if (stickyBar && !stickyBar.classList.contains("hidden")) {
+    const stickyIcon = stickyBar.querySelector(".sticky-bar-cart-icon");
+    if (stickyIcon) {
+      cartTarget = stickyIcon;
+    }
+  }
+
+  if (!cartTarget) return;
+
+  const cartRect = cartTarget.getBoundingClientRect();
+  const endX = cartRect.left + cartRect.width / 2;
+  const endY = cartRect.top + cartRect.height / 2;
+
+  // Initial styles
   flyingImg.style.position = "fixed";
   flyingImg.style.top = `${startY - 20}px`;
   flyingImg.style.left = `${startX - 20}px`;
@@ -2617,37 +2634,19 @@ function animateFlyToCart(cardElement, buttonElement) {
   flyingImg.style.boxShadow = "0 8px 20px rgba(253, 114, 114, 0.4)";
   flyingImg.style.border = "2px solid #ffffff";
   flyingImg.style.opacity = "1";
-  flyingImg.style.transition = "transform 0.8s cubic-bezier(0.1, 0.8, 0.3, 1), top 0.8s cubic-bezier(0.3, 0.1, 0.8, 0.15), left 0.8s linear, opacity 0.8s ease-in-out";
   flyingImg.style.transform = "scale(1.2)";
 
   document.body.appendChild(flyingImg);
 
-  let cartTarget = document.getElementById("open-cart-btn");
-  const stickyBar = document.getElementById("sticky-bottom-bar");
-  if (stickyBar && !stickyBar.classList.contains("hidden")) {
-    const stickyIcon = stickyBar.querySelector(".sticky-bar-cart-icon");
-    if (stickyIcon) {
-      cartTarget = stickyIcon;
-    }
-  }
+  // Force layout reflow to register initial state before starting transition
+  void flyingImg.offsetWidth;
 
-  if (!cartTarget) {
-    setTimeout(() => flyingImg.remove(), 100);
-    return;
-  }
-
-  const cartRect = cartTarget.getBoundingClientRect();
-  const endX = cartRect.left + cartRect.width / 2;
-  const endY = cartRect.top + cartRect.height / 2;
-
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      flyingImg.style.top = `${endY - 20}px`;
-      flyingImg.style.left = `${endX - 20}px`;
-      flyingImg.style.transform = "scale(0.15) rotate(360deg)";
-      flyingImg.style.opacity = "0.2";
-    });
-  });
+  // Apply target style and transition
+  flyingImg.style.transition = "transform 0.8s cubic-bezier(0.1, 0.8, 0.3, 1), top 0.8s cubic-bezier(0.3, 0.1, 0.8, 0.15), left 0.8s linear, opacity 0.8s ease-in-out";
+  flyingImg.style.top = `${endY - 20}px`;
+  flyingImg.style.left = `${endX - 20}px`;
+  flyingImg.style.transform = "scale(0.15) rotate(360deg)";
+  flyingImg.style.opacity = "0.2";
 
   setTimeout(() => {
     flyingImg.remove();
