@@ -172,7 +172,7 @@ it('prevents XSS in cart UI', () => {
     expect(cartHtml).toContain('&lt;script&gt;');
   });
 
-describe('escapeHTML', () => {
+  describe('escapeHTML', () => {
     beforeEach(() => {
       const codeWithExports = appJsCode + `
         window.escapeHTML = escapeHTML;
