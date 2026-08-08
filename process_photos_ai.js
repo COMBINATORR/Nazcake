@@ -36,14 +36,14 @@ function getSourceFiles(dir) {
     return results;
 }
 
-function fileToGenerativePart(filePath) {
+async function fileToGenerativePart(filePath) {
     let mimeType = 'image/jpeg';
     if (filePath.toLowerCase().endsWith('.png')) mimeType = 'image/png';
     if (filePath.toLowerCase().endsWith('.webp')) mimeType = 'image/webp';
     return {
         inlineData: {
             mimeType,
-            data: Buffer.from(fs.readFileSync(filePath)).toString("base64")
+            data: Buffer.from(await fs.promises.readFile(filePath)).toString("base64")
         }
     };
 }
@@ -73,7 +73,7 @@ Respond with ONLY the exact filename from the list.
 Do not include any markdown, backticks, quotes, or other words.
 If you are completely unsure or it doesn't match anything in the list, respond with "UNKNOWN".`;
 
-    const imagePart = fileToGenerativePart(sourceFile);
+    const imagePart = await fileToGenerativePart(sourceFile);
 
     try {
         const response = await fetch(API_URL, {

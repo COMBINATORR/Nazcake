@@ -1,3 +1,0 @@
-🎯 What: The test suite for `getHaversineDistance` and `deg2rad` relied on a fragile regex parser assuming the functions were nested inside `setupDeliveryCalculator`. This was no longer true. I've updated the tests to extract them using the standard project `eval(appJsCode)` pattern.
-📊 Coverage: Added comprehensive test cases for `getHaversineDistance` (identical coordinates, real-world distance, commutativity, negative coordinates) and `deg2rad` (basic mathematical bounds).
-✨ Result: The test suite passed successfully with 118 passing tests (up from 111), and no regressions were introduced.
