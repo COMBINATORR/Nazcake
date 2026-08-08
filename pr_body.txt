@@ -1,3 +1,0 @@
-🎯 What: Added test cases for calculateDeliveryCost and calculateDeliveryTime with edge inputs.
-📊 Coverage: Covered distances 0, 3, 3.5, and 10 to thoroughly exercise the new pricing tiers and base timings for Atyrau delivery rates.
-✨ Result: Improved reliability of core pricing logic and increased overall testing coverage.
