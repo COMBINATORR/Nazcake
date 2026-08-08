@@ -5656,6 +5656,10 @@ function setupThemeToggler() {
       Math.max(y, window.innerHeight - y)
     );
 
+    document.documentElement.style.setProperty("--ripple-x", `${x}px`);
+    document.documentElement.style.setProperty("--ripple-y", `${y}px`);
+    document.documentElement.style.setProperty("--ripple-radius", "0px");
+
     const transition = document.startViewTransition(() => {
       const isDark = document.body.classList.toggle("dark-theme");
       localStorage.setItem("nazcake_theme", isDark ? "dark" : "light");
@@ -5666,18 +5670,13 @@ function setupThemeToggler() {
     });
 
     transition.ready.then(() => {
-      const clipPath = [
-        `circle(0px at ${x}px ${y}px)`,
-        `circle(${endRadius}px at ${x}px ${y}px)`
-      ];
-
       document.documentElement.animate(
         {
-          clipPath: clipPath
+          "--ripple-radius": ["0px", `${endRadius}px`]
         },
         {
-          duration: 500,
-          easing: "ease-in-out",
+          duration: 650,
+          easing: "cubic-bezier(0.25, 1, 0.5, 1)",
           pseudoElement: "::view-transition-new(root)"
         }
       );

@@ -8531,8 +8531,23 @@ body.dark-theme .seo-about-box p {
 }
 
 /* Circular View Transition Ripple for Light/Dark Theme Switch */
+@property --ripple-radius {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0px;
+}
+
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
+}
+
+::view-transition-new(root) {
+  mask-image: radial-gradient(circle at var(--ripple-x) var(--ripple-y), black var(--ripple-radius), transparent calc(var(--ripple-radius) + 150px));
+  mask-repeat: no-repeat;
+  mask-size: 100% 100%;
+  -webkit-mask-image: radial-gradient(circle at var(--ripple-x) var(--ripple-y), black var(--ripple-radius), transparent calc(var(--ripple-radius) + 150px));
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
 }
