@@ -48,13 +48,13 @@ async function fileToGenerativePart(filePath) {
     };
 }
 
-async function processImage(sourceFile, knownProducts) {
+async function processImage(sourceFile, knownProducts, processedCache) {
     const fileName = path.basename(sourceFile);
     const originalBaseName = path.basename(sourceFile, path.extname(sourceFile));
     
     // Check if we already processed this image to save API calls
-    if (fs.existsSync(OUTPUT_DIR)) {
-        const existing = fs.readdirSync(OUTPUT_DIR).find(f => f.endsWith(`_${originalBaseName}.webp`));
+    if (processedCache) {
+        const existing = processedCache.find(f => f.endsWith(`_${originalBaseName}.webp`));
         if (existing) {
             console.log(`\nSkipping: ${fileName} (already processed as ${existing})`);
             return;
@@ -101,7 +101,7 @@ If you are completely unsure or it doesn't match anything in the list, respond w
             if (data.error.code === 429 || data.error.message.includes('Quota exceeded')) {
                 console.log('Rate limit hit. Waiting 60 seconds before retrying...');
                 await new Promise(resolve => setTimeout(resolve, 60000));
-                return await processImage(sourceFile, knownProducts); // Retry
+                return await processImage(sourceFile, knownProducts, processedCache); // Retry
             }
             return;
         }
@@ -134,6 +134,7 @@ If you are completely unsure or it doesn't match anything in the list, respond w
                 .webp({ quality: 90 })
                 .toFile(outputPath);
             console.log(`Saved ${outputFileName}`);
+            if (processedCache) processedCache.push(outputFileName);
         } else {
             console.log(`Skipped ${fileName}, AI could not confidently match (or returned invalid file).`);
         }
@@ -145,6 +146,11 @@ If you are completely unsure or it doesn't match anything in the list, respond w
 async function main() {
     if (!fs.existsSync(OUTPUT_DIR)) {
         fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+    }
+
+    const processedCache = [];
+    if (fs.existsSync(OUTPUT_DIR)) {
+        processedCache.push(...fs.readdirSync(OUTPUT_DIR));
     }
 
     const knownProducts = getKnownProducts();
@@ -165,7 +171,7 @@ async function main() {
         while (currentIndex < tasks.length) {
             const taskIndex = currentIndex++;
             const file = tasks[taskIndex];
-            await processImage(file, knownProducts);
+            await processImage(file, knownProducts, processedCache);
             // Delay to avoid rate limits
             await new Promise(resolve => setTimeout(resolve, 3000));
         }
