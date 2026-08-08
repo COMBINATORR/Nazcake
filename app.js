@@ -5641,6 +5641,7 @@ function setupThemeToggler() {
 
     if (!document.startViewTransition) {
       const isDark = document.body.classList.toggle("dark-theme");
+      document.documentElement.classList.toggle("dark-theme", isDark);
       localStorage.setItem("nazcake_theme", isDark ? "dark" : "light");
       updateIcons(isDark);
       if (typeof updateContactsMapTheme === "function") {
@@ -5662,6 +5663,7 @@ function setupThemeToggler() {
 
     const transition = document.startViewTransition(() => {
       const isDark = document.body.classList.toggle("dark-theme");
+      document.documentElement.classList.toggle("dark-theme", isDark);
       localStorage.setItem("nazcake_theme", isDark ? "dark" : "light");
       updateIcons(isDark);
       if (typeof updateContactsMapTheme === "function") {
@@ -5693,8 +5695,10 @@ function setupThemeToggler() {
 
   if (isDark) {
     document.body.classList.add("dark-theme");
+    document.documentElement.classList.add("dark-theme");
   } else {
     document.body.classList.remove("dark-theme");
+    document.documentElement.classList.remove("dark-theme");
   }
   updateIcons(isDark);
 }
