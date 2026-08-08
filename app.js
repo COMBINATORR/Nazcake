@@ -4264,6 +4264,20 @@ function formatCheckoutMessage(name, phone, method, address, cart, subtotal, t, 
   return message;
 }
 
+
+function generateSecureOrderId(prefix) {
+  if (typeof window !== 'undefined' && window.crypto && window.crypto.getRandomValues) {
+    const array = new Uint32Array(1);
+    window.crypto.getRandomValues(array);
+    return prefix + (100000 + (array[0] % 900000));
+  } else if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+    const array = new Uint32Array(1);
+    crypto.getRandomValues(array);
+    return prefix + (100000 + (array[0] % 900000));
+  }
+  throw new Error("Secure random number generator not available.");
+}
+
 function buildOrderObject(name, phone, method, address, cart, subtotal, t, preferredTime) {
   return {
     id: generateSecureOrderId("NZ-"),
