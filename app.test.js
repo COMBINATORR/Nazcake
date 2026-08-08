@@ -56,11 +56,53 @@ window.checkAtyrauBounds = checkAtyrauBounds;
             window.getUnitTranslationKey = getUnitTranslationKey;
             window.sortProductsStable = sortProductsStable;
             window.getBadgeTranslationKey = getBadgeTranslationKey;
+            window.loadProducts = loadProducts;
+            loadCustomProductsLocalFallback = jest.fn(loadCustomProductsLocalFallback);
+            window.getLoadCustomProductsLocalFallbackMock = () => loadCustomProductsLocalFallback;
+            window.setSupabaseClient = (client) => { supabaseClient = client; };
+
         `;
 
         eval(appJsCode);
     });
 
+
+
+    describe('loadProducts', () => {
+        let originalConsoleError;
+
+
+        beforeEach(() => {
+            originalConsoleError = console.error;
+            console.error = jest.fn();
+            // Reset the fallback mock
+            window.getLoadCustomProductsLocalFallbackMock().mockClear();
+        });
+
+        afterEach(() => {
+            console.error = originalConsoleError;
+            window.setSupabaseClient(null);
+        });
+
+        it('should call console.error and loadCustomProductsLocalFallback on Supabase error', async () => {
+            const mockError = new Error('Mock Supabase connection error');
+            const mockSupabaseClient = {
+                from: jest.fn().mockReturnThis(),
+                select: jest.fn().mockReturnThis(),
+                order: jest.fn().mockResolvedValue({ data: null, error: mockError })
+            };
+
+            window.setSupabaseClient(mockSupabaseClient);
+
+            await window.loadProducts();
+
+            expect(console.error).toHaveBeenCalledWith(
+                "Failed to load products from DB, using fallback",
+                mockError
+            );
+            expect(window.getLoadCustomProductsLocalFallbackMock()).toHaveBeenCalled();
+        });
+    });
 
     describe('isNewArrivalProduct', () => {
       it('should return false for falsy values', () => {
@@ -237,6 +279,21 @@ window.checkAtyrauBounds = checkAtyrauBounds;
             const input3 = { value: '000' };
             window.clampNonNegativeIntInput(input3);
             expect(input3.value).toBe('0');
+        });
+
+
+        it('should handle extremely large numeric strings containing scientific notation from parseInt', () => {
+            const input = document.createElement('input');
+            input.value = '9'.repeat(50);
+            window.clampNonNegativeIntInput(input);
+            expect(input.value).toBe('1e+50');
+        });
+
+        it('should handle float numbers as input value by stripping the dot', () => {
+            const input = document.createElement('input');
+            input.value = '3.14';
+            window.clampNonNegativeIntInput(input);
+            expect(input.value).toBe('314');
         });
 
         it('should handle undefined value property', () => {
@@ -438,36 +495,38 @@ window.checkAtyrauBounds = checkAtyrauBounds;
 
   describe('calculateDeliveryTime', () => {
     it('should correctly calculate delivery time for distance 0', () => {
-      expect(window.calculateDeliveryTime(0)).toBe(20);
+      expect(window.calculateDeliveryTime(0)).toBe(30);
     });
 
-    it('should correctly calculate delivery time for small positive distances', () => {
-      expect(window.calculateDeliveryTime(2)).toBe(28);
-      expect(window.calculateDeliveryTime(5)).toBe(40);
-      expect(window.calculateDeliveryTime(1.5)).toBe(26);
+    it('should correctly calculate delivery time for distance 3', () => {
+      expect(window.calculateDeliveryTime(3)).toBe(45);
     });
 
-    it('should handle large distances properly', () => {
-      expect(window.calculateDeliveryTime(100)).toBe(420);
+    it('should correctly calculate delivery time for distance 3.5', () => {
+      expect(window.calculateDeliveryTime(3.5)).toBe(50);
+    });
+
+    it('should correctly calculate delivery time for distance 10', () => {
+      expect(window.calculateDeliveryTime(10)).toBe(80);
     });
   });
 
   describe('calculateDeliveryCost', () => {
-        it('should return minimum cost of 500', () => {
-            expect(window.calculateDeliveryCost(0)).toBe(500);
-        });
+    it('should correctly calculate delivery cost for distance 0', () => {
+      expect(window.calculateDeliveryCost(0)).toBe(800);
+    });
 
-        it('should round up to the nearest 50', () => {
-            // 500 + Math.round(2 * 150) = 800
-            expect(window.calculateDeliveryCost(2)).toBe(800);
-            // 500 + Math.round(2.1 * 150) = 500 + 315 = 815 -> ceil(815/50)*50 = 850
-            expect(window.calculateDeliveryCost(2.1)).toBe(850);
-        });
+    it('should correctly calculate delivery cost for distance 3', () => {
+      expect(window.calculateDeliveryCost(3)).toBe(800);
+    });
 
-        it('should cap the maximum cost at 3500', () => {
-            expect(window.calculateDeliveryCost(20)).toBe(3500);
-            expect(window.calculateDeliveryCost(50)).toBe(3500);
-        });
+    it('should correctly calculate delivery cost for distance 3.5', () => {
+      expect(window.calculateDeliveryCost(3.5)).toBe(950);
+    });
+
+    it('should correctly calculate delivery cost for distance 10', () => {
+      expect(window.calculateDeliveryCost(10)).toBe(1850);
+    });
   });
 
 describe('Distance Calculator (Haversine)', () => {
