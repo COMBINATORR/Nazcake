@@ -8529,3 +8529,10 @@ body.dark-theme .seo-about-box p {
   color: inherit;
   font-weight: 700;
 }
+
+/* Circular View Transition Ripple for Light/Dark Theme Switch */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}

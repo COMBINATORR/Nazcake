@@ -5636,18 +5636,56 @@ function setupThemeToggler() {
     }
   };
 
-  const toggleTheme = () => {
+  const toggleTheme = (e) => {
     triggerHapticFeedback();
-    const isDark = document.body.classList.toggle("dark-theme");
-    localStorage.setItem("nazcake_theme", isDark ? "dark" : "light");
-    updateIcons(isDark);
-    if (typeof updateContactsMapTheme === "function") {
-      updateContactsMapTheme(isDark);
+
+    if (!document.startViewTransition) {
+      const isDark = document.body.classList.toggle("dark-theme");
+      localStorage.setItem("nazcake_theme", isDark ? "dark" : "light");
+      updateIcons(isDark);
+      if (typeof updateContactsMapTheme === "function") {
+        updateContactsMapTheme(isDark);
+      }
+      return;
     }
+
+    const x = e ? e.clientX : window.innerWidth / 2;
+    const y = e ? e.clientY : window.innerHeight / 2;
+    const endRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y)
+    );
+
+    const transition = document.startViewTransition(() => {
+      const isDark = document.body.classList.toggle("dark-theme");
+      localStorage.setItem("nazcake_theme", isDark ? "dark" : "light");
+      updateIcons(isDark);
+      if (typeof updateContactsMapTheme === "function") {
+        updateContactsMapTheme(isDark);
+      }
+    });
+
+    transition.ready.then(() => {
+      const clipPath = [
+        `circle(0px at ${x}px ${y}px)`,
+        `circle(${endRadius}px at ${x}px ${y}px)`
+      ];
+
+      document.documentElement.animate(
+        {
+          clipPath: clipPath
+        },
+        {
+          duration: 500,
+          easing: "ease-in-out",
+          pseudoElement: "::view-transition-new(root)"
+        }
+      );
+    });
   };
 
-  if (headerToggle) headerToggle.addEventListener("click", toggleTheme);
-  if (drawerToggle) drawerToggle.addEventListener("click", toggleTheme);
+  if (headerToggle) headerToggle.addEventListener("click", (e) => toggleTheme(e));
+  if (drawerToggle) drawerToggle.addEventListener("click", (e) => toggleTheme(e));
 
   // Initialize theme from localStorage or system preference
   const savedTheme = localStorage.getItem("nazcake_theme");
