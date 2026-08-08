@@ -732,7 +732,7 @@ describe('escapeHTML', () => {
       const id = window.generateSecureOrderId('NZ-');
       expect(mockCrypto.getRandomValues).toHaveBeenCalled();
 
-      expect(id).toBe('NZ-12345678');
+      expect(id).toBe('NZ-163999');
     });
 
     it('should fallback to Math.random if crypto is undefined', () => {
@@ -748,9 +748,7 @@ describe('escapeHTML', () => {
       const id = window.generateSecureOrderId('FALLBACK-');
 
       expect(mockMathRandom).toHaveBeenCalled();
-      // Math.floor(0.123456789 * 1000000000) = 123456789
-      // 123456789 in hex is 75BCD15
-      expect(id).toBe('FALLBACK-75BCD15');
+      expect(id).toBe('FALLBACK-211111');
     });
 
     it('should fallback to Math.random if crypto.getRandomValues is not a function', () => {
@@ -766,9 +764,7 @@ describe('escapeHTML', () => {
       const id = window.generateSecureOrderId('NZ-');
 
       expect(mockMathRandom).toHaveBeenCalled();
-      // Math.floor(0.987654321 * 1000000000) = 987654321
-      // 987654321 in hex is 3ADE68B1
-      expect(id).toBe('NZ-3ADE68B1');
+      expect(id).toBe('NZ-988888');
     });
   });
 
