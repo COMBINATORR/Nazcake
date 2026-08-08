@@ -60,7 +60,7 @@ async function compressRaster(filePath) {
   const limit = maxEdgeFor(filePath);
   const needsResize = longEdge > limit;
   const oversizedBytes = before >= MIN_BYTES_TO_TOUCH;
-  // Always fix mislabeled jpeg-as-webp and huge files
+  // Always correct mislabeled jpeg-as-webp and huge files
   const isFakeWebp = ext === ".webp" && meta.format === "jpeg";
   if (!needsResize && !oversizedBytes && !isFakeWebp && before < 120 * 1024) {
     return { file: filePath, skipped: true, reason: "small_ok", before };

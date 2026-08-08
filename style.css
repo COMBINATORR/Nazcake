@@ -846,7 +846,7 @@ body.dark-theme .main-header.scrolled {
   object-position: center center;
   z-index: 0;
   pointer-events: none;
-  /* iOS Safari full-screen video fix */
+  /* iOS Safari full-screen video workaround */
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
   /* poster shows immediately; video fades in after lazy load */
