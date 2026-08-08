@@ -34,7 +34,7 @@ function generateSecureOrderId(prefix) {
     { passive: false }
   );
 
-  // Ctrl/⌘ + wheel zoom (desktop trackpads / accessibility — keep page scale fixed)
+  // Ctrl/⌘ + wheel zoom (desktop trackpads / accessibility — keep page scale constant)
   document.addEventListener(
     "wheel",
     (e) => {
@@ -1525,7 +1525,7 @@ function resolveProductImage(productId, serverImage) {
 }
 
 
-/** Fixed catalog order from the static list (Supabase created_at is identical for all rows → unstable). */
+/** Consistent catalog order from the static list (Supabase created_at is identical for all rows → unstable). */
 const DEFAULT_PRODUCT_ORDER = products.map((p) => p.id);
 const DEFAULT_PRODUCT_RANK = new Map(DEFAULT_PRODUCT_ORDER.map((id, i) => [id, i]));
 
@@ -1941,7 +1941,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // Mobile Video Autoplay – robust cross-browser solution
+  // Mobile Video Autoplay – robust cross-browser setup
   const heroVideo = document.querySelector('.hero-video-bg');
   if (heroVideo) {
     // Ensure muted (required for autoplay on all mobile browsers)

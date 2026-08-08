@@ -7689,7 +7689,7 @@ body.dark-theme {
   --hover-shadow: 0 20px 40px rgba(229, 193, 88, 0.08);
 }
 
-/* Specific component fixes for dark theme */
+/* Specific component adjustments for dark theme */
 body.dark-theme .main-header {
   background-color: transparent;
   border-bottom: none;
@@ -8365,7 +8365,7 @@ body.dark-theme .seo-about-box p {
 
 /* safe-area for drawer is set on .mobile-drawer base rule */
 
-/* Fix double safe-area when body already padded: header full-bleed still OK */
+/* Resolve double safe-area when body already padded: header full-bleed still OK */
 .main-header {
   left: 0;
   right: 0;
