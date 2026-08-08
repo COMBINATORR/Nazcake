@@ -1,9 +1,12 @@
-
 function generateSecureOrderId(prefix) {
   let randomNum;
   if (typeof window !== 'undefined' && window.crypto && window.crypto.getRandomValues) {
     const array = new Uint32Array(1);
     window.crypto.getRandomValues(array);
+    randomNum = array[0] / (0xffffffff + 1);
+  } else if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+    const array = new Uint32Array(1);
+    crypto.getRandomValues(array);
     randomNum = array[0] / (0xffffffff + 1);
   } else {
     randomNum = Math.random();
@@ -4265,18 +4268,6 @@ function formatCheckoutMessage(name, phone, method, address, cart, subtotal, t, 
 }
 
 
-function generateSecureOrderId(prefix) {
-  if (typeof window !== 'undefined' && window.crypto && window.crypto.getRandomValues) {
-    const array = new Uint32Array(1);
-    window.crypto.getRandomValues(array);
-    return prefix + (100000 + (array[0] % 900000));
-  } else if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
-    const array = new Uint32Array(1);
-    crypto.getRandomValues(array);
-    return prefix + (100000 + (array[0] % 900000));
-  }
-  throw new Error("Secure random number generator not available.");
-}
 
 function buildOrderObject(name, phone, method, address, cart, subtotal, t, preferredTime) {
   return {

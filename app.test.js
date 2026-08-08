@@ -56,11 +56,11 @@ window.checkAtyrauBounds = checkAtyrauBounds;
             window.getUnitTranslationKey = getUnitTranslationKey;
             window.sortProductsStable = sortProductsStable;
             window.getBadgeTranslationKey = getBadgeTranslationKey;
+            window.generateSecureOrderId = generateSecureOrderId;
             window.loadProducts = loadProducts;
             loadCustomProductsLocalFallback = jest.fn(loadCustomProductsLocalFallback);
             window.getLoadCustomProductsLocalFallbackMock = () => loadCustomProductsLocalFallback;
             window.setSupabaseClient = (client) => { supabaseClient = client; };
-
         `;
 
         eval(appJsCode);
@@ -680,6 +680,93 @@ describe('escapeHTML', () => {
         expect(window.escapeHTML('')).toBe('');
       });
     });
+
+
+    describe('generateSecureOrderId', () => {
+    let originalCrypto;
+    let originalMathRandom;
+
+    beforeEach(() => {
+      // Save originals
+      originalCrypto = global.crypto;
+      originalMathRandom = Math.random;
+    });
+
+    afterEach(() => {
+      // Restore originals
+      if (originalCrypto !== undefined) {
+        Object.defineProperty(global, 'crypto', {
+          value: originalCrypto,
+          writable: true,
+          configurable: true
+        });
+      } else {
+        delete global.crypto;
+      }
+      Math.random = originalMathRandom;
+    });
+
+    it('should generate an ID with the given prefix', () => {
+      const id = window.generateSecureOrderId('TEST-');
+      expect(id.startsWith('TEST-')).toBe(true);
+      // Depending on crypto or math random it is either 8 or up to 8 chars.
+      // But we just verify it exists and is a string
+      expect(typeof id).toBe('string');
+      expect(id.length).toBeGreaterThan('TEST-'.length);
+    });
+
+    it('should use crypto.getRandomValues if available', () => {
+      const mockCrypto = {
+        getRandomValues: jest.fn((array) => {
+          array[0] = 0x12345678; // Mock random value
+          return array;
+        })
+      };
+
+      Object.defineProperty(global, 'crypto', {
+        value: mockCrypto,
+        writable: true,
+        configurable: true
+      });
+
+      const id = window.generateSecureOrderId('NZ-');
+      expect(mockCrypto.getRandomValues).toHaveBeenCalled();
+
+      expect(id).toBe('NZ-163999');
+    });
+
+    it('should fallback to Math.random if crypto is undefined', () => {
+      Object.defineProperty(global, 'crypto', {
+        value: undefined,
+        writable: true,
+        configurable: true
+      });
+
+      const mockMathRandom = jest.fn(() => 0.123456789);
+      Math.random = mockMathRandom;
+
+      const id = window.generateSecureOrderId('FALLBACK-');
+
+      expect(mockMathRandom).toHaveBeenCalled();
+      expect(id).toBe('FALLBACK-211111');
+    });
+
+    it('should fallback to Math.random if crypto.getRandomValues is not a function', () => {
+      Object.defineProperty(global, 'crypto', {
+        value: {}, // No getRandomValues
+        writable: true,
+        configurable: true
+      });
+
+      const mockMathRandom = jest.fn(() => 0.987654321);
+      Math.random = mockMathRandom;
+
+      const id = window.generateSecureOrderId('NZ-');
+
+      expect(mockMathRandom).toHaveBeenCalled();
+      expect(id).toBe('NZ-988888');
+    });
+  });
 
   describe('calculateImageDimensions', () => {
     it('should calculate correct dimensions for wide images exceeding maxDim', () => {
