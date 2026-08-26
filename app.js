@@ -87,7 +87,7 @@ const SUPABASE_URL = "https://wuqxqxjskviaptxswojz.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind1cXhxeGpza3ZpYXB0eHN3b2p6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwMjM0MTksImV4cCI6MjA5OTU5OTQxOX0.bv24jib8hPJyaL1mV4kJd5d8o92zBIg603RqEMIsc7A"; // Replace with your public Anon Key from Supabase Dashboard
 
 // LocationIQ Geocoding API Key (optional alternative to OpenStreetMap Nominatim)
-const LOCATION_IQ_KEY = (typeof window !== "undefined" && window.ENV?.LOCATION_IQ_KEY) || "pk.dab36ca07967f21217797579afc6b35f"; // Replace with your LocationIQ API token (e.g. pk.c3db5a8cb59...) if you have one
+const LOCATION_IQ_KEY = (typeof window !== "undefined" && window.ENV?.LOCATION_IQ_KEY) || ""; // Replace with your LocationIQ API token (e.g. pk.c3db5a8cb59...) if you have one
 
 /** Public Storage bucket for admin-uploaded product photos (see supabase_product_images_storage.sql) */
 const PRODUCT_IMAGES_BUCKET = "product-images";
