@@ -50,6 +50,7 @@ window.checkAtyrauBounds = checkAtyrauBounds;
             window.imageForLocalStorage = imageForLocalStorage;
             window.PRODUCT_IMAGES_BUCKET = PRODUCT_IMAGES_BUCKET;
             window.parseLocalDate = parseLocalDate;
+            window.formatPickupDisplay = formatPickupDisplay;
             window.clampNonNegativeIntInput = clampNonNegativeIntInput;
             window.getProducts = () => products;
             window.setProducts = (p) => { products = p; };
@@ -300,6 +301,37 @@ window.checkAtyrauBounds = checkAtyrauBounds;
             const input = {};
             window.clampNonNegativeIntInput(input);
             expect(input.value).toBe('');
+        });
+    });
+
+
+    describe("formatPickupDisplay", () => {
+        it("should return empty string when dateStr or timeStr is missing", () => {
+            expect(window.formatPickupDisplay("", "14:00")).toBe("");
+            expect(window.formatPickupDisplay("2023-10-15", "")).toBe("");
+            expect(window.formatPickupDisplay(null, "14:00")).toBe("");
+            expect(window.formatPickupDisplay("2023-10-15", null)).toBe("");
+            expect(window.formatPickupDisplay(undefined, undefined)).toBe("");
+        });
+
+        it("should format valid date and time in Russian locale", () => {
+            const formatted = window.formatPickupDisplay("2023-10-15", "14:30");
+            expect(formatted).toContain("15");
+            expect(formatted).toContain("14:30");
+        });
+
+        it("should return fallback dateStr timeStr string if parseLocalDate fails", () => {
+            expect(window.formatPickupDisplay("invalid-date", "14:30")).toBe("invalid-date 14:30");
+        });
+
+        it("should return fallback string if toLocaleDateString throws an error", () => {
+            const spy = jest.spyOn(Date.prototype, "toLocaleDateString").mockImplementation(() => {
+                throw new Error("Locale error");
+            });
+
+            expect(window.formatPickupDisplay("2023-10-15", "14:30")).toBe("2023-10-15 14:30");
+
+            spy.mockRestore();
         });
     });
 
