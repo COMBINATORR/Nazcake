@@ -2581,51 +2581,6 @@ function initCountUpAnimations() {
   nums.forEach(num => observer.observe(num));
 }
 
-async function fetchCoordinates(address) {
-  const normalizedAddress = address.trim().toLowerCase();
-  if (geocodingCache.has(normalizedAddress)) {
-    return geocodingCache.get(normalizedAddress);
-  }
-
-  let url;
-  let headers = {};
-
-  if (typeof LOCATION_IQ_KEY !== "undefined" && LOCATION_IQ_KEY && LOCATION_IQ_KEY !== "YOUR_LOCATIONIQ_API_KEY") {
-    url = `https://us1.locationiq.com/v1/search.php?key=${LOCATION_IQ_KEY}&q=Атырау, ${encodeURIComponent(address)}&format=json&limit=1`;
-  } else {
-    url = `https://nominatim.openstreetmap.org/search?q=Атырау, ${encodeURIComponent(address)}&format=json&limit=1`;
-    headers["User-Agent"] = "NazcakeConfectioneryDeliveryCalculator/1.0 (contact: nazcakeatyrau@gmail.com)";
-  }
-
-  let response;
-  try {
-    response = await fetch(url, { headers });
-  } catch (e) {
-    throw new Error("delivery_err_geocoder");
-  }
-
-  if (!response.ok) {
-    if (response.status === 404 || response.status === 400) {
-      throw new Error("delivery_err_notfound");
-    }
-    throw new Error("delivery_err_geocoder");
-  }
-
-  const data = await response.json();
-  if (!data || data.length === 0) {
-    throw new Error("delivery_err_notfound");
-  }
-
-  const location = Array.isArray(data) ? data[0] : data;
-  const coords = {
-    lat: parseFloat(location.lat),
-    lon: parseFloat(location.lon)
-  };
-
-  geocodingCache.set(normalizedAddress, coords);
-  return coords;
-}
-
 function animateFlyToCart(cardElement, buttonElement) {
   const imgElement = cardElement.querySelector(".lazy-image") || cardElement.querySelector("img");
   if (!imgElement) return;

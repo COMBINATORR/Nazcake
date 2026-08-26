@@ -323,3 +323,46 @@ describe('toInputDateValue', () => {
     expect(window.toInputDateValue(d)).toBe('2025-12-31');
   });
 });
+
+
+describe("fetchCoordinates", () => {
+  beforeEach(() => {
+    const codeWithExports = appJsCode + "\nwindow.fetchCoordinates = fetchCoordinates;\nwindow.geocodingCache = geocodingCache;";
+    eval(codeWithExports);
+    window.geocodingCache.clear();
+    global.fetch = jest.fn();
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it("should fetch coordinates from Nominatim API when LOCATION_IQ_KEY is undefined", async () => {
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => [{ lat: "47.1167", lon: "51.8833" }]
+    });
+
+    const coords = await window.fetchCoordinates("Азаттык 15");
+    expect(coords).toEqual({ lat: 47.1167, lon: 51.8833 });
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(window.geocodingCache.get("азаттык 15")).toEqual({ lat: 47.1167, lon: 51.8833 });
+  });
+
+  it("should return cached coordinates on subsequent calls", async () => {
+    window.geocodingCache.set("азаттык 15", { lat: 47.1167, lon: 51.8833 });
+
+    const coords = await window.fetchCoordinates("  Азаттык 15 ");
+    expect(coords).toEqual({ lat: 47.1167, lon: 51.8833 });
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  it("should throw delivery_err_notfound if API returns empty array", async () => {
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => []
+    });
+
+    await expect(window.fetchCoordinates("Nonexistent Address")).rejects.toThrow();
+  });
+});
