@@ -951,6 +951,31 @@ describe('escapeHTML', () => {
       expect(window.isProductOutOfStock(baursaki)).toBe(false);
     });
 
+    it('applyLocalProductOverrides handles invalid JSON gracefully and logs warning', () => {
+      const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      localStorage.setItem('nazcake_custom_products', '{invalid_json');
+
+      const baseProducts = [
+        { id: 'p1', name: 'Product 1', price: 100, category: 'bakery' }
+      ];
+
+      const result = window.applyLocalProductOverrides(baseProducts);
+      expect(consoleWarnSpy).toHaveBeenCalledWith('Failed to load custom products:', expect.any(Error));
+      expect(result).toEqual([
+        {
+          id: 'p1',
+          name: 'Product 1',
+          price: 100,
+          category: 'bakery',
+          inStock: true,
+          stock: null,
+          categoryLabel: expect.anything()
+        }
+      ]);
+
+      consoleWarnSpy.mockRestore();
+    });
+
     it('persistLocalProductOverrides survives round-trip like page refresh', () => {
       const list = [
         { id: 'x1', name: 'Test', price: 100, inStock: false, stock: 0, image: '', isCustomName: true, category: 'bakery' }
