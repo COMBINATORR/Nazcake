@@ -54,6 +54,7 @@ window.checkAtyrauBounds = checkAtyrauBounds;
             window.getProducts = () => products;
             window.setProducts = (p) => { products = p; };
             window.getUnitTranslationKey = getUnitTranslationKey;
+            window.getSizeOptionLabel = getSizeOptionLabel;
             window.sortProductsStable = sortProductsStable;
             window.getBadgeTranslationKey = getBadgeTranslationKey;
             window.generateSecureOrderId = generateSecureOrderId;
@@ -979,6 +980,65 @@ describe('escapeHTML', () => {
       expect(window.getCart().length).toBe(0);
       // restore
       Object.assign(p, prev);
+    });
+  });
+
+
+  describe("getSizeOptionLabel", () => {
+    let origI18n;
+
+    beforeEach(() => {
+      origI18n = window.i18n;
+    });
+
+    afterEach(() => {
+      window.i18n = origI18n;
+    });
+
+    it("returns empty string for missing or falsy sizeKey", () => {
+      expect(window.getSizeOptionLabel(null)).toBe("");
+      expect(window.getSizeOptionLabel(undefined)).toBe("");
+      expect(window.getSizeOptionLabel("")).toBe("");
+    });
+
+    it("uses window.i18n translation when available and distinct from key", () => {
+      window.i18n = {
+        t: jest.fn((key) => {
+          if (key === "opt_chicken") return "Chicken (EN)";
+          return key;
+        })
+      };
+      expect(window.getSizeOptionLabel("opt_chicken")).toBe("Chicken (EN)");
+      expect(window.i18n.t).toHaveBeenCalledWith("opt_chicken");
+    });
+
+    it("falls back to internal dictionary if window.i18n returns key itself", () => {
+      window.i18n = {
+        t: jest.fn((key) => key)
+      };
+      expect(window.getSizeOptionLabel("opt_chicken")).toBe("Курица");
+      expect(window.getSizeOptionLabel("opt_beef")).toBe("Говядина");
+      expect(window.getSizeOptionLabel("opt_chicken_cheese")).toBe("Курица с сыром");
+      expect(window.getSizeOptionLabel("opt_meat_cheese")).toBe("Мясо с сыром");
+      expect(window.getSizeOptionLabel("size_half")).toBe("Половина");
+      expect(window.getSizeOptionLabel("size_whole")).toBe("Целый");
+    });
+
+    it("falls back to internal dictionary when window.i18n is not present", () => {
+      delete window.i18n;
+      expect(window.getSizeOptionLabel("opt_chicken")).toBe("Курица");
+      expect(window.getSizeOptionLabel("opt_beef")).toBe("Говядина");
+      expect(window.getSizeOptionLabel("opt_chicken_cheese")).toBe("Курица с сыром");
+      expect(window.getSizeOptionLabel("opt_meat_cheese")).toBe("Мясо с сыром");
+      expect(window.getSizeOptionLabel("size_half")).toBe("Половина");
+      expect(window.getSizeOptionLabel("size_whole")).toBe("Целый");
+    });
+
+    it("returns sizeKey as-is for plain labels or unknown keys when translation is missing", () => {
+      delete window.i18n;
+      expect(window.getSizeOptionLabel("20 см")).toBe("20 см");
+      expect(window.getSizeOptionLabel("30 см")).toBe("30 см");
+      expect(window.getSizeOptionLabel("custom_option")).toBe("custom_option");
     });
   });
 
