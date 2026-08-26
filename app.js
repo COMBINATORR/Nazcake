@@ -1645,7 +1645,6 @@ function persistLocalProductOverrides(list) {
 
 async function loadProducts() {
   if (!supabaseClient) {
-    console.log("Supabase is not configured. Using local products fallback.");
     loadCustomProductsLocalFallback();
     return;
   }
