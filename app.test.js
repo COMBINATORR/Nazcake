@@ -20,8 +20,13 @@ describe('Nazcake App Unit Tests', () => {
             window.removeFromCart = removeFromCart;
             window.getCart = () => cart;
             window.setCart = (newCart) => { cart = newCart; };
+            window.changeCartItemQty = changeCartItemQty;
             updateCartUi = jest.fn(); // Mocking updateCartUi
             window.getUpdateCartUiMock = () => updateCartUi;
+            updateLocationUi = jest.fn(updateLocationUi);
+            window.getUpdateLocationUiMock = () => updateLocationUi;
+            showAlert = jest.fn();
+            window.getShowAlertMock = () => showAlert;
             window.adjustColorBrightness = adjustColorBrightness;
             window.escapeHTML = escapeHTML;
             window.setupGeolocation = setupGeolocation;
@@ -420,6 +425,85 @@ window.checkAtyrauBounds = checkAtyrauBounds;
             window.removeFromCart('nonexistent');
             expect(window.getCart().length).toBe(2);
             expect(window.getUpdateCartUiMock()).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('changeCartItemQty', () => {
+        let originalI18n;
+
+        beforeEach(() => {
+            originalI18n = window.i18n;
+            window.setCart([
+                { cartItemId: 'item1_S', product: { id: 'item1', price: 100, stock: 10 }, qty: 2 },
+                { product: { id: 'item2', price: 200, stock: 3 }, qty: 1 }
+            ]);
+            window.getUpdateCartUiMock().mockClear();
+            window.getUpdateLocationUiMock().mockClear();
+            window.getShowAlertMock().mockClear();
+        });
+
+        afterEach(() => {
+            window.i18n = originalI18n;
+        });
+
+        it('should update quantity when found by cartItemId', () => {
+            window.changeCartItemQty('item1_S', 5);
+            expect(window.getCart()[0].qty).toBe(5);
+            expect(window.getUpdateCartUiMock()).toHaveBeenCalled();
+            expect(window.getUpdateLocationUiMock()).toHaveBeenCalled();
+        });
+
+        it('should update quantity when found by product.id fallback', () => {
+            window.changeCartItemQty('item2', 2);
+            expect(window.getCart()[1].qty).toBe(2);
+            expect(window.getUpdateCartUiMock()).toHaveBeenCalled();
+            expect(window.getUpdateLocationUiMock()).toHaveBeenCalled();
+        });
+
+        it('should do nothing if item is not found in cart', () => {
+            window.changeCartItemQty('nonexistent_id', 5);
+            expect(window.getCart().length).toBe(2);
+            expect(window.getCart()[0].qty).toBe(2);
+            expect(window.getCart()[1].qty).toBe(1);
+            expect(window.getUpdateCartUiMock()).not.toHaveBeenCalled();
+            expect(window.getUpdateLocationUiMock()).not.toHaveBeenCalled();
+            expect(window.getShowAlertMock()).not.toHaveBeenCalled();
+        });
+
+        it('should remove item from cart when quantity is set to 0', () => {
+            window.changeCartItemQty('item1_S', 0);
+            expect(window.getCart().length).toBe(1);
+            expect(window.getCart()[0].product.id).toBe('item2');
+        });
+
+        it('should remove item from cart when quantity is set to negative number', () => {
+            window.changeCartItemQty('item2', -2);
+            expect(window.getCart().length).toBe(1);
+            expect(window.getCart()[0].cartItemId).toBe('item1_S');
+        });
+
+        it('should show alert and not change quantity when newQty exceeds product stock', () => {
+            window.changeCartItemQty('item2', 5);
+            expect(window.getCart()[1].qty).toBe(1);
+            expect(window.getShowAlertMock()).toHaveBeenCalledWith('Извините, доступно только 3 шт. этого товара.');
+            expect(window.getUpdateCartUiMock()).not.toHaveBeenCalled();
+            expect(window.getUpdateLocationUiMock()).not.toHaveBeenCalled();
+        });
+
+        it('should show alert in Kazakh language when window.i18n is kk and stock exceeded', () => {
+            window.i18n = { getCurrentLanguage: () => 'kk' };
+            window.changeCartItemQty('item2', 4);
+            expect(window.getShowAlertMock()).toHaveBeenCalledWith('Кешіріңіз, бұл тауардан қоймада тек 3 дана бар.');
+        });
+
+        it('should allow high quantity when product stock is infinite (null)', () => {
+            window.setCart([
+                { cartItemId: 'inf_item', product: { id: 'inf_item', stock: null }, qty: 1 }
+            ]);
+            window.changeCartItemQty('inf_item', 999);
+            expect(window.getCart()[0].qty).toBe(999);
+            expect(window.getUpdateCartUiMock()).toHaveBeenCalled();
+            expect(window.getUpdateLocationUiMock()).toHaveBeenCalled();
         });
     });
 
