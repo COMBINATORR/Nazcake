@@ -337,7 +337,7 @@ describe("fetchCoordinates", () => {
     jest.restoreAllMocks();
   });
 
-  it("should fetch coordinates from Nominatim API when LOCATION_IQ_KEY is undefined", async () => {
+  it("should fetch coordinates from Nominatim API when LOCATION_IQ_KEY is empty/undefined", async () => {
     global.fetch.mockResolvedValueOnce({
       ok: true,
       json: async () => [{ lat: "47.1167", lon: "51.8833" }]
@@ -346,7 +346,33 @@ describe("fetchCoordinates", () => {
     const coords = await window.fetchCoordinates("Азаттык 15");
     expect(coords).toEqual({ lat: 47.1167, lon: 51.8833 });
     expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(global.fetch.mock.calls[0][0]).toContain("nominatim.openstreetmap.org");
     expect(window.geocodingCache.get("азаттык 15")).toEqual({ lat: 47.1167, lon: 51.8833 });
+  });
+
+  it("should fetch coordinates from LocationIQ API when window.ENV.LOCATION_IQ_KEY is defined", async () => {
+    delete window.fetchCoordinates;
+    delete window.geocodingCache;
+    window.ENV = { LOCATION_IQ_KEY: "test_location_iq_key" };
+    const codeWithExports = appJsCode + "\nwindow.fetchCoordinates = fetchCoordinates;\nwindow.geocodingCache = geocodingCache;\nwindow.LOCATION_IQ_KEY = LOCATION_IQ_KEY;";
+    eval(codeWithExports);
+    window.geocodingCache.clear();
+
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => [{ lat: "47.1167", lon: "51.8833" }]
+    });
+
+    const coords = await window.fetchCoordinates("Азаттык 15");
+    expect(coords).toEqual({ lat: 47.1167, lon: 51.8833 });
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(global.fetch.mock.calls[0][0]).toContain("locationiq.com");
+    expect(global.fetch.mock.calls[0][0]).toContain("key=test_location_iq_key");
+    delete window.ENV;
+  });
+
+  it("should not contain hardcoded LocationIQ API keys in app.js", () => {
+    expect(appJsCode).not.toContain("pk.dab36ca07967f21217797579afc6b35f");
   });
 
   it("should return cached coordinates on subsequent calls", async () => {
