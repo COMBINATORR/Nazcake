@@ -295,3 +295,31 @@ describe('checkAtyrauBounds', () => {
         expect(() => window.checkAtyrauBounds(47.0, 52.2, bounds)).toThrow();
     });
 });
+
+
+describe('toInputDateValue', () => {
+  beforeEach(() => {
+    const codeWithExports = appJsCode + "\nwindow.toInputDateValue = toInputDateValue;";
+    eval(codeWithExports);
+  });
+
+  it('should format single-digit month and day with zero padding', () => {
+    const d = new Date(2025, 0, 5); // Jan 5, 2025
+    expect(window.toInputDateValue(d)).toBe('2025-01-05');
+  });
+
+  it('should format double-digit month and day correctly', () => {
+    const d = new Date(2025, 9, 15); // Oct 15, 2025
+    expect(window.toInputDateValue(d)).toBe('2025-10-15');
+  });
+
+  it('should format leap day correctly', () => {
+    const d = new Date(2024, 1, 29); // Feb 29, 2024
+    expect(window.toInputDateValue(d)).toBe('2024-02-29');
+  });
+
+  it('should format end of year date correctly', () => {
+    const d = new Date(2025, 11, 31); // Dec 31, 2025
+    expect(window.toInputDateValue(d)).toBe('2025-12-31');
+  });
+});
