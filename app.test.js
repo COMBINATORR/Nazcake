@@ -59,6 +59,7 @@ window.checkAtyrauBounds = checkAtyrauBounds;
             window.getProducts = () => products;
             window.setProducts = (p) => { products = p; };
             window.getUnitTranslationKey = getUnitTranslationKey;
+            window.getProductDesc = getProductDesc;
             window.sortProductsStable = sortProductsStable;
             window.getBadgeTranslationKey = getBadgeTranslationKey;
             window.generateSecureOrderId = generateSecureOrderId;
@@ -1109,6 +1110,49 @@ describe('escapeHTML', () => {
       expect(window.getUnitTranslationKey("г")).toBe("");
       expect(window.getUnitTranslationKey("box")).toBe("");
       expect(window.getUnitTranslationKey("random")).toBe("");
+    });
+  });
+
+  describe("getProductDesc", () => {
+    let origI18n;
+
+    beforeEach(() => {
+      origI18n = window.i18n;
+    });
+
+    afterEach(() => {
+      window.i18n = origI18n;
+    });
+
+    it("should return translated description when window.i18n returns translated string", () => {
+      window.i18n = {
+        t: jest.fn().mockReturnValue("Translated product description")
+      };
+      const product = { id: 101, desc: "Default product description" };
+      expect(window.getProductDesc(product)).toBe("Translated product description");
+      expect(window.i18n.t).toHaveBeenCalledWith("p_101_desc");
+    });
+
+    it("should fallback to product desc when window.i18n.t returns translation key", () => {
+      window.i18n = {
+        t: jest.fn().mockReturnValue("p_101_desc")
+      };
+      const product = { id: 101, desc: "Default product description" };
+      expect(window.getProductDesc(product)).toBe("Default product description");
+    });
+
+    it("should fallback to product desc when window.i18n.t returns empty string or falsy value", () => {
+      window.i18n = {
+        t: jest.fn().mockReturnValue("")
+      };
+      const product = { id: 101, desc: "Default product description" };
+      expect(window.getProductDesc(product)).toBe("Default product description");
+    });
+
+    it("should fallback to product desc when window.i18n is not defined", () => {
+      delete window.i18n;
+      const product = { id: 101, desc: "Default product description" };
+      expect(window.getProductDesc(product)).toBe("Default product description");
     });
   });
 
