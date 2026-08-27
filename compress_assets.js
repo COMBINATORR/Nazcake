@@ -6,6 +6,7 @@
 const fs = require("fs");
 const path = require("path");
 const { execFileSync } = require("child_process");
+const os = require("os");
 const sharp = require("sharp");
 
 const ROOT = __dirname;
@@ -352,26 +353,32 @@ async function main() {
   let skipped = 0;
   const top = [];
 
-  for (const f of rasters) {
-    const r = await compressRaster(f);
-    if (!r) continue;
-    if (r.error) {
-      console.warn("ERR", path.relative(ROOT, f), r.error);
-      continue;
+  const concurrency = Math.max(1, os.cpus().length || 4);
+  let index = 0;
+  const workers = Array.from({ length: Math.min(concurrency, rasters.length) }, async () => {
+    while (index < rasters.length) {
+      const f = rasters[index++];
+      const r = await compressRaster(f);
+      if (!r) continue;
+      if (r.error) {
+        console.warn("ERR", path.relative(ROOT, f), r.error);
+        continue;
+      }
+      if (r.skipped) {
+        skipped++;
+        continue;
+      }
+      compressed++;
+      savedTotal += r.saved;
+      beforeTotal += r.before;
+      afterTotal += r.after;
+      top.push(r);
+      console.log(
+        `✓ ${path.relative(ROOT, f)}  ${fmtKB(r.before)} → ${fmtKB(r.after)}  (-${fmtKB(r.saved)})  [${r.dims} max${r.limit}]`
+      );
     }
-    if (r.skipped) {
-      skipped++;
-      continue;
-    }
-    compressed++;
-    savedTotal += r.saved;
-    beforeTotal += r.before;
-    afterTotal += r.after;
-    top.push(r);
-    console.log(
-      `✓ ${path.relative(ROOT, f)}  ${fmtKB(r.before)} → ${fmtKB(r.after)}  (-${fmtKB(r.saved)})  [${r.dims} max${r.limit}]`
-    );
-  }
+  });
+  await Promise.all(workers);
 
   console.log("\n--- Favicon SVG rebuild ---");
   const fav = await rebuildFaviconSvg();
