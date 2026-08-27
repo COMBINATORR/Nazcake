@@ -23,3 +23,7 @@ For CPU or I/O intensive batch tasks in Node.js scripts (like image processing w
 
 ### Geocoding API Caching
 Implementing client-side caching (e.g., `geocodingCache`) for repetitive external API calls like `nominatim.openstreetmap.org` provides a significant performance boost (over 5x speedup in repeated calls) and avoids unnecessary rate limiting. Always check for missing caches on duplicate/similar data fetching paths.
+
+## 2026-08-27 - [Event Delegation for Product Card Grid Events]
+**Learning:** Attaching individual event listeners (`.btn-preview` and `.btn-add-to-cart`) in a `querySelectorAll` loop across hundreds of rendered product cards creates high CPU and memory allocation overhead on grid rendering.
+**Action:** Replaced per-card query selectors and event listeners in `attachCardEvents` with event delegation attached directly to `gridElement`. Used `e.target.closest()` to identify event targets cleanly and guarded re-attachment using `dataset.cardEventsAttached`.

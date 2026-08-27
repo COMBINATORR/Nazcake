@@ -2669,45 +2669,47 @@ function attachCardEvents(gridElement) {
     }
   });
 
-  // Opening Preview Modal on image or name click
-  gridElement.querySelectorAll(".btn-preview").forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      triggerHapticFeedback();
-      const card = e.target.closest(".product-card");
+  if (gridElement.dataset.cardEventsAttached === "true") {
+    return;
+  }
+  gridElement.dataset.cardEventsAttached = "true";
+
+  gridElement.addEventListener("click", (e) => {
+    const addBtn = e.target.closest(".btn-add-to-cart");
+    if (addBtn && gridElement.contains(addBtn)) {
+      e.stopPropagation();
+      const card = addBtn.closest(".product-card");
+      if (!card) return;
       const id = card.getAttribute("data-id");
+      triggerHapticFeedback();
+      addToCart(id, 1);
+      animateFlyToCart(card, addBtn);
+
+      if (addBtn.classList.contains("added")) {
+        return;
+      }
+
+      const originalHtml = addBtn.innerHTML;
+      addBtn.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" style="color: #4cd137;">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      `;
+      addBtn.classList.add("added");
+      setTimeout(() => {
+        addBtn.innerHTML = originalHtml;
+        addBtn.classList.remove("added");
+      }, 1000);
+      return;
+    }
+
+    const previewBtn = e.target.closest(".btn-preview");
+    if (previewBtn && gridElement.contains(previewBtn)) {
+      const card = previewBtn.closest(".product-card");
+      if (!card) return;
+      const id = card.getAttribute("data-id");
+      triggerHapticFeedback();
       openProductPreview(id);
-    });
-  });
-
-  // Simple Add to Cart logic
-  gridElement.querySelectorAll(".product-card").forEach(card => {
-    const addBtn = card.querySelector(".btn-add-to-cart");
-    const id = card.getAttribute("data-id");
-
-    if (addBtn) {
-      addBtn.addEventListener("click", (e) => {
-        e.stopPropagation(); // Avoid triggering preview modal if clicked
-        triggerHapticFeedback();
-        addToCart(id, 1);
-        animateFlyToCart(card, addBtn);
-
-        if (addBtn.classList.contains("added")) {
-          return;
-        }
-
-        // Visual feedback on button click: change plus icon to checkmark icon
-        const originalHtml = addBtn.innerHTML;
-        addBtn.innerHTML = `
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" style="color: #4cd137;">
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
-        `;
-        addBtn.classList.add("added");
-        setTimeout(() => {
-          addBtn.innerHTML = originalHtml;
-          addBtn.classList.remove("added");
-        }, 1000);
-      });
     }
   });
 }
