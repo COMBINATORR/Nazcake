@@ -12,8 +12,8 @@ const PHOTOS_DIR = path.join(process.cwd(), 'Фото');
 const OUTPUT_DIR = path.join(PHOTOS_DIR, 'Готовые фото');
 
 // 1. Get the list of all known products (from the images folder)
-function getKnownProducts() {
-    const files = fs.readdirSync(IMAGES_DIR);
+async function getKnownProducts() {
+    const files = await fs.promises.readdir(IMAGES_DIR);
     return files.filter(f => f.endsWith('.webp') || f.endsWith('.jpg') || f.endsWith('.jpeg') || f.endsWith('.png'));
 }
 
@@ -153,7 +153,7 @@ async function main() {
         processedCache.push(...fs.readdirSync(OUTPUT_DIR));
     }
 
-    const knownProducts = getKnownProducts();
+    const knownProducts = await getKnownProducts();
     console.log(`Found ${knownProducts.length} known products in images folder.`);
     
     const sourceFiles = getSourceFiles(PHOTOS_DIR);
@@ -186,4 +186,13 @@ async function main() {
     console.log("Done.");
 }
 
-main();
+if (require.main === module) {
+    main();
+}
+
+module.exports = {
+    getKnownProducts,
+    getSourceFiles,
+    processImage,
+    main
+};
