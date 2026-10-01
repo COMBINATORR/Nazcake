@@ -5885,7 +5885,7 @@ async function ensureLeafletLoaded() {
 }
 
 /* ============================================================
-   Contacts map — Leaflet + Carto (SVTL-style custom marker)
+   Contacts map — Leaflet + LocationIQ / OSM (SVTL-style custom marker)
    ============================================================ */
 const NAZCAKE_MAP_LAT = 47.124524;
 const NAZCAKE_MAP_LNG = 51.939947;
@@ -6011,14 +6011,27 @@ function updateContactsMapTheme(isDark) {
     contactsMapTiles = null;
   }
 
-  // Always Voyager: dark_all tiles were nearly black on our dark UI and unreadable.
-  // Dark theme uses a CSS tone on .leaflet-tile-pane (see style.css) instead.
-  const url = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
+  // Use LocationIQ Streets tiles (using existing project key) with seamless OpenStreetMap fallback to avoid Carto watermark
+  const osmUrl = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+  let tileUrl = osmUrl;
+  let subdomains = "abc";
 
-  contactsMapTiles = L.tileLayer(url, {
-    maxZoom: 20,
-    subdomains: "abcd",
+  if (typeof LOCATION_IQ_KEY !== "undefined" && LOCATION_IQ_KEY && LOCATION_IQ_KEY !== "YOUR_LOCATIONIQ_API_KEY") {
+    tileUrl = `https://{s}-tiles.locationiq.com/v3/streets/r/{z}/{x}/{y}.png?key=${LOCATION_IQ_KEY}`;
+  }
+
+  contactsMapTiles = L.tileLayer(tileUrl, {
+    maxZoom: 19,
+    subdomains: subdomains,
+    attribution: '&copy; <a href="https://locationiq.com/?ref=maps" target="_blank" rel="noopener">LocationIQ</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>',
   }).addTo(contactsMapInstance);
+
+  contactsMapTiles.on("tileerror", function () {
+    if (tileUrl !== osmUrl) {
+      tileUrl = osmUrl;
+      contactsMapTiles.setUrl(osmUrl);
+    }
+  });
 
   const mapEl = document.getElementById("contacts-map");
   if (mapEl) {
